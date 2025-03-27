@@ -12,7 +12,7 @@ class ExtensionTest extends TestCase
      */
     public function testConstructor($items)
     {
-        $config = new Extension($items);
+        $config = new Extension($items, false);
 
         $this->assertNotEmpty($config->getAll(), 'Classes passed in constructor should be set');
         $this->assertEquals($items, $config->getAll(), 'Classes passed in constructor should match');
@@ -25,7 +25,7 @@ class ExtensionTest extends TestCase
      */
     public function testGetter($items)
     {
-        $config = new Extension($items);
+        $config = new Extension($items, false);
 
         $this->assertEquals('\Another\Command\Class', $config->get('\Another\Command\Class'), 'Getting a valid class name should return its class name');
         $this->assertNull($config->get('\Fake\Class'), 'Getting an invalid class name should return null');
@@ -38,7 +38,7 @@ class ExtensionTest extends TestCase
      */
     public function testSetter($items)
     {
-        $config = new Extension($items);
+        $config = new Extension($items, false);
 
         $config->set('\Another\Command\Class');
         $this->assertEquals($items, $config->getAll(), 'Trying to add an already added class should not change the items');
@@ -59,7 +59,7 @@ class ExtensionTest extends TestCase
      */
     public function testFormat($items)
     {
-        $config = new Extension($items);
+        $config = new Extension($items, false);
         $formatted = $config->formatData();
         $formatted = str_replace('<?php', '', $formatted);
         sort($items);

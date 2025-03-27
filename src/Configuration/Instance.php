@@ -10,10 +10,15 @@ class Instance extends Base
     protected $file = 'instances.json';
     protected $current = null;
 
-    public function __construct()
+    public function __construct(array $items = [], $loadExisting = true)
     {
         $this->makeSureConfigPathExists();
-        $this->load();
+        if ($loadExisting) {
+            $this->load();
+        } else {
+            $this->items = [];
+        }
+        $this->items = array_merge($this->items, $items);
     }
 
     /**
@@ -117,7 +122,12 @@ class Instance extends Base
         return null;
     }
 
-    protected function formatConfigurationData()
+    /**
+     * Format configuration data as INI string
+     * 
+     * @return string
+     */
+    public function formatConfigurationData()
     {
         $iniString = '';
 
