@@ -51,13 +51,23 @@ The project is around 25-30% complete. The basic structure and many core command
 
 - Fixed issues in ComponentTest.php:
   - Updated mock builders to use the fully qualified class name or class reference (modSystemSetting::class)
-  - Added disableOriginalConstructor() to mock builders to prevent constructor issues
+  - Added disableOriginalConstructor() to disable constructor issues
   - Updated the modCacheManager mock to use the fully qualified class name
   - Enhanced the Component class implementation to match test expectations
 
 - Remaining test failures:
   - ExtensionTest.php has 4 failures related to array handling and formatting
   - InstanceTest.php has 4 failures related to configuration handling
+
+- Fixed test failures in ExtensionTest.php and InstanceTest.php:
+  - Added a `$loadExisting` parameter to constructors to skip loading existing configuration during tests
+  - Fixed array handling in Extension class to properly handle class names as values
+  - Implemented proper `remove()` method in Extension class to handle array values
+  - Made `formatConfigurationData()` method public in Instance class
+  - Updated tests to use the new constructor parameter
+
+- Remaining test failures:
+  - ComponentTest.php has errors related to missing MODX classes (modX)
 
 ### Command Issues
 

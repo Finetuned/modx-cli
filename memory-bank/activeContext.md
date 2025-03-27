@@ -11,6 +11,13 @@
 
 ## Recent changes
 
+- Fixed test failures in ExtensionTest.php and InstanceTest.php:
+  - Added a `$loadExisting` parameter to constructors to skip loading existing configuration during tests
+  - Fixed array handling in Extension class to properly handle class names as values
+  - Implemented proper `remove()` method in Extension class to handle array values
+  - Made `formatConfigurationData()` method public in Instance class
+  - Updated tests to use the new constructor parameter
+
 - Fixed version display in `extra:list` command:
   - Implemented a more robust approach to match extras (namespaces) with their corresponding packages
   - Added a method to get all packages using the same processor as `package:list` to create a lookup table
@@ -58,9 +65,8 @@
   - Updated the Application class to add the `--json` and `--ssh` options to the default input definition
   - Now all commands properly show these global options in the command list and help text
 
-- Fix remaining test failures in other test files:
-  - ExtensionTest.php has 4 failures related to array handling and formatting
-  - InstanceTest.php has 4 failures related to configuration handling
+- Fix remaining test failures in ComponentTest.php:
+  - Errors related to missing MODX classes (modX)
   
 - Add an internal API like WP-CLI
 - Implement self-update functionality
