@@ -11,6 +11,13 @@
 
 ## Recent changes
 
+- Fixed version display in `extra:list` command:
+  - Implemented a more robust approach to match extras (namespaces) with their corresponding packages
+  - Added a method to get all packages using the same processor as `package:list` to create a lookup table
+  - Created a method to find the correct package for a namespace using multiple matching strategies
+  - Added fallback mechanisms for when the processor fails or no match is found
+  - Now `extra:list` displays version numbers similar to `package:list`
+
 - Standardized command naming convention:
   - Updated all commands using `:getlist` to use `:list` instead for consistency
   - Updated 22 command classes to use the new naming convention

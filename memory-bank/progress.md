@@ -30,6 +30,13 @@ The project is around 25-30% complete. The basic structure and many core command
 
 ### Fixed Issues
 
+- Fixed version display issue in `extra:list` command:
+  - Implemented a more robust approach to match extras (namespaces) with their corresponding packages
+  - Added a method to get all packages using the same processor as `package:list` to create a lookup table
+  - Created a method to find the correct package for a namespace using multiple matching strategies
+  - Added fallback mechanisms for when the processor fails or no match is found
+  - Now `extra:list` displays version numbers similar to `package:list`
+
 - Fixed inheritance issue with the --json option:
   - ProcessorCmd was overriding getOptions() without calling parent::getOptions()
   - Updated ProcessorCmd::getOptions() to merge parent options with its own options
@@ -59,7 +66,7 @@ The project is around 25-30% complete. The basic structure and many core command
 - ns:create does not create a namespace
 - ns:update cannot be tested until ns:list and ns:create are fixed
 - ns:remove cannot be tested until ns:list and ns:create are fixed
-- extra:list does not show version numbers (package:list does display version numbers)
+- ✅ extra:list does not show version numbers (fixed by implementing better package matching)
 - tv:update --description "test description" 6 raises an error: name : tv_err ns_name
 
 ### Namespace Issues
