@@ -1,7 +1,8 @@
-<?php namespace MODX\CLI\Command;
+<?php
+
+namespace MODX\CLI\Command;
 
 use MODX\CLI\Command\BaseCmd;
-
 use Symfony\Component\Console\Input\InputArgument;
 
 /**
@@ -60,7 +61,7 @@ class Crawl extends BaseCmd
         }
 
         curl_close($this->curl);
-        $this->line("\n".sprintf("Executed in <info>%2.4f</info> seconds", (microtime(true) - $this->start)));
+        $this->line("\n" . sprintf("Executed in <info>%2.4f</info> seconds", (microtime(true) - $this->start)));
 
         //$this->info($c->toSQL());
     }
@@ -119,7 +120,6 @@ class Crawl extends BaseCmd
         if (curl_errno($this->curl)) {
             $this->error('cURL error: ' . curl_errno($this->curl) . ' - ' . curl_error($this->curl));
         }
-
     }
 
     /**

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Ns;
+<?php
+
+namespace MODX\CLI\Command\Ns;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,16 +43,16 @@ class Remove extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the namespace to display information
         $namespace = $this->modx->getObject('modNamespace', $id);
         if (!$namespace) {
             $this->error("Namespace with ID {$id} not found");
             return false;
         }
-        
+
         $name = $namespace->get('name');
-        
+
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove namespace '{$name}' (ID: {$id})?")) {
@@ -66,7 +68,7 @@ class Remove extends ProcessorCmd
             $this->info('Namespace removed successfully');
         } else {
             $this->error('Failed to remove namespace');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

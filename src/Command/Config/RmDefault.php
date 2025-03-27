@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Config;
+<?php
+
+namespace MODX\CLI\Command\Config;
 
 use MODX\CLI\Command\BaseCmd;
 
@@ -13,27 +15,27 @@ class RmDefault extends BaseCmd
     protected function process()
     {
         $instances = $this->getApplication()->instances;
-        
+
         // Check if there is a default instance
         $default = $instances->get('__default__');
         if (!$default) {
             $this->info('No default instance set');
             return 0;
         }
-        
+
         // Get the default instance name
         $defaultName = isset($default['class']) ? $default['class'] : null;
-        
+
         // Remove the default instance
         $instances->remove('__default__');
         $instances->save();
-        
+
         if ($defaultName) {
             $this->info("Default instance '{$defaultName}' removed");
         } else {
             $this->info('Default instance removed');
         }
-        
+
         return 0;
     }
 }

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System\Log;
+<?php
+
+namespace MODX\CLI\Command\System\Log;
 
 use MODX\CLI\Command\ProcessorCmd;
 

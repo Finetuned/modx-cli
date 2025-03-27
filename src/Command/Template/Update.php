@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Template;
+<?php
+
+namespace MODX\CLI\Command\Template;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -86,7 +88,7 @@ class Update extends ProcessorCmd
         $optionKeys = array(
             'templatename', 'description', 'category', 'content', 'locked', 'static', 'static_file', 'icon'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -98,13 +100,13 @@ class Update extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Template updated successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Template ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to update template');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

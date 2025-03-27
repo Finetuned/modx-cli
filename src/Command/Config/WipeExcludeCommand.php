@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Config;
+<?php
+
+namespace MODX\CLI\Command\Config;
 
 use MODX\CLI\Command\BaseCmd;
 
@@ -14,24 +16,24 @@ class WipeExcludeCommand extends BaseCmd
     {
         $excludedCommands = $this->getApplication()->excludedCommands;
         $excluded = $excludedCommands->getAll();
-        
+
         if (empty($excluded)) {
             $this->info('No commands are excluded');
             return 0;
         }
-        
+
         if (!$this->confirm('Are you sure you want to wipe all excluded commands?')) {
             return $this->info('Operation aborted');
         }
-        
+
         // Wipe all excluded commands
         foreach ($excluded as $class) {
             $excludedCommands->remove($class);
         }
         $excludedCommands->save();
-        
+
         $this->info('All excluded commands wiped');
-        
+
         return 0;
     }
 }

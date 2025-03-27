@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Formatter;
+<?php
+
+namespace MODX\CLI\Formatter;
 
 /**
  * A formatter to display data as a tree

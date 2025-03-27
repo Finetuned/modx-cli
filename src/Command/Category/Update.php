@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Category;
+<?php
+
+namespace MODX\CLI\Command\Category;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -56,7 +58,7 @@ class Update extends ProcessorCmd
         $optionKeys = array(
             'category', 'parent', 'rank'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -68,13 +70,13 @@ class Update extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Category updated successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Category ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to update category');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

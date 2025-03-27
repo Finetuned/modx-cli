@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Package;
+<?php
+
+namespace MODX\CLI\Command\Package;
 
 use MODX\CLI\Command\ListProcessor;
 
@@ -20,11 +22,11 @@ class GetList extends ListProcessor
         if ($column === 'installed') {
             return $value ? date('Y-m-d H:i:s', strtotime($value)) : 'Not installed';
         }
-        
+
         if ($column === 'provider') {
             return $this->renderObject('transport.modTransportProvider', $value, 'name');
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

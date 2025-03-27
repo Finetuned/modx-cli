@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Category;
+<?php
+
+namespace MODX\CLI\Command\Category;
 
 use MODX\CLI\Command\ListProcessor;
 
@@ -20,7 +22,7 @@ class GetList extends ListProcessor
         if ($column === 'parent') {
             return $this->renderObject('modCategory', $value, 'category');
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

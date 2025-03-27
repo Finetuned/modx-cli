@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Plugin;
+<?php
+
+namespace MODX\CLI\Command\Plugin;
 
 use MODX\CLI\Command\ListProcessor;
 
@@ -23,7 +25,7 @@ class DisabledPlugin extends ListProcessor
         if ($column === 'category') {
             return $this->renderObject('modCategory', $value, 'category');
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

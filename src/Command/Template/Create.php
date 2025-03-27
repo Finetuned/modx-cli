@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Template;
+<?php
+
+namespace MODX\CLI\Command\Template;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -84,12 +86,12 @@ class Create extends ProcessorCmd
     {
         // Add the templatename to the properties
         $properties['templatename'] = $this->argument('templatename');
-        
+
         // Add options to the properties
         $optionKeys = array(
             'description', 'category', 'content', 'locked', 'static', 'static_file', 'icon'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -101,13 +103,13 @@ class Create extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Template created successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Template ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to create template');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

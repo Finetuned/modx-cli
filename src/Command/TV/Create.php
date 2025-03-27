@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\TV;
+<?php
+
+namespace MODX\CLI\Command\TV;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -119,13 +121,13 @@ class Create extends ProcessorCmd
     {
         // Add the name to the properties
         $properties['name'] = $this->argument('name');
-        
+
         // Add options to the properties
         $optionKeys = array(
             'caption', 'description', 'category', 'type', 'default_text', 'elements',
             'rank', 'display', 'templates', 'locked', 'static', 'static_file'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -137,13 +139,13 @@ class Create extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Template variable created successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Template variable ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to create template variable');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

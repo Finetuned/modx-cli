@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System\Log;
+<?php
+
+namespace MODX\CLI\Command\System\Log;
 
 use MODX\CLI\Command\ListProcessor;
 use MODX\CLI\Formatter\ColoredLog;
@@ -47,7 +49,7 @@ class View extends ListProcessor
     protected function processResponse(array $results = array())
     {
         $format = $this->option('format');
-        
+
         if ($format === 'colored') {
             $this->renderColored($results['results']);
             return 0; // Return 0 for success
@@ -67,10 +69,10 @@ class View extends ListProcessor
             $this->info('No log entries found');
             return;
         }
-        
+
         $formatter = new ColoredLog();
         $entries = array();
-        
+
         foreach ($logs as $log) {
             $entries[] = array(
                 'level' => $log['action'],
@@ -78,12 +80,12 @@ class View extends ListProcessor
                 'timestamp' => strtotime($log['occurred']),
             );
         }
-        
+
         // Sort by timestamp
-        usort($entries, function($a, $b) {
+        usort($entries, function ($a, $b) {
             return $a['timestamp'] - $b['timestamp'];
         });
-        
+
         $this->output->write($formatter->formatMultiple($entries));
     }
 
@@ -92,7 +94,7 @@ class View extends ListProcessor
         if ($column === 'action') {
             return strtoupper($value);
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

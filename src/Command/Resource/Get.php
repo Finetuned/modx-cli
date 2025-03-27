@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Resource;
+<?php
+
+namespace MODX\CLI\Command\Resource;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Helper\Table;
@@ -50,48 +52,50 @@ class Get extends ProcessorCmd
             $this->error('Resource not found');
             return 1;
         }
-        
+
         $resource = $response['object'];
-        
+
         // Check for both --json flag and --format=json
         if ($this->option('json') || $this->option('format') === 'json') {
             $this->output->writeln(json_encode($resource, JSON_PRETTY_PRINT));
             return 0;
         }
-        
+
         // Default to table format
         $table = new Table($this->output);
         $table->setHeaders(array('Property', 'Value'));
-        
+
         // Add basic properties
         $properties = array(
-            'id', 'pagetitle', 'longtitle', 'description', 'alias', 'published', 
+            'id', 'pagetitle', 'longtitle', 'description', 'alias', 'published',
             'hidemenu', 'parent', 'template', 'menuindex', 'searchable', 'cacheable',
             'createdby', 'createdon', 'editedby', 'editedon', 'publishedon', 'publishedby',
             'context_key', 'content'
         );
-        
+
         foreach ($properties as $property) {
             if (isset($resource[$property])) {
                 $value = $resource[$property];
-                
+
                 // Format boolean values
-                if ($property === 'published' || $property === 'hidemenu' || 
-                    $property === 'searchable' || $property === 'cacheable') {
+                if (
+                    $property === 'published' || $property === 'hidemenu' ||
+                    $property === 'searchable' || $property === 'cacheable'
+                ) {
                     $value = $value ? 'Yes' : 'No';
                 }
-                
+
                 // Format dates
                 if ($property === 'createdon' || $property === 'editedon' || $property === 'publishedon') {
                     if (!empty($value)) {
                         $value = date('Y-m-d H:i:s', strtotime($value));
                     }
                 }
-                
+
                 $table->addRow(array($property, $value));
             }
         }
-        
+
         $table->render();
     }
 }

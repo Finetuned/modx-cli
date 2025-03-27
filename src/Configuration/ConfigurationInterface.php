@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Configuration;
+<?php
+
+namespace MODX\CLI\Configuration;
 
 /**
  * A configuration interface to implement

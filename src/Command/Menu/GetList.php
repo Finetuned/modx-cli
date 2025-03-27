@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Menu;
+<?php
+
+namespace MODX\CLI\Command\Menu;
 
 use MODX\CLI\Command\ListProcessor;
 
@@ -20,11 +22,11 @@ class GetList extends ListProcessor
         if ($column === 'parent') {
             return $this->renderObject('modMenu', $value, 'text');
         }
-        
+
         if ($column === 'namespace') {
             return $this->renderObject('modNamespace', $value, 'name');
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

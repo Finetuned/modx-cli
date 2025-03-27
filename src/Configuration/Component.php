@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Configuration;
+<?php
+
+namespace MODX\CLI\Configuration;
 
 use MODX\CLI\Application;
 use MODX\Revolution\modSystemSetting;
@@ -23,7 +25,7 @@ class Component extends Base
     {
         $this->app = $app;
         $this->makeSureConfigPathExists();
-        
+
         if (!empty($items)) {
             $this->items = $items;
         } else {
@@ -48,7 +50,7 @@ class Component extends Base
 
     /**
      * Save the configuration to MODX and file
-     * 
+     *
      * @return bool
      */
     public function save()
@@ -57,7 +59,7 @@ class Component extends Base
         if (!$modx instanceof modX) {
             return false;
         }
-        
+
         // Save to MODX system settings
         $setting = $modx->getObject('modSystemSetting', ['key' => 'console_commands']);
         if (!$setting) {
@@ -67,20 +69,20 @@ class Component extends Base
             $setting->set('area', 'system');
             $setting->set('xtype', 'textarea');
         }
-        
+
         $setting->set('value', $modx->toJSON($this->items));
         if (!$setting->save()) {
             return false;
         }
-        
+
         // Refresh cache
         $cache = $modx->getCacheManager();
         $cache->refresh();
-        
+
         // Also save to file for backup
         $file = $this->getConfigPath() . $this->file;
         file_put_contents($file, json_encode($this->items, JSON_PRETTY_PRINT));
-        
+
         return true;
     }
 }

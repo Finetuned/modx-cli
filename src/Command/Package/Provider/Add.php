@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Command\Package\Provider;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -59,10 +61,10 @@ class Add extends ProcessorCmd
         // Add the name and service_url to the properties
         $properties['name'] = $this->argument('name');
         $properties['service_url'] = $this->argument('service_url');
-        
+
         // Add options to the properties
         $optionKeys = array('username', 'password', 'description');
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -74,13 +76,13 @@ class Add extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Provider added successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Provider ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to add provider');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

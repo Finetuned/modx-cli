@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Category;
+<?php
+
+namespace MODX\CLI\Command\Category;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -49,12 +51,12 @@ class Create extends ProcessorCmd
     {
         // Add the category name to the properties
         $properties['category'] = $this->argument('category');
-        
+
         // Add options to the properties
         $optionKeys = array(
             'parent', 'rank'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -66,13 +68,13 @@ class Create extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Category created successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Category ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to create category');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
