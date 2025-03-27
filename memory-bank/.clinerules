@@ -1,0 +1,48 @@
+# MODX CLI Project Rules and Patterns
+
+## Namespace Handling
+
+- Always use fully qualified class names (FQCNs) when referencing MODX Revolution classes
+- When mocking MODX Revolution classes in tests, use `ClassName::class` syntax instead of string class names
+- Import classes with `use` statements at the top of files
+- The main namespace for the CLI is `MODX\CLI`
+- MODX Revolution 3.x uses the `MODX\Revolution` namespace
+
+## Testing Patterns
+
+- Always add `disableOriginalConstructor()` when mocking classes that extend `xPDOObject`
+- Use `getMockBuilder()` instead of `createMock()` when you need to customize the mock
+- Test files should mirror the structure of the source files
+- Use data providers for tests that need to run with different inputs
+- Test both standard output formats and JSON output formats
+- For commands with JSON output, test both success and error cases
+
+## Configuration Handling
+
+- Configuration is stored in JSON files in the user's home directory (`~/.modx/`)
+- When a MODX instance is available, configuration should also be stored in MODX system settings
+- The Component class should handle both file-based and MODX-based configuration
+
+## Command Structure
+
+- Commands should extend `BaseCmd`
+- Command names should follow the pattern `namespace:command` or `namespace:subnamespace:command`
+- Commands should have clear descriptions and help text
+- Commands should return structured data that can be formatted as needed
+- All commands should respect the global `--json` option for machine-readable output
+- Commands with existing `--format` options should respect both `--format=json` and `--json`
+
+## Code Style
+
+- Use PSR-4 autoloading
+- Follow PSR-12 coding standards
+- Use type hints where possible
+- Document classes and methods with PHPDoc comments
+- Use dependency injection for services
+
+## Error Handling
+
+- Use exceptions for error conditions
+- Provide clear error messages
+- Log errors at appropriate levels
+- Return appropriate exit codes from commands
