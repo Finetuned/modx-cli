@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Registry\Message;
+<?php
+
+namespace MODX\CLI\Command\Registry\Message;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputArgument;
@@ -46,7 +48,7 @@ class GetList extends ListProcessor
     {
         // Add the topic to the properties
         $properties['topic'] = $this->argument('topic');
-        
+
         // Add the register to the properties
         if ($this->option('register') !== null) {
             $properties['register'] = $this->option('register');
@@ -58,7 +60,7 @@ class GetList extends ListProcessor
         if ($column === 'created') {
             return date('Y-m-d H:i:s', strtotime($value));
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

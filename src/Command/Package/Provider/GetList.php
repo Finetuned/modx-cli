@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Command\Package\Provider;
 
 use MODX\CLI\Command\ListProcessor;
 
@@ -20,7 +22,7 @@ class GetList extends ListProcessor
         if ($column === 'verified') {
             return $this->renderBoolean($value);
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

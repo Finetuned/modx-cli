@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI;
+<?php
+
+namespace MODX\CLI;
 
 /**
  * A helper class to build a tree array (multidimensional) from a flat array

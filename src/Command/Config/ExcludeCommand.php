@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Config;
+<?php
+
+namespace MODX\CLI\Command\Config;
 
 use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,20 +28,20 @@ class ExcludeCommand extends BaseCmd
     {
         $class = $this->argument('class');
         $excludedCommands = $this->getApplication()->excludedCommands;
-        
+
         // Check if the command is already excluded
         $excluded = $excludedCommands->getAll();
         if (in_array($class, $excluded)) {
             $this->info("Command '{$class}' is already excluded");
             return 0;
         }
-        
+
         // Exclude the command
         $excludedCommands->set($class);
         $excludedCommands->save();
-        
+
         $this->info("Command '{$class}' excluded");
-        
+
         return 0;
     }
 }

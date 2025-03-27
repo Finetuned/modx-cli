@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Snippet;
+<?php
+
+namespace MODX\CLI\Command\Snippet;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -80,7 +82,7 @@ class Update extends ProcessorCmd
         $optionKeys = array(
             'name', 'description', 'category', 'snippet', 'locked', 'properties', 'static', 'static_file'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -92,13 +94,13 @@ class Update extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Snippet updated successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Snippet ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to update snippet');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

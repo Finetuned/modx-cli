@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Resource;
+<?php
+
+namespace MODX\CLI\Command\Resource;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -84,12 +86,12 @@ class Create extends ProcessorCmd
     {
         // Add the pagetitle to the properties
         $properties['pagetitle'] = $this->argument('pagetitle');
-        
+
         // Add options to the properties
         $optionKeys = array(
             'parent', 'template', 'published', 'hidemenu', 'content', 'alias', 'context_key'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -101,13 +103,13 @@ class Create extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Resource created successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Resource ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to create resource');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

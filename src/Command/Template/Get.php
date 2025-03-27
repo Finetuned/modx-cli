@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Template;
+<?php
+
+namespace MODX\CLI\Command\Template;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Helper\Table;
@@ -53,33 +55,33 @@ class Get extends ProcessorCmd
             $this->error('Template not found');
             return;
         }
-        
+
         $template = $response['object'];
-        
+
         // Check for both --json flag and --format=json
         if ($this->option('json') || $this->option('format') === 'json') {
             $this->output->writeln(json_encode($template, JSON_PRETTY_PRINT));
             return;
         }
-        
+
         // Default to table format
         $table = new Table($this->output);
         $table->setHeaders(array('Property', 'Value'));
-        
+
         // Add basic properties
         $properties = array(
             'id', 'templatename', 'description', 'category', 'locked', 'static', 'static_file', 'icon'
         );
-        
+
         foreach ($properties as $property) {
             if (isset($template[$property])) {
                 $value = $template[$property];
-                
+
                 // Format boolean values
                 if ($property === 'locked' || $property === 'static') {
                     $value = $value ? 'Yes' : 'No';
                 }
-                
+
                 // Format category
                 if ($property === 'category' && !empty($value)) {
                     $category = $this->modx->getObject('modCategory', $value);
@@ -87,13 +89,13 @@ class Get extends ProcessorCmd
                         $value .= ' (' . $category->get('category') . ')';
                     }
                 }
-                
+
                 $table->addRow(array($property, $value));
             }
         }
-        
+
         $table->render();
-        
+
         // Display template content separately
         if (isset($template['content']) && !empty($template['content'])) {
             $this->output->writeln("\n<info>Template Content:</info>");

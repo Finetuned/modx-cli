@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Context\Setting;
+<?php
+
+namespace MODX\CLI\Command\Context\Setting;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputArgument;

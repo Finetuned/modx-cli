@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Chunk;
+<?php
+
+namespace MODX\CLI\Command\Chunk;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Helper\Table;
@@ -53,33 +55,33 @@ class Get extends ProcessorCmd
             $this->error('Chunk not found');
             return;
         }
-        
+
         $chunk = $response['object'];
-        
+
         // Check for both --json flag and --format=json
         if ($this->option('json') || $this->option('format') === 'json') {
             $this->output->writeln(json_encode($chunk, JSON_PRETTY_PRINT));
             return;
         }
-        
+
         // Default to table format
         $table = new Table($this->output);
         $table->setHeaders(array('Property', 'Value'));
-        
+
         // Add basic properties
         $properties = array(
             'id', 'name', 'description', 'category', 'locked', 'static', 'static_file', 'snippet'
         );
-        
+
         foreach ($properties as $property) {
             if (isset($chunk[$property])) {
                 $value = $chunk[$property];
-                
+
                 // Format boolean values
                 if ($property === 'locked' || $property === 'static') {
                     $value = $value ? 'Yes' : 'No';
                 }
-                
+
                 // Format category
                 if ($property === 'category' && !empty($value)) {
                     $category = $this->modx->getObject('modCategory', $value);
@@ -87,11 +89,11 @@ class Get extends ProcessorCmd
                         $value .= ' (' . $category->get('category') . ')';
                     }
                 }
-                
+
                 $table->addRow(array($property, $value));
             }
         }
-        
+
         $table->render();
     }
 }

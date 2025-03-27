@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Snippet;
+<?php
+
+namespace MODX\CLI\Command\Snippet;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,16 +43,16 @@ class Remove extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the snippet to display information
         $snippet = $this->modx->getObject('modSnippet', $id);
         if (!$snippet) {
             $this->error("Snippet with ID {$id} not found");
             return false;
         }
-        
+
         $snippetName = $snippet->get('name');
-        
+
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove snippet '{$snippetName}' (ID: {$id})?")) {
@@ -66,7 +68,7 @@ class Remove extends ProcessorCmd
             $this->info('Snippet removed successfully');
         } else {
             $this->error('Failed to remove snippet');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

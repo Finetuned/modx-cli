@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Resource;
+<?php
+
+namespace MODX\CLI\Command\Resource;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,16 +43,16 @@ class Remove extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the resource to display information
         $resource = $this->modx->getObject('modResource', $id);
         if (!$resource) {
             $this->error("Resource with ID {$id} not found");
             return false;
         }
-        
+
         $pagetitle = $resource->get('pagetitle');
-        
+
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove resource '{$pagetitle}' (ID: {$id})?")) {
@@ -66,7 +68,7 @@ class Remove extends ProcessorCmd
             $this->info('Resource removed successfully');
         } else {
             $this->error('Failed to remove resource');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

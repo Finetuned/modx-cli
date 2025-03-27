@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Session;
+<?php
+
+namespace MODX\CLI\Command\Session;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,14 +43,14 @@ class Remove extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the session to display information
         $session = $this->modx->getObject('modSession', $id);
         if (!$session) {
             $this->error("Session with ID {$id} not found");
             return false;
         }
-        
+
         // Get the user information
         $username = '';
         $userId = $session->get('user');
@@ -58,7 +60,7 @@ class Remove extends ProcessorCmd
                 $username = $user->get('username');
             }
         }
-        
+
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             $message = "Are you sure you want to remove session '{$id}'";
@@ -66,7 +68,7 @@ class Remove extends ProcessorCmd
                 $message .= " for user '{$username}'";
             }
             $message .= "?";
-            
+
             if (!$this->confirm($message)) {
                 $this->info('Operation aborted');
                 return false;
@@ -80,7 +82,7 @@ class Remove extends ProcessorCmd
             $this->info('Session removed successfully');
         } else {
             $this->error('Failed to remove session');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

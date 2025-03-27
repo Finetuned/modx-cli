@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Snippet;
+<?php
+
+namespace MODX\CLI\Command\Snippet;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputOption;
@@ -54,12 +56,12 @@ class GetList extends ListProcessor
         if ($this->option('category') !== null) {
             $properties['category'] = $this->option('category');
         }
-        
+
         // Add the search term
         if ($this->option('search') !== null) {
             $properties['search'] = $this->option('search');
         }
-        
+
         // Add pagination
         $properties['limit'] = $this->option('limit');
         $properties['start'] = $this->option('start');
@@ -70,11 +72,11 @@ class GetList extends ListProcessor
         if ($column === 'category') {
             return $this->renderObject('modCategory', $value, 'category_name');
         }
-        
+
         if ($column === 'locked') {
             return $value ? 'Yes' : 'No';
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

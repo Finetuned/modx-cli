@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Package;
+<?php
+
+namespace MODX\CLI\Command\Package;
 
 use MODX\CLI\Command\ListProcessor;
 
@@ -23,11 +25,11 @@ class Upgradeable extends ListProcessor
         if ($column === 'installed') {
             return $value ? date('Y-m-d H:i:s', strtotime($value)) : 'Not installed';
         }
-        
+
         if ($column === 'provider') {
             return $this->renderObject('transport.modTransportProvider', $value, 'name');
         }
-        
+
         return parent::parseValue($value, $column);
     }
 
@@ -35,7 +37,7 @@ class Upgradeable extends ListProcessor
     {
         $total = $results['total'];
         $results = $results['results'];
-        
+
         // Filter out packages that are not upgradeable
         $upgradeable = array();
         foreach ($results as $package) {
@@ -43,12 +45,12 @@ class Upgradeable extends ListProcessor
                 $upgradeable[] = $package;
             }
         }
-        
+
         if (empty($upgradeable)) {
             $this->info('No upgradeable packages found');
             return;
         }
-        
+
         $this->renderBody($upgradeable);
         if ($this->showPagination) {
             $this->renderPagination($upgradeable, count($upgradeable));

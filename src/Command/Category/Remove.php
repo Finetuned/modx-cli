@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Category;
+<?php
+
+namespace MODX\CLI\Command\Category;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,16 +43,16 @@ class Remove extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the category to display information
         $category = $this->modx->getObject('modCategory', $id);
         if (!$category) {
             $this->error("Category with ID {$id} not found");
             return false;
         }
-        
+
         $categoryName = $category->get('category');
-        
+
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove category '{$categoryName}' (ID: {$id})?")) {
@@ -66,7 +68,7 @@ class Remove extends ProcessorCmd
             $this->info('Category removed successfully');
         } else {
             $this->error('Failed to remove category');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

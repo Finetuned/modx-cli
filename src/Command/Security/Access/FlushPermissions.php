@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Security\Access;
+<?php
+
+namespace MODX\CLI\Command\Security\Access;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,7 +44,7 @@ class FlushPermissions extends ProcessorCmd
             $this->info('Permissions flushed successfully');
         } else {
             $this->error('Failed to flush permissions');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

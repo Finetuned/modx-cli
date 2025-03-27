@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System\Log;
+<?php
+
+namespace MODX\CLI\Command\System\Log;
 
 use MODX\CLI\Command\BaseCmd;
 use MODX\CLI\Formatter\ColoredLog;
@@ -80,10 +82,10 @@ class Listen extends BaseCmd
         $c = $this->modx->newQuery('modLog');
         $c->sortby('id', 'DESC');
         $c->limit(1);
-        
+
         /** @var \MODX\Revolution\modLog $log */
         $log = $this->modx->getObject('modLog', $c);
-        
+
         return $log ? $log->get('id') : 0;
     }
 
@@ -97,17 +99,17 @@ class Listen extends BaseCmd
         $c = $this->modx->newQuery('modLog');
         $c->sortby('id', 'DESC');
         $c->limit($limit);
-        
+
         $logs = $this->modx->getCollection('modLog', $c);
-        
+
         if (!$logs || count($logs) === 0) {
             $this->info('No log entries found');
             return;
         }
-        
+
         $formatter = new ColoredLog();
         $entries = array();
-        
+
         /** @var \MODX\Revolution\modLog $log */
         foreach ($logs as $log) {
             $entries[] = array(
@@ -115,15 +117,15 @@ class Listen extends BaseCmd
                 'message' => $log->get('message'),
                 'timestamp' => strtotime($log->get('occurred')),
             );
-            
+
             $this->lastLogId = max($this->lastLogId, $log->get('id'));
         }
-        
+
         // Sort by timestamp
-        usort($entries, function($a, $b) {
+        usort($entries, function ($a, $b) {
             return $a['timestamp'] - $b['timestamp'];
         });
-        
+
         $this->output->write($formatter->formatMultiple($entries));
     }
 
@@ -137,16 +139,16 @@ class Listen extends BaseCmd
             'id:>' => $this->lastLogId,
         ));
         $c->sortby('id', 'ASC');
-        
+
         $logs = $this->modx->getCollection('modLog', $c);
-        
+
         if (!$logs || count($logs) === 0) {
             return;
         }
-        
+
         $formatter = new ColoredLog();
         $entries = array();
-        
+
         /** @var \MODX\Revolution\modLog $log */
         foreach ($logs as $log) {
             $entries[] = array(
@@ -154,10 +156,10 @@ class Listen extends BaseCmd
                 'message' => $log->get('message'),
                 'timestamp' => strtotime($log->get('occurred')),
             );
-            
+
             $this->lastLogId = max($this->lastLogId, $log->get('id'));
         }
-        
+
         $this->output->write($formatter->formatMultiple($entries));
     }
 }

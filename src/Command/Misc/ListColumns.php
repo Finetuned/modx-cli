@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Misc;
+<?php
+
+namespace MODX\CLI\Command\Misc;
 
 use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Helper\Table;
@@ -28,29 +30,29 @@ class ListColumns extends BaseCmd
     protected function process()
     {
         $tableName = $this->argument('table');
-        
+
         // Get the database connection
         $dbname = $this->modx->getOption('dbname');
-        
+
         // Get the columns
         $sql = "SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT, COLUMN_KEY, EXTRA
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE TABLE_SCHEMA = '{$dbname}' AND TABLE_NAME = '{$tableName}'
                 ORDER BY ORDINAL_POSITION";
-        
+
         $stmt = $this->modx->prepare($sql);
         $stmt->execute();
-        
+
         $columns = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
+
         if (empty($columns)) {
             $this->error("Table '{$tableName}' not found or has no columns");
             return 1;
         }
-        
+
         $table = new Table($this->output);
         $table->setHeaders(array('Column', 'Type', 'Nullable', 'Default', 'Key', 'Extra'));
-        
+
         foreach ($columns as $column) {
             $table->addRow(array(
                 $column['COLUMN_NAME'],
@@ -61,9 +63,9 @@ class ListColumns extends BaseCmd
                 $column['EXTRA'],
             ));
         }
-        
+
         $table->render();
-        
+
         return 0;
     }
 }
