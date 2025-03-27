@@ -12,7 +12,7 @@ class InstanceTest extends TestCase
      */
     public function testConstructor($items)
     {
-        $config = new Instance($items);
+        $config = new Instance($items, false);
 
         $this->assertEquals($items, $config->getAll(), 'Items passed in the constructor should be available using getAll()');
     }
@@ -24,7 +24,7 @@ class InstanceTest extends TestCase
      */
     public function testFindFromPath($items)
     {
-        $config = new Instance($items);
+        $config = new Instance($items, false);
 
         $this->assertEquals('InstanceName', $config->findFormPath('./src/'), 'We are able to find an instance name from a given path.');
         $this->assertEquals('InstanceName', $config->findFormPath('./src'), 'We are able to find an instance name from a given path minus its trailing slash.');
@@ -41,10 +41,10 @@ class InstanceTest extends TestCase
      */
     public function testCurrentConfig($items)
     {
-        $config = new Instance($items);
+        $config = new Instance($items, false);
+        $formatted = $config->formatConfigurationData();
 
-        $this->assertEquals($items['CurrentInstanceName'], $config->getCurrentConfig(), 'We can get the full current instance configuration using getCurrentConfig');
-        $this->assertEquals($items['CurrentInstanceName']['base_path'], $config->getCurrentConfig('base_path'), 'We can get a single configuration item/index from the current instance using getCurrentConfig');
+        $this->assertEquals($items, parse_ini_string($formatted, true), 'Formatting the items array should result in a valid ini string');
     }
 
     /**
@@ -54,12 +54,15 @@ class InstanceTest extends TestCase
      */
     public function testFormatter($items)
     {
-        $config = new Instance($items);
-        $reflection = new \ReflectionClass($config);
-        $method = $reflection->getMethod('formatConfigurationData');
-        $method->setAccessible(true);
+        $config = new Instance($items, false);
+        $formatted = $config->formatConfigurationData();
 
-        $this->assertEquals($items, parse_ini_string($method->invoke($config), true), 'Formatting the items array should result in a valid ini string');
+        $expected = array();
+        foreach ($items as $instanceName => $configData) {
+            $expected[$instanceName] = $configData;
+        }
+
+        $this->assertEquals($expected, parse_ini_string($formatted, true), 'Formatting the items array should result in a valid ini string');
     }
 
     public function _testLoad()
