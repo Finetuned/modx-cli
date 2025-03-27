@@ -1,4 +1,4 @@
-x<?php namespace MODX\CLI\Command\Extra;
+<?php namespace MODX\CLI\Command\Extra;
 
 use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Helper\Table;
