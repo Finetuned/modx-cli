@@ -1,0 +1,36 @@
+# Example MODX CLI configuration file
+# Save this as ~/.modx/config.yml for global configuration
+# or as modx-cli.yml in your project directory for project-specific configuration
+
+# SSH aliases for different environments
+@prod:
+  ssh: user@production-server.com:/var/www/html/modx
+
+@staging:
+  ssh: user@staging-server.com:/var/www/html/modx
+
+@dev:
+  ssh: user@dev-server.com:/var/www/html/modx
+
+@local:
+  ssh: localhost:/path/to/local/modx
+
+# Alias groups for running commands on multiple environments
+@all:
+  - @prod
+  - @staging
+  - @dev
+  - @local
+
+@remote:
+  - @prod
+  - @staging
+  - @dev
+
+@testing:
+  - @staging
+  - @dev
+
+# Default options for all commands
+default:
+  color: true
