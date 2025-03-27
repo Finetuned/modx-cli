@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Config;
+<?php
+
+namespace MODX\CLI\Command\Config;
 
 use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Helper\Table;
@@ -15,22 +17,22 @@ class GetList extends BaseCmd
     {
         $instances = $this->getApplication()->instances;
         $all = $instances->getAll();
-        
+
         // Remove the default instance from the list
         $default = null;
         if (isset($all['__default__'])) {
             $default = $all['__default__'];
             unset($all['__default__']);
         }
-        
+
         if (empty($all)) {
             $this->info('No instances configured');
             return 0;
         }
-        
+
         $table = new Table($this->output);
         $table->setHeaders(array('Name', 'Base Path', 'Default'));
-        
+
         foreach ($all as $name => $config) {
             $isDefault = ($default && isset($default['class']) && $default['class'] === $name);
             $table->addRow(array(
@@ -39,9 +41,9 @@ class GetList extends BaseCmd
                 $isDefault ? 'Yes' : 'No',
             ));
         }
-        
+
         $table->render();
-        
+
         return 0;
     }
 }

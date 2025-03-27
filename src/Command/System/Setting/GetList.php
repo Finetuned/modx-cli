@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System\Setting;
+<?php
+
+namespace MODX\CLI\Command\System\Setting;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,7 +61,7 @@ class GetList extends ListProcessor
         if ($column === 'area') {
             return $this->renderObject('modNamespace', $value, 'name');
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

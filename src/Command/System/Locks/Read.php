@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System\Locks;
+<?php
+
+namespace MODX\CLI\Command\System\Locks;
 
 use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Helper\Table;
@@ -43,45 +45,45 @@ class Read extends BaseCmd
     {
         $key = $this->argument('key');
         $format = $this->option('format');
-        
+
         // Get the registry
         $registry = $this->modx->getService('registry', 'registry.modRegistry');
         $registry->addRegister('locks', 'registry.modDbRegister', array('directory' => 'locks'));
         $registry->locks->connect();
-        
+
         // Get the locks
         if ($key) {
             $locks = $registry->locks->read(array($key));
-            
+
             if (empty($locks)) {
                 $this->error("Lock with key '{$key}' not found");
                 return 1;
             }
-            
+
             $locks = array($key => $locks[$key]);
         } else {
             $locks = $registry->locks->read(array(''));
-            
+
             if (empty($locks)) {
                 $this->info('No locks found');
                 return 0;
             }
         }
-        
+
         if ($format === 'json') {
             $this->output->writeln(json_encode($locks, JSON_PRETTY_PRINT));
             return 0;
         }
-        
+
         // Default to table format
         $table = new Table($this->output);
         $table->setHeaders(array('Key', 'User', 'Message', 'Timestamp'));
-        
+
         foreach ($locks as $lockKey => $lockData) {
             $user = '';
             $message = '';
             $timestamp = '';
-            
+
             if (is_array($lockData)) {
                 if (isset($lockData['user'])) {
                     $user = $lockData['user'];
@@ -93,12 +95,12 @@ class Read extends BaseCmd
                     $timestamp = date('Y-m-d H:i:s', $lockData['timestamp']);
                 }
             }
-            
+
             $table->addRow(array($lockKey, $user, $message, $timestamp));
         }
-        
+
         $table->render();
-        
+
         return 0;
     }
 }

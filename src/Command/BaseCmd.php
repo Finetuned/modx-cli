@@ -1,5 +1,6 @@
-<?php namespace MODX\CLI\Command;
+<?php
 
+namespace MODX\CLI\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -195,7 +196,7 @@ abstract class BaseCmd extends Command
         $instance = $this->getApplication()->find($command);
         $arguments['command'] = $command;
 
-        return $instance->run(new ArrayInput($arguments), new NullOutput);
+        return $instance->run(new ArrayInput($arguments), new NullOutput());
     }
 
     /**
@@ -376,7 +377,7 @@ abstract class BaseCmd extends Command
             ),
         );
     }
-    
+
     /**
      * Check if the command is being run in SSH mode
      *
@@ -433,7 +434,7 @@ abstract class BaseCmd extends Command
     {
         $unit = array('b','kb','mb','gb','tb','pb');
         $i = floor(log($bytes, 1024));
-        return @round($bytes / pow(1024, $i), 2).' '.$unit[$i];
+        return @round($bytes / pow(1024, $i), 2) . ' ' . $unit[$i];
     }
 
     /**

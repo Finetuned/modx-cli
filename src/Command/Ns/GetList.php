@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Ns;
+<?php
+
+namespace MODX\CLI\Command\Ns;
 
 use MODX\CLI\Command\ListProcessor;
 

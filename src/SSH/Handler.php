@@ -1,10 +1,12 @@
-<?php namespace MODX\CLI\SSH;
+<?php
+
+namespace MODX\CLI\SSH;
 
 /**
  * Class Handler
- * 
+ *
  * Handles SSH connections and command execution
- * 
+ *
  * @package MODX\CLI\SSH
  */
 class Handler
@@ -16,7 +18,7 @@ class Handler
 
     /**
      * Handler constructor.
-     * 
+     *
      * @param string $connectionString The SSH connection string
      */
     public function __construct($connectionString)
@@ -26,7 +28,7 @@ class Handler
 
     /**
      * Execute a command on the remote server
-     * 
+     *
      * @param string $command The command to execute
      * @param array $args The command arguments
      * @return int The command exit code

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Config;
+<?php
+
+namespace MODX\CLI\Command\Config;
 
 use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -48,35 +50,35 @@ class Edit extends BaseCmd
         $default = $this->option('default');
 
         $instances = $this->getApplication()->instances;
-        
+
         // Check if the instance exists
         $instance = $instances->get($name);
         if (!$instance) {
             $this->error("Instance '{$name}' does not exist");
             return 1;
         }
-        
+
         // Update the instance
         if ($basePath) {
             // Make sure the base path ends with a trailing slash
             if (substr($basePath, -1) !== '/') {
                 $basePath .= '/';
             }
-            
+
             // Check if the MODX instance exists at the given path
             if (!file_exists($basePath . 'config.core.php')) {
                 if (!$this->confirm("No MODX instance found at '{$basePath}'. Do you want to continue?")) {
                     return $this->info('Operation aborted');
                 }
             }
-            
+
             $instance['base_path'] = $basePath;
         }
-        
+
         // Update the instance
         $instances->set($name, $instance);
         $instances->save();
-        
+
         // Set as default if requested
         if ($default) {
             $instances->set('__default__', array(
@@ -87,7 +89,7 @@ class Edit extends BaseCmd
         } else {
             $this->info("Instance '{$name}' updated");
         }
-        
+
         return 0;
     }
 }

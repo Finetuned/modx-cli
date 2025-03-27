@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Context;
+<?php
+
+namespace MODX\CLI\Command\Context;
 
 use MODX\CLI\Command\ListProcessor;
 

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI;
+<?php
+
+namespace MODX\CLI;
 
 use Composer\Script\Event;
 use MODX\CLI\Application;
@@ -32,13 +34,13 @@ abstract class CommandRegistrar
         /** @var Application $app */
         $app = new Application();
         $config = $app->extensions;
-        self::$io->write('Editing extra commands for <info>'.self::getNS().'</info>...');
+        self::$io->write('Editing extra commands for <info>' . self::getNS() . '</info>...');
 
         // First, un-register "deprecated" commands, if any
         static::unRegister($config);
 
         // Iterate the Command folder, looking for command classes
-        self::$io->write("\n".'  - looking for commands to register...');
+        self::$io->write("\n" . '  - looking for commands to register...');
         /** @var \Symfony\Component\Finder\SplFileInfo $file */
         foreach (static::listCommands() as $file) {
             $className = static::getCommandClass($file);
@@ -60,9 +62,9 @@ abstract class CommandRegistrar
      */
     public static function unRegister($config)
     {
-        $deprecated = static::getRootPath() .'/deprecated.php';
+        $deprecated = static::getRootPath() . '/deprecated.php';
         if (file_exists($deprecated)) {
-            self::$io->write("\n".'  - looking for commands to remove...');
+            self::$io->write("\n" . '  - looking for commands to remove...');
             $deprecated = include $deprecated;
             foreach ($deprecated as $class) {
                 self::$unregistered[] = $class;
@@ -102,7 +104,7 @@ abstract class CommandRegistrar
         $name = rtrim($file->getRelativePathname(), '.php');
         $name = str_replace('/', '\\', $name);
 
-        return static::getNS() . '\\'. static::$commandsFolder .'\\' . $name;
+        return static::getNS() . '\\' . static::$commandsFolder . '\\' . $name;
     }
 
     /**

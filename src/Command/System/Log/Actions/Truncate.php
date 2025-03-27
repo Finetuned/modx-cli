@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System\Log\Actions;
+<?php
+
+namespace MODX\CLI\Command\System\Log\Actions;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,14 +41,14 @@ class Truncate extends ProcessorCmd
         if ($age > 0) {
             $properties['age'] = $age;
         }
-        
+
         // Confirm truncation unless --force is used
         if (!$this->option('force')) {
             $message = 'Are you sure you want to truncate all action logs?';
             if ($age > 0) {
                 $message = "Are you sure you want to truncate action logs older than {$age} days?";
             }
-            
+
             if (!$this->confirm($message)) {
                 $this->info('Operation aborted');
                 return false;
@@ -58,13 +60,13 @@ class Truncate extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Action logs truncated successfully');
-            
+
             if (isset($response['total'])) {
                 $this->info('Total logs removed: ' . $response['total']);
             }
         } else {
             $this->error('Failed to truncate action logs');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

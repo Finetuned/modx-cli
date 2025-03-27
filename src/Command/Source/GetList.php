@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Source;
+<?php
+
+namespace MODX\CLI\Command\Source;
 
 use MODX\CLI\Command\ListProcessor;
 
@@ -22,7 +24,7 @@ class GetList extends ListProcessor
             $parts = explode('\\', $value);
             return end($parts);
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

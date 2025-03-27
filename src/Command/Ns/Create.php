@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Ns;
+<?php
+
+namespace MODX\CLI\Command\Ns;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -47,10 +49,10 @@ class Create extends ProcessorCmd
     {
         // Add the name to the properties
         $properties['name'] = $this->argument('name');
-        
+
         // Add options to the properties
         $optionKeys = array('path', 'assets_path');
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -62,13 +64,13 @@ class Create extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Namespace created successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Namespace ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to create namespace');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

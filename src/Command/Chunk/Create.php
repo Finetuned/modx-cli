@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Chunk;
+<?php
+
+namespace MODX\CLI\Command\Chunk;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -77,12 +79,12 @@ class Create extends ProcessorCmd
     {
         // Add the name to the properties
         $properties['name'] = $this->argument('name');
-        
+
         // Add options to the properties
         $optionKeys = array(
             'description', 'category', 'snippet', 'locked', 'static', 'static_file'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -94,13 +96,13 @@ class Create extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Chunk created successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Chunk ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to create chunk');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

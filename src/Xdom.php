@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI;
+<?php
+
+namespace MODX\CLI;
 
 /**
  * A hack from Revo 2.0 having issues with modX::runProcessor
@@ -20,6 +22,6 @@ class Xdom extends \modX
             $count = count($array);
         }
 
-        return '{"total":"'.$count.'","results":'.$this->toJSON($array).',"success": true}';
+        return '{"total":"' . $count . '","results":' . $this->toJSON($array) . ',"success": true}';
     }
 }

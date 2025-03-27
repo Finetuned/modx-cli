@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Command\Package\Provider;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputArgument;
@@ -63,7 +65,7 @@ class PackagesList extends ListProcessor
         if ($column === 'installed') {
             return $value ? 'Yes' : 'No';
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\TV;
+<?php
+
+namespace MODX\CLI\Command\TV;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,16 +43,16 @@ class Remove extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the template variable to display information
         $tv = $this->modx->getObject('modTemplateVar', $id);
         if (!$tv) {
             $this->error("Template variable with ID {$id} not found");
             return false;
         }
-        
+
         $tvName = $tv->get('name');
-        
+
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove template variable '{$tvName}' (ID: {$id})?")) {
@@ -66,7 +68,7 @@ class Remove extends ProcessorCmd
             $this->info('Template variable removed successfully');
         } else {
             $this->error('Failed to remove template variable');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

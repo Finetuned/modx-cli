@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Chunk;
+<?php
+
+namespace MODX\CLI\Command\Chunk;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -80,7 +82,7 @@ class Update extends ProcessorCmd
         $optionKeys = array(
             'name', 'description', 'category', 'snippet', 'locked', 'static', 'static_file'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -92,13 +94,13 @@ class Update extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Chunk updated successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Chunk ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to update chunk');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

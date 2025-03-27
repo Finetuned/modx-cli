@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Chunk;
+<?php
+
+namespace MODX\CLI\Command\Chunk;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,16 +43,16 @@ class Remove extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the chunk to display information
         $chunk = $this->modx->getObject('modChunk', $id);
         if (!$chunk) {
             $this->error("Chunk with ID {$id} not found");
             return false;
         }
-        
+
         $chunkName = $chunk->get('name');
-        
+
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove chunk '{$chunkName}' (ID: {$id})?")) {
@@ -66,7 +68,7 @@ class Remove extends ProcessorCmd
             $this->info('Chunk removed successfully');
         } else {
             $this->error('Failed to remove chunk');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

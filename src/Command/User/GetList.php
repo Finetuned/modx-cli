@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\User;
+<?php
+
+namespace MODX\CLI\Command\User;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputOption;
@@ -68,7 +70,7 @@ class GetList extends ListProcessor
         if ($column === 'active') {
             return $this->renderBoolean($value);
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

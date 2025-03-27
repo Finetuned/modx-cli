@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\User;
+<?php
+
+namespace MODX\CLI\Command\User;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -47,16 +49,16 @@ class ResetPassword extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the user to display information
         $user = $this->modx->getObject('modUser', $id);
         if (!$user) {
             $this->error("User with ID {$id} not found");
             return false;
         }
-        
+
         $username = $user->get('username');
-        
+
         // Generate a password if requested
         if ($this->option('generate')) {
             $password = $this->generatePassword();
@@ -66,11 +68,11 @@ class ResetPassword extends ProcessorCmd
                 $password = $this->secret('Enter new password for user ' . $username . ':');
             }
         }
-        
+
         // Add the password to the properties
         $properties['password'] = $password;
         $properties['passwordnotifymethod'] = 'none';
-        
+
         // Store the password for later display
         $this->password = $password;
     }
@@ -79,13 +81,13 @@ class ResetPassword extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Password reset successfully');
-            
+
             if (isset($this->password)) {
                 $this->info('New password: ' . $this->password);
             }
         } else {
             $this->error('Failed to reset password');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
@@ -103,11 +105,11 @@ class ResetPassword extends ProcessorCmd
     {
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';
         $password = '';
-        
+
         for ($i = 0; $i < $length; $i++) {
             $password .= $chars[rand(0, strlen($chars) - 1)];
         }
-        
+
         return $password;
     }
 }

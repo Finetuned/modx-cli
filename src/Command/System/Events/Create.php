@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System\Events;
+<?php
+
+namespace MODX\CLI\Command\System\Events;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -49,10 +51,10 @@ class Create extends ProcessorCmd
     {
         // Add the name to the properties
         $properties['name'] = $this->argument('name');
-        
+
         // Add options to the properties
         $optionKeys = array('service', 'groupname');
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -64,13 +66,13 @@ class Create extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Event created successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['name'])) {
                 $this->info('Event name: ' . $response['object']['name']);
             }
         } else {
             $this->error('Failed to create event');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

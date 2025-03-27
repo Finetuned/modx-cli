@@ -1,12 +1,14 @@
-<?php namespace MODX\CLI\Configuration\Yaml;
+<?php
+
+namespace MODX\CLI\Configuration\Yaml;
 
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class YamlConfig
- * 
+ *
  * Handles YAML configuration files for the MODX CLI
- * 
+ *
  * @package MODX\CLI\Configuration\Yaml
  */
 class YamlConfig
@@ -49,7 +51,7 @@ class YamlConfig
 
     /**
      * Parse a YAML file
-     * 
+     *
      * @param string $path The path to the YAML file
      * @return array The parsed YAML data
      */
@@ -60,7 +62,7 @@ class YamlConfig
 
     /**
      * Merge new configuration data with existing data
-     * 
+     *
      * @param array $newConfig The new configuration data
      */
     protected function mergeConfig(array $newConfig)
@@ -70,38 +72,38 @@ class YamlConfig
 
     /**
      * Get all aliases defined in the configuration
-     * 
+     *
      * @return array The aliases
      */
     public function getAliases()
     {
         $aliases = [];
-        
+
         foreach ($this->config as $key => $value) {
             if (strpos($key, '@') === 0) {
                 $aliases[substr($key, 1)] = $value;
             }
         }
-        
+
         return $aliases;
     }
 
     /**
      * Get a specific alias definition
-     * 
+     *
      * @param string $name The alias name
      * @return array|null The alias definition, or null if not found
      */
     public function getAlias($name)
     {
         $key = '@' . $name;
-        
+
         return isset($this->config[$key]) ? $this->config[$key] : null;
     }
 
     /**
      * Get all configuration data
-     * 
+     *
      * @return array The configuration data
      */
     public function getAll()
@@ -111,7 +113,7 @@ class YamlConfig
 
     /**
      * Get a specific configuration value
-     * 
+     *
      * @param string $key The configuration key
      * @param mixed $default The default value to return if the key is not found
      * @return mixed The configuration value
@@ -123,7 +125,7 @@ class YamlConfig
 
     /**
      * Get the user's home directory
-     * 
+     *
      * @return string The user's home directory
      */
     protected function getHomeDir()
@@ -132,12 +134,12 @@ class YamlConfig
         if (isset($_SERVER['HOME'])) {
             return $_SERVER['HOME'];
         }
-        
+
         // For Windows
         if (isset($_SERVER['HOMEDRIVE']) && isset($_SERVER['HOMEPATH'])) {
             return $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
         }
-        
+
         // Fallback to the current directory
         return getcwd();
     }
