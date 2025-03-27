@@ -1,0 +1,67 @@
+variables:
+    #MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+    MYSQL_ROOT_PASSWORD: "fake"
+    MYSQL_DATABASE: "app"
+    MYSQL_USER: "user"
+    MYSQL_PASSWORD: "password"
+
+#services:
+#    - mariadb:10.1
+
+image: dock.melt.im/docker/php:7.1-alpine-dev
+
+# Job template to run tests
+.phpunit: &phpunit
+    image: dock.melt.im/docker/php:${CI_BUILD_NAME}-alpine-dev
+    cache:
+        key: "composer-${CI_BUILD_NAME}"
+        paths:
+            - vendor/
+    variables:
+        COMPOSER_ALLOW_SUPERUSER: '1'
+    before_script:
+        - php --version
+        - composer --version
+    script:
+        - composer config -g gitlab-domains git.melting-media.com
+        - composer install --no-interaction --no-progress
+        - composer outdated
+        - vendor/bin/phpunit --version
+        - vendor/bin/phpunit --coverage-text --colors=never
+
+"7.1":
+    <<: *phpunit
+
+"7.0":
+    <<: *phpunit
+
+"5.6":
+    <<: *phpunit
+
+# Template for jobs needed to be run only for "releases"
+.only:
+    only: &only
+        - master
+#        - tags
+#        - triggers
+#        - master@composer/modx-shell
+
+# Reload Satis instance
+composer:
+    stage: deploy
+    only: *only
+    script:
+        - curl --silent -X POST -F token=${TRIGGER_TOKEN} -F "ref=master" -F "variables[NS]=modx/shell" ${TRIGGER}
+
+
+## Mirror to Github repository
+mirror:
+    #image: alpine:latest
+    stage: deploy
+    only: *only
+    services: []
+    before_script:
+        - apk --no-cache add git
+        - git --version
+    script:
+        - git push https://$GITHUB_OAUTH_TOKEN@github.com/meltingmedia/MODX-Shell.git master --tags

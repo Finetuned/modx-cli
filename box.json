@@ -1,0 +1,22 @@
+{
+    "chmod": "0755",
+    "directories": [
+        "src"
+    ],
+    "files": [
+        "LICENSE.md",
+        "README.md",
+        "VERSION"
+    ],
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": ["Tests", "tests", "test"],
+            "in": "vendor"
+        }
+    ],
+    "git-version": "package_version",
+    "main": "bin/modx",
+    "output": "modx-cli.phar",
+    "stub": true
+}
