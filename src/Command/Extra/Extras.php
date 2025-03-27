@@ -1,4 +1,4 @@
-x<?php
+<?php
 
 namespace MODX\CLI\Command\Extra;
 
