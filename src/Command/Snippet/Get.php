@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Snippet;
+<?php
+
+namespace MODX\CLI\Command\Snippet;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Helper\Table;
@@ -53,33 +55,33 @@ class Get extends ProcessorCmd
             $this->error('Snippet not found');
             return;
         }
-        
+
         $snippet = $response['object'];
-        
+
         // Check for both --json flag and --format=json
         if ($this->option('json') || $this->option('format') === 'json') {
             $this->output->writeln(json_encode($snippet, JSON_PRETTY_PRINT));
             return;
         }
-        
+
         // Default to table format
         $table = new Table($this->output);
         $table->setHeaders(array('Property', 'Value'));
-        
+
         // Add basic properties
         $properties = array(
             'id', 'name', 'description', 'category', 'locked', 'static', 'static_file'
         );
-        
+
         foreach ($properties as $property) {
             if (isset($snippet[$property])) {
                 $value = $snippet[$property];
-                
+
                 // Format boolean values
                 if ($property === 'locked' || $property === 'static') {
                     $value = $value ? 'Yes' : 'No';
                 }
-                
+
                 // Format category
                 if ($property === 'category' && !empty($value)) {
                     $category = $this->modx->getObject('modCategory', $value);
@@ -87,19 +89,19 @@ class Get extends ProcessorCmd
                         $value .= ' (' . $category->get('category') . ')';
                     }
                 }
-                
+
                 $table->addRow(array($property, $value));
             }
         }
-        
+
         $table->render();
-        
+
         // Display snippet code separately
         if (isset($snippet['snippet']) && !empty($snippet['snippet'])) {
             $this->output->writeln("\n<info>Snippet Code:</info>");
             $this->output->writeln($snippet['snippet']);
         }
-        
+
         // Display properties if available
         if (isset($snippet['properties']) && !empty($snippet['properties'])) {
             $this->output->writeln("\n<info>Properties:</info>");

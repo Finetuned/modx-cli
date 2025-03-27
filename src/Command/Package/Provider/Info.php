@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Command\Package\Provider;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Helper\Table;
@@ -46,37 +48,37 @@ class Info extends ProcessorCmd
             $this->error('Provider not found');
             return;
         }
-        
+
         $provider = $response['object'];
         $format = $this->option('format');
-        
+
         if ($format === 'json') {
             $this->output->writeln(json_encode($provider, JSON_PRETTY_PRINT));
             return;
         }
-        
+
         // Default to table format
         $table = new Table($this->output);
         $table->setHeaders(array('Property', 'Value'));
-        
+
         // Add basic properties
         $properties = array(
             'id', 'name', 'description', 'service_url', 'username', 'verified'
         );
-        
+
         foreach ($properties as $property) {
             if (isset($provider[$property])) {
                 $value = $provider[$property];
-                
+
                 // Format boolean values
                 if ($property === 'verified') {
                     $value = $value ? 'Yes' : 'No';
                 }
-                
+
                 $table->addRow(array($property, $value));
             }
         }
-        
+
         $table->render();
     }
 }

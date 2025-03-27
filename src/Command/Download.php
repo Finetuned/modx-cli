@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command;
+<?php
+
+namespace MODX\CLI\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -102,7 +104,7 @@ abstract class Download extends BaseCmd
             $version .= '-sdk';
         }
 
-        return $version .'.zip';
+        return $version . '.zip';
     }
 
     /**

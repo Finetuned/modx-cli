@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\TV;
+<?php
+
+namespace MODX\CLI\Command\TV;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -117,7 +119,7 @@ class Update extends ProcessorCmd
             'name', 'caption', 'description', 'category', 'type', 'default_text', 'elements',
             'rank', 'display', 'templates', 'locked', 'static', 'static_file'
         );
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -129,13 +131,13 @@ class Update extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Template variable updated successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Template variable ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to update template variable');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

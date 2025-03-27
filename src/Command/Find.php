@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command;
+<?php
+
+namespace MODX\CLI\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
 

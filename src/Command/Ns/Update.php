@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Ns;
+<?php
+
+namespace MODX\CLI\Command\Ns;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -54,7 +56,7 @@ class Update extends ProcessorCmd
     {
         // Add options to the properties
         $optionKeys = array('name', 'path', 'assets_path');
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -66,13 +68,13 @@ class Update extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('Namespace updated successfully');
-            
+
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Namespace ID: ' . $response['object']['id']);
             }
         } else {
             $this->error('Failed to update namespace');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

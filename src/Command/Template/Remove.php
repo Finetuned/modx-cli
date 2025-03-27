@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Template;
+<?php
+
+namespace MODX\CLI\Command\Template;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,16 +43,16 @@ class Remove extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the template to display information
         $template = $this->modx->getObject('modTemplate', $id);
         if (!$template) {
             $this->error("Template with ID {$id} not found");
             return false;
         }
-        
+
         $templateName = $template->get('templatename');
-        
+
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove template '{$templateName}' (ID: {$id})?")) {
@@ -66,7 +68,7 @@ class Remove extends ProcessorCmd
             $this->info('Template removed successfully');
         } else {
             $this->error('Failed to remove template');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

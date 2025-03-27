@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Resource;
+<?php
+
+namespace MODX\CLI\Command\Resource;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,16 +43,16 @@ class Purge extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         $id = $this->argument('id');
-        
+
         // Get the resource to display information
         $resource = $this->modx->getObject('modResource', $id);
         if (!$resource) {
             $this->error("Resource with ID {$id} not found");
             return false;
         }
-        
+
         $pagetitle = $resource->get('pagetitle');
-        
+
         // Confirm purge unless --force is used
         if (!$this->option('force')) {
             $this->error('WARNING: This operation is irreversible!');
@@ -67,7 +69,7 @@ class Purge extends ProcessorCmd
             $this->info('Resource purged successfully');
         } else {
             $this->error('Failed to purge resource');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

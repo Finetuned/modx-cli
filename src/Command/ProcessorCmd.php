@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command;
+<?php
+
+namespace MODX\CLI\Command;
 
 use Symfony\Component\Console\Input\InputOption;
 
@@ -79,19 +81,19 @@ abstract class ProcessorCmd extends BaseCmd
         if ($response->isError() && isset($response->response['success']) && !$response->response['success']) {
             $errors = $response->getFieldErrors();
             foreach ($errors as $e) {
-                $this->error($e->field .' : '. $e->message);
+                $this->error($e->field . ' : ' . $e->message);
             }
             return 1; // Return non-zero for failure
         }
         $this->response =& $response;
 
         $result = $this->processResponse($this->decodeResponse($response));
-        
+
         // If processResponse() doesn't return anything, return 0 for success
         if ($result === null) {
             return 0;
         }
-        
+
         return $result;
     }
 
@@ -107,7 +109,7 @@ abstract class ProcessorCmd extends BaseCmd
             $this->output->writeln(json_encode($response, JSON_PRETTY_PRINT));
             return 0;
         }
-        
+
         $this->info('Override me to process the processor response');
         return 0; // Return 0 for success
     }
@@ -122,7 +124,6 @@ abstract class ProcessorCmd extends BaseCmd
      */
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
-
     }
 
     /**
@@ -259,7 +260,7 @@ abstract class ProcessorCmd extends BaseCmd
      */
     protected function parseValue($value, $column)
     {
-        $method = 'format'. ucfirst($column);
+        $method = 'format' . ucfirst($column);
         if (method_exists($this, $method)) {
             return $this->$method($value);
         }

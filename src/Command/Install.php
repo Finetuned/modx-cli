@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command;
+<?php
+
+namespace MODX\CLI\Command;
 
 use Melting\MODX\Installer\Installer;
 use Symfony\Component\Console\Input\InputArgument;

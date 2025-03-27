@@ -1,6 +1,7 @@
 <?php
+
 // filepath: /Users/julianweaver/dev/modx/MODX-Shell/src/Mock/PackageManager.php
-<?php
+<  ? php
 
 namespace MODX\CLI\Mock;
 

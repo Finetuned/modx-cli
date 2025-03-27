@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command;
+<?php
+
+namespace MODX\CLI\Command;
 
 use Symfony\Component\Console\Helper\Table;
 
@@ -43,7 +45,7 @@ abstract class ListProcessor extends ProcessorCmd
         if ($this->showPagination) {
             $this->renderPagination($results, $total);
         }
-        
+
         return 0; // Return 0 for success
     }
 
@@ -82,8 +84,8 @@ abstract class ListProcessor extends ProcessorCmd
 
         $table->setRows(array(
             array(
-                'displaying '. count($results) .' item(s)',
-                'of '. $total,
+                'displaying ' . count($results) . ' item(s)',
+                'of ' . $total,
             ),
             array('',''),
         ));

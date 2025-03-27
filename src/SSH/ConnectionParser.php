@@ -1,10 +1,12 @@
-<?php namespace MODX\CLI\SSH;
+<?php
+
+namespace MODX\CLI\SSH;
 
 /**
  * Class ConnectionParser
- * 
+ *
  * Parses SSH connection strings in the format [<user>@]<host>[:<port>][<path>]
- * 
+ *
  * @package MODX\CLI\SSH
  */
 class ConnectionParser
@@ -13,22 +15,22 @@ class ConnectionParser
      * @var string The original connection string
      */
     protected $original;
-    
+
     /**
      * @var string The username for SSH connection
      */
     protected $user;
-    
+
     /**
      * @var string The hostname for SSH connection
      */
     protected $host;
-    
+
     /**
      * @var int The port for SSH connection
      */
     protected $port = 22;
-    
+
     /**
      * @var string The path on the remote server
      */
@@ -36,7 +38,7 @@ class ConnectionParser
 
     /**
      * ConnectionParser constructor.
-     * 
+     *
      * @param string $connectionString The SSH connection string to parse
      */
     public function __construct($connectionString)
@@ -47,7 +49,7 @@ class ConnectionParser
 
     /**
      * Parse the connection string into its components
-     * 
+     *
      * @param string $connectionString The SSH connection string to parse
      */
     protected function parse($connectionString)
@@ -69,7 +71,7 @@ class ConnectionParser
         // Extract host and port
         if (strpos($connectionString, ':') !== false) {
             list($this->host, $connectionString) = explode(':', $connectionString, 2);
-            
+
             // Check if the port is followed by a path
             if (preg_match('/^(\d+)(.*)$/', $connectionString, $matches)) {
                 $this->port = (int) $matches[1];
@@ -94,25 +96,25 @@ class ConnectionParser
 
     /**
      * Check if the given name is an SSH alias defined in ~/.ssh/config
-     * 
+     *
      * @param string $name The name to check
      * @return bool True if the name is an SSH alias, false otherwise
      */
     protected function isSSHAlias($name)
     {
         $sshConfigPath = $this->getHomeDir() . '/.ssh/config';
-        
+
         if (!file_exists($sshConfigPath)) {
             return false;
         }
-        
+
         $config = file_get_contents($sshConfigPath);
         return preg_match('/^\s*Host\s+' . preg_quote($name, '/') . '\s*$/mi', $config) === 1;
     }
 
     /**
      * Get the user's home directory
-     * 
+     *
      * @return string The user's home directory
      */
     protected function getHomeDir()
@@ -121,19 +123,19 @@ class ConnectionParser
         if (isset($_SERVER['HOME'])) {
             return $_SERVER['HOME'];
         }
-        
+
         // For Windows
         if (isset($_SERVER['HOMEDRIVE']) && isset($_SERVER['HOMEPATH'])) {
             return $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
         }
-        
+
         // Fallback to the current directory
         return getcwd();
     }
 
     /**
      * Get the original connection string
-     * 
+     *
      * @return string The original connection string
      */
     public function getOriginal()
@@ -143,7 +145,7 @@ class ConnectionParser
 
     /**
      * Get the username for SSH connection
-     * 
+     *
      * @return string The username
      */
     public function getUser()
@@ -153,7 +155,7 @@ class ConnectionParser
 
     /**
      * Get the hostname for SSH connection
-     * 
+     *
      * @return string The hostname
      */
     public function getHost()
@@ -163,7 +165,7 @@ class ConnectionParser
 
     /**
      * Get the port for SSH connection
-     * 
+     *
      * @return int The port
      */
     public function getPort()
@@ -173,7 +175,7 @@ class ConnectionParser
 
     /**
      * Get the path on the remote server
-     * 
+     *
      * @return string The path
      */
     public function getPath()
@@ -183,7 +185,7 @@ class ConnectionParser
 
     /**
      * Check if this is an SSH config alias
-     * 
+     *
      * @return bool True if this is an SSH config alias, false otherwise
      */
     public function isAlias()
@@ -193,7 +195,7 @@ class ConnectionParser
 
     /**
      * Get the connection string as a string
-     * 
+     *
      * @return string The connection string
      */
     public function __toString()
@@ -201,23 +203,23 @@ class ConnectionParser
         if ($this->isAlias()) {
             return $this->host;
         }
-        
+
         $result = '';
-        
+
         if ($this->user) {
             $result .= $this->user . '@';
         }
-        
+
         $result .= $this->host;
-        
+
         if ($this->port !== 22) {
             $result .= ':' . $this->port;
         }
-        
+
         if ($this->path) {
             $result .= $this->path;
         }
-        
+
         return $result;
     }
 }

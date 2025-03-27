@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Session;
+<?php
+
+namespace MODX\CLI\Command\Session;
 
 use MODX\CLI\Command\ProcessorCmd;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,7 +44,7 @@ class FlushSession extends ProcessorCmd
             $this->info('Sessions flushed successfully');
         } else {
             $this->error('Failed to flush sessions');
-            
+
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

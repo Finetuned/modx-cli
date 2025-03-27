@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI;
+<?php
+
+namespace MODX\CLI;
 
 use Symfony\Component\Console\Application as BaseApp;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -57,7 +59,7 @@ class Application extends BaseApp
         $def->addOption(
             new InputOption('--site', '-s', InputOption::VALUE_OPTIONAL, 'An instance name to execute the command to')
         );
-        
+
         // Add global options from BaseCmd to make them visible in the list command
         $def->addOption(
             new InputOption('--json', null, InputOption::VALUE_NONE, 'Output results in JSON format')
@@ -209,7 +211,7 @@ class Application extends BaseApp
      *
      * @param array $commands
      */
-    protected function loadComponentsCommands(array & $commands = array())
+    protected function loadComponentsCommands(array &$commands = array())
     {
         if ($this->getMODX()) {
             foreach ($this->components->getAll() as $k => $config) {
@@ -305,7 +307,7 @@ class Application extends BaseApp
         if (file_exists($loader)) {
             require_once $loader;
         }
-        
+
         // MODX 3 uses namespaces
         $modxClass = '\\MODX\\Revolution\\modX';
         if (class_exists($modxClass)) {
@@ -398,17 +400,17 @@ class Application extends BaseApp
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $command = $input->getFirstArgument();
-        
+
         // Check for alias
         if ($command && strpos($command, '@') === 0) {
             return $this->runWithAlias($command, $input, $output);
         }
-        
+
         // Check for SSH mode
         if ($input->hasParameterOption('--ssh')) {
             return $this->runInSSHMode($input, $output);
         }
-        
+
         // Normal execution
         return parent::doRun($input, $output);
     }
@@ -426,20 +428,20 @@ class Application extends BaseApp
     {
         $config = new YamlConfig();
         $resolver = new Resolver($config);
-        
+
         try {
             $aliasDef = $resolver->resolveAlias($alias);
-            
+
             // Handle alias group
             if ($resolver->isAliasGroup($aliasDef)) {
                 return $this->runWithAliasGroup($aliasDef, $input, $output);
             }
-            
+
             // Handle SSH alias
             if (isset($aliasDef['ssh'])) {
                 return $this->runWithSSH($aliasDef['ssh'], $input, $output);
             }
-            
+
             throw new \Exception("Unsupported alias type.");
         } catch (\Exception $e) {
             $output->writeln("<error>" . $e->getMessage() . "</error>");
@@ -460,21 +462,21 @@ class Application extends BaseApp
     {
         $resolver = new Resolver(new YamlConfig());
         $exitCode = 0;
-        
+
         foreach ($group as $memberAlias) {
             // Skip the first argument (the group alias) and replace with member alias
             $args = $_SERVER['argv'];
             $args[1] = $memberAlias;
-            
+
             // Create new input with the member alias
             $newInput = new ArgvInput($args);
             $newInput->setInteractive($input->isInteractive());
-            
+
             // Run the command with the member alias
             $code = $this->doRun($newInput, $output);
             $exitCode = max($exitCode, $code);
         }
-        
+
         return $exitCode;
     }
 
@@ -491,10 +493,10 @@ class Application extends BaseApp
         // Parse connection string
         $sshString = $input->getParameterOption('--ssh');
         $handler = new Handler($sshString);
-        
+
         // Get command and args
         $args = $_SERVER['argv'];
-        
+
         // Remove script name, --ssh option and its value
         array_shift($args);
         $sshIndex = array_search('--ssh', $args);
@@ -511,15 +513,15 @@ class Application extends BaseApp
                 }
             }
         }
-        
+
         $args = array_values($args);
         $command = !empty($args) ? array_shift($args) : null;
-        
+
         if (!$command) {
             $output->writeln("<error>No command specified.</error>");
             return 1;
         }
-        
+
         return $handler->execute($command, $args);
     }
 
@@ -536,19 +538,19 @@ class Application extends BaseApp
     {
         // Similar to runInSSHMode but uses the SSH string from the alias
         $handler = new Handler($sshString);
-        
+
         // Get command and args (excluding the alias)
         $args = $_SERVER['argv'];
         array_shift($args); // Remove script name
         array_shift($args); // Remove alias
-        
+
         $command = !empty($args) ? array_shift($args) : null;
-        
+
         if (!$command) {
             $output->writeln("<error>No command specified.</error>");
             return 1;
         }
-        
+
         return $handler->execute($command, $args);
     }
 }

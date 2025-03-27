@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System;
+<?php
+
+namespace MODX\CLI\Command\System;
 
 use MODX\CLI\Command\ProcessorCmd;
 
@@ -16,7 +18,7 @@ class RefreshURIs extends ProcessorCmd
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('URIs refreshed successfully');
-            
+
             if (isset($response['total'])) {
                 $this->info('Total resources processed: ' . $response['total']);
             }

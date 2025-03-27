@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\System\Log\Actions;
+<?php
+
+namespace MODX\CLI\Command\System\Log\Actions;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputOption;
@@ -62,7 +64,7 @@ class GetList extends ListProcessor
     {
         // Add filters based on options
         $optionKeys = array('user', 'action', 'classKey', 'item', 'dateStart', 'dateEnd');
-        
+
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
@@ -75,11 +77,11 @@ class GetList extends ListProcessor
         if ($column === 'occurred') {
             return date('Y-m-d H:i:s', strtotime($value));
         }
-        
+
         if ($column === 'user') {
             return $this->renderObject('modUser', $value, 'username');
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

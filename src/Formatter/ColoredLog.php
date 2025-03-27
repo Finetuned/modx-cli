@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Formatter;
+<?php
+
+namespace MODX\CLI\Formatter;
 
 /**
  * A formatter to display log entries with colors
@@ -41,10 +43,10 @@ class ColoredLog
     {
         $level = strtoupper($entry['level']);
         $color = $this->getColorForLevel($level);
-        
+
         $timestamp = isset($entry['timestamp']) ? date('Y-m-d H:i:s', $entry['timestamp']) : date('Y-m-d H:i:s');
         $message = isset($entry['message']) ? $entry['message'] : '';
-        
+
         return sprintf(
             "%s [%s%s%s] %s",
             $timestamp,

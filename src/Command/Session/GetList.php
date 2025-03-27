@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Session;
+<?php
+
+namespace MODX\CLI\Command\Session;
 
 use MODX\CLI\Command\ListProcessor;
 
@@ -22,7 +24,7 @@ class GetList extends ListProcessor
                 return date('Y-m-d H:i:s', $value);
             }
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

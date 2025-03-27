@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Registry\Topic;
+<?php
+
+namespace MODX\CLI\Command\Registry\Topic;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,7 +44,7 @@ class GetList extends ListProcessor
         if ($column === 'created') {
             return date('Y-m-d H:i:s', strtotime($value));
         }
-        
+
         return parent::parseValue($value, $column);
     }
 }

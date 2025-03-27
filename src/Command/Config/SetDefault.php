@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Config;
+<?php
+
+namespace MODX\CLI\Command\Config;
 
 use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,21 +28,21 @@ class SetDefault extends BaseCmd
     {
         $name = $this->argument('name');
         $instances = $this->getApplication()->instances;
-        
+
         // Check if the instance exists
         if (!$instances->get($name)) {
             $this->error("Instance '{$name}' does not exist");
             return 1;
         }
-        
+
         // Set the instance as default
         $instances->set('__default__', array(
             'class' => $name,
         ));
         $instances->save();
-        
+
         $this->info("Instance '{$name}' set as default");
-        
+
         return 0;
     }
 }

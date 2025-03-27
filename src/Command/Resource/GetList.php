@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Command\Resource;
+<?php
+
+namespace MODX\CLI\Command\Resource;
 
 use MODX\CLI\Command\ListProcessor;
 use Symfony\Component\Console\Input\InputOption;
