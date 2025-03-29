@@ -14,6 +14,7 @@ use Symfony\Component\Finder\Finder;
 use MODX\CLI\SSH\Handler;
 use MODX\CLI\Alias\Resolver;
 use MODX\CLI\Configuration\Yaml\YamlConfig;
+use MODX\CLI\API\MODX_CLI;
 
 /**
  * MODX CLI application
@@ -86,8 +87,23 @@ class Application extends BaseApp
         $this->loadExtraCommands($commands);
         // Commands registered in the modX instance we are dealing with
         $this->loadComponentsCommands($commands);
+        // Commands registered via the internal API
+        $this->loadInternalAPICommands($commands);
 
         return $commands;
+    }
+
+    /**
+     * Load commands registered via the internal API
+     *
+     * @param array $commands
+     */
+    protected function loadInternalAPICommands(array &$commands = array())
+    {
+        // Add commands from the CommandRegistry
+        foreach (MODX_CLI::get_commands() as $command) {
+            $commands[] = $command;
+        }
     }
 
     /**
