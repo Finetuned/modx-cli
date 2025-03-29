@@ -1,4 +1,4 @@
-Create an internal api based on the WP-CLI Internal API for Wordpress. 
+ sequenceCreate an internal api based on the WP-CLI Internal API for Wordpress. 
 
 High Level Definition of the WP-CLI Internal API 
 
@@ -534,3 +534,64 @@ The MODX CLI Internal API has been successfully implemented with the following c
    - Developers can create packages that register custom commands with MODX CLI
 
 This implementation completes Task 9 from the project roadmap, providing a powerful extension mechanism for the MODX CLI that follows the patterns established by WP-CLI while maintaining compatibility with the existing MODX CLI architecture.
+
+## Unit Test Plan
+
+The unit tests for the MODX CLI Internal API follow this plan:
+
+1. **API Component Tests**:
+   - Create test files for each API component in the `tests/API` directory
+   - Test the functionality of each component in isolation
+   - Use mocks to simulate dependencies and external systems
+   - Cover both success and error cases
+
+2. **Test Structure**:
+   - `CommandRegistryTest.php`: Test command registration, unregistration, and retrieval
+   - `HookRegistryTest.php`: Test hook registration, unregistration, and execution
+   - `ClosureCommandTest.php`: Test closure command execution and hook integration
+   - `CommandRunnerTest.php`: Test running commands programmatically with various options
+   - `CommandPublisherTest.php`: Test asynchronous command execution
+   - `MODX_CLITest.php`: Test the static API methods
+
+3. **Run-Sequence Command Tests**:
+   - Create a test file for the run-sequence command in the `tests/Command` directory
+   - Test various command set configurations
+   - Test error handling and result collection
+   - Test CRUD operations on different MODX elements
+
+4. **Test Documentation**:
+   - Create a README file for the tests to explain how to run them and what they test
+   - Include guidelines for writing tests and mocking dependencies
+
+## Unit Test Summary
+
+The unit tests for the MODX CLI Internal API have been successfully implemented with the following components:
+
+1. **API Component Tests**:
+   - Created test files for each API component:
+     - `CommandRegistryTest.php`: Tests for command registration and retrieval
+     - `HookRegistryTest.php`: Tests for hook registration and execution
+     - `ClosureCommandTest.php`: Tests for closure command execution
+     - `CommandRunnerTest.php`: Tests for running commands programmatically
+     - `CommandPublisherTest.php`: Tests for asynchronous command execution
+     - `MODX_CLITest.php`: Tests for the static API methods
+
+2. **Key Test Features**:
+   - Comprehensive coverage of API functionality
+   - Isolation of components using mocks
+   - Testing of both success and error cases
+   - Verification of hook integration
+   - Testing of asynchronous execution
+
+3. **Run-Sequence Command Tests**:
+   - Created `RunSequenceTest.php` to test the run-sequence command
+   - Implemented tests for various command set configurations
+   - Added tests for CRUD operations on different MODX elements
+   - Tested error handling and result collection
+
+4. **Test Documentation**:
+   - Created a README file for the tests to explain how to run them and what they test
+   - Included guidelines for writing tests and mocking dependencies
+   - Provided examples of how to mock static methods and dependencies
+
+These tests ensure the reliability and correctness of the MODX CLI Internal API and provide a foundation for future development. They also serve as documentation for how the API should be used and what behavior is expected.

@@ -10,6 +10,9 @@
 - User management commands
 - Resource commands
 - JSON output for all commands via the --json option
+- SSH functionality and aliases for remote command execution
+- Internal API for extending and customizing the CLI
+- Unit tests for core components and the internal API
 
 ## What's left to build
 
@@ -24,7 +27,7 @@
 
 ## Current status
 
-The project is around 25-30% complete. The basic structure and many core commands are implemented and working, but there are still several features to add and improvements to make.
+The project is around 35-40% complete. The basic structure, many core commands, SSH functionality, and the internal API are implemented and working. Unit tests have been created for most components, including the internal API. There are still several features to add and improvements to make, but the project is making good progress.
 
 ## Known issues
 

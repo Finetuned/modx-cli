@@ -10,6 +10,7 @@ The MODX CLI follows a command-based architecture pattern where each command is 
 2. **CommandRegistrar**: Responsible for discovering and registering available commands.
 3. **Commands**: Individual command classes that implement specific functionality.
 4. **Configuration**: Classes that handle configuration management for the CLI.
+5. **Internal API**: A set of classes that provide an API for extending and customizing the CLI.
 
 ## Key technical decisions
 
@@ -44,6 +45,25 @@ The MODX CLI follows a command-based architecture pattern where each command is 
 8. **Alias → Configuration**: Alias classes use Configuration classes to read alias definitions from YAML files.
 9. **SSH → Process**: SSH classes use Symfony Process to execute commands on remote servers.
 
+## Internal API Architecture
+
+The Internal API follows a modular design pattern inspired by WP-CLI's internal API. It provides a set of classes for extending and customizing the CLI:
+
+1. **MODX_CLI**: A static class that provides the main entry point for the API, with methods for registering commands, running commands programmatically, and hooking into the command lifecycle.
+2. **CommandRegistry**: Manages the registration and retrieval of commands.
+3. **HookRegistry**: Manages the registration and execution of hooks.
+4. **CommandRunner**: Handles running commands programmatically with various options.
+5. **CommandPublisher**: Provides asynchronous command execution using a pub/sub pattern.
+6. **ClosureCommand**: Wraps closures as commands that can be executed by the CLI.
+
+### Key Features:
+
+1. **Command Registration**: Register custom commands using closures or classes.
+2. **Command Execution**: Run commands programmatically with various options.
+3. **Hook System**: Register hooks to run before or after commands.
+4. **Asynchronous Execution**: Run commands asynchronously using the CommandPublisher.
+5. **Logging**: Log messages, warnings, errors, and success messages.
+
 ### Class Hierarchy:
 
 ```
@@ -75,6 +95,13 @@ Application
 │   ├── ConnectionParser
 │   ├── CommandProxy
 │   └── Handler
-└── Alias
-    └── Resolver
+├── Alias
+│   └── Resolver
+└── API
+    ├── MODX_CLI
+    ├── CommandRegistry
+    ├── HookRegistry
+    ├── CommandRunner
+    ├── CommandPublisher
+    └── ClosureCommand
 ```

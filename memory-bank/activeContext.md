@@ -74,6 +74,8 @@
   - Implemented a `run-sequence` command as the first custom command using the internal API
   - Created comprehensive documentation in `docs/internal-api.md`
   - Added an example file in `examples/custom-commands.php` to demonstrate how to use the internal API
+  - Created unit tests for all API components and the run-sequence command
+  - Added a README file for the tests to explain how to run them and what they test
 
 - Implement self-update functionality
 - Add TAB completions
