@@ -68,7 +68,13 @@
 - Fix remaining test failures in ComponentTest.php:
   - Errors related to missing MODX classes (modX)
   
-- Add an internal API like WP-CLI
+- ✅ Add an internal API like WP-CLI:
+  - Created a set of classes in the `src/API` directory to implement the internal API
+  - Added a static `MODX_CLI` class with methods for registering commands, running commands programmatically, and hooking into the command lifecycle
+  - Implemented a `run-sequence` command as the first custom command using the internal API
+  - Created comprehensive documentation in `docs/internal-api.md`
+  - Added an example file in `examples/custom-commands.php` to demonstrate how to use the internal API
+
 - Implement self-update functionality
 - Add TAB completions
 - Add missing CRUD commands for context and source

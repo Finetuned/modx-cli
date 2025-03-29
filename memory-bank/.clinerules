@@ -46,3 +46,13 @@
 - Provide clear error messages
 - Log errors at appropriate levels
 - Return appropriate exit codes from commands
+
+## Internal API Usage
+
+- Use the MODX_CLI static class for registering custom commands
+- Follow the WP-CLI style for command registration and hooks
+- Use closures for simple commands and classes for complex commands
+- Provide descriptive names and documentation for custom commands
+- Use hooks sparingly and only when necessary
+- Return appropriate exit codes from commands (0 for success, non-zero for failure)
+- Use the CommandPublisher for asynchronous command execution

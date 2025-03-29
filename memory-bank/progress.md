@@ -16,7 +16,7 @@
 - ✅ Add a --json option to all commands that return data
 - ✅ Add --ssh functionality like the WP-CLI
 - ✅ Standardize command naming convention (`:getlist` to `:list`)
-- Add an internal API like WP-CLI
+- ✅ Add an internal API like WP-CLI
 - Implement self-update functionality
 - Add TAB completions
 - Add missing CRUD commands for context and source
