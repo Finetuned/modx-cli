@@ -467,3 +467,70 @@ wp run-sequence \--command\_sets='{
    }
 
 }'
+
+---
+
+## Implementation Plan
+
+The implementation of the MODX CLI Internal API follows this plan:
+
+1. **Core API Classes**:
+   - Create a set of classes in the `src/API` directory to implement the internal API
+   - Implement a static `MODX_CLI` class with methods for registering commands, running commands programmatically, and hooking into the command lifecycle
+   - Create supporting classes for command registration, hook management, and command execution
+
+2. **Class Structure**:
+   - `MODX_CLI`: Main static class that provides the public API
+   - `CommandRegistry`: Manages command registration and retrieval
+   - `HookRegistry`: Manages hook registration and execution
+   - `CommandRunner`: Handles running commands programmatically
+   - `CommandPublisher`: Provides asynchronous command execution
+   - `ClosureCommand`: Wraps closures as commands
+   - `HookableCommand`: Interface for commands that support hooks
+
+3. **Integration with Existing Codebase**:
+   - Update the `Application` class to use the `CommandRegistry` for command registration
+   - Add a method to load commands registered via the internal API
+   - Ensure compatibility with existing command classes
+
+4. **Run-Sequence Command**:
+   - Implement a `run-sequence` command as the first custom command using the internal API
+   - Support both synchronous and asynchronous execution
+   - Provide options for error handling, data collection, and result formatting
+
+5. **Documentation**:
+   - Create comprehensive documentation in `docs/internal-api.md`
+   - Add an example file in `examples/custom-commands.php` to demonstrate how to use the internal API
+   - Update memory bank files to reflect the new functionality
+
+## Implementation Summary
+
+The MODX CLI Internal API has been successfully implemented with the following components:
+
+1. **Core API Classes**:
+   - Created a set of classes in the `src/API` directory to implement the internal API
+   - Implemented a static `MODX_CLI` class with methods for registering commands, running commands programmatically, and hooking into the command lifecycle
+   - Created supporting classes for command registration, hook management, and command execution
+
+2. **Key Features**:
+   - Command Registration: Register custom commands using closures or classes
+   - Command Execution: Run commands programmatically with various options
+   - Hook System: Register hooks to run before or after commands
+   - Asynchronous Execution: Run commands asynchronously using the CommandPublisher
+   - Logging: Log messages, warnings, errors, and success messages
+
+3. **Run-Sequence Command**:
+   - Implemented a `run-sequence` command as the first custom command using the internal API
+   - Supports both synchronous and asynchronous execution
+   - Provides options for error handling, data collection, and result formatting
+
+4. **Documentation and Examples**:
+   - Created comprehensive documentation in `docs/internal-api.md`
+   - Added an example file in `examples/custom-commands.php` to demonstrate how to use the internal API
+   - Updated memory bank files to reflect the new functionality
+
+5. **Third-Party Integration**:
+   - Designed the API to be easily integrated with third-party packages
+   - Developers can create packages that register custom commands with MODX CLI
+
+This implementation completes Task 9 from the project roadmap, providing a powerful extension mechanism for the MODX CLI that follows the patterns established by WP-CLI while maintaining compatibility with the existing MODX CLI architecture.
