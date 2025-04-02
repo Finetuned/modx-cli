@@ -94,7 +94,7 @@ class CommandPublisher
      */
     private function executeAsync(string $command, callable $callback): callable
     {
-        return function() use ($command, $callback) {
+        return function () use ($command, $callback) {
             \MODX\CLI\API\MODX_CLI::log("Running command asynchronously: modx $command");
 
             $result = \MODX\CLI\API\MODX_CLI::run_command($command, [], [

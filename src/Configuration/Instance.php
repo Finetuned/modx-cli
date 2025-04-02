@@ -124,7 +124,7 @@ class Instance extends Base
 
     /**
      * Format configuration data as INI string
-     * 
+     *
      * @return string
      */
     public function formatConfigurationData()

@@ -37,7 +37,7 @@ class CommandRegistry
 
         // Create command instance
         $command = $this->createCommand($name, $callable, $args);
-        
+
         // Store command
         $this->commands[$name] = [
             'callable' => $callable,
@@ -74,7 +74,7 @@ class CommandRegistry
     {
         if (isset($this->commands[$name])) {
             $command = $this->commands[$name];
-            
+
             // If command is deferred, create it now
             if ($command['deferred']) {
                 $instance = $this->createCommand($name, $command['callable'], $command['args']);
@@ -82,7 +82,7 @@ class CommandRegistry
                 $this->commands[$name]['deferred'] = false;
                 return $instance;
             }
-            
+
             return $command['instance'];
         }
         return null;
@@ -107,7 +107,7 @@ class CommandRegistry
     public function getAll()
     {
         $commands = [];
-        
+
         foreach ($this->commands as $name => $command) {
             // If command is deferred, create it now
             if ($command['deferred']) {
@@ -119,7 +119,7 @@ class CommandRegistry
                 $commands[] = $command['instance'];
             }
         }
-        
+
         return $commands;
     }
 
@@ -154,31 +154,31 @@ class CommandRegistry
             if ($command->getName() !== $name) {
                 $command->setName($name);
             }
-            
+
             // Set description
             if (!empty($args['shortdesc'])) {
                 $command->setDescription($args['shortdesc']);
             }
-            
+
             // Set help text
             if (!empty($args['longdesc'])) {
                 $command->setHelp($args['longdesc']);
             }
-            
+
             // Set hooks
             if ($command instanceof HookableCommand) {
                 if (!empty($args['before_invoke'])) {
                     $command->setBeforeInvoke($args['before_invoke']);
                 }
-                
+
                 if (!empty($args['after_invoke'])) {
                     $command->setAfterInvoke($args['after_invoke']);
                 }
             }
-            
+
             return $command;
         }
-        
+
         throw new \Exception("Failed to create command instance for '$name'");
     }
 }
