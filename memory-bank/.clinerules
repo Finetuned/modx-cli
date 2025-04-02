@@ -56,3 +56,6 @@
 - Use hooks sparingly and only when necessary
 - Return appropriate exit codes from commands (0 for success, non-zero for failure)
 - Use the CommandPublisher for asynchronous command execution
+- Hook names should use a colon separator (e.g., "before_invoke:command" not "before_invoke_command")
+- CommandRunner should return 0 for success when the 'return' option is not set
+- When using the 'return' option, CommandRunner returns a result object with stdout, stderr, and return_code properties
