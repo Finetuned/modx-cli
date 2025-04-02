@@ -150,6 +150,11 @@ class CommandRegistry
 
         // Set command properties
         if ($command instanceof Command) {
+            // Set name if it's different from the default
+            if ($command->getName() !== $name) {
+                $command->setName($name);
+            }
+            
             // Set description
             if (!empty($args['shortdesc'])) {
                 $command->setDescription($args['shortdesc']);

@@ -37,7 +37,7 @@ class HookRegistry
      * @param callable|null $callback The callback to unregister (null to unregister all)
      * @return bool True if hook was unregistered, false if it didn't exist
      */
-    public function unregister($name, callable $callback = null)
+    public function unregister($name, ?callable $callback = null)
     {
         if (!isset($this->hooks[$name])) {
             return false;
