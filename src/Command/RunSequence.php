@@ -42,6 +42,20 @@ class RunSequence extends BaseCmd
             ]
         ]);
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    protected function getArguments()
+    {
+        return array_merge(parent::getArguments(), [
+            [
+                'command',
+                \Symfony\Component\Console\Input\InputArgument::OPTIONAL,
+                'The command to execute'
+            ]
+        ]);
+    }
 
     /**
      * {@inheritdoc}
@@ -52,7 +66,8 @@ class RunSequence extends BaseCmd
         $command_sets = json_decode($this->option('command_sets') ?? '{}', true);
         
         if (empty($command_sets)) {
-            return $this->error("No command sets provided. Pass them as a JSON string using --command_sets.");
+            $this->error("No command sets provided. Pass them as a JSON string using --command_sets.");
+            return 1;
         }
         
         // Iterate over each command set
