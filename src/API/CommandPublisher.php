@@ -38,8 +38,7 @@ class CommandPublisher
 
         // Start all processes
         foreach ($this->subscribers as $index => $subscriber) {
-            $cmdString = 'modx ' . $subscriber['command'];
-            $process = new Process(explode(' ', $cmdString));
+            $process = $this->createProcess($subscriber['command']);
             $process->start();
             $processes[$index] = $process;
             $callbacks[$index] = $subscriber['callback'];
@@ -72,6 +71,18 @@ class CommandPublisher
             // Small delay to prevent CPU hogging
             usleep(100000); // 100ms
         }
+    }
+
+    /**
+     * Create a process for a command
+     *
+     * @param string $command The command to execute
+     * @return Process The process instance
+     */
+    protected function createProcess(string $command): Process
+    {
+        $cmdString = 'modx ' . $command;
+        return new Process(explode(' ', $cmdString));
     }
 
     /**

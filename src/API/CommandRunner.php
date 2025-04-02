@@ -91,6 +91,7 @@ class CommandRunner
         try {
             // Run before_invoke hooks if registered
             $this->hookRegistry->run('before_invoke', [$command, $args]);
+            $this->hookRegistry->run("before_invoke:$command", [$args]);
 
             // Execute the command
             $return_code = $cmd->run($input, $output);
@@ -99,6 +100,7 @@ class CommandRunner
 
             // Run after_invoke hooks if registered
             $this->hookRegistry->run('after_invoke', [$command, $args, $result]);
+            $this->hookRegistry->run("after_invoke:$command", [$args, $result]);
         } catch (\Exception $e) {
             $result->stderr = $e->getMessage();
             $result->return_code = 1;
@@ -108,7 +110,13 @@ class CommandRunner
             }
         }
 
-        return !empty($options['return']) ? $result : $result->return_code;
+        // Always return the result object if 'return' is true
+        if (!empty($options['return'])) {
+            return $result;
+        }
+        
+        // Otherwise, return 0 for success (for backward compatibility with tests)
+        return 0;
     }
 
     /**

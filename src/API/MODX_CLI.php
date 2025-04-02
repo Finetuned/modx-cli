@@ -179,7 +179,7 @@ class MODX_CLI
      */
     public static function before_invoke($command, $callback)
     {
-        return self::getInstance()->hookRegistry->register("before_invoke_{$command}", $callback);
+        return self::getInstance()->hookRegistry->register("before_invoke:{$command}", $callback);
     }
 
     /**
@@ -191,7 +191,7 @@ class MODX_CLI
      */
     public static function after_invoke($command, $callback)
     {
-        return self::getInstance()->hookRegistry->register("after_invoke_{$command}", $callback);
+        return self::getInstance()->hookRegistry->register("after_invoke:{$command}", $callback);
     }
 
     /**
@@ -213,7 +213,7 @@ class MODX_CLI
      */
     public static function success($message)
     {
-        echo "\033[32m" . $message . "\033[0m" . PHP_EOL;
+        echo "\033[32mSuccess: " . $message . "\033[0m" . PHP_EOL;
     }
 
     /**
@@ -224,7 +224,7 @@ class MODX_CLI
      */
     public static function warning($message)
     {
-        echo "\033[33m" . $message . "\033[0m" . PHP_EOL;
+        echo "\033[33mWarning: " . $message . "\033[0m" . PHP_EOL;
     }
 
     /**
@@ -235,7 +235,7 @@ class MODX_CLI
      */
     public static function error($message)
     {
-        echo "\033[31m" . $message . "\033[0m" . PHP_EOL;
+        echo "\033[31mError: " . $message . "\033[0m" . PHP_EOL;
     }
 
     /**
