@@ -63,12 +63,12 @@ class CommandRunner
             if (!empty($options['exit_error'])) {
                 throw $e;
             }
-            
+
             $result = new \stdClass();
             $result->stdout = '';
             $result->stderr = $e->getMessage();
             $result->return_code = 1;
-            
+
             return !empty($options['return']) ? $result : $result->return_code;
         }
 
@@ -114,7 +114,7 @@ class CommandRunner
         if (!empty($options['return'])) {
             return $result;
         }
-        
+
         // Otherwise, return 0 for success (for backward compatibility with tests)
         return 0;
     }

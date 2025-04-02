@@ -32,26 +32,26 @@ class ClosureCommand extends Command implements HookableCommand
  * @param string $name The command name
  * @param callable $closure The closure to execute
  */
-public function __construct($name, callable $closure)
-{
-    parent::__construct($name);
-    $this->closure = $closure;
-    $this->configure();
-}
+    public function __construct($name, callable $closure)
+    {
+        parent::__construct($name);
+        $this->closure = $closure;
+        $this->configure();
+    }
 
 /**
  * Configure the command
  */
-protected function configure()
-{
-    parent::configure();
-    
-    // Check if the 'command' argument already exists
-    $definition = $this->getDefinition();
-    if (!$definition->hasArgument('command')) {
-        $this->addArgument('command', \Symfony\Component\Console\Input\InputArgument::OPTIONAL, 'The command to execute');
+    protected function configure()
+    {
+        parent::configure();
+
+        // Check if the 'command' argument already exists
+        $definition = $this->getDefinition();
+        if (!$definition->hasArgument('command')) {
+            $this->addArgument('command', \Symfony\Component\Console\Input\InputArgument::OPTIONAL, 'The command to execute');
+        }
     }
-}
 
     /**
      * Set the before invoke hook

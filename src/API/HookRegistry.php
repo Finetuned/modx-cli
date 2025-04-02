@@ -24,9 +24,9 @@ class HookRegistry
         if (!isset($this->hooks[$name])) {
             $this->hooks[$name] = [];
         }
-        
+
         $this->hooks[$name][] = $callback;
-        
+
         return true;
     }
 
@@ -42,30 +42,30 @@ class HookRegistry
         if (!isset($this->hooks[$name])) {
             return false;
         }
-        
+
         if ($callback === null) {
             // Unregister all callbacks for this hook
             unset($this->hooks[$name]);
             return true;
         }
-        
+
         // Find and remove the specific callback
         foreach ($this->hooks[$name] as $i => $registeredCallback) {
             if ($registeredCallback === $callback) {
                 unset($this->hooks[$name][$i]);
-                
+
                 // Reindex the array
                 $this->hooks[$name] = array_values($this->hooks[$name]);
-                
+
                 // Remove the hook entirely if no callbacks remain
                 if (empty($this->hooks[$name])) {
                     unset($this->hooks[$name]);
                 }
-                
+
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -111,13 +111,13 @@ class HookRegistry
     public function run($name, array $args = [])
     {
         $results = [];
-        
+
         if (isset($this->hooks[$name])) {
             foreach ($this->hooks[$name] as $callback) {
                 $results[] = call_user_func_array($callback, $args);
             }
         }
-        
+
         return $results;
     }
 }

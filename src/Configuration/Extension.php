@@ -27,7 +27,7 @@ class Extension extends Base
         if (isset($this->items[$key])) {
             return $this->items[$key];
         }
-        
+
         // Check if the value exists in the array
         if (in_array($key, $this->items)) {
             return $key;
@@ -45,17 +45,17 @@ class Extension extends Base
         if (in_array($key, $this->items)) {
             return;
         }
-        
+
         // If value is null, add the key as a value
         if ($value === null) {
             $this->items[] = $key;
             return;
         }
-        
+
         // Otherwise use the parent implementation
         parent::set($key, $value);
     }
-    
+
     /**
      * Override remove method to handle array values
      */
@@ -63,7 +63,7 @@ class Extension extends Base
     {
         // First try to remove as a key (parent implementation)
         parent::remove($key);
-        
+
         // Then check if it exists as a value in the array
         $index = array_search($key, $this->items);
         if ($index !== false) {
