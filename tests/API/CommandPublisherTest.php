@@ -63,25 +63,20 @@ class CommandPublisherTest extends TestCase
             return $result;
         };
         
-        // Create a mock for Process class that we can inject
+        // Create a mock for Process class
         $processMock = $this->createMock(Process::class);
         $processMock->method('isRunning')->willReturn(false);
         $processMock->method('isSuccessful')->willReturn(true);
         $processMock->method('getOutput')->willReturn('Command output');
         
-        // Create a test subclass of CommandPublisher that overrides process creation
-        $publisher = new class($processMock) extends CommandPublisher {
-            private $processMock;
-            
-            public function __construct($processMock) {
-                $this->processMock = $processMock;
-                parent::__construct();
-            }
-            
-            protected function createProcess($command) {
-                return $this->processMock;
-            }
-        };
+        // Create a mock for CommandPublisher
+        $publisher = $this->getMockBuilder(CommandPublisher::class)
+            ->onlyMethods(['createProcess'])
+            ->getMock();
+        
+        // Configure the mock to return our process mock
+        $publisher->method('createProcess')
+            ->willReturn($processMock);
         
         // Add a subscriber
         $publisher->publish('test:command', $callback);
@@ -109,26 +104,20 @@ class CommandPublisherTest extends TestCase
             return $result;
         };
         
-        // Create a mock for Process class that we can inject
+        // Create a mock for Process class
         $processMock = $this->createMock(Process::class);
         $processMock->method('isRunning')->willReturn(false);
         $processMock->method('isSuccessful')->willReturn(false);
         $processMock->method('getErrorOutput')->willReturn('Command error');
         
-        // Create a test subclass of CommandPublisher that overrides process creation
-        $publisher = new class($processMock) extends CommandPublisher {
-            private $processMock;
-            
-            public function __construct($processMock) {
-                $this->processMock = $processMock;
-                parent::__construct();
-            }
-            
-            // Override the Process creation
-            protected function createProcess($command) {
-                return $this->processMock;
-            }
-        };
+        // Create a mock for CommandPublisher
+        $publisher = $this->getMockBuilder(CommandPublisher::class)
+            ->onlyMethods(['createProcess'])
+            ->getMock();
+        
+        // Configure the mock to return our process mock
+        $publisher->method('createProcess')
+            ->willReturn($processMock);
         
         // Add a subscriber
         $publisher->publish('test:command', $callback);
@@ -163,7 +152,7 @@ class CommandPublisherTest extends TestCase
             }
         ];
         
-        // Create mocks for Process class that we can inject
+        // Create mocks for Process class
         $processMock1 = $this->createMock(Process::class);
         $processMock1->method('isRunning')->willReturn(false);
         $processMock1->method('isSuccessful')->willReturn(true);
@@ -174,24 +163,15 @@ class CommandPublisherTest extends TestCase
         $processMock2->method('isSuccessful')->willReturn(false);
         $processMock2->method('getErrorOutput')->willReturn('Command 2 error');
         
-        // Create a test subclass of CommandPublisher that overrides process creation
-        $publisher = new class($processMock1, $processMock2) extends CommandPublisher {
-            private $processMock1;
-            private $processMock2;
-            private $callCount = 0;
-            
-            public function __construct($processMock1, $processMock2) {
-                $this->processMock1 = $processMock1;
-                $this->processMock2 = $processMock2;
-                parent::__construct();
-            }
-            
-            // Override the Process creation to return different mocks for different calls
-            protected function createProcess($command) {
-                $this->callCount++;
-                return $this->callCount === 1 ? $this->processMock1 : $this->processMock2;
-            }
-        };
+        // Create a mock for CommandPublisher
+        $publisher = $this->getMockBuilder(CommandPublisher::class)
+            ->onlyMethods(['createProcess'])
+            ->getMock();
+        
+        // Configure the mock to return different process mocks for different calls
+        $publisher->expects($this->exactly(2))
+            ->method('createProcess')
+            ->willReturnOnConsecutiveCalls($processMock1, $processMock2);
         
         // Add subscribers
         $publisher->publish('test:command1', $callbacks[0]);

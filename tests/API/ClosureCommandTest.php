@@ -52,6 +52,10 @@ class ClosureCommandTest extends TestCase
         
         $command = new ClosureCommand($name, $closure);
         
+        // Configure the command to accept arguments
+        $command->addArgument('arg1', \Symfony\Component\Console\Input\InputArgument::OPTIONAL);
+        $command->addArgument('arg2', \Symfony\Component\Console\Input\InputArgument::OPTIONAL);
+        
         $input = new ArrayInput([
             'command' => $name,
             'arg1' => 'value1',
@@ -72,6 +76,9 @@ class ClosureCommandTest extends TestCase
         };
         
         $command = new ClosureCommand($name, $closure);
+        
+        // Configure the command to accept options
+        $command->addOption('option', null, \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL);
         
         $input = new ArrayInput([
             'command' => $name,

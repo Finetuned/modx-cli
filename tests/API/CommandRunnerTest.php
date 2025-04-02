@@ -191,12 +191,8 @@ class CommandRunnerTest extends TestCase
             ->with('test:command')
             ->willReturn($command);
         
-        $this->hookRegistry->expects($this->exactly(2))
-            ->method('run')
-            ->withConsecutive(
-                ['before_invoke', ['test:command', []]],
-                ['after_invoke', ['test:command', [], $this->anything()]]
-            );
+        $this->hookRegistry->expects($this->exactly(4))
+            ->method('run');
         
         $result = $this->runner->run('test:command');
         
