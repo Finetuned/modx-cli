@@ -595,3 +595,84 @@ The unit tests for the MODX CLI Internal API have been successfully implemented 
    - Provided examples of how to mock static methods and dependencies
 
 These tests ensure the reliability and correctness of the MODX CLI Internal API and provide a foundation for future development. They also serve as documentation for how the API should be used and what behavior is expected.
+
+## Test Fixes for RunSequenceTest.php
+
+The RunSequenceTest.php tests were failing with the error "The 'command' argument does not exist". This was fixed with the following changes:
+
+1. **Added Command Argument Definition**:
+   - Added a 'command' argument to the RunSequence command to properly define the expected command argument:
+   ```php
+   protected function getArguments()
+   {
+       return array_merge(parent::getArguments(), [
+           [
+               'command',
+               \Symfony\Component\Console\Input\InputArgument::OPTIONAL,
+               'The command to execute'
+           ]
+       ]);
+   }
+   ```
+
+2. **Fixed CommandRunner Input Handling**:
+   - Modified the CommandRunner class to check if the 'command' key already exists in the arguments before adding it:
+   ```php
+   // Prepare input
+   $inputArgs = $args;
+   if (!isset($inputArgs['command'])) {
+       $inputArgs = array_merge(['command' => $command], $inputArgs);
+   }
+   $input = new ArrayInput($inputArgs);
+   ```
+
+3. **Fixed BaseCmd Call Methods**:
+   - Updated both the call() and callSilent() methods in BaseCmd.php to check if the 'command' key already exists in the arguments before adding it:
+   ```php
+   public function call($command, array $arguments = array())
+   {
+       $instance = $this->getApplication()->find($command);
+       if (!isset($arguments['command'])) {
+           $arguments['command'] = $command;
+       }
+
+       return $instance->run(new ArrayInput($arguments), $this->output);
+   }
+   ```
+
+4. **Fixed RunSequence Error Handling**:
+   - Updated the RunSequence.php file to properly return an integer error code when there are no command sets:
+   ```php
+   if (empty($command_sets)) {
+       $this->error("No command sets provided. Pass them as a JSON string using --command_sets.");
+       return 1;
+   }
+   ```
+
+5. **Improved Test Mocking**:
+   - Updated the test setup to properly mock the CommandRunner dependency:
+   ```php
+   // Create a mock for CommandRunner
+   $commandRunnerMock = $this->createMock(\MODX\CLI\API\CommandRunner::class);
+
+   // Configure the mock to return a success result by default
+   $commandRunnerMock->method('run')
+       ->willReturnCallback(function ($command, $args = [], $options = []) {
+           // Return a success result by default
+           $result = new \stdClass();
+           $result->return_code = 0;
+           $result->stdout = "Success: $command executed";
+           $result->stderr = '';
+           
+           // Simulate errors for specific commands
+           if (strpos($command, 'error') !== false) {
+               $result->return_code = 1;
+               $result->stdout = '';
+               $result->stderr = "Error: $command failed";
+           }
+           
+           return $result;
+       });
+   ```
+
+These changes fixed all 11 tests in RunSequenceTest.php, ensuring that the run-sequence command works correctly with various command set configurations.

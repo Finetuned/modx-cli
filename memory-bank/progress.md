@@ -33,6 +33,14 @@ The project is around 35-40% complete. The basic structure, many core commands, 
 
 ### Fixed Issues
 
+- Fixed test failures in RunSequenceTest.php:
+  - Added a 'command' argument to the RunSequence command to properly define the expected command argument
+  - Modified the CommandRunner class to check if the 'command' key already exists in the arguments before adding it
+  - Updated both the call() and callSilent() methods in BaseCmd.php to check if the 'command' key already exists
+  - Updated the RunSequence.php file to properly return an integer error code when there are no command sets
+  - Improved test mocking to properly mock the CommandRunner dependency
+  - All 11 tests in RunSequenceTest.php now pass successfully
+
 - Fixed version display issue in `extra:list` command:
   - Implemented a more robust approach to match extras (namespaces) with their corresponding packages
   - Added a method to get all packages using the same processor as `package:list` to create a lookup table

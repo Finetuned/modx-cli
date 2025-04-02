@@ -11,6 +11,14 @@
 
 ## Recent changes
 
+- Fixed test failures in RunSequenceTest.php:
+  - Added a 'command' argument to the RunSequence command to properly define the expected command argument
+  - Modified the CommandRunner class to check if the 'command' key already exists in the arguments before adding it
+  - Updated both the call() and callSilent() methods in BaseCmd.php to check if the 'command' key already exists
+  - Updated the RunSequence.php file to properly return an integer error code when there are no command sets
+  - Improved test mocking to properly mock the CommandRunner dependency
+  - All 11 tests in RunSequenceTest.php now pass successfully
+
 - Fixed test failures in ExtensionTest.php and InstanceTest.php:
   - Added a `$loadExisting` parameter to constructors to skip loading existing configuration during tests
   - Fixed array handling in Extension class to properly handle class names as values
