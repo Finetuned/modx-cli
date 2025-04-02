@@ -73,7 +73,11 @@ class CommandRunner
         }
 
         // Prepare input
-        $input = new ArrayInput(array_merge(['command' => $command], $args));
+        $inputArgs = $args;
+        if (!isset($inputArgs['command'])) {
+            $inputArgs = array_merge(['command' => $command], $inputArgs);
+        }
+        $input = new ArrayInput($inputArgs);
 
         // Prepare output
         $output = new BufferedOutput();

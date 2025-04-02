@@ -40,21 +40,17 @@ class RunSequenceTest extends TestCase
         $this->command = new RunSequence();
         $this->output = new BufferedOutput();
         
-        // Create a mock for MODX_CLI
-        $this->modxCliMock = $this->getMockBuilder(MODX_CLI::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['run_command'])
-            ->getMock();
+        // Create a mock for CommandRunner
+        $commandRunnerMock = $this->createMock(\MODX\CLI\API\CommandRunner::class);
         
         // Configure the mock to return a success result by default
-        $this->modxCliMock->method('run_command')
+        $commandRunnerMock->method('run')
             ->willReturnCallback(function ($command, $args = [], $options = []) {
                 // Return a success result by default
-                $result = (object) [
-                    'return_code' => 0,
-                    'stdout' => "Success: $command executed",
-                    'stderr' => ''
-                ];
+                $result = new \stdClass();
+                $result->return_code = 0;
+                $result->stdout = "Success: $command executed";
+                $result->stderr = '';
                 
                 // Simulate errors for specific commands
                 if (strpos($command, 'error') !== false) {
@@ -73,6 +69,16 @@ class RunSequenceTest extends TestCase
         
         // Save the original instance
         $this->originalInstance = $this->instanceProperty->getValue(null);
+        
+        // Create a new instance of MODX_CLI
+        $this->modxCliMock = $this->getMockBuilder(MODX_CLI::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        
+        // Set the commandRunner property in the MODX_CLI instance
+        $commandRunnerProperty = $reflection->getProperty('commandRunner');
+        $commandRunnerProperty->setAccessible(true);
+        $commandRunnerProperty->setValue($this->modxCliMock, $commandRunnerMock);
         
         // Set our mock as the instance
         $this->instanceProperty->setValue(null, $this->modxCliMock);

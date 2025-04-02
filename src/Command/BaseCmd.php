@@ -178,7 +178,9 @@ abstract class BaseCmd extends Command
     public function call($command, array $arguments = array())
     {
         $instance = $this->getApplication()->find($command);
-        $arguments['command'] = $command;
+        if (!isset($arguments['command'])) {
+            $arguments['command'] = $command;
+        }
 
         return $instance->run(new ArrayInput($arguments), $this->output);
     }
@@ -194,7 +196,9 @@ abstract class BaseCmd extends Command
     public function callSilent($command, array $arguments = array())
     {
         $instance = $this->getApplication()->find($command);
-        $arguments['command'] = $command;
+        if (!isset($arguments['command'])) {
+            $arguments['command'] = $command;
+        }
 
         return $instance->run(new ArrayInput($arguments), new NullOutput());
     }
