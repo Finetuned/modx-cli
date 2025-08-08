@@ -7,14 +7,14 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 
 /**
- * A command to list columns in a table in MODX
+ * A command to list columns in a database table in MODX
  */
 class ListColumns extends BaseCmd
 {
     const MODX = true;
 
     protected $name = 'misc:list-columns';
-    protected $description = 'List columns in a table in MODX';
+    protected $description = 'List columns in a database table in MODX';
 
     protected function getArguments()
     {
