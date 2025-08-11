@@ -57,11 +57,24 @@ When a MODX instance is configured and set as default, many commands become avai
 - `version` - Display the CLI version
 - `system:info` - Get general system information
 - `system:clearcache` - Clear the MODX cache
-- `resource:getlist` - Get a list of resources
+- `resource:list` - Get a list of resources
 - `resource:create` - Create a MODX resource
-- `resource:update` - Update a MODX resource
-- `user:getlist` - Get a list of users
-- `template:getlist` - Get a list of templates
+- `resource:update` - Update a MODX resource (supports partial updates)
+- `chunk:list` - Get a list of chunks
+- `chunk:create` - Create a MODX chunk
+- `chunk:update` - Update a MODX chunk (supports partial updates)
+- `template:list` - Get a list of templates
+- `template:create` - Create a MODX template
+- `template:update` - Update a MODX template (supports partial updates)
+- `snippet:list` - Get a list of snippets
+- `snippet:create` - Create a MODX snippet
+- `snippet:update` - Update a MODX snippet (supports partial updates)
+- `tv:list` - Get a list of template variables
+- `tv:create` - Create a MODX template variable
+- `tv:update` - Update a MODX template variable (supports partial updates)
+- `user:list` - Get a list of users
+- `package:list` - Get a list of packages (supports pagination)
+- `crawl` - Crawl resources to prime their caches
 - And many more
 
 To see all available commands, run:
@@ -69,6 +82,14 @@ To see all available commands, run:
 ```bash
 modx list
 ```
+
+#### Command Features
+
+**Update Commands**: All update commands now support partial updates - you only need to specify the ID and the fields you want to change. The CLI automatically fetches existing data to populate required fields.
+
+**List Commands**: All list commands support pagination with `--limit` and `--start` options for navigating large datasets.
+
+**JSON Output**: All commands support `--json` flag for machine-readable output.
 
 ### Examples
 
@@ -93,13 +114,75 @@ modx system:clearcache
 Get a list of resources:
 
 ```bash
-modx resource:getlist
+modx resource:list
 ```
 
-Get a list of resources with filters:
+Get a list of resources with filters and pagination:
 
 ```bash
-modx resource:getlist --parent=1 --context=web --published=1
+modx resource:list --parent=1 --context=web --published=1 --limit=20 --start=0
+```
+
+#### Update Command Examples
+
+Update only the title of a resource (partial update):
+
+```bash
+modx resource:update 123 --pagetitle="New Title"
+```
+
+Update multiple fields of a chunk:
+
+```bash
+modx chunk:update 5 --description="Updated description" --snippet="<p>New content</p>"
+```
+
+Update a template variable with new default value:
+
+```bash
+modx tv:update 10 --default_text="New default value" --description="Updated TV"
+```
+
+#### Create Command Examples
+
+Create a new resource with specific settings:
+
+```bash
+modx resource:create "My New Page" --parent=1 --template=2 --published=1
+```
+
+Create a new chunk:
+
+```bash
+modx chunk:create "MyChunk" --description="A new chunk" --snippet="<p>Chunk content</p>"
+```
+
+#### List Command Examples with Pagination
+
+Get the first 10 packages:
+
+```bash
+modx package:list --limit=10 --start=0
+```
+
+Get the next 10 packages:
+
+```bash
+modx package:list --limit=10 --start=10
+```
+
+#### JSON Output Examples
+
+Get resource data in JSON format:
+
+```bash
+modx resource:get 123 --json
+```
+
+Get a list of templates in JSON format:
+
+```bash
+modx template:list --json
 ```
 
 ### Working with Multiple MODX Instances
@@ -166,6 +249,13 @@ modx @all system:clear-cache
 ```
 
 For more information, see [SSH and Aliases Documentation](docs/ssh-and-aliases.md).
+
+## Documentation
+
+- [Update Commands](docs/update-commands.md) - Detailed guide to the enhanced update functionality
+- [List Commands](docs/list-commands.md) - Pagination and filtering for list commands
+- [SSH and Aliases](docs/ssh-and-aliases.md) - Remote command execution and aliases
+- [Internal API](docs/internal-api.md) - Programmatic usage and extending the CLI
 
 ## Bash Completion
 

@@ -84,15 +84,49 @@ class Update extends ProcessorCmd
 
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
-        // Add options to the properties
+        // Get the resource ID from arguments
+        $resourceId = $this->argument('id');
+        
+        // Pre-populate properties with existing resource data to avoid requiring name parameter
+        if (!$this->prePopulateFromExisting($properties, 'modResource', $resourceId)) {
+            $this->error("Resource with ID {$resourceId} not found");
+            return false;
+        }
+
+        // Ensure critical fields have proper defaults if not already set
+        if (!isset($properties['class_key']) || empty($properties['class_key'])) {
+            $properties['class_key'] = 'modDocument';
+        }
+        
+        if (!isset($properties['context_key']) || empty($properties['context_key'])) {
+            $properties['context_key'] = 'web';
+        }
+        
+        if (!isset($properties['content_type']) || empty($properties['content_type'])) {
+            $properties['content_type'] = 1;
+        }
+
+        // Add options to the properties with type conversion
         $optionKeys = array(
-            'pagetitle', 'parent', 'template', 'published', 'hidemenu', 'content', 'alias', 'context_key'
+            'pagetitle', 'parent', 'template', 'content', 'alias', 'context_key'
+        );
+        
+        $typeMap = array(
+            'parent' => 'int',
+            'template' => 'int',
+            'published' => 'bool',
+            'hidemenu' => 'bool'
         );
 
-        foreach ($optionKeys as $key) {
-            if ($this->option($key) !== null) {
-                $properties[$key] = $this->option($key);
-            }
+        $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
+        
+        // Handle boolean fields separately since they need special handling
+        if ($this->option('published') !== null) {
+            $properties['published'] = (int) filter_var($this->option('published'), FILTER_VALIDATE_BOOLEAN);
+        }
+        
+        if ($this->option('hidemenu') !== null) {
+            $properties['hidemenu'] = (int) filter_var($this->option('hidemenu'), FILTER_VALIDATE_BOOLEAN);
         }
     }
 
