@@ -33,20 +33,6 @@ class GetList extends ListProcessor
                 InputOption::VALUE_REQUIRED,
                 'Search term to filter results'
             ),
-            array(
-                'limit',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Limit the number of results',
-                20
-            ),
-            array(
-                'start',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Start index for pagination',
-                0
-            ),
         ));
     }
 

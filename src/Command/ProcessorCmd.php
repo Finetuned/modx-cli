@@ -127,6 +127,139 @@ abstract class ProcessorCmd extends BaseCmd
     }
 
     /**
+     * Fetch an existing MODX object by ID and class
+     *
+     * @param string $class The MODX object class name
+     * @param int $id The object ID
+     * @return \xPDO\Om\xPDOObject|null
+     */
+    protected function getExistingObject($class, $id)
+    {
+        if (!$this->modx) {
+            return null;
+        }
+
+        return $this->modx->getObject($class, $id);
+    }
+
+    /**
+     * Pre-populate properties with existing object data for update operations
+     * This prevents MODX processors from requiring fields that shouldn't be required for updates
+     *
+     * @param array $properties The properties array to populate
+     * @param string $class The MODX object class name
+     * @param int $id The object ID
+     * @param array $fieldMap Optional mapping of property names to object field names
+     * @return bool True if object was found and properties populated, false otherwise
+     */
+    protected function prePopulateFromExisting(array &$properties, $class, $id, array $fieldMap = array())
+    {
+        $object = $this->getExistingObject($class, $id);
+        if (!$object) {
+            return false;
+        }
+
+        // Default field mappings for common MODX objects
+        $defaultMappings = array(
+            'modChunk' => array('name' => 'name', 'description' => 'description', 'category' => 'category', 'snippet' => 'snippet'),
+            'modTemplate' => array('templatename' => 'templatename', 'description' => 'description', 'category' => 'category', 'content' => 'content'),
+            'modSnippet' => array('name' => 'name', 'description' => 'description', 'category' => 'category', 'snippet' => 'snippet'),
+            'modTemplateVar' => array('name' => 'name', 'caption' => 'caption', 'description' => 'description', 'category' => 'category'),
+            'modResource' => array(
+                'pagetitle' => 'pagetitle',
+                'parent' => 'parent', 
+                'template' => 'template',
+                'published' => 'published',
+                'class_key' => 'class_key',        // CRITICAL - prevents null classKey error
+                'context_key' => 'context_key',    // CRITICAL - required by processor
+                'content_type' => 'content_type',  // Usually defaults to 1
+                'alias' => 'alias',
+                'content' => 'content',
+                'hidemenu' => 'hidemenu',
+                'searchable' => 'searchable',
+                'cacheable' => 'cacheable'
+            ),
+            'modCategory' => array('name' => 'category', 'parent' => 'parent'),
+        );
+
+        // Use provided field map or default mapping
+        $mapping = !empty($fieldMap) ? $fieldMap : (isset($defaultMappings[$class]) ? $defaultMappings[$class] : array());
+
+        // Pre-populate properties with existing values if not already set
+        foreach ($mapping as $propertyName => $fieldName) {
+            if (!isset($properties[$propertyName]) || $properties[$propertyName] === null) {
+                $value = $object->get($fieldName);
+                if ($value !== null) {
+                    $properties[$propertyName] = $value;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Handle default values for create operations
+     * Ensures default values are properly applied when options are provided
+     *
+     * @param array $properties The properties array to populate
+     * @param array $defaults Array of default values
+     */
+    protected function applyDefaults(array &$properties, array $defaults = array())
+    {
+        foreach ($defaults as $key => $defaultValue) {
+            // Only apply default if the property is not already set
+            if (!isset($properties[$key]) || $properties[$key] === null) {
+                // Check if there's an option for this property
+                $optionValue = $this->option($key);
+                if ($optionValue !== null) {
+                    $properties[$key] = $optionValue;
+                } else {
+                    $properties[$key] = $defaultValue;
+                }
+            }
+        }
+    }
+
+    /**
+     * Safely add options to properties, handling type conversion and validation
+     *
+     * @param array $properties The properties array to populate
+     * @param array $optionKeys Array of option keys to process
+     * @param array $typeMap Optional type mapping for conversion (e.g., 'published' => 'boolean')
+     */
+    protected function addOptionsToProperties(array &$properties, array $optionKeys, array $typeMap = array())
+    {
+        foreach ($optionKeys as $key) {
+            $value = $this->option($key);
+            if ($value !== null) {
+                // Apply type conversion if specified
+                if (isset($typeMap[$key])) {
+                    switch ($typeMap[$key]) {
+                        case 'boolean':
+                        case 'bool':
+                            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                            if ($value === null) {
+                                $value = (int) $this->option($key); // Fallback to integer conversion
+                            } else {
+                                $value = (int) $value; // Convert boolean to integer for MODX
+                            }
+                            break;
+                        case 'integer':
+                        case 'int':
+                            $value = (int) $value;
+                            break;
+                        case 'float':
+                            $value = (float) $value;
+                            break;
+                    }
+                }
+                $properties[$key] = $value;
+            }
+        }
+    }
+
+    /**
      * Decode the processor response if json encoded
      *
      * @param \MODX\Revolution\Processors\ProcessorResponse $response

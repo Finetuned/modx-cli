@@ -87,15 +87,41 @@ class Create extends ProcessorCmd
         // Add the pagetitle to the properties
         $properties['pagetitle'] = $this->argument('pagetitle');
 
-        // Add options to the properties
-        $optionKeys = array(
-            'parent', 'template', 'published', 'hidemenu', 'content', 'alias', 'context_key'
+        // Define default values for resource creation
+        $defaults = array(
+            'parent' => 0,
+            'template' => 0,
+            'published' => 1,
+            'hidemenu' => 0,
+            'content' => '',
+            'alias' => '',
+            'context_key' => 'web'
         );
 
-        foreach ($optionKeys as $key) {
-            if ($this->option($key) !== null) {
-                $properties[$key] = $this->option($key);
-            }
+        // Apply defaults first
+        $this->applyDefaults($properties, $defaults);
+
+        // Add options to the properties with type conversion
+        $optionKeys = array(
+            'parent', 'template', 'content', 'alias', 'context_key'
+        );
+        
+        $typeMap = array(
+            'parent' => 'int',
+            'template' => 'int',
+            'published' => 'bool',
+            'hidemenu' => 'bool'
+        );
+
+        $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
+        
+        // Handle boolean fields separately to ensure proper conversion
+        if ($this->option('published') !== null) {
+            $properties['published'] = (int) filter_var($this->option('published'), FILTER_VALIDATE_BOOLEAN);
+        }
+        
+        if ($this->option('hidemenu') !== null) {
+            $properties['hidemenu'] = (int) filter_var($this->option('hidemenu'), FILTER_VALIDATE_BOOLEAN);
         }
     }
 

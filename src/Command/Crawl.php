@@ -22,48 +22,62 @@ class Crawl extends BaseCmd
     {
         $from = $this->argument('from');
 
-        $c = $this->getCriteria($from);
+        try {
+            $c = $this->getCriteria($from);
 
-        $total = $this->modx->getCount('modResource', $c);
-        if ($total > 0) {
-            $this->prepareCurl();
-        } else {
-            $this->comment('No resources to crawl found with criteria');
-            return $this->line($c->toSQL());
-        }
-
-        $this->comment("\n<info>{$total}</info> 'root' resources found");
-
-        $collection = $this->modx->getCollection('modResource', $c);
-        $context = '';
-        /** @var \modResource $resource */
-        foreach ($collection as $resource) {
-            if ($context !== $resource->context_key) {
-                $this->comment("\nProcessing context {$resource->context_key}");
-                $this->modx->switchContext($resource->context_key);
-                $context = $resource->context_key;
-                //$this->modx->context->setOption('session_enabled', false);
+            $total = $this->modx->getCount('modResource', $c);
+            if ($total > 0) {
+                if (!$this->prepareCurl()) {
+                    $this->error('Failed to initialize cURL');
+                    return 1;
+                }
+            } else {
+                $this->comment('No resources to crawl found with criteria');
+                $this->line($c->toSQL());
+                return 0;
             }
-            $this->crawl($resource->id);
 
-            if (is_numeric($from)) {
-                // Process children too
-                $children = $this->modx->getChildIds($resource->id, 999);
-                foreach ($children as $id) {
-                    $this->crawl($id);
+            $this->comment("\n<info>{$total}</info> 'root' resources found");
+
+            $collection = $this->modx->getCollection('modResource', $c);
+            $context = '';
+            /** @var \modResource $resource */
+            foreach ($collection as $resource) {
+                if ($context !== $resource->context_key) {
+                    $this->comment("\nProcessing context {$resource->context_key}");
+                    $this->modx->switchContext($resource->context_key);
+                    $context = $resource->context_key;
+                    //$this->modx->context->setOption('session_enabled', false);
+                }
+                $this->crawl($resource->id);
+
+                if (is_numeric($from)) {
+                    // Process children too
+                    $children = $this->modx->getChildIds($resource->id, 999);
+                    foreach ($children as $id) {
+                        $this->crawl($id);
+                    }
                 }
             }
+
+            if (is_numeric($from)) {
+                // Crawl the container too
+                $this->crawl($from);
+            }
+
+            if ($this->curl) {
+                curl_close($this->curl);
+            }
+            $this->line("\n" . sprintf("Executed in <info>%2.4f</info> seconds", (microtime(true) - $this->start)));
+
+            return 0;
+        } catch (\Exception $e) {
+            $this->error('Crawl failed: ' . $e->getMessage());
+            if ($this->curl) {
+                curl_close($this->curl);
+            }
+            return 1;
         }
-
-        if (is_numeric($from)) {
-            // Crawl the container too
-            $this->crawl($from);
-        }
-
-        curl_close($this->curl);
-        $this->line("\n" . sprintf("Executed in <info>%2.4f</info> seconds", (microtime(true) - $this->start)));
-
-        //$this->info($c->toSQL());
     }
 
     /**
@@ -124,12 +138,25 @@ class Crawl extends BaseCmd
 
     /**
      * Prepare cURL handler
+     * 
+     * @return bool True if cURL was initialized successfully, false otherwise
      */
     protected function prepareCurl()
     {
         $this->start = microtime(true);
+        
+        if (!function_exists('curl_init')) {
+            $this->error('cURL extension is not available');
+            return false;
+        }
+        
         $ch = curl_init();
-        curl_setopt_array($ch, array(
+        if ($ch === false) {
+            $this->error('Failed to initialize cURL');
+            return false;
+        }
+        
+        $result = curl_setopt_array($ch, array(
             CURLOPT_NOBODY => true,
             CURLOPT_FAILONERROR => false,
             CURLOPT_FOLLOWLOCATION => true,
@@ -138,6 +165,8 @@ class Crawl extends BaseCmd
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_HEADER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_CONNECTTIMEOUT => 10,
             //CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
             //CURLOPT_FRESH_CONNECT => true,
 
@@ -145,7 +174,14 @@ class Crawl extends BaseCmd
 //            CURLOPT_COOKIEJAR => '/tmp/cookie.txt',
         ));
 
+        if (!$result) {
+            $this->error('Failed to set cURL options');
+            curl_close($ch);
+            return false;
+        }
+
         $this->curl = $ch;
+        return true;
     }
 
     protected function getArguments()
