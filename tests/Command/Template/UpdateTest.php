@@ -21,9 +21,7 @@ class UpdateTest extends BaseTest
         $this->command = new Update();
         $this->command->modx = $this->modx;
         
-        // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
+        // Create a command tester without using the Application class to avoid conflicts
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -45,6 +43,21 @@ class UpdateTest extends BaseTest
 
     public function testExecuteWithSuccessfulResponse()
     {
+        // Mock existing template object
+        $existingTemplate = $this->createMock('modTemplate');
+        $existingTemplate->method('get')->willReturnMap([
+            ['templatename', 'ExistingTemplate'],
+            ['description', 'Existing description'],
+            ['category', 1],
+            ['content', '<html><body>[[*content]]</body></html>']
+        ]);
+        
+        // Mock getObject to return existing template
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with('modTemplate', '123')
+            ->willReturn($existingTemplate);
+        
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -61,18 +74,21 @@ class UpdateTest extends BaseTest
             ->with(
                 'element/template/update',
                 $this->callback(function($properties) {
+                    // Verify that existing data is pre-populated and new data overrides it
                     return isset($properties['id']) && $properties['id'] === '123' &&
-                           isset($properties['templatename']) && $properties['templatename'] === 'UpdatedTemplate';
+                           isset($properties['templatename']) && $properties['templatename'] === 'ExistingTemplate' && // Pre-populated
+                           isset($properties['description']) && $properties['description'] === 'Updated description' && // Overridden
+                           isset($properties['category']) && $properties['category'] === 2 && // Overridden (converted to int)
+                           isset($properties['content']) && $properties['content'] === '<html><body>[[*content]] - Updated</body></html>'; // Overridden
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
         
-        // Execute the command
+        // Execute the command - note we don't need to specify --templatename anymore
         $this->commandTester->execute([
             'command' => 'template:update',
             'id' => '123',
-            '--templatename' => 'UpdatedTemplate',
             '--description' => 'Updated description',
             '--category' => '2',
             '--content' => '<html><body>[[*content]] - Updated</body></html>'
@@ -84,8 +100,47 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Template ID: 123', $output);
     }
 
+    public function testExecuteWithNonExistentTemplate()
+    {
+        // Mock getObject to return null (template doesn't exist)
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with('modTemplate', '999')
+            ->willReturn(null);
+        
+        // runProcessor should not be called since the template doesn't exist
+        $this->modx->expects($this->never())
+            ->method('runProcessor');
+        
+        // Execute the command
+        $this->commandTester->execute([
+            'command' => 'template:update',
+            'id' => '999',
+            '--description' => 'Updated description'
+        ]);
+        
+        // Verify the output shows error message
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Template with ID 999 not found', $output);
+    }
+
     public function testExecuteWithFailedResponse()
     {
+        // Mock existing template object
+        $existingTemplate = $this->createMock('modTemplate');
+        $existingTemplate->method('get')->willReturnMap([
+            ['templatename', 'ExistingTemplate'],
+            ['description', 'Existing description'],
+            ['category', 1],
+            ['content', '<html><body>[[*content]]</body></html>']
+        ]);
+        
+        // Mock getObject to return existing template
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with('modTemplate', '123')
+            ->willReturn($existingTemplate);
+        
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -105,7 +160,7 @@ class UpdateTest extends BaseTest
         $this->commandTester->execute([
             'command' => 'template:update',
             'id' => '123',
-            '--templatename' => 'UpdatedTemplate'
+            '--description' => 'Updated description'
         ]);
         
         // Verify the output
