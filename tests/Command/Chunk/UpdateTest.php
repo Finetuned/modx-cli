@@ -21,9 +21,7 @@ class UpdateTest extends BaseTest
         $this->command = new Update();
         $this->command->modx = $this->modx;
         
-        // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
+        // Create a command tester without using the Application class to avoid conflicts
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -45,6 +43,23 @@ class UpdateTest extends BaseTest
 
     public function testExecuteWithSuccessfulResponse()
     {
+        // Mock existing chunk object
+        $existingChunk = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
+        $existingChunk->method('get')->willReturnMap([
+            ['name', 'ExistingChunk'],
+            ['description', 'Existing description'],
+            ['category', 1],
+            ['snippet', '<p>Existing content</p>']
+        ]);
+        
+        // Mock getObject to return existing chunk
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with('modChunk', '123')
+            ->willReturn($existingChunk);
+        
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -61,18 +76,20 @@ class UpdateTest extends BaseTest
             ->with(
                 'element/chunk/update',
                 $this->callback(function($properties) {
+                    // Verify that existing data is pre-populated and new data overrides it
                     return isset($properties['id']) && $properties['id'] === '123' &&
-                           isset($properties['name']) && $properties['name'] === 'UpdatedChunk';
+                           isset($properties['name']) && $properties['name'] === 'ExistingChunk' && // Pre-populated
+                           isset($properties['description']) && $properties['description'] === 'Updated description' && // Overridden
+                           isset($properties['category']) && $properties['category'] === 2 && // Overridden (converted to int)
+                           isset($properties['snippet']) && $properties['snippet'] === '<p>Updated content</p>'; // Overridden
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
         
-        // Execute the command
+        // Execute the command - note we don't need to specify --name anymore
         $this->commandTester->execute([
-            'command' => 'chunk:update',
             'id' => '123',
-            '--name' => 'UpdatedChunk',
             '--description' => 'Updated description',
             '--category' => '2',
             '--snippet' => '<p>Updated content</p>'
@@ -84,8 +101,48 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Chunk ID: 123', $output);
     }
 
+    public function testExecuteWithNonExistentChunk()
+    {
+        // Mock getObject to return null (chunk doesn't exist)
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with('modChunk', '999')
+            ->willReturn(null);
+        
+        // runProcessor should not be called since the chunk doesn't exist
+        $this->modx->expects($this->never())
+            ->method('runProcessor');
+        
+        // Execute the command
+        $this->commandTester->execute([
+            'id' => '999',
+            '--description' => 'Updated description'
+        ]);
+        
+        // Verify the output shows error message
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Chunk with ID 999 not found', $output);
+    }
+
     public function testExecuteWithFailedResponse()
     {
+        // Mock existing chunk object
+        $existingChunk = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
+        $existingChunk->method('get')->willReturnMap([
+            ['name', 'ExistingChunk'],
+            ['description', 'Existing description'],
+            ['category', 1],
+            ['snippet', '<p>Existing content</p>']
+        ]);
+        
+        // Mock getObject to return existing chunk
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with('modChunk', '123')
+            ->willReturn($existingChunk);
+        
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -103,9 +160,8 @@ class UpdateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'chunk:update',
             'id' => '123',
-            '--name' => 'UpdatedChunk'
+            '--description' => 'Updated description'
         ]);
         
         // Verify the output

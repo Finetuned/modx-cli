@@ -20,6 +20,7 @@
 - ✅ Add --ssh functionality like the WP-CLI
 - ✅ Standardize command naming convention (`:getlist` to `:list`)
 - ✅ Add an internal API like WP-CLI
+- ✅ Add launch.json to manually debug commands
 - Implement self-update functionality
 - Add TAB completions
 - Add missing CRUD commands for context and source
@@ -90,14 +91,58 @@ The project is around 35-40% complete. The basic structure, many core commands, 
 
 ### Command Issues
 
-- crawl: raises an error
-- ns:list does not return a list of namespaces
-- ns:create does not create a namespace
+#### Fixed Issues
+- ✅ chunk:update requires --name to update other fields (FIXED: Now pre-populates existing data)
+- ✅ tv:update requires --name to be passed as well as the id in order to update other fields (FIXED: Now pre-populates existing data)
+- ✅ snippet:update requires --name to be passed as well as the id in order to update other fields (FIXED: Now pre-populates existing data)
+- ✅ template:update requires --name to be passed as well as the id in order to update other fields (FIXED: Now pre-populates existing data)
+- ✅ resource:update requires --name to be passed as well as the id in order to update other fields (FIXED: Now pre-populates existing data)
+- ✅ resource:create ignores published argument (FIXED: Now properly applies default values and handles boolean conversion)
+- ✅ crawl: raises an error (FIXED: Added proper error handling and cURL validation)
+- ✅ ns:list does not return a list of namespaces (FIXED: Enhanced response handling for different processor formats)
+- ✅ package:list needs a way to page through the list (FIXED: Added --limit and --start options to all list commands)
+- ✅ extra:list does not show version numbers (fixed by implementing better package matching)
+
+#### Unit Tests Updated
+- ✅ Updated all update command tests to reflect the new pre-population functionality
+- ✅ Added tests for non-existent object handling (proper error messages)
+- ✅ Created tests for ProcessorCmd helper methods (prePopulateFromExisting, applyDefaults, etc.)
+- ✅ Added tests for ListProcessor pagination functionality
+- ✅ Fixed test setup to avoid Application class conflicts
+- ✅ All enhanced functionality tests are now passing
+
+#### Pagination Conflict Resolution
+- ✅ **FIXED: "An option named 'limit' already exists" error**
+- ✅ Implemented smart pagination in ListProcessor base class that detects existing options
+- ✅ Removed duplicate pagination options from individual list commands (Snippet/GetList.php, System/Snippet/GetList.php)
+- ✅ Changed --start option shortcut from 's' to none to avoid conflict with --ssh option
+- ✅ All list commands now have consistent pagination: --limit (-l) and --start options
+- ✅ Commands that didn't have pagination (like chunk:list) now have it automatically
+- ✅ Commands that already had pagination (like snippet:list) work without conflicts
+- ✅ All tests updated and passing
+
+#### Remaining Issues
+- ✅ **FIXED: resource:update null classKey error** - Enhanced field mapping and added safety defaults for critical fields
+- resource:update passing --pagetitle string -- id returns: "Too many arguments to "resource:update" command, expected arguments "id"." (Needs investigation of argument parsing)
+- resource:purge did not purge the resource and afterwards resource:remove did not work again in the session
+- ns:create does not create a namespace (Needs testing after ns:list fix)
 - ns:update cannot be tested until ns:list and ns:create are fixed
 - ns:remove cannot be tested until ns:list and ns:create are fixed
-- ✅ extra:list does not show version numbers (fixed by implementing better package matching)
-- tv:update --description "test description" 6 raises an error: name : tv_err ns_name
+- category:get returns an empty string if int not found (Already has proper error handling)
+- package:provider:info returns empty string
+- package:provider:packages returns empty string
+- package:provider:categories returns empty string
+- package:upgradeable returns upgradeable packages but does not include the signature of the upgrade
+- package:install does not fetch the package to be installed. It probably should not so we are missing functionality i.e. package:download 
+- plugin:disabled shows the same as plugin:list
+- session:list returns empty string
+- session:flush does not flush the session
+- session:remove does not delete the session
+- system:log:actions:list needs a way to page through results (FIXED: Added pagination options)
+- user:resetpassword returns username and email are required. Adding either return option does not exist.
 
+### Debugging issues
+- the launch.json created to manually debug commands using VS Code causes an error as the command parameters are evaluated too early: Symfony (ArgvInput) is evaluating the arguments prior to executing the command. As the args are for the specific command, it is failing as the args are not found in the base call to bin/modx
 ### Namespace Issues
 
 - Some classes are not properly using namespaces, especially when interacting with MODX Revolution 3.x classes

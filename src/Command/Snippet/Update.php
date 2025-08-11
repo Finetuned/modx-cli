@@ -78,15 +78,35 @@ class Update extends ProcessorCmd
 
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
-        // Add options to the properties
+        // Get the snippet ID from arguments
+        $snippetId = $this->argument('id');
+        
+        // Pre-populate properties with existing snippet data to avoid requiring name parameter
+        if (!$this->prePopulateFromExisting($properties, 'modSnippet', $snippetId)) {
+            $this->error("Snippet with ID {$snippetId} not found");
+            return false;
+        }
+
+        // Add options to the properties with type conversion
         $optionKeys = array(
-            'name', 'description', 'category', 'snippet', 'locked', 'properties', 'static', 'static_file'
+            'name', 'description', 'category', 'snippet', 'properties', 'static_file'
+        );
+        
+        $typeMap = array(
+            'category' => 'int',
+            'locked' => 'bool',
+            'static' => 'bool'
         );
 
-        foreach ($optionKeys as $key) {
-            if ($this->option($key) !== null) {
-                $properties[$key] = $this->option($key);
-            }
+        $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
+        
+        // Handle locked and static separately since they need special handling
+        if ($this->option('locked') !== null) {
+            $properties['locked'] = (int) filter_var($this->option('locked'), FILTER_VALIDATE_BOOLEAN);
+        }
+        
+        if ($this->option('static') !== null) {
+            $properties['static'] = (int) filter_var($this->option('static'), FILTER_VALIDATE_BOOLEAN);
         }
     }
 

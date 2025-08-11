@@ -114,15 +114,46 @@ class Update extends ProcessorCmd
 
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
-        // Add options to the properties
+        // Get the TV ID from arguments
+        $tvId = $this->argument('id');
+        
+        // Pre-populate properties with existing TV data to avoid requiring name parameter
+        if (!$this->prePopulateFromExisting($properties, 'modTemplateVar', $tvId)) {
+            $this->error("Template Variable with ID {$tvId} not found");
+            return false;
+        }
+
+        // Add options to the properties with type conversion
         $optionKeys = array(
             'name', 'caption', 'description', 'category', 'type', 'default_text', 'elements',
-            'rank', 'display', 'templates', 'locked', 'static', 'static_file'
+            'rank', 'display', 'templates', 'static_file'
+        );
+        
+        $typeMap = array(
+            'category' => 'int',
+            'rank' => 'int',
+            'locked' => 'bool',
+            'static' => 'bool'
         );
 
-        foreach ($optionKeys as $key) {
-            if ($this->option($key) !== null) {
-                $properties[$key] = $this->option($key);
+        $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
+        
+        // Handle boolean fields separately since they need special handling
+        if ($this->option('locked') !== null) {
+            $properties['locked'] = (int) filter_var($this->option('locked'), FILTER_VALIDATE_BOOLEAN);
+        }
+        
+        if ($this->option('static') !== null) {
+            $properties['static'] = (int) filter_var($this->option('static'), FILTER_VALIDATE_BOOLEAN);
+        }
+        
+        // Handle templates field - convert comma-separated string to array if needed
+        if ($this->option('templates') !== null) {
+            $templates = $this->option('templates');
+            if (is_string($templates)) {
+                $properties['templates'] = array_map('trim', explode(',', $templates));
+            } else {
+                $properties['templates'] = $templates;
             }
         }
     }

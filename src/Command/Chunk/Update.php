@@ -78,15 +78,35 @@ class Update extends ProcessorCmd
 
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
-        // Add options to the properties
+        // Get the chunk ID from arguments
+        $chunkId = $this->argument('id');
+        
+        // Pre-populate properties with existing chunk data to avoid requiring name parameter
+        if (!$this->prePopulateFromExisting($properties, 'modChunk', $chunkId)) {
+            $this->error("Chunk with ID {$chunkId} not found");
+            return false;
+        }
+
+        // Add options to the properties with type conversion
         $optionKeys = array(
-            'name', 'description', 'category', 'snippet', 'locked', 'static', 'static_file'
+            'name', 'description', 'category', 'snippet', 'static_file'
+        );
+        
+        $typeMap = array(
+            'category' => 'int',
+            'locked' => 'bool',
+            'static' => 'bool'
         );
 
-        foreach ($optionKeys as $key) {
-            if ($this->option($key) !== null) {
-                $properties[$key] = $this->option($key);
-            }
+        $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
+        
+        // Handle locked and static separately since they need special handling
+        if ($this->option('locked') !== null) {
+            $properties['locked'] = (int) filter_var($this->option('locked'), FILTER_VALIDATE_BOOLEAN);
+        }
+        
+        if ($this->option('static') !== null) {
+            $properties['static'] = (int) filter_var($this->option('static'), FILTER_VALIDATE_BOOLEAN);
         }
     }
 
