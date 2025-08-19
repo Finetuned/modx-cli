@@ -142,8 +142,15 @@ class CommandRegistry
             // Command instance
             $command = $callable;
         } elseif (is_callable($callable)) {
-            // Closure or callable
-            $command = new ClosureCommand($name, $callable);
+            // Closure or callable - pass configuration for arguments and options
+            $config = [];
+            if (isset($args['arguments'])) {
+                $config['arguments'] = $args['arguments'];
+            }
+            if (isset($args['options'])) {
+                $config['options'] = $args['options'];
+            }
+            $command = new ClosureCommand($name, $callable, $config);
         } else {
             throw new \Exception("Invalid command implementation for '$name'");
         }
