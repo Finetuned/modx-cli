@@ -167,6 +167,7 @@ The project is around 40-45% complete. The basic structure, many core commands, 
 - ns:update cannot be tested until ns:list and ns:create are fixed
 - ns:remove cannot be tested until ns:list and ns:create are fixed
 - category:get returns an empty string if int not found (Already has proper error handling)
+
 - package:provider:info returns empty string
 - package:provider:packages returns empty string
 - package:provider:categories returns empty string

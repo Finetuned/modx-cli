@@ -42,3 +42,36 @@
 - Mock objects are used to simulate MODX components without requiring an actual MODX installation.
 - Tests are organized to mirror the structure of the source code.
 - The test suite can be run with `vendor/bin/phpunit`.
+
+## MODX Core Source Code Patterns
+
+**Critical Note**: Development frequently requires reading MODX core source code to understand processor structures, API patterns, and implementation details.
+
+### Core Source Location
+- **Primary Path**: `/Users/julianweaver/Sites/commonplace/core/src/Revolution/`
+- **Processor Base Path**: `core/src/Revolution/Processors/`
+
+### Key Processor Directory Structure
+- **`Processors/Workspace/Packages/`** - Local package operations (Get.php, GetList.php, Install.php, etc.)
+- **`Processors/Workspace/Packages/Rest/`** - Remote provider queries (GetList.php, Download.php, GetInfo.php)
+- **`Processors/Workspace/Providers/`** - Provider management (GetList.php, Create.php, Update.php)
+- **`Processors/Model/`** - Base processor classes (GetListProcessor.php)
+
+### Common Processor Patterns
+1. **Naming Convention**: Processors follow `workspace/path/action` pattern
+2. **Class Structure**: Extend base processor classes with specific functionality
+3. **Parameter Handling**: Use `getProperty()` method for input parameters
+4. **Response Format**: Return structured arrays with `results` and metadata
+5. **Error Handling**: Use `isError()` and `getMessage()` for error checking
+
+### Debugging Context
+When troubleshooting processor calls:
+1. **Verify Processor Existence**: Check actual file paths in core source
+2. **Examine Parameter Requirements**: Read processor `initialize()` and `process()` methods
+3. **Understand Response Structure**: Check `prepareRow()` and output formatting
+4. **Trace Processor Inheritance**: Follow class hierarchy for base functionality
+
+### Common Processor Corrections
+- **Provider Queries**: Use `workspace/providers/getlist` not `workspace/packages/providers/get`
+- **Remote Packages**: Use `workspace/packages/rest/getlist` not `workspace/packages/providers/packages`
+- **Package Lists**: Use `workspace/packages/getlist` for local package operations

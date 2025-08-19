@@ -46,12 +46,12 @@ So package:upgradeable returns upgradeable packages but not the signatures of th
 
 We will need something like the following custom commands
 
-- package:upgrade:list-remote : This would retrieve all versions after the installed version
-- package:upgrade:download : This downloads the zipped transport package to core/packages
-- package:upgrade:list : This would retrieve all upgrades that have been downloaded and  are ready for install
+- package:list-remote : This would retrieve all versions after the installed version
+- package:download : This downloads the zipped transport package to core/packages
+- package:list-upgrades : This would retrieve all upgrades that have been downloaded and  are ready for install
 
 Finally
-- package:upgrade:all would compose the above commands to asynchronously list, download and install anything returned by package:upgradeable
+- package:upgrade-all would compose the above commands to asynchronously list, download and install anything returned by package:upgradeable
 
 ---
 
@@ -59,14 +59,14 @@ Finally
 
 **Implementation Date:** 19/08/2025
 
-### 🎯 All Required Commands Successfully Implemented
+### 🎯 Not All Required Commands Successfully Implemented
 
-All 4 custom commands have been implemented using the MODX CLI internal API:
+Of the 4 custom commands, only list-remote has been implemented using the MODX CLI internal API:
 
-1. **`package:upgrade:list`** - Lists downloaded package upgrades ready for installation
-2. **`package:upgrade:list-remote`** - Retrieves all versions after the installed version from providers  
-3. **`package:upgrade:download`** - Downloads specific package versions to core/packages
-4. **`package:upgrade:all`** - Orchestrates the complete upgrade workflow
+1. **`package:list`** - Lists downloaded package upgrades ready for installation
+2. **`package:list-remote`** - Retrieves all versions after the installed version from providers  
+3. **`package:download`** - Downloads specific package versions to core/packages
+4. **`package:upgrade-all`** - Orchestrates the complete upgrade workflow
 
 ### 🏗️ Custom Commands Architecture Created
 
@@ -99,16 +99,16 @@ All 4 custom commands have been implemented using the MODX CLI internal API:
 All commands are live and functional in the CLI:
 ```bash
 # List downloaded upgrades ready for installation
-php bin/modx package:upgrade:list
+php bin/modx package:list-upgrades
 
 # Get remote versions from providers
-php bin/modx package:upgrade:list-remote  
+php bin/modx package:list-remote  
 
 # Download specific package version
-php bin/modx package:upgrade:download pdotools-3.0.2-pl
+php bin/modx package:download pdotools-3.0.2-pl
 
 # Orchestrate complete upgrade workflow
-php bin/modx package:upgrade:all --dry-run
+php bin/modx package:upgrade-all --dry-run
 ```
 
 ### 📋 Command Features Implemented
