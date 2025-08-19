@@ -18,7 +18,7 @@ class ClosureCommandTest extends TestCase
         
         $command = new ClosureCommand($name, $closure);
         
-        $input = new ArrayInput(['command' => $name]);
+        $input = new ArrayInput([]);
         $output = new BufferedOutput();
         
         $result = $command->run($input, $output);
@@ -35,7 +35,7 @@ class ClosureCommandTest extends TestCase
         
         $command = new ClosureCommand($name, $closure);
         
-        $input = new ArrayInput(['command' => $name]);
+        $input = new ArrayInput([]);
         $output = new BufferedOutput();
         
         $result = $command->run($input, $output);
@@ -57,7 +57,6 @@ class ClosureCommandTest extends TestCase
         $command->addArgument('arg2', \Symfony\Component\Console\Input\InputArgument::OPTIONAL);
         
         $input = new ArrayInput([
-            'command' => $name,
             'arg1' => 'value1',
             'arg2' => 'value2'
         ]);
@@ -81,7 +80,6 @@ class ClosureCommandTest extends TestCase
         $command->addOption('option', null, \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL);
         
         $input = new ArrayInput([
-            'command' => $name,
             '--option' => 'value'
         ]);
         $output = new BufferedOutput();
@@ -107,7 +105,7 @@ class ClosureCommandTest extends TestCase
         $command = new ClosureCommand($name, $closure);
         $command->setBeforeInvoke($beforeInvoke);
         
-        $input = new ArrayInput(['command' => $name]);
+        $input = new ArrayInput([]);
         $output = new BufferedOutput();
         
         $command->run($input, $output);
@@ -133,7 +131,7 @@ class ClosureCommandTest extends TestCase
         $command = new ClosureCommand($name, $closure);
         $command->setAfterInvoke($afterInvoke);
         
-        $input = new ArrayInput(['command' => $name]);
+        $input = new ArrayInput([]);
         $output = new BufferedOutput();
         
         $command->run($input, $output);
@@ -164,7 +162,7 @@ class ClosureCommandTest extends TestCase
         $command->setBeforeInvoke($beforeInvoke);
         $command->setAfterInvoke($afterInvoke);
         
-        $input = new ArrayInput(['command' => $name]);
+        $input = new ArrayInput([]);
         $output = new BufferedOutput();
         
         $command->run($input, $output);
@@ -183,7 +181,7 @@ class ClosureCommandTest extends TestCase
         
         $command = new ClosureCommand($name, $closure);
         
-        $input = new ArrayInput(['command' => $name]);
+        $input = new ArrayInput([]);
         $output = new BufferedOutput();
         
         $command->run($input, $output);
@@ -200,11 +198,41 @@ class ClosureCommandTest extends TestCase
         
         $command = new ClosureCommand($name, $closure);
         
-        $input = new ArrayInput(['command' => $name]);
+        $input = new ArrayInput([]);
         $output = new BufferedOutput();
         
         $result = $command->run($input, $output);
         
         $this->assertEquals(0, $result); // Should default to 0 for non-integer returns
+    }
+    
+    // NEW TDD TESTS FOR ARGUMENT CONFLICT FIX
+    public function testClosureCommandDoesNotAddCommandArgument()
+    {
+        $closure = function($args, $options) { return 0; };
+        $command = new ClosureCommand('test:command', $closure);
+        
+        // Should NOT have a manually added 'command' argument
+        $definition = $command->getDefinition();
+        $this->assertFalse($definition->hasArgument('command'));
+    }
+
+    public function testClosureCommandExecutesWithoutArgumentConflict()
+    {
+        $executed = false;
+        $closure = function($args, $options) use (&$executed) { 
+            $executed = true; 
+            return 0; 
+        };
+        
+        $command = new ClosureCommand('test:command', $closure);
+        
+        // Should execute without throwing "argument already exists" error
+        $input = new ArrayInput([]);
+        $output = new BufferedOutput();
+        
+        $result = $command->run($input, $output);
+        $this->assertEquals(0, $result);
+        $this->assertTrue($executed);
     }
 }
