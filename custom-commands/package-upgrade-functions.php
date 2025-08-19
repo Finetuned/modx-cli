@@ -360,15 +360,34 @@ function getRemoteVersionsForPackage($modx, $package)
     }
     
     try {
-        // Query the provider for packages
+        // First, get the provider details to understand how to query it
+        $providerResponse = $modx->runProcessor('workspace/packages/providers/get', [
+            'id' => $providerId
+        ]);
+        
+        if ($providerResponse->isError()) {
+            return [];
+        }
+        
+        $providerData = json_decode($providerResponse->getResponse(), true);
+        if (!isset($providerData['object'])) {
+            return [];
+        }
+        
+        $provider = $providerData['object'];
+        
+        // Use the correct processor to query remote packages from the provider
+        // This is the processor that actually queries the remote provider
         $response = $modx->runProcessor('workspace/packages/providers/packages', [
             'provider' => $providerId,
             'query' => $packageName,
-            'limit' => 50
+            'limit' => 50,
+            'start' => 0
         ]);
         
         if ($response->isError()) {
-            return [];
+            // If the remote query fails, try the alternative approach
+            return getRemoteVersionsAlternative($modx, $package);
         }
         
         $responseData = json_decode($response->getResponse(), true);
@@ -380,7 +399,7 @@ function getRemoteVersionsForPackage($modx, $package)
         $currentVersionParsed = parseVersion($currentVersion);
         
         foreach ($responseData['results'] as $remotePackage) {
-            // Match package name
+            // Match package name (case insensitive)
             if (strcasecmp($remotePackage['name'], $packageName) !== 0) {
                 continue;
             }
@@ -419,7 +438,7 @@ function getRemoteVersionsForPackage($modx, $package)
                 'current_release' => $currentVersionParsed['release'],
                 'available_versions' => $availableVersions,
                 'provider_id' => $providerId,
-                'provider_name' => getProviderName($modx, $providerId)
+                'provider_name' => $provider['name'] ?? "Provider {$providerId}"
             ]
         ];
         
