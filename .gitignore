@@ -3,7 +3,7 @@
 /.idea/
 /.vscode/
 /nbproject/
-/.DS_Store
+.DS_Store
 /modx-cli.phar
 /build/
 /var/
