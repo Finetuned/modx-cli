@@ -343,15 +343,16 @@ function getUpgradeablePackages($modx)
 }
 
 /**
- * Get remote versions for a specific package
+ * Get remote versions for a specific package using direct provider API
  * 
  * @param \MODX\Revolution\modX $modx
- * @param array $package
+ * @param array $package Package data from package:upgradeable
  * @return array
  */
 function getRemoteVersionsForPackage($modx, $package)
 {
     $packageName = $package['name'];
+    $currentSignature = $package['signature'];
     $currentVersion = $package['version'] . '-' . $package['release'];
     $providerId = $package['provider'] ?? null;
     
@@ -360,62 +361,60 @@ function getRemoteVersionsForPackage($modx, $package)
     }
     
     try {
-        // First, get the provider details to understand how to query it
-        $providerResponse = $modx->runProcessor('workspace/packages/providers/get', [
-            'id' => $providerId
-        ]);
-        
-        if ($providerResponse->isError()) {
+        // Load the actual package object to access the Provider relationship
+        $packageObject = $modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', array('signature' => $currentSignature));
+        if (!$packageObject) {
             return [];
         }
         
-        $providerData = json_decode($providerResponse->getResponse(), true);
-        if (!isset($providerData['object'])) {
+        // Get the provider object directly
+        /** @var \MODX\Revolution\Transport\modTransportProvider $provider */
+        $provider = $packageObject->getOne('Provider');
+        if (!$provider) {
             return [];
         }
         
-        $provider = $providerData['object'];
+        // Use the provider's latest() method to get live updates from the provider
+        // This is the same method used by checkForUpdates() in MODX core
+        $updates = $provider->latest($packageObject->get('signature'));
         
-        // Use the correct processor to query remote packages from the provider
-        // This is the processor that actually queries the remote provider
-        $response = $modx->runProcessor('workspace/packages/providers/packages', [
-            'provider' => $providerId,
-            'query' => $packageName,
-            'limit' => 50,
-            'start' => 0
-        ]);
-        
-        if ($response->isError()) {
-            // If the remote query fails, try the alternative approach
-            return getRemoteVersionsAlternative($modx, $package);
-        }
-        
-        $responseData = json_decode($response->getResponse(), true);
-        if (!isset($responseData['results'])) {
+        // If updates is a string, it means there was an error or no updates
+        if (is_string($updates) || empty($updates)) {
             return [];
         }
         
         $availableVersions = [];
         $currentVersionParsed = parseVersion($currentVersion);
         
-        foreach ($responseData['results'] as $remotePackage) {
-            // Match package name (case insensitive)
-            if (strcasecmp($remotePackage['name'], $packageName) !== 0) {
+        // Process the updates array returned by the provider
+        foreach ($updates as $update) {
+            // Extract version information from the update
+            $updateSignature = $update['signature'] ?? '';
+            if (empty($updateSignature)) {
                 continue;
             }
             
-            $remoteVersion = $remotePackage['version'] . '-' . $remotePackage['release'];
-            $remoteVersionParsed = parseVersion($remoteVersion);
+            // Parse the signature to get version info
+            $signatureParts = explode('-', $updateSignature);
+            if (count($signatureParts) < 3) {
+                continue;
+            }
             
-            // Only include versions newer than current
-            if (isNewerVersion($remoteVersion, $currentVersion)) {
+            $updateName = $signatureParts[0];
+            $updateVersion = $signatureParts[1];
+            $updateRelease = $signatureParts[2];
+            $updateVersionString = $updateVersion . '-' . $updateRelease;
+            
+            // Only include versions newer than current and matching package name
+            if (strcasecmp($updateName, $packageName) === 0 && isNewerVersion($updateVersionString, $currentVersion)) {
                 $availableVersions[] = [
-                    'version' => $remoteVersionParsed['version'],
-                    'release' => $remoteVersionParsed['release'],
-                    'signature' => $remotePackage['signature'] ?? ($packageName . '-' . $remoteVersion),
-                    'description' => $remotePackage['description'] ?? '',
-                    'author' => $remotePackage['author'] ?? '',
-                    'createdon' => $remotePackage['createdon'] ?? ''
+                    'version' => $updateVersion,
+                    'release' => $updateRelease,
+                    'signature' => $updateSignature,
+                    'description' => $update['description'] ?? '',
+                    'author' => $update['author'] ?? '',
+                    'createdon' => $update['createdon'] ?? '',
+                    'location' => $update['location'] ?? ''
                 ];
             }
         }
@@ -438,13 +437,14 @@ function getRemoteVersionsForPackage($modx, $package)
                 'current_release' => $currentVersionParsed['release'],
                 'available_versions' => $availableVersions,
                 'provider_id' => $providerId,
-                'provider_name' => $provider['name'] ?? "Provider {$providerId}"
+                'provider_name' => (string)($provider->get('name') ?? "Provider {$providerId}")
             ]
         ];
         
     } catch (Exception $e) {
-        // Fallback: try alternative provider query method
-        return getRemoteVersionsAlternative($modx, $package);
+        // Log the error for debugging
+        error_log("Error fetching remote versions for {$packageName}: " . $e->getMessage());
+        return [];
     }
 }
 
@@ -516,33 +516,64 @@ function renderUpgradesTable($upgrades)
 }
 
 /**
- * Render remote versions in table format
+ * Render remote versions in table format matching core commands
  * 
  * @param array $versions
  */
 function renderRemoteVersionsTable($versions)
 {
-    MODX_CLI::log('Remote Package Versions:');
-    MODX_CLI::log('');
+    // Flatten the data structure to match core command format
+    $flattenedData = [];
+    $totalCount = 0;
     
     foreach ($versions as $version) {
-        MODX_CLI::log("Package: {$version['name']}");
-        MODX_CLI::log("Current: {$version['current_version']}-{$version['current_release']}");
-        
         if (!empty($version['available_versions'])) {
-            MODX_CLI::log("Available versions:");
             foreach ($version['available_versions'] as $availableVersion) {
-                $versionString = $availableVersion['version'] . '-' . $availableVersion['release'];
-                $signature = $availableVersion['signature'];
-                MODX_CLI::log("  - {$versionString} ({$signature})");
+                $flattenedData[] = [
+                    'signature' => $availableVersion['signature'],
+                    'name' => $version['name'],
+                    'version' => $availableVersion['version'],
+                    'release' => $availableVersion['release'],
+                    'current_version' => $version['current_version'] . '-' . $version['current_release'],
+                    'provider' => $version['provider_name']
+                ];
+                $totalCount++;
             }
-        } else {
-            MODX_CLI::log("Available: No newer versions found");
         }
-        
-        MODX_CLI::log("Provider: {$version['provider_name']} (ID: {$version['provider_id']})");
-        MODX_CLI::log('');
     }
+    
+    if (empty($flattenedData)) {
+        MODX_CLI::log('No remote versions found for upgradeable packages');
+        return;
+    }
+    
+    // Use simple table rendering like the existing renderUpgradesTable function
+    $headers = ['signature', 'name', 'version', 'release', 'current_version', 'provider'];
+    $widths = [25, 15, 10, 10, 15, 12];
+    
+    // Header
+    $headerLine = '';
+    for ($i = 0; $i < count($headers); $i++) {
+        $headerLine .= str_pad($headers[$i], $widths[$i]);
+    }
+    MODX_CLI::log($headerLine);
+    MODX_CLI::log(str_repeat('-', array_sum($widths)));
+    
+    // Rows
+    foreach ($flattenedData as $row) {
+        $line = '';
+        $line .= str_pad($row['signature'], $widths[0]);
+        $line .= str_pad($row['name'], $widths[1]);
+        $line .= str_pad($row['version'], $widths[2]);
+        $line .= str_pad($row['release'], $widths[3]);
+        $line .= str_pad($row['current_version'], $widths[4]);
+        $line .= str_pad((string)$row['provider'], $widths[5]);
+        MODX_CLI::log($line);
+    }
+    
+    // Add pagination footer
+    MODX_CLI::log('');
+    MODX_CLI::log('displaying ' . count($flattenedData) . ' item(s) of ' . $totalCount);
 }
 
 /**
