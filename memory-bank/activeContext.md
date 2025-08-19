@@ -13,6 +13,7 @@
 - ✅ **COMPLETED**: Fixed resource:update null classKey error with comprehensive field mapping and safety defaults
 - ✅ **COMPLETED**: Created comprehensive unit tests for resource update functionality
 - ✅ **COMPLETED**: Task 11 - Package Upgrade Custom Commands using internal API
+- ✅ **COMPLETED**: Fixed custom command argument configuration issue
 - Continuing to fix remaining command issues
 - Improving error handling and user experience across all commands
 - Ensuring proper namespace usage throughout the codebase
