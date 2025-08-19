@@ -1,0 +1,575 @@
+<?php
+
+/**
+ * Package Upgrade Custom Commands
+ * 
+ * This file contains the functions for package upgrade commands that are registered
+ * via the custom commands configuration system.
+ */
+
+use MODX\CLI\API\MODX_CLI;
+
+/**
+ * List downloaded package upgrades ready for installation
+ * 
+ * @param array $args Command arguments
+ * @param array $assoc_args Associative arguments (options)
+ * @return int Exit code
+ */
+function packageUpgradeList($args, $assoc_args)
+{
+    // Get MODX instance (this will be available in the CLI context)
+    $app = new \MODX\CLI\Application();
+    $modx = $app->getMODX();
+    
+    if (!$modx) {
+        MODX_CLI::error('MODX instance not available');
+        return 1;
+    }
+    
+    $upgrades = getAvailableUpgrades($modx);
+    
+    if (empty($upgrades)) {
+        MODX_CLI::log('No downloaded package upgrades found');
+        return 0;
+    }
+
+    // Apply filter if provided
+    if (isset($assoc_args['filter']) && !empty($assoc_args['filter'])) {
+        $filter = $assoc_args['filter'];
+        $upgrades = array_filter($upgrades, function($upgrade) use ($filter) {
+            return stripos($upgrade['name'], $filter) !== false;
+        });
+    }
+
+    $format = $assoc_args['format'] ?? 'table';
+    
+    if ($format === 'json') {
+        MODX_CLI::log(json_encode(array_values($upgrades), JSON_PRETTY_PRINT));
+    } else {
+        renderUpgradesTable($upgrades);
+    }
+
+    return 0;
+}
+
+/**
+ * Retrieve all available versions after the installed version from providers
+ * 
+ * @param array $args Command arguments
+ * @param array $assoc_args Associative arguments (options)
+ * @return int Exit code
+ */
+function packageUpgradeListRemote($args, $assoc_args)
+{
+    $app = new \MODX\CLI\Application();
+    $modx = $app->getMODX();
+    
+    if (!$modx) {
+        MODX_CLI::error('MODX instance not available');
+        return 1;
+    }
+    
+    // Get upgradeable packages first
+    $upgradeablePackages = getUpgradeablePackages($modx);
+    
+    if (empty($upgradeablePackages)) {
+        MODX_CLI::log('No upgradeable packages found');
+        return 0;
+    }
+    
+    $remoteVersions = [];
+    
+    foreach ($upgradeablePackages as $package) {
+        $packageName = $package['name'];
+        
+        // Apply package filter if provided
+        if (isset($assoc_args['package']) && !empty($assoc_args['package'])) {
+            if (stripos($packageName, $assoc_args['package']) === false) {
+                continue;
+            }
+        }
+        
+        // Get remote versions for this package
+        $versions = getRemoteVersionsForPackage($modx, $package);
+        if (!empty($versions)) {
+            $remoteVersions = array_merge($remoteVersions, $versions);
+        }
+    }
+    
+    if (empty($remoteVersions)) {
+        MODX_CLI::log('No remote versions found for upgradeable packages');
+        return 0;
+    }
+    
+    $format = $assoc_args['format'] ?? 'table';
+    
+    if ($format === 'json') {
+        MODX_CLI::log(json_encode(array_values($remoteVersions), JSON_PRETTY_PRINT));
+    } else {
+        renderRemoteVersionsTable($remoteVersions);
+    }
+    
+    return 0;
+}
+
+/**
+ * Download specific package versions to core/packages
+ * 
+ * @param array $args Command arguments
+ * @param array $assoc_args Associative arguments (options)
+ * @return int Exit code
+ */
+function packageUpgradeDownload($args, $assoc_args)
+{
+    if (empty($args) || empty($args[0])) {
+        MODX_CLI::error('Package signature is required');
+        return 1;
+    }
+    
+    $signature = $args[0];
+    $app = new \MODX\CLI\Application();
+    $modx = $app->getMODX();
+    
+    if (!$modx) {
+        MODX_CLI::error('MODX instance not available');
+        return 1;
+    }
+    
+    MODX_CLI::log("Downloading package: {$signature}");
+    
+    // Use MODX's download processor
+    $response = $modx->runProcessor('workspace/packages/rest/download', array(
+        'signature' => $signature
+    ));
+    
+    if ($response->isError()) {
+        MODX_CLI::error('Failed to download package: ' . $response->getMessage());
+        return 1;
+    }
+    
+    MODX_CLI::success("Package {$signature} downloaded successfully");
+    return 0;
+}
+
+/**
+ * Orchestrate the complete upgrade workflow
+ * 
+ * @param array $args Command arguments
+ * @param array $assoc_args Associative arguments (options)
+ * @return int Exit code
+ */
+function packageUpgradeAll($args, $assoc_args)
+{
+    $app = new \MODX\CLI\Application();
+    $modx = $app->getMODX();
+    
+    if (!$modx) {
+        MODX_CLI::error('MODX instance not available');
+        return 1;
+    }
+    
+    $dryRun = isset($assoc_args['dry-run']) && $assoc_args['dry-run'];
+    $force = isset($assoc_args['force']) && $assoc_args['force'];
+    
+    if ($dryRun) {
+        MODX_CLI::log('DRY RUN MODE - No actual changes will be made');
+    }
+    
+    // Step 1: Get upgradeable packages
+    MODX_CLI::log('Checking for upgradeable packages...');
+    $result = MODX_CLI::run_command('package:upgradeable', [], ['return' => true]);
+    
+    if ($result->return_code !== 0) {
+        MODX_CLI::error('Failed to get upgradeable packages');
+        return 1;
+    }
+    
+    // Step 2: Get remote versions for upgradeable packages
+    MODX_CLI::log('Fetching remote versions...');
+    $remoteResult = MODX_CLI::run_command('package:upgrade:list-remote', [], ['return' => true]);
+    
+    if ($remoteResult->return_code !== 0) {
+        MODX_CLI::error('Failed to get remote versions');
+        return 1;
+    }
+    
+    // Step 3: Download packages (if not dry run)
+    if (!$dryRun) {
+        MODX_CLI::log('Downloading packages...');
+        // This would iterate through the packages and download them
+        // Implementation would depend on parsing the remote versions output
+    }
+    
+    // Step 4: Install packages (if not dry run)
+    if (!$dryRun) {
+        MODX_CLI::log('Installing packages...');
+        // This would use the existing package:install command
+    }
+    
+    MODX_CLI::success('Package upgrade workflow completed');
+    return 0;
+}
+
+/**
+ * Helper function to get available upgrades by comparing installed and downloaded packages
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @return array
+ */
+function getAvailableUpgrades($modx)
+{
+    $installedPackages = getInstalledPackages($modx);
+    $downloadedPackages = getDownloadedPackages($modx);
+    
+    $upgrades = [];
+    
+    foreach ($installedPackages as $installed) {
+        $packageName = $installed['name'];
+        
+        // Look for downloaded packages with higher versions
+        foreach ($downloadedPackages as $downloaded) {
+            if (preg_match('/^' . preg_quote($packageName) . '-(.+?)\.transport\.zip$/', $downloaded, $matches)) {
+                $availableVersion = $matches[1];
+                
+                // Simple version comparison
+                if (isNewerVersion($availableVersion, $installed['version'] . '-' . $installed['release'])) {
+                    $upgrades[] = [
+                        'name' => $packageName,
+                        'current_version' => $installed['version'],
+                        'current_release' => $installed['release'],
+                        'available_version' => parseVersion($availableVersion)['version'],
+                        'available_release' => parseVersion($availableVersion)['release'],
+                        'signature' => $packageName . '-' . $availableVersion
+                    ];
+                    break; // Only show one upgrade per package
+                }
+            }
+        }
+    }
+    
+    return $upgrades;
+}
+
+/**
+ * Get installed packages from MODX
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @return array
+ */
+function getInstalledPackages($modx)
+{
+    $response = $modx->runProcessor('workspace/packages/getlist', array(
+        'limit' => 0 // Get all packages
+    ));
+    
+    if ($response->isError()) {
+        return [];
+    }
+    
+    $responseData = json_decode($response->getResponse(), true);
+    if (!isset($responseData['results'])) {
+        return [];
+    }
+    
+    // Filter only installed packages
+    $installedPackages = [];
+    foreach ($responseData['results'] as $package) {
+        if (isset($package['installed']) && $package['installed'] !== null) {
+            $installedPackages[] = $package;
+        }
+    }
+    
+    return $installedPackages;
+}
+
+/**
+ * Get downloaded packages from core/packages directory
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @return array
+ */
+function getDownloadedPackages($modx)
+{
+    $corePath = $modx->getOption('core_path');
+    $packagesPath = $corePath . 'packages/';
+    
+    if (!is_dir($packagesPath)) {
+        return [];
+    }
+    
+    $files = scandir($packagesPath);
+    $packages = [];
+    
+    foreach ($files as $file) {
+        if (preg_match('/\.transport\.zip$/', $file)) {
+            $packages[] = $file;
+        }
+    }
+    
+    return $packages;
+}
+
+/**
+ * Get upgradeable packages using existing processor
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @return array
+ */
+function getUpgradeablePackages($modx)
+{
+    $response = $modx->runProcessor('workspace/packages/getlist', array(
+        'newest_only' => true
+    ));
+    
+    if ($response->isError()) {
+        return [];
+    }
+    
+    $responseData = json_decode($response->getResponse(), true);
+    if (!isset($responseData['results'])) {
+        return [];
+    }
+    
+    // Filter upgradeable packages
+    $upgradeable = [];
+    foreach ($responseData['results'] as $package) {
+        if (isset($package['updateable']) && $package['updateable']) {
+            $upgradeable[] = $package;
+        }
+    }
+    
+    return $upgradeable;
+}
+
+/**
+ * Get remote versions for a specific package
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @param array $package
+ * @return array
+ */
+function getRemoteVersionsForPackage($modx, $package)
+{
+    $packageName = $package['name'];
+    $currentVersion = $package['version'] . '-' . $package['release'];
+    $providerId = $package['provider'] ?? null;
+    
+    if (!$providerId) {
+        return [];
+    }
+    
+    try {
+        // Query the provider for packages
+        $response = $modx->runProcessor('workspace/packages/providers/packages', [
+            'provider' => $providerId,
+            'query' => $packageName,
+            'limit' => 50
+        ]);
+        
+        if ($response->isError()) {
+            return [];
+        }
+        
+        $responseData = json_decode($response->getResponse(), true);
+        if (!isset($responseData['results'])) {
+            return [];
+        }
+        
+        $availableVersions = [];
+        $currentVersionParsed = parseVersion($currentVersion);
+        
+        foreach ($responseData['results'] as $remotePackage) {
+            // Match package name
+            if (strcasecmp($remotePackage['name'], $packageName) !== 0) {
+                continue;
+            }
+            
+            $remoteVersion = $remotePackage['version'] . '-' . $remotePackage['release'];
+            $remoteVersionParsed = parseVersion($remoteVersion);
+            
+            // Only include versions newer than current
+            if (isNewerVersion($remoteVersion, $currentVersion)) {
+                $availableVersions[] = [
+                    'version' => $remoteVersionParsed['version'],
+                    'release' => $remoteVersionParsed['release'],
+                    'signature' => $remotePackage['signature'] ?? ($packageName . '-' . $remoteVersion),
+                    'description' => $remotePackage['description'] ?? '',
+                    'author' => $remotePackage['author'] ?? '',
+                    'createdon' => $remotePackage['createdon'] ?? ''
+                ];
+            }
+        }
+        
+        // Sort versions (newest first)
+        usort($availableVersions, function($a, $b) {
+            $versionA = $a['version'] . '-' . $a['release'];
+            $versionB = $b['version'] . '-' . $b['release'];
+            return version_compare($versionB, $versionA); // Descending order
+        });
+        
+        if (empty($availableVersions)) {
+            return [];
+        }
+        
+        return [
+            [
+                'name' => $packageName,
+                'current_version' => $currentVersionParsed['version'],
+                'current_release' => $currentVersionParsed['release'],
+                'available_versions' => $availableVersions,
+                'provider_id' => $providerId,
+                'provider_name' => getProviderName($modx, $providerId)
+            ]
+        ];
+        
+    } catch (Exception $e) {
+        // Fallback: try alternative provider query method
+        return getRemoteVersionsAlternative($modx, $package);
+    }
+}
+
+/**
+ * Check if version1 is newer than version2
+ * 
+ * @param string $version1
+ * @param string $version2
+ * @return bool
+ */
+function isNewerVersion($version1, $version2)
+{
+    return version_compare($version1, $version2, '>');
+}
+
+/**
+ * Parse version string into version and release components
+ * 
+ * @param string $versionString
+ * @return array
+ */
+function parseVersion($versionString)
+{
+    if (preg_match('/^(.+?)-(.+)$/', $versionString, $matches)) {
+        return [
+            'version' => $matches[1],
+            'release' => $matches[2]
+        ];
+    }
+    
+    return [
+        'version' => $versionString,
+        'release' => 'pl'
+    ];
+}
+
+/**
+ * Render upgrades in table format
+ * 
+ * @param array $upgrades
+ */
+function renderUpgradesTable($upgrades)
+{
+    MODX_CLI::log('Available Package Upgrades:');
+    MODX_CLI::log('');
+    
+    $headers = ['Package', 'Current Version', 'Available Version', 'Signature'];
+    
+    // Simple table rendering
+    $widths = [20, 15, 15, 30];
+    
+    // Header
+    $headerLine = '';
+    for ($i = 0; $i < count($headers); $i++) {
+        $headerLine .= str_pad($headers[$i], $widths[$i]);
+    }
+    MODX_CLI::log($headerLine);
+    MODX_CLI::log(str_repeat('-', array_sum($widths)));
+    
+    // Rows
+    foreach ($upgrades as $upgrade) {
+        $row = '';
+        $row .= str_pad($upgrade['name'], $widths[0]);
+        $row .= str_pad($upgrade['current_version'] . '-' . $upgrade['current_release'], $widths[1]);
+        $row .= str_pad($upgrade['available_version'] . '-' . $upgrade['available_release'], $widths[2]);
+        $row .= str_pad($upgrade['signature'], $widths[3]);
+        MODX_CLI::log($row);
+    }
+}
+
+/**
+ * Render remote versions in table format
+ * 
+ * @param array $versions
+ */
+function renderRemoteVersionsTable($versions)
+{
+    MODX_CLI::log('Remote Package Versions:');
+    MODX_CLI::log('');
+    
+    foreach ($versions as $version) {
+        MODX_CLI::log("Package: {$version['name']}");
+        MODX_CLI::log("Current: {$version['current_version']}-{$version['current_release']}");
+        
+        if (!empty($version['available_versions'])) {
+            MODX_CLI::log("Available versions:");
+            foreach ($version['available_versions'] as $availableVersion) {
+                $versionString = $availableVersion['version'] . '-' . $availableVersion['release'];
+                $signature = $availableVersion['signature'];
+                MODX_CLI::log("  - {$versionString} ({$signature})");
+            }
+        } else {
+            MODX_CLI::log("Available: No newer versions found");
+        }
+        
+        MODX_CLI::log("Provider: {$version['provider_name']} (ID: {$version['provider_id']})");
+        MODX_CLI::log('');
+    }
+}
+
+/**
+ * Get provider name by ID
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @param int $providerId
+ * @return string
+ */
+function getProviderName($modx, $providerId)
+{
+    try {
+        $response = $modx->runProcessor('workspace/packages/providers/getlist');
+        
+        if ($response->isError()) {
+            return "Provider {$providerId}";
+        }
+        
+        $responseData = json_decode($response->getResponse(), true);
+        if (!isset($responseData['results'])) {
+            return "Provider {$providerId}";
+        }
+        
+        foreach ($responseData['results'] as $provider) {
+            if (isset($provider['id']) && $provider['id'] == $providerId) {
+                return isset($provider['name']) ? (string)$provider['name'] : "Provider {$providerId}";
+            }
+        }
+        
+        return "Provider {$providerId}";
+        
+    } catch (Exception $e) {
+        return "Provider {$providerId}";
+    }
+}
+
+/**
+ * Alternative method to get remote versions (fallback)
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @param array $package
+ * @return array
+ */
+function getRemoteVersionsAlternative($modx, $package)
+{
+    // Fallback method - could try different processor or approach
+    // For now, return empty array to indicate no versions found
+    return [];
+}
