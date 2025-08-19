@@ -70,12 +70,25 @@ function loadCustomCommands()
             $functionName = $commandConfig['function'];
             $description = $commandConfig['description'] ?? '';
             
+            // Prepare command arguments for registration
+            $commandArgs = [
+                'shortdesc' => $description,
+                'longdesc' => $description,
+            ];
+            
+            // Add arguments configuration if present
+            if (isset($commandConfig['arguments'])) {
+                $commandArgs['arguments'] = $commandConfig['arguments'];
+            }
+            
+            // Add options configuration if present
+            if (isset($commandConfig['options'])) {
+                $commandArgs['options'] = $commandConfig['options'];
+            }
+            
             // Register the command with the internal API
             if (class_exists('MODX\CLI\API\MODX_CLI')) {
-                \MODX\CLI\API\MODX_CLI::add_command($commandName, $functionName, [
-                    'shortdesc' => $description,
-                    'longdesc' => $description,
-                ]);
+                \MODX\CLI\API\MODX_CLI::add_command($commandName, $functionName, $commandArgs);
             }
         }
     }

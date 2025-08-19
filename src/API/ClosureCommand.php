@@ -5,6 +5,8 @@ namespace MODX\CLI\API;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * A command that wraps a closure
@@ -26,16 +28,36 @@ class ClosureCommand extends Command implements HookableCommand
      */
     private $afterInvoke;
 
+    /**
+     * @var array Arguments configuration
+     */
+    private $argumentsConfig = [];
+
+    /**
+     * @var array Options configuration
+     */
+    private $optionsConfig = [];
+
 /**
  * Create a new closure command
  *
  * @param string $name The command name
  * @param callable $closure The closure to execute
+ * @param array $config Optional configuration for arguments and options
  */
-    public function __construct($name, callable $closure)
+    public function __construct($name, callable $closure, array $config = [])
     {
         parent::__construct($name);
         $this->closure = $closure;
+        
+        // Store configuration
+        if (isset($config['arguments'])) {
+            $this->argumentsConfig = $config['arguments'];
+        }
+        if (isset($config['options'])) {
+            $this->optionsConfig = $config['options'];
+        }
+        
         $this->configure();
     }
 
@@ -45,8 +67,39 @@ class ClosureCommand extends Command implements HookableCommand
     protected function configure()
     {
         parent::configure();
-        // Remove the manual 'command' argument addition
-        // Symfony Console handles command routing automatically
+        
+        // Configure arguments from config
+        foreach ($this->argumentsConfig as $argument) {
+            $mode = InputArgument::OPTIONAL;
+            if (isset($argument['required']) && $argument['required']) {
+                $mode = InputArgument::REQUIRED;
+            }
+            
+            $this->addArgument(
+                $argument['name'],
+                $mode,
+                $argument['description'] ?? '',
+                $argument['default'] ?? null
+            );
+        }
+        
+        // Configure options from config
+        foreach ($this->optionsConfig as $option) {
+            $mode = InputOption::VALUE_OPTIONAL;
+            if (isset($option['required']) && $option['required']) {
+                $mode = InputOption::VALUE_REQUIRED;
+            } elseif (isset($option['flag']) && $option['flag']) {
+                $mode = InputOption::VALUE_NONE;
+            }
+            
+            $this->addOption(
+                $option['name'],
+                $option['shortcut'] ?? null,
+                $mode,
+                $option['description'] ?? '',
+                $option['default'] ?? null
+            );
+        }
     }
 
     /**
