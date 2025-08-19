@@ -21,6 +21,7 @@
 - ✅ Standardize command naming convention (`:getlist` to `:list`)
 - ✅ Add an internal API like WP-CLI
 - ✅ Add launch.json to manually debug commands
+- ✅ Task 11 - Package Upgrade Custom Commands using internal API
 - Implement self-update functionality
 - Add TAB completions
 - Add missing CRUD commands for context and source

@@ -12,6 +12,7 @@
 - ✅ **COMPLETED**: Updated all documentation to reflect the fixes
 - ✅ **COMPLETED**: Fixed resource:update null classKey error with comprehensive field mapping and safety defaults
 - ✅ **COMPLETED**: Created comprehensive unit tests for resource update functionality
+- ✅ **COMPLETED**: Task 11 - Package Upgrade Custom Commands using internal API
 - Continuing to fix remaining command issues
 - Improving error handling and user experience across all commands
 - Ensuring proper namespace usage throughout the codebase
@@ -81,6 +82,21 @@
   - Load settings from MODX when available
   - Save settings to MODX system settings
   - Ensure items are empty when no MODX instance is available
+
+- **Task 11 - Package Upgrade Custom Commands Implementation:**
+  - Created a comprehensive custom commands system using YAML configuration
+  - Implemented all 4 required package upgrade commands using the internal API:
+    - `package:upgrade:list` - Lists downloaded package upgrades ready for installation
+    - `package:upgrade:list-remote` - Retrieves all versions after installed version from providers
+    - `package:upgrade:download` - Downloads specific package versions to core/packages
+    - `package:upgrade:all` - Orchestrates the complete upgrade workflow
+  - Built extensible architecture with `custom-commands/config.yml` for universal command configuration
+  - Modified `src/bootstrap.php` to auto-load custom commands using Symfony YAML parser
+  - Created `custom-commands/package-upgrade-functions.php` with reusable command logic
+  - Implemented comprehensive test suite with 9 tests and 27 assertions (all passing)
+  - Added complete documentation in `custom-commands/README.md`
+  - Commands are stored outside compiled phar and auto-registered on startup
+  - Supports JSON output, filtering, dry-run mode, and comprehensive error handling
 
 ## Next steps
 
