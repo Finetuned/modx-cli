@@ -122,12 +122,13 @@ function packageUpgradeListRemote($args, $assoc_args)
  */
 function packageUpgradeDownload($args, $assoc_args)
 {
-    if (empty($args) || empty($args[0])) {
+    // Get signature argument (arguments are passed as associative array with argument names as keys)
+    $signature = $args['signature'] ?? null;
+    
+    if (empty($signature)) {
         MODX_CLI::error('Package signature is required');
         return 1;
     }
-    
-    $signature = $args[0];
     $app = new \MODX\CLI\Application();
     $modx = $app->getMODX();
     
