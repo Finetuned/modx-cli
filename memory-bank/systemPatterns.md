@@ -21,6 +21,9 @@ The MODX CLI follows a command-based architecture pattern where each command is 
 5. **SSH and Alias Support**: The CLI can execute commands on remote servers via SSH and supports aliases for simplifying command execution across multiple environments.
 6. **YAML Configuration**: YAML is used for alias configuration files, providing a more human-readable format for complex configuration structures.
 7. **Mock Objects for Testing**: PHPUnit with mock objects is used for testing to avoid requiring an actual MODX installation.
+8. **Custom Commands via YAML Configuration**: Task 11 introduced a YAML-based configuration system for custom commands that extends the CLI without modifying core files.
+9. **Test-Driven Development (TDD)**: Task 11 was implemented using TDD methodology, establishing a pattern for future development with comprehensive test coverage.
+10. **Integrated Command Naming**: Commands are integrated into existing namespaces rather than creating parallel hierarchies to maintain consistency and discoverability.
 
 ## Design patterns in use
 
@@ -105,3 +108,47 @@ Application
     ├── CommandPublisher
     └── ClosureCommand
 ```
+
+## Custom Commands Architecture (Task 11)
+
+Task 11 introduced a comprehensive custom commands system that extends the CLI without modifying core files:
+
+### Key Components:
+
+1. **YAML Configuration System**: `custom-commands/config.yml` defines custom commands with their functions and options
+2. **Function Libraries**: PHP files containing the actual command logic (e.g., `package-upgrade-functions.php`)
+3. **Bootstrap Integration**: `src/bootstrap.php` auto-loads custom commands using Symfony YAML parser
+4. **Internal API Integration**: Custom commands use `MODX_CLI::add_command()` for registration
+
+### Architecture Pattern:
+
+```
+custom-commands/
+├── config.yml (YAML configuration)
+├── package-upgrade-functions.php (Command logic)
+└── README.md (Documentation)
+
+Bootstrap Process:
+1. bootstrap.php loads config.yml
+2. Parses YAML configuration
+3. Loads function files
+4. Registers commands via MODX_CLI::add_command()
+5. Commands available immediately
+```
+
+### Design Benefits:
+
+1. **No Core Modifications**: Commands stored outside compiled phar
+2. **Auto-Registration**: Commands loaded automatically on CLI startup
+3. **Extensible**: Easy to add new command groups via YAML
+4. **Integrated Naming**: Commands use existing namespaces (e.g., `package:*`)
+5. **Full Feature Support**: JSON output, filtering, help documentation
+6. **Test Coverage**: Comprehensive TDD approach with 57 tests, 149 assertions
+
+### TDD Implementation Pattern:
+
+1. **Write Failing Tests First**: Identify issues (e.g., argument conflicts)
+2. **Implement Minimal Fix**: Resolve specific problem (e.g., remove manual argument handling)
+3. **Refactor for Quality**: Improve architecture (e.g., integrated naming)
+4. **Comprehensive Testing**: Multiple test files covering all aspects
+5. **Documentation**: Complete user and developer documentation

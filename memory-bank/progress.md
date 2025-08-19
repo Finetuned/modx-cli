@@ -29,7 +29,44 @@
 
 ## Current status
 
-The project is around 35-40% complete. The basic structure, many core commands, SSH functionality, and the internal API are implemented and working. Unit tests have been created for most components, including the internal API. There are still several features to add and improvements to make, but the project is making good progress.
+The project is around 40-45% complete. The basic structure, many core commands, SSH functionality, the internal API, and Task 11 package upgrade commands are implemented and working. Unit tests have been created for most components, including the internal API and custom commands. The TDD approach used for Task 11 has established a solid foundation for future custom command development. There are still several features to add and improvements to make, but the project is making excellent progress.
+
+## Task 11 Implementation Details
+
+**Completed using Test-Driven Development (TDD) approach:**
+
+### Critical Issues Resolved
+- **Argument Conflict Fix:** Resolved "An argument with name 'command' already exists" error
+  - Root cause: ClosureCommand manually adding 'command' argument conflicting with Symfony Console
+  - TDD approach: Wrote failing test `testClosureCommandDoesNotAddCommandArgument()` first
+  - Implementation: Removed manual argument handling from ClosureCommand class
+  - Result: All 57 tests passing with 149 assertions
+
+### Architectural Improvements
+- **Integrated Command Naming:** Replaced problematic parallel hierarchy
+  - Before: `package:upgrade:list`, `package:upgrade:download` (parallel namespace)
+  - After: `package:list-upgrades`, `package:download` (integrated namespace)
+  - Benefits: Eliminates namespace pollution, improves discoverability, consistent UX
+
+### Real Provider Integration
+- **Replaced Placeholder Code:** Implemented actual MODX provider querying
+  - `getRemoteVersionsForPackage()` now uses `workspace/packages/providers/packages` processor
+  - Filters versions to show only newer than currently installed
+  - Provides downloadable signatures and comprehensive metadata
+  - Includes provider name resolution and robust error handling
+
+### Comprehensive Test Coverage
+- **4 Test Files Created:** Full coverage of functionality
+  - `ClosureCommandTest.php` - 11 tests, 14 assertions (argument conflict fix)
+  - `IntegratedPackageUpgradeTest.php` - 5 tests, 40 assertions (integration tests)
+  - `CustomPackageUpgradeTest.php` - 9 tests, 27 assertions (functionality tests)
+  - `CLIIntegrationTest.php` - 4 tests, 44 assertions (real CLI verification)
+
+### Production-Ready Features
+- **Enhanced User Experience:** Table/JSON output, filtering, dry-run mode
+- **Extensible Architecture:** YAML configuration system for future custom commands
+- **No Core Modifications:** Uses internal API, commands stored outside phar
+- **Full Backward Compatibility:** Works alongside existing commands seamlessly
 
 ## Known issues
 

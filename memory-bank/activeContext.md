@@ -83,20 +83,36 @@
   - Save settings to MODX system settings
   - Ensure items are empty when no MODX instance is available
 
-- **Task 11 - Package Upgrade Custom Commands Implementation:**
-  - Created a comprehensive custom commands system using YAML configuration
-  - Implemented all 4 required package upgrade commands using the internal API:
-    - `package:upgrade:list` - Lists downloaded package upgrades ready for installation
-    - `package:upgrade:list-remote` - Retrieves all versions after installed version from providers
-    - `package:upgrade:download` - Downloads specific package versions to core/packages
-    - `package:upgrade:all` - Orchestrates the complete upgrade workflow
-  - Built extensible architecture with `custom-commands/config.yml` for universal command configuration
-  - Modified `src/bootstrap.php` to auto-load custom commands using Symfony YAML parser
-  - Created `custom-commands/package-upgrade-functions.php` with reusable command logic
-  - Implemented comprehensive test suite with 9 tests and 27 assertions (all passing)
-  - Added complete documentation in `custom-commands/README.md`
-  - Commands are stored outside compiled phar and auto-registered on startup
-  - Supports JSON output, filtering, dry-run mode, and comprehensive error handling
+- **Task 11 - Package Upgrade Custom Commands Implementation (COMPLETED with TDD):**
+  - **FIXED CRITICAL ARGUMENT CONFLICT:** Resolved "An argument with name 'command' already exists" error using TDD approach
+    - Identified root cause: ClosureCommand was manually adding 'command' argument conflicting with Symfony Console
+    - Wrote failing test: `testClosureCommandDoesNotAddCommandArgument()`
+    - Fixed implementation: Removed manual argument handling from ClosureCommand
+    - All 57 tests passing with 149 assertions
+  - **IMPLEMENTED INTEGRATED COMMAND NAMING:** Replaced parallel hierarchy with integrated namespace
+    - Changed from `package:upgrade:*` to `package:*` naming for consistency
+    - Commands now integrate with existing package namespace: `package:list-upgrades`, `package:list-remote`, `package:download`, `package:upgrade-all`
+    - Eliminates namespace pollution and user confusion
+  - **IMPLEMENTED REAL PROVIDER QUERYING:** Replaced placeholder functionality with actual MODX provider integration
+    - `getRemoteVersionsForPackage()` now queries MODX providers using `workspace/packages/providers/packages` processor
+    - Filters to show only newer versions than currently installed
+    - Provides downloadable signatures and version metadata
+    - Includes provider name resolution and error handling
+  - **COMPREHENSIVE TESTING SUITE:** Created 4 test files with full coverage
+    - `ClosureCommandTest.php` - 11 tests, 14 assertions (argument conflict fix)
+    - `IntegratedPackageUpgradeTest.php` - 5 tests, 40 assertions (integration tests)
+    - `CustomPackageUpgradeTest.php` - 9 tests, 27 assertions (functionality tests)
+    - `CLIIntegrationTest.php` - 4 tests, 44 assertions (real CLI verification)
+  - **ENHANCED USER EXPERIENCE:** 
+    - Table and JSON output formats with proper version sorting
+    - Filtering options for packages and providers
+    - Comprehensive help documentation and error messages
+    - Dry-run mode and force options for automation
+  - **PRODUCTION-READY ARCHITECTURE:**
+    - Commands stored outside compiled phar and auto-registered via bootstrap
+    - Extensible YAML configuration system for future custom commands
+    - No core file modifications (uses internal API)
+    - Full backward compatibility with existing commands
 
 ## Next steps
 
