@@ -1,0 +1,57 @@
+# Custom Commands Configuration
+# This file defines all custom commands that extend MODX CLI functionality
+
+custom_commands:
+  # Package Upgrade Commands - Integrated with existing package: namespace
+  package_upgrade:
+    functions_file: "package-upgrade-functions.php"
+    commands:
+      package:list-upgrades:
+        function: packageUpgradeList
+        description: "List downloaded package upgrades ready for installation"
+        options:
+          - name: filter
+            description: "Filter packages by name pattern"
+          - name: format
+            description: "Output format (table, json)"
+            default: table
+      
+      package:list-remote:
+        function: packageUpgradeListRemote
+        description: "Retrieve all available versions after the installed version"
+        options:
+          - name: package
+            description: "Filter by specific package name"
+          - name: provider
+            description: "Filter by specific provider"
+          - name: format
+            description: "Output format (table, json)"
+            default: table
+      
+      package:download:
+        function: packageUpgradeDownload
+        description: "Download specific package versions to core/packages"
+        arguments:
+          - name: signature
+            required: true
+            description: "Package signature to download (e.g., pdotools-3.0.2-pl)"
+        options:
+          - name: force
+            description: "Overwrite existing downloads"
+          - name: verify
+            description: "Verify download integrity"
+      
+      package:upgrade-all:
+        function: packageUpgradeAll
+        description: "Orchestrate the complete upgrade workflow"
+        options:
+          - name: packages
+            description: "Comma-separated list of packages to upgrade"
+          - name: dry-run
+            description: "Show what would be upgraded without doing it"
+          - name: force
+            description: "Skip confirmation prompts"
+          - name: async
+            description: "Download packages asynchronously"
+          - name: backup
+            description: "Create backup before upgrading"
