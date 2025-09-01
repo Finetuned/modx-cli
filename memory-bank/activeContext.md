@@ -14,6 +14,7 @@
 - ✅ **COMPLETED**: Created comprehensive unit tests for resource update functionality
 - ✅ **COMPLETED**: Task 11 - Package Upgrade Custom Commands using internal API
 - ✅ **COMPLETED**: Fixed custom command argument configuration issue
+- ✅ **COMPLETED**: Fixed package:list-remote limit functionality
 - Continuing to fix remaining command issues
 - Improving error handling and user experience across all commands
 - Ensuring proper namespace usage throughout the codebase
@@ -114,6 +115,16 @@
     - Extensible YAML configuration system for future custom commands
     - No core file modifications (uses internal API)
     - Full backward compatibility with existing commands
+
+- **Fixed package:list-remote limit functionality:**
+  - **ISSUE:** The `package:list-remote` command was only checking the first 10 packages due to missing limit parameter in processor call
+  - **ROOT CAUSE:** `getUpgradeablePackages()` function called `workspace/packages/getlist` processor without specifying limit, defaulting to system limit (typically 10)
+  - **SOLUTION:** Added limit parameter support following the same pattern as other list commands:
+    - Modified `packageUpgradeListRemote()` to accept `--limit` option (default: 0 for no limit)
+    - Updated `getUpgradeablePackages()` to accept and pass limit parameter to processor
+    - Added `--limit` option to command configuration in `custom-commands/config.yml`
+    - Maintained consistency with existing `package:list` command patterns
+  - **VERIFICATION:** Command now shows `--limit[=LIMIT]` option in help output and properly processes all packages when limit=0
 
 ## Next steps
 
