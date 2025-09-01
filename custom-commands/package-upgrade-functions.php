@@ -70,8 +70,11 @@ function packageUpgradeListRemote($args, $assoc_args)
         return 1;
     }
     
-    // Get upgradeable packages first
-    $upgradeablePackages = getUpgradeablePackages($modx);
+    // Get limit parameter (default to 0 for no limit, matching other list commands)
+    $limit = isset($assoc_args['limit']) ? (int)$assoc_args['limit'] : 0;
+    
+    // Get upgradeable packages first with limit support
+    $upgradeablePackages = getUpgradeablePackages($modx, $limit);
     
     if (empty($upgradeablePackages)) {
         MODX_CLI::log('No upgradeable packages found');
@@ -137,12 +140,50 @@ function packageUpgradeDownload($args, $assoc_args)
         return 1;
     }
     
-    MODX_CLI::log("Downloading package: {$signature}");
+    // Manually added
+    /**
+     * The backend goes through a number of steps to get the updates. 
+     * Processors/SoftwareUpdate/GetList->process()
+     * Processors/SoftwareUpdate/GetList->getExtrasUpdates()
+     * then calls modTransportProvider->latest
+     */
+    // Rest\\Download initialize requires an info argument containing string: location::signature so we need the provider package location. However we actually need the existing package signature to get the provider!
+    $upgradeablePackages = getUpgradeablePackages($modx);
+
+    //find the package in the array using the package signature
+    $currentPackageSignature = findSignatureByPackageName($upgradeablePackages,  $signature);
+
+    $packageObject = getPackageObject($modx, $currentPackageSignature);
+     if (!$packageObject) {
+            MODX_CLI::error('Failed to retrieve package object from signature: ' . $signature); 
+            return 1;
+        }
+        
+    // Get the provider object 
+    /** @var \MODX\Revolution\Transport\modTransportProvider $provider */
+    $provider = getProviderFromPackageObject($packageObject);
+    if (!$provider) {
+        MODX_CLI::error('Failed to retrieve provider from package object with signature: ' . $currentPackageSignature); 
+        return 1;
+    }
+
+    // fetch the latest version details from the provider
+    $latest = $provider->latest($packageObject->get('signature'));
+
+    if (!count($latest)){
+        MODX_CLI::error('Failed to retrieve package data from provider service url using signature: ' . $signature); 
+        return 1;
+    }
+    $uri = $latest[0]['location'];
+    // end added
+
+    MODX_CLI::log("Downloading package: {$uri}::{$signature}");
     
     // Use MODX's download processor
     $response = $modx->runProcessor('workspace/packages/rest/download', array(
-        'signature' => $signature
+        'info' => $uri . "::" . $signature
     ));
+    
     
     if ($response->isError()) {
         MODX_CLI::error('Failed to download package: ' . $response->getMessage());
@@ -260,6 +301,8 @@ function getAvailableUpgrades($modx)
  */
 function getInstalledPackages($modx)
 {
+    $packages = $modx->call(modTransportPackage::class, 'listPackages', [$modx, 1]);
+
     $response = $modx->runProcessor('workspace/packages/getlist', array(
         'limit' => 0 // Get all packages
     ));
@@ -315,13 +358,21 @@ function getDownloadedPackages($modx)
  * Get upgradeable packages using existing processor
  * 
  * @param \MODX\Revolution\modX $modx
+ * @param int $limit Optional limit for number of packages to return (0 = no limit)
  * @return array
  */
-function getUpgradeablePackages($modx)
+function getUpgradeablePackages($modx, $limit = 0)
 {
-    $response = $modx->runProcessor('workspace/packages/getlist', array(
+    $processorParams = array(
         'newest_only' => true
-    ));
+    );
+    
+    // Add limit parameter if specified (0 means no limit)
+    if ($limit > 0) {
+        $processorParams['limit'] = $limit;
+    }
+    
+    $response = $modx->runProcessor('workspace/packages/getlist', $processorParams);
     
     if ($response->isError()) {
         return [];
@@ -343,6 +394,16 @@ function getUpgradeablePackages($modx)
     return $upgradeable;
 }
 
+
+function getPackageObject($modx, $signature){
+     $packageObject = $modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', array('signature' => $signature));
+     return $packageObject;
+}
+function getProviderFromPackageObject($packageObject){
+    $provider = $packageObject->getOne('Provider');
+    return $provider;
+}
+
 /**
  * Get remote versions for a specific package using direct provider API
  * 
@@ -354,6 +415,10 @@ function getRemoteVersionsForPackage($modx, $package)
 {
     $packageName = $package['name'];
     $currentSignature = $package['signature'];
+    $currentSignatureParts = explode('-', $currentSignature);
+    if (count($currentSignatureParts) == 3) {
+        $currentPackageName = $currentSignatureParts[0];
+    }
     $currentVersion = $package['version'] . '-' . $package['release'];
     $providerId = $package['provider'] ?? null;
     
@@ -362,15 +427,18 @@ function getRemoteVersionsForPackage($modx, $package)
     }
     
     try {
+
         // Load the actual package object to access the Provider relationship
-        $packageObject = $modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', array('signature' => $currentSignature));
+        $packageObject = getPackageObject($modx, $currentSignature);
+        // $packageObject = $modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', array('signature' => $currentSignature));
         if (!$packageObject) {
             return [];
         }
         
         // Get the provider object directly
         /** @var \MODX\Revolution\Transport\modTransportProvider $provider */
-        $provider = $packageObject->getOne('Provider');
+        $provider = getProviderFromPackageObject($packageObject);
+        // $provider = $packageObject->getOne('Provider');
         if (!$provider) {
             return [];
         }
@@ -407,7 +475,7 @@ function getRemoteVersionsForPackage($modx, $package)
             $updateVersionString = $updateVersion . '-' . $updateRelease;
             
             // Only include versions newer than current and matching package name
-            if (strcasecmp($updateName, $packageName) === 0 && isNewerVersion($updateVersionString, $currentVersion)) {
+            if (strcasecmp($updateName, $currentPackageName) === 0 && isNewerVersion($updateVersionString, $currentVersion)) {
                 $availableVersions[] = [
                     'version' => $updateVersion,
                     'release' => $updateRelease,
@@ -623,4 +691,35 @@ function getRemoteVersionsAlternative($modx, $package)
     // Fallback method - could try different processor or approach
     // For now, return empty array to indicate no versions found
     return [];
+}
+
+
+/**
+ * Find a signature in upgradeable.json by package name (ignoring version and release).
+ *
+ * @param string $jsonFile Path to upgradeable.json
+ * @param string $packageName Name to search for (e.g. 'formit')
+ * @return string|null The full signature if found, or null if not found
+ */
+function findSignatureByPackageName($packages, $packageSignature)
+{
+    $parts = explode('-', $packageSignature, 2);
+    if (!$parts){
+        return null;
+    }
+    $packageName = $parts[0];
+
+    if (!$packages) {
+        return null;
+    }
+
+    foreach ($packages as $package) {
+        if (isset($package['signature'])) {
+            $parts = explode('-', $package['signature'], 2);
+            if (strcasecmp($parts[0], $packageName) === 0) {
+                return $package['signature'];
+            }
+        }
+    }
+    return null;
 }
