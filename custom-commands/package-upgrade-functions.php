@@ -148,7 +148,7 @@ function packageUpgradeDownload($args, $assoc_args)
      * then calls modTransportProvider->latest
      */
     // Rest\\Download initialize requires an info argument containing string: location::signature so we need the provider package location. However we actually need the existing package signature to get the provider!
-    $upgradeablePackages = getUpgradeablePackages($modx);
+    $upgradeablePackages = getUpgradeablePackages($modx, 100);
 
     //find the package in the array using the package signature
     $currentPackageSignature = findSignatureByPackageName($upgradeablePackages,  $signature);
