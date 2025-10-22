@@ -166,6 +166,8 @@ function packageUpgradeDownload($args, $assoc_args)
         MODX_CLI::error('Failed to retrieve provider from package object with signature: ' . $currentPackageSignature); 
         return 1;
     }
+    MODX_CLI::log("Provider is {$provider->name}");
+    $providerId = $provider->get('id');
 
     // fetch the latest version details from the provider
     $latest = $provider->latest($packageObject->get('signature'));
@@ -181,7 +183,8 @@ function packageUpgradeDownload($args, $assoc_args)
     
     // Use MODX's download processor
     $response = $modx->runProcessor('workspace/packages/rest/download', array(
-        'info' => $uri . "::" . $signature
+        'info' => $uri . "::" . $signature,
+        'provider' => $providerId,
     ));
     
     
@@ -222,7 +225,7 @@ function packageUpgradeAll($args, $assoc_args)
     
     // Step 1: Get upgradeable packages
     MODX_CLI::log('Step 1: Checking for upgradeable packages...');
-    $upgradeablePackages = getUpgradeablePackages($modx, 0);
+    $upgradeablePackages = getUpgradeablePackages($modx, 100);
     
     if (empty($upgradeablePackages)) {
         MODX_CLI::log('No upgradeable packages found');
@@ -932,16 +935,11 @@ function installPackages($modx, $packages, $dryRun = false)
  */
 function downloadPackageBySignature($modx, $signature, $location = null)
 {
-    try {
-        // If location is provided, use it directly (more efficient)
-        if ($location) {
-            $uri = $location;
-        } else {
-            // Fallback: fetch location from provider
-            $upgradeablePackages = getUpgradeablePackages($modx, 100);
-            $currentPackageSignature = findSignatureByPackageName($upgradeablePackages, $signature);
+
+        $upgradeablePackages = getUpgradeablePackages($modx, 100);
+        $currentPackageSignature = findSignatureByPackageName($upgradeablePackages, $signature);
             
-            if (!$currentPackageSignature) {
+        if (!$currentPackageSignature) {
                 return [
                     'success' => false,
                     'error' => 'Package not found in upgradeable packages'
@@ -963,7 +961,15 @@ function downloadPackageBySignature($modx, $signature, $location = null)
                     'error' => 'Failed to retrieve provider'
                 ];
             }
-            
+
+
+    try {
+        // If location is provided, use it directly (more efficient)
+        if ($location) {
+            $uri = $location;
+        } else {
+            // Fallback: fetch location from provider
+                        
             $latest = $provider->latest($packageObject->get('signature'));
             
             if (!is_array($latest) || empty($latest)) {
@@ -987,10 +993,12 @@ function downloadPackageBySignature($modx, $signature, $location = null)
                 $uri = $latest[0]['location'];
             }
         }
-        
+        $providerId = $provider->get('id');
+
         // Use MODX's download processor
         $response = $modx->runProcessor('workspace/packages/rest/download', [
-            'info' => $uri . '::' . $signature
+            'info' => $uri . '::' . $signature,
+            'provider' => $providerId,
         ]);
         
         if ($response->isError()) {
