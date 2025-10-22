@@ -229,7 +229,7 @@ function packageUpgradeAll($args, $assoc_args)
     
     // Step 2: Get remote versions for upgradeable packages
     MODX_CLI::log('Fetching remote versions...');
-    $remoteResult = MODX_CLI::run_command('package:upgrade:list-remote', [], ['return' => true]);
+    $remoteResult = MODX_CLI::run_command('package:list-remote', [], ['return' => true]);
     
     if ($remoteResult->return_code !== 0) {
         MODX_CLI::error('Failed to get remote versions');
