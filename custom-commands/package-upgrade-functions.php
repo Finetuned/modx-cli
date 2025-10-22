@@ -213,44 +213,99 @@ function packageUpgradeAll($args, $assoc_args)
     
     $dryRun = isset($assoc_args['dry-run']) && $assoc_args['dry-run'];
     $force = isset($assoc_args['force']) && $assoc_args['force'];
+    $packagesFilter = isset($assoc_args['packages']) ? explode(',', $assoc_args['packages']) : [];
     
     if ($dryRun) {
         MODX_CLI::log('DRY RUN MODE - No actual changes will be made');
+        MODX_CLI::log('');
     }
     
     // Step 1: Get upgradeable packages
-    MODX_CLI::log('Checking for upgradeable packages...');
-    $result = MODX_CLI::run_command('package:upgradeable', [], ['return' => true]);
+    MODX_CLI::log('Step 1: Checking for upgradeable packages...');
+    $upgradeablePackages = getUpgradeablePackages($modx, 0);
     
-    if ($result->return_code !== 0) {
-        MODX_CLI::error('Failed to get upgradeable packages');
-        return 1;
+    if (empty($upgradeablePackages)) {
+        MODX_CLI::log('No upgradeable packages found');
+        return 0;
     }
     
-    // Step 2: Get remote versions for upgradeable packages
-    MODX_CLI::log('Fetching remote versions...');
-    $remoteResult = MODX_CLI::run_command('package:list-remote', [], ['return' => true]);
+    MODX_CLI::log('Found ' . count($upgradeablePackages) . ' upgradeable package(s)');
+    MODX_CLI::log('');
     
-    if ($remoteResult->return_code !== 0) {
-        MODX_CLI::error('Failed to get remote versions');
-        return 1;
+    // Step 2: Get latest remote versions for each package
+    MODX_CLI::log('Step 2: Fetching latest remote versions...');
+    $packagesToUpgrade = getLatestRemoteVersions($modx, $upgradeablePackages, $packagesFilter);
+    
+    if (empty($packagesToUpgrade)) {
+        MODX_CLI::log('No packages available for upgrade');
+        return 0;
     }
     
-    // Step 3: Download packages (if not dry run)
-    if (!$dryRun) {
-        MODX_CLI::log('Downloading packages...');
-        // This would iterate through the packages and download them
-        // Implementation would depend on parsing the remote versions output
+    MODX_CLI::log('Found ' . count($packagesToUpgrade) . ' package(s) ready for upgrade');
+    MODX_CLI::log('');
+    
+    // Display what will be upgraded
+    foreach ($packagesToUpgrade as $pkg) {
+        MODX_CLI::log("  - {$pkg['name']}: {$pkg['current_version']} -> {$pkg['new_version']} ({$pkg['signature']})");
+    }
+    MODX_CLI::log('');
+    
+    // Confirmation prompt (unless force mode) - manually disabled
+    // if (!$force && !$dryRun) {
+    //     MODX_CLI::log('Continue with upgrade? (yes/no): ');
+    //     $handle = fopen('php://stdin', 'r');
+    //     $line = trim(fgets($handle));
+    //     fclose($handle);
+        
+    //     if (strtolower($line) !== 'yes' && strtolower($line) !== 'y') {
+    //         MODX_CLI::log('Upgrade cancelled');
+    //         return 0;
+    //     }
+    //     MODX_CLI::log('');
+    // }
+    
+    // Step 3: Download packages
+    MODX_CLI::log('Step 3: Downloading packages...');
+    $downloadResults = downloadPackages($modx, $packagesToUpgrade, $dryRun);
+    
+    if ($downloadResults['failed'] > 0) {
+        MODX_CLI::warning("Downloaded {$downloadResults['success']} package(s), {$downloadResults['failed']} failed");
+        if (!$force) {
+            MODX_CLI::error('Some downloads failed. Use --force to continue with installation anyway');
+            return 1;
+        }
+    } else {
+        MODX_CLI::success("Successfully downloaded {$downloadResults['success']} package(s)");
+    }
+    MODX_CLI::log('');
+    
+    // Step 4: Install packages
+    MODX_CLI::log('Step 4: Installing packages...');
+    $installResults = installPackages($modx, $downloadResults['downloaded'], $dryRun);
+    
+    if ($installResults['failed'] > 0) {
+        MODX_CLI::warning("Installed {$installResults['success']} package(s), {$installResults['failed']} failed");
+    } else {
+        MODX_CLI::success("Successfully installed {$installResults['success']} package(s)");
+    }
+    MODX_CLI::log('');
+    
+    // Summary
+    MODX_CLI::log('=== Upgrade Summary ===');
+    MODX_CLI::log("Total packages processed: " . count($packagesToUpgrade));
+    MODX_CLI::log("Successfully downloaded: {$downloadResults['success']}");
+    MODX_CLI::log("Successfully installed: {$installResults['success']}");
+    
+    if ($downloadResults['failed'] > 0 || $installResults['failed'] > 0) {
+        MODX_CLI::log("Failed: " . ($downloadResults['failed'] + $installResults['failed']));
     }
     
-    // Step 4: Install packages (if not dry run)
-    if (!$dryRun) {
-        MODX_CLI::log('Installing packages...');
-        // This would use the existing package:install command
+    if ($dryRun) {
+        MODX_CLI::log('');
+        MODX_CLI::log('DRY RUN completed - no actual changes were made');
     }
     
-    MODX_CLI::success('Package upgrade workflow completed');
-    return 0;
+    return ($downloadResults['failed'] > 0 || $installResults['failed'] > 0) ? 1 : 0;
 }
 
 /**
@@ -722,4 +777,267 @@ function findSignatureByPackageName($packages, $packageSignature)
         }
     }
     return null;
+}
+
+/**
+ * Get latest remote versions for upgradeable packages
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @param array $upgradeablePackages List of upgradeable packages
+ * @param array $packagesFilter Optional filter for specific packages
+ * @return array Array of packages with their latest versions
+ */
+function getLatestRemoteVersions($modx, $upgradeablePackages, $packagesFilter = [])
+{
+    $packagesToUpgrade = [];
+    
+    foreach ($upgradeablePackages as $package) {
+        $packageName = $package['name'];
+        
+        // Apply package filter if provided
+        if (!empty($packagesFilter)) {
+            $matchFound = false;
+            foreach ($packagesFilter as $filter) {
+                if (stripos($packageName, trim($filter)) !== false) {
+                    $matchFound = true;
+                    break;
+                }
+            }
+            if (!$matchFound) {
+                continue;
+            }
+        }
+        
+        // Get remote versions for this package
+        $remoteVersions = getRemoteVersionsForPackage($modx, $package);
+        
+        if (empty($remoteVersions)) {
+            continue;
+        }
+        
+        // Get the latest version (first one, as they're sorted newest first)
+        $remoteData = $remoteVersions[0];
+        if (!empty($remoteData['available_versions'])) {
+            $latestVersion = $remoteData['available_versions'][0];
+            
+            $packagesToUpgrade[] = [
+                'name' => $packageName,
+                'signature' => $latestVersion['signature'],
+                'current_version' => $remoteData['current_version'] . '-' . $remoteData['current_release'],
+                'new_version' => $latestVersion['version'] . '-' . $latestVersion['release'],
+                'location' => $latestVersion['location'],
+                'provider_name' => $remoteData['provider_name']
+            ];
+        }
+    }
+    
+    return $packagesToUpgrade;
+}
+
+/**
+ * Download packages by signature
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @param array $packages Array of packages to download
+ * @param bool $dryRun If true, don't actually download
+ * @return array Results with success/failed counts and downloaded packages
+ */
+function downloadPackages($modx, $packages, $dryRun = false)
+{
+    $results = [
+        'success' => 0,
+        'failed' => 0,
+        'downloaded' => []
+    ];
+    
+    foreach ($packages as $package) {
+        $signature = $package['signature'];
+        $packageName = $package['name'];
+        $location = $package['location'] ?? null;
+        
+        MODX_CLI::log("  Downloading {$packageName} ({$signature}) from {$location}..."); //manually added location to output
+        
+        if ($dryRun) {
+            MODX_CLI::log("    [DRY RUN] Would download {$signature}");
+            $results['success']++;
+            $results['downloaded'][] = $package;
+            continue;
+        }
+        
+        // Use the reusable download function with the location we already have
+        $downloadResult = downloadPackageBySignature($modx, $signature, $location);
+        
+        if ($downloadResult['success']) {
+            MODX_CLI::log("    ✓ Downloaded successfully");
+            $results['success']++;
+            $results['downloaded'][] = $package;
+        } else {
+            MODX_CLI::error("    ✗ Failed: {$downloadResult['error']}");
+            $results['failed']++;
+        }
+    }
+    
+    return $results;
+}
+
+/**
+ * Install packages by signature
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @param array $packages Array of packages to install
+ * @param bool $dryRun If true, don't actually install
+ * @return array Results with success/failed counts
+ */
+function installPackages($modx, $packages, $dryRun = false)
+{
+    $results = [
+        'success' => 0,
+        'failed' => 0
+    ];
+    
+    foreach ($packages as $package) {
+        $signature = $package['signature'];
+        $packageName = $package['name'];
+        
+        MODX_CLI::log("  Installing {$packageName} ({$signature})...");
+        
+        if ($dryRun) {
+            MODX_CLI::log("    [DRY RUN] Would install {$signature}");
+            $results['success']++;
+            continue;
+        }
+        
+        // Use the reusable install function
+        $installResult = installPackageBySignature($modx, $signature);
+        
+        if ($installResult['success']) {
+            MODX_CLI::log("    ✓ Installed successfully");
+            $results['success']++;
+        } else {
+            MODX_CLI::error("    ✗ Failed: {$installResult['error']}");
+            $results['failed']++;
+        }
+    }
+    
+    return $results;
+}
+
+/**
+ * Download a package by signature (reusable helper)
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @param string $signature Package signature to download
+ * @param string|null $location Optional location URI (if not provided, will be fetched)
+ * @return array Result with 'success' boolean and optional 'error' message
+ */
+function downloadPackageBySignature($modx, $signature, $location = null)
+{
+    try {
+        // If location is provided, use it directly (more efficient)
+        if ($location) {
+            $uri = $location;
+        } else {
+            // Fallback: fetch location from provider
+            $upgradeablePackages = getUpgradeablePackages($modx, 100);
+            $currentPackageSignature = findSignatureByPackageName($upgradeablePackages, $signature);
+            
+            if (!$currentPackageSignature) {
+                return [
+                    'success' => false,
+                    'error' => 'Package not found in upgradeable packages'
+                ];
+            }
+            
+            $packageObject = getPackageObject($modx, $currentPackageSignature);
+            if (!$packageObject) {
+                return [
+                    'success' => false,
+                    'error' => 'Failed to retrieve package object'
+                ];
+            }
+            
+            $provider = getProviderFromPackageObject($packageObject);
+            if (!$provider) {
+                return [
+                    'success' => false,
+                    'error' => 'Failed to retrieve provider'
+                ];
+            }
+            
+            $latest = $provider->latest($packageObject->get('signature'));
+            
+            if (!is_array($latest) || empty($latest)) {
+                return [
+                    'success' => false,
+                    'error' => 'Failed to retrieve package data from provider'
+                ];
+            }
+            
+            // Search for the matching signature in the updates
+            $uri = null;
+            foreach ($latest as $update) {
+                if (isset($update['signature']) && $update['signature'] === $signature) {
+                    $uri = $update['location'];
+                    break;
+                }
+            }
+            
+            // If not found, fall back to first entry (original behavior)
+            if (!$uri) {
+                $uri = $latest[0]['location'];
+            }
+        }
+        
+        // Use MODX's download processor
+        $response = $modx->runProcessor('workspace/packages/rest/download', [
+            'info' => $uri . '::' . $signature
+        ]);
+        
+        if ($response->isError()) {
+            return [
+                'success' => false,
+                'error' => $response->getMessage()
+            ];
+        }
+        
+        return ['success' => true];
+        
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
+/**
+ * Install a package by signature (reusable helper)
+ * 
+ * @param \MODX\Revolution\modX $modx
+ * @param string $signature Package signature to install
+ * @return array Result with 'success' boolean and optional 'error' message
+ */
+function installPackageBySignature($modx, $signature)
+{
+    try {
+        // Use MODX's install processor
+        $response = $modx->runProcessor('workspace/packages/install', [
+            'signature' => $signature
+        ]);
+        
+        if ($response->isError()) {
+            return [
+                'success' => false,
+                'error' => $response->getMessage()
+            ];
+        }
+        
+        return ['success' => true];
+        
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
+    }
 }
