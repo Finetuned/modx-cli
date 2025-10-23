@@ -12,7 +12,7 @@ A command-line interface for MODX 3, built with Symfony Console.
 ### Via Composer
 
 ```bash
-composer global require modx/cli
+composer global require finetuned/modx-cli
 ```
 
 ### Manual Installation
