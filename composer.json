@@ -1,5 +1,5 @@
 {
-    "name": "modx/cli",
+    "name": "finetuned/modx-cli",
     "description": "MODX 3 CLI",
     "keywords": ["MODX", "CLI", "shell"],
     "license": "MIT",
