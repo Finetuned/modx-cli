@@ -21,7 +21,7 @@ class GetList extends ListProcessor
     {
         if ($column === 'class_key') {
             // Extract the class name from the full class key
-            $parts = explode('\', $value);
+            $parts = explode('\\', $value);
             return end($parts);
         }
 
