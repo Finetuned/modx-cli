@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'registry/queue/getlist';
+    protected $processor = 'Registry\Queue\GetList';
     protected $headers = array(
         'id', 'name', 'created'
     );

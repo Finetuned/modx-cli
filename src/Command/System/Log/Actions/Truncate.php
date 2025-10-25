@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Truncate extends ProcessorCmd
 {
-    protected $processor = 'system/log/truncate';
+    protected $processor = 'System\Log\Truncate';
 
     protected $name = 'system:log:actions:truncate';
     protected $description = 'Truncate action logs in MODX';

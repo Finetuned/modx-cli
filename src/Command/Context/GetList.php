@@ -9,7 +9,7 @@ use MODX\CLI\Command\ListProcessor;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'context/getlist';
+    protected $processor = 'Context\GetList';
     protected $headers = array(
         'key', 'name', 'description', 'rank'
     );

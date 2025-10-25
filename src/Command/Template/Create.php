@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Create extends ProcessorCmd
 {
-    protected $processor = 'element/template/create';
+    protected $processor = 'Element\Template\Create';
 
     protected $name = 'template:create';
     protected $description = 'Create a MODX template';

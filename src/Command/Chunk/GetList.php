@@ -9,7 +9,7 @@ use MODX\CLI\Command\ListProcessor;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'element/chunk/getlist';
+    protected $processor = 'Element\Chunk\GetList';
     protected $headers = array(
         'id', 'name', 'description', 'category'
     );

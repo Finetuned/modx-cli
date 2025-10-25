@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Purge extends ProcessorCmd
 {
-    protected $processor = 'resource/purge';
+    protected $processor = 'Resource\Purge';
     protected $required = array('id');
 
     protected $name = 'resource:purge';

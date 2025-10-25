@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Remove extends ProcessorCmd
 {
-    protected $processor = 'resource/delete';
+    protected $processor = 'Resource\Delete';
     protected $required = array('id');
 
     protected $name = 'resource:remove';

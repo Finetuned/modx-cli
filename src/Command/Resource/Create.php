@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Create extends ProcessorCmd
 {
-    protected $processor = 'resource/create';
+    protected $processor = 'Resource\Create';
 
     protected $name = 'resource:create';
     protected $description = 'Create a MODX resource';

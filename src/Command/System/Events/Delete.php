@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Delete extends ProcessorCmd
 {
-    protected $processor = 'system/event/remove';
+    protected $processor = 'System\Event\Remove';
     protected $required = array('id');
 
     protected $name = 'system:event:delete';

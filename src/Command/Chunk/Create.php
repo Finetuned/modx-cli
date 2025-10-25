@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Create extends ProcessorCmd
 {
-    protected $processor = 'element/chunk/create';
+    protected $processor = 'Element\Chunk\Create';
 
     protected $name = 'chunk:create';
     protected $description = 'Create a MODX chunk';

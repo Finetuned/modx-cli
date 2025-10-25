@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Create extends ProcessorCmd
 {
-    protected $processor = 'system/event/create';
+    protected $processor = 'System\Event\Create';
 
     protected $name = 'system:event:create';
     protected $description = 'Create a system event in MODX';

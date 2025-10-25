@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class CategoriesList extends ListProcessor
 {
-    protected $processor = 'workspace/providers/categories';
+    protected $processor = 'Workspace\Providers\Categories';
     protected $required = array('provider');
     protected $headers = array(
         'id', 'name', 'description'

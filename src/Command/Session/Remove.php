@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Remove extends ProcessorCmd
 {
-    protected $processor = 'security/session/remove';
+    protected $processor = 'Security\Session\Remove';
     protected $required = array('id');
 
     protected $name = 'session:remove';

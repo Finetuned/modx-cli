@@ -9,7 +9,7 @@ use MODX\CLI\Command\ListProcessor;
  */
 class Info extends ListProcessor
 {
-    protected $processor = 'system/info';
+    protected $processor = 'System\Info';
     protected $headers = array(
         'modx_version', 'database_name', 'table_prefix', 'servertime', 'database_type', 'database_version'
     );

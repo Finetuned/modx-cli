@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'registry/message/getlist';
+    protected $processor = 'Registry\Message\GetList';
     protected $required = array('topic');
     protected $headers = array(
         'id', 'topic', 'message', 'created'

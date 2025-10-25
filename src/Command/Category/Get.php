@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Get extends ProcessorCmd
 {
-    protected $processor = 'element/category/get';
+    protected $processor = 'Element\Category\Get';
     protected $required = array('id');
 
     protected $name = 'category:get';

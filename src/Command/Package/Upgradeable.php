@@ -9,7 +9,7 @@ use MODX\CLI\Command\ListProcessor;
  */
 class Upgradeable extends ListProcessor
 {
-    protected $processor = 'workspace/packages/getlist';
+    protected $processor = 'Workspace\Packages\GetList';
     protected $headers = array(
         'signature', 'name', 'version', 'release', 'installed', 'provider'
     );

@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'context/setting/getlist';
+    protected $processor = 'Context\Setting\GetList';
     protected $required = array('context_key');
     protected $headers = array(
         'key', 'value', 'name', 'description'

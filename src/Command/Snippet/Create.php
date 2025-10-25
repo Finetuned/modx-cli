@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Create extends ProcessorCmd
 {
-    protected $processor = 'element/snippet/create';
+    protected $processor = 'Element\Snippet\Create';
 
     protected $name = 'snippet:create';
     protected $description = 'Create a MODX snippet';

@@ -9,7 +9,7 @@ use MODX\CLI\Command\ProcessorCmd;
  */
 class RefreshURIs extends ProcessorCmd
 {
-    protected $processor = 'system/refreshuris';
+    protected $processor = 'System\RefreshUris';
 
     protected $name = 'system:refreshuris';
     protected $description = 'Refresh URIs in MODX';

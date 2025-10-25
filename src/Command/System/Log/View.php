@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class View extends ListProcessor
 {
-    protected $processor = 'system/log/getlist';
+    protected $processor = 'System\Log\GetList';
     protected $headers = array(
         'id', 'action', 'name', 'occurred'
     );

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class PackagesList extends ListProcessor
 {
-    protected $processor = 'workspace/providers/packages';
+    protected $processor = 'Workspace\Providers\Packages';
     protected $required = array('provider');
     protected $headers = array(
         'signature', 'name', 'version', 'release', 'installed'

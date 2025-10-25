@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class Find extends ListProcessor
 {
-    protected $processor = 'search/search';
+    protected $processor = 'Search\Search';
     protected $headers = array(
         'name', 'type', 'description'
     );

@@ -9,7 +9,7 @@ use MODX\CLI\Command\ProcessorCmd;
  */
 class Clear extends ProcessorCmd
 {
-    protected $processor = 'system/log/truncate';
+    protected $processor = 'System\Log\Truncate';
 
     protected $name = 'system:log:clear';
     protected $description = 'Clear the MODX system log';

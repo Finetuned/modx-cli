@@ -9,7 +9,7 @@ use MODX\CLI\Command\ProcessorCmd;
  */
 class ClearCache extends ProcessorCmd
 {
-    protected $processor = 'system/clearcache';
+    protected $processor = 'System\ClearCache';
 
     protected $name = 'system:clearcache';
     protected $description = 'Clear the MODX cache';

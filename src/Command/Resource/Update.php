@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Update extends ProcessorCmd
 {
-    protected $processor = 'resource/update';
+    protected $processor = 'Resource\Update';
     protected $required = array('id');
 
     protected $name = 'resource:update';

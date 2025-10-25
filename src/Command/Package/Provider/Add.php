@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Add extends ProcessorCmd
 {
-    protected $processor = 'workspace/providers/create';
+    protected $processor = 'Workspace\Providers\Create';
 
     protected $name = 'package:provider:add';
     protected $description = 'Add a package provider in MODX';

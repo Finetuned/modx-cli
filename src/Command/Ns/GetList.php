@@ -9,7 +9,7 @@ use MODX\CLI\Command\ListProcessor;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'workspace/namespace/getlist';
+    protected $processor = 'Workspace\PackageNamespace\GetList';
     protected $headers = array(
         'id', 'name', 'path', 'assets_path'
     );

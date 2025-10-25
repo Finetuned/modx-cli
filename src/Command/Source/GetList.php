@@ -9,7 +9,7 @@ use MODX\CLI\Command\ListProcessor;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'source/getlist';
+    protected $processor = 'Source\GetList';
     protected $headers = array(
         'id', 'name', 'description', 'class_key'
     );
@@ -21,7 +21,7 @@ class GetList extends ListProcessor
     {
         if ($column === 'class_key') {
             // Extract the class name from the full class key
-            $parts = explode('\\', $value);
+            $parts = explode('\', $value);
             return end($parts);
         }
 

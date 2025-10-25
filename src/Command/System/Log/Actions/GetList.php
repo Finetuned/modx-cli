@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'system/log/getlist';
+    protected $processor = 'System\Log\GetList';
     protected $headers = array(
         'id', 'user', 'action', 'classKey', 'item', 'occurred'
     );

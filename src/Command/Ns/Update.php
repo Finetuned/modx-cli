@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Update extends ProcessorCmd
 {
-    protected $processor = 'workspace/namespace/update';
+    protected $processor = 'Workspace\PackageNamespace\Update';
     protected $required = array('id');
 
     protected $name = 'ns:update';

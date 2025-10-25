@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Create extends ProcessorCmd
 {
-    protected $processor = 'element/category/create';
+    protected $processor = 'Element\Category\Create';
 
     protected $name = 'category:create';
     protected $description = 'Create a MODX category';

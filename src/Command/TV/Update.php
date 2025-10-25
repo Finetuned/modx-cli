@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Update extends ProcessorCmd
 {
-    protected $processor = 'element/tv/update';
+    protected $processor = 'Element\Tv\Update';
     protected $required = array('id');
 
     protected $name = 'tv:update';

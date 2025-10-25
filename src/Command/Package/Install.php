@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Install extends ProcessorCmd
 {
-    protected $processor = 'workspace/packages/install';
+    protected $processor = 'Workspace\Packages\Install';
     protected $required = array('signature');
 
     protected $name = 'package:install';

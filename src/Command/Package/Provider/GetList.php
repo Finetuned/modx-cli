@@ -9,7 +9,7 @@ use MODX\CLI\Command\ListProcessor;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'workspace/providers/getlist';
+    protected $processor = 'Workspace\Providers\GetList';
     protected $headers = array(
         'id', 'name', 'service_url', 'username', 'verified'
     );

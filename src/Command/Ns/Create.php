@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Create extends ProcessorCmd
 {
-    protected $processor = 'workspace/namespace/create';
+    protected $processor = 'Workspace\PackageNamespace\Create';
 
     protected $name = 'ns:create';
     protected $description = 'Create a namespace in MODX';

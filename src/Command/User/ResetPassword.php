@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class ResetPassword extends ProcessorCmd
 {
-    protected $processor = 'security/user/update';
+    protected $processor = 'Security\User\Update';
     protected $required = array('id');
 
     protected $name = 'user:resetpassword';

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Remove extends ProcessorCmd
 {
-    protected $processor = 'element/category/remove';
+    protected $processor = 'Element\Category\Remove';
     protected $required = array('id');
 
     protected $name = 'category:remove';

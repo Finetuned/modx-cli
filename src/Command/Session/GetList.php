@@ -9,7 +9,7 @@ use MODX\CLI\Command\ListProcessor;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'security/session/getlist';
+    protected $processor = 'Security\Session\GetList';
     protected $headers = array(
         'id', 'username', 'ip', 'access', 'last_hit'
     );
