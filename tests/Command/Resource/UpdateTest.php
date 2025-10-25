@@ -310,4 +310,69 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Failed to update resource', $output);
         $this->assertStringContainsString('Error updating resource', $output);
     }
+
+    public function testExecuteWithMinimalPagetitleUpdate()
+    {
+        // Mock existing resource object with all essential fields
+        $existingResource = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
+        $existingResource->method('get')->willReturnMap([
+            ['pagetitle', 'Old Title'],
+            ['parent', 0],
+            ['template', 1],
+            ['published', 1],
+            ['class_key', 'modDocument'],
+            ['context_key', 'web'],
+            ['content_type', 1],
+            ['alias', 'old-alias'],
+            ['content', 'Existing content'],
+            ['hidemenu', 0],
+            ['searchable', 1],
+            ['cacheable', 1]
+        ]);
+        
+        // Mock getObject to return existing resource
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with('modResource', '2')
+            ->willReturn($existingResource);
+        
+        // Mock the runProcessor method to return a successful response
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'object' => ['id' => 2]
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+        
+        $this->modx->expects($this->once())
+            ->method('runProcessor')
+            ->with(
+                'resource/update',
+                $this->callback(function($properties) {
+                    // Verify that only pagetitle is updated, other fields are pre-populated
+                    return isset($properties['id']) && $properties['id'] === '2' &&
+                           isset($properties['pagetitle']) && $properties['pagetitle'] === 'Talks' &&
+                           isset($properties['class_key']) && $properties['class_key'] === 'modDocument' &&
+                           isset($properties['context_key']) && $properties['context_key'] === 'web';
+                }),
+                $this->anything()
+            )
+            ->willReturn($processorResponse);
+        
+        // Execute the command with minimal syntax (regression test for issue in progress.md)
+        $this->commandTester->execute([
+            'id' => '2',
+            '--pagetitle' => 'Talks'
+        ]);
+        
+        // Verify the output
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Resource updated successfully', $output);
+        $this->assertStringContainsString('Resource ID: 2', $output);
+    }
 }
