@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 class Update extends ProcessorCmd
 {
     protected $processor = 'Workspace\PackageNamespace\Update';
-    protected $required = array('id');
+    protected $required = array('name');
 
     protected $name = 'ns:update';
     protected $description = 'Update a namespace in MODX';
@@ -21,9 +21,9 @@ class Update extends ProcessorCmd
     {
         return array(
             array(
-                'id',
+                'name',
                 InputArgument::REQUIRED,
-                'The ID of the namespace to update'
+                'The name of the namespace to update'
             ),
         );
     }
@@ -31,12 +31,6 @@ class Update extends ProcessorCmd
     protected function getOptions()
     {
         return array_merge(parent::getOptions(), array(
-            array(
-                'name',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'The name of the namespace'
-            ),
             array(
                 'path',
                 null,
@@ -54,8 +48,11 @@ class Update extends ProcessorCmd
 
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
+        // Add the name argument to properties (it's the primary key)
+        $properties['name'] = $this->argument('name');
+        
         // Add options to the properties
-        $optionKeys = array('name', 'path', 'assets_path');
+        $optionKeys = array('path', 'assets_path');
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 class Remove extends ProcessorCmd
 {
     protected $processor = 'Workspace\PackageNamespace\Remove';
-    protected $required = array('id');
+    protected $required = array('name');
 
     protected $name = 'ns:remove';
     protected $description = 'Remove a namespace in MODX';
@@ -21,9 +21,9 @@ class Remove extends ProcessorCmd
     {
         return array(
             array(
-                'id',
+                'name',
                 InputArgument::REQUIRED,
-                'The ID of the namespace to remove'
+                'The name of the namespace to remove'
             ),
         );
     }
@@ -42,20 +42,21 @@ class Remove extends ProcessorCmd
 
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
-        $id = $this->argument('id');
+        $name = $this->argument('name');
+        
+        // Add the name argument to properties (it's the primary key)
+        $properties['name'] = $name;
 
         // Get the namespace to display information
-        $namespace = $this->modx->getObject('modNamespace', $id);
+        $namespace = $this->modx->getObject('modNamespace', array('name' => $name));
         if (!$namespace) {
-            $this->error("Namespace with ID {$id} not found");
+            $this->error("Namespace '{$name}' not found");
             return false;
         }
 
-        $name = $namespace->get('name');
-
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
-            if (!$this->confirm("Are you sure you want to remove namespace '{$name}' (ID: {$id})?")) {
+            if (!$this->confirm("Are you sure you want to remove namespace '{$name}'?")) {
                 $this->info('Operation aborted');
                 return false;
             }

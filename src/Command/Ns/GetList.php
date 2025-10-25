@@ -11,7 +11,7 @@ class GetList extends ListProcessor
 {
     protected $processor = 'Workspace\PackageNamespace\GetList';
     protected $headers = array(
-        'id', 'name', 'path', 'assets_path'
+        'name', 'path', 'assets_path'
     );
 
     protected $name = 'ns:list';
