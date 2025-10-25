@@ -7,3 +7,5 @@
 /modx-cli.phar
 /build/
 /var/
+/.serena/
+/.clinerules/
