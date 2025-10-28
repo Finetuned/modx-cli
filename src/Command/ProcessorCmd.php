@@ -189,7 +189,8 @@ abstract class ProcessorCmd extends BaseCmd
         foreach ($mapping as $propertyName => $fieldName) {
             if (!isset($properties[$propertyName]) || $properties[$propertyName] === null) {
                 $value = $object->get($fieldName);
-                if ($value !== null) {
+                // Only set the property if the value is not null and not an empty string
+                if ($value !== null && $value !== '') {
                     $properties[$propertyName] = $value;
                 }
             }

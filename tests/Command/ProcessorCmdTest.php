@@ -20,7 +20,7 @@ class ProcessorCmdTest extends BaseTest
             protected $name = 'test:cmd';
             protected $description = 'Test processor command';
             
-            public function testPrePopulateFromExisting($properties, $class, $id, $fieldMap = [])
+            public function testPrePopulateFromExisting(&$properties, $class, $id, $fieldMap = [])
             {
                 return $this->prePopulateFromExisting($properties, $class, $id, $fieldMap);
             }
@@ -72,12 +72,15 @@ class ProcessorCmdTest extends BaseTest
         $mockChunk = $this->getMockBuilder('stdClass')
             ->addMethods(['get'])
             ->getMock();
-        $mockChunk->method('get')->willReturnMap([
-            ['name', 'TestChunk'],
-            ['description', 'Test Description'],
-            ['category', 1],
-            ['snippet', '<p>Test Content</p>']
-        ]);
+        $mockChunk->method('get')->willReturnCallback(function($field) {
+            $map = [
+                'name' => 'TestChunk',
+                'description' => 'Test Description',
+                'category' => 1,
+                'snippet' => '<p>Test Content</p>'
+            ];
+            return $map[$field] ?? null;
+        });
         
         $this->modx->expects($this->once())
             ->method('getObject')
@@ -127,20 +130,23 @@ class ProcessorCmdTest extends BaseTest
         $mockResource = $this->getMockBuilder('stdClass')
             ->addMethods(['get'])
             ->getMock();
-        $mockResource->method('get')->willReturnMap([
-            ['pagetitle', 'Test Resource'],
-            ['parent', 0],
-            ['template', 1],
-            ['published', 1],
-            ['class_key', 'modDocument'],
-            ['context_key', 'web'],
-            ['content_type', 1],
-            ['alias', 'test-resource'],
-            ['content', 'Test content'],
-            ['hidemenu', 0],
-            ['searchable', 1],
-            ['cacheable', 1]
-        ]);
+        $mockResource->method('get')->willReturnCallback(function($field) {
+            $map = [
+                'pagetitle' => 'Test Resource',
+                'parent' => 0,
+                'template' => 1,
+                'published' => 1,
+                'class_key' => 'modDocument',
+                'context_key' => 'web',
+                'content_type' => 1,
+                'alias' => 'test-resource',
+                'content' => 'Test content',
+                'hidemenu' => 0,
+                'searchable' => 1,
+                'cacheable' => 1
+            ];
+            return $map[$field] ?? null;
+        });
         
         $this->modx->expects($this->once())
             ->method('getObject')
@@ -171,20 +177,23 @@ class ProcessorCmdTest extends BaseTest
         $mockResource = $this->getMockBuilder('stdClass')
             ->addMethods(['get'])
             ->getMock();
-        $mockResource->method('get')->willReturnMap([
-            ['pagetitle', 'Test Resource'],
-            ['parent', 0],
-            ['template', 1],
-            ['published', 1],
-            ['class_key', null], // Missing critical field
-            ['context_key', ''], // Empty critical field
-            ['content_type', null], // Missing critical field
-            ['alias', 'test-resource'],
-            ['content', 'Test content'],
-            ['hidemenu', 0],
-            ['searchable', 1],
-            ['cacheable', 1]
-        ]);
+        $mockResource->method('get')->willReturnCallback(function($field) {
+            $map = [
+                'pagetitle' => 'Test Resource',
+                'parent' => 0,
+                'template' => 1,
+                'published' => 1,
+                'class_key' => null, // Missing critical field
+                'context_key' => '', // Empty critical field
+                'content_type' => null, // Missing critical field
+                'alias' => 'test-resource',
+                'content' => 'Test content',
+                'hidemenu' => 0,
+                'searchable' => 1,
+                'cacheable' => 1
+            ];
+            return $map[$field] ?? null;
+        });
         
         $this->modx->expects($this->once())
             ->method('getObject')
