@@ -27,7 +27,7 @@ class UpdateTest extends BaseTest
     public function testConfigureHasCorrectProcessorPath()
     {
         $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('resource/update', $processor);
+        $this->assertEquals('Resource\Update', $processor);
     }
 
     public function testConfigureHasCorrectName()
@@ -81,7 +81,7 @@ class UpdateTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'resource/update',
+                'Resource\Update',
                 $this->callback(function($properties) {
                     // Verify that existing data is pre-populated and critical fields are set
                     return isset($properties['id']) && $properties['id'] === '123' &&
@@ -149,7 +149,7 @@ class UpdateTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'resource/update',
+                'Resource\Update',
                 $this->callback(function($properties) {
                     // Verify that critical fields get proper defaults
                     return isset($properties['class_key']) && $properties['class_key'] === 'modDocument' &&
@@ -235,7 +235,7 @@ class UpdateTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'resource/update',
+                'Resource\Update',
                 $this->callback(function($properties) {
                     // Verify boolean fields are properly converted to integers
                     return isset($properties['published']) && $properties['published'] === 1 &&
@@ -352,7 +352,7 @@ class UpdateTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'resource/update',
+                'Resource\Update',
                 $this->callback(function($properties) {
                     // Verify that only pagetitle is updated, other fields are pre-populated
                     return isset($properties['id']) && $properties['id'] === '2' &&

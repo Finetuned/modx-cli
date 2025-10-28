@@ -28,7 +28,7 @@ class UpdateTest extends BaseTest
     public function testConfigureHasCorrectProcessorPath()
     {
         $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('element/snippet/update', $processor);
+        $this->assertEquals('Element\Snippet\Update', $processor);
     }
 
     public function testConfigureHasCorrectName()
@@ -74,7 +74,7 @@ class UpdateTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'element/snippet/update',
+                'Element\Snippet\Update',
                 $this->callback(function($properties) {
                     // Verify that existing data is pre-populated and new data overrides it
                     return isset($properties['id']) && $properties['id'] === '123' &&

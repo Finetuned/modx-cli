@@ -30,7 +30,7 @@ class RemoveTest extends BaseTest
     public function testConfigureHasCorrectProcessorPath()
     {
         $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('element/template/remove', $processor);
+        $this->assertEquals('Element\Template\Remove', $processor);
     }
 
     public function testConfigureHasCorrectName()
@@ -71,7 +71,7 @@ class RemoveTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'element/template/remove',
+                'Element\Template\Remove',
                 $this->callback(function($properties) {
                     return isset($properties['id']) && $properties['id'] === '123';
                 }),

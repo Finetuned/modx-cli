@@ -30,7 +30,7 @@ class CreateTest extends BaseTest
     public function testConfigureHasCorrectProcessorPath()
     {
         $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('element/chunk/create', $processor);
+        $this->assertEquals('Element\Chunk\Create', $processor);
     }
 
     public function testConfigureHasCorrectName()
@@ -59,7 +59,7 @@ class CreateTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'element/chunk/create',
+                'Element\Chunk\Create',
                 $this->callback(function($properties) {
                     return isset($properties['name']) && $properties['name'] === 'TestChunk';
                 }),

@@ -32,7 +32,7 @@ class CreateTest extends BaseTest
     {
         $processor = $this->getProtectedProperty($this->command, 'processor');
 
-        $this->assertEquals('element/category/create', $processor);
+        $this->assertEquals('Element\Category\Create', $processor);
     }
 
     public function testConfigureHasCorrectName()
@@ -61,7 +61,7 @@ class CreateTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'element/category/create',
+                'Element\Category\Create',
                 $this->callback(function($properties) {
                     return isset($properties['category']) && $properties['category'] === 'TestCategory';
                 }),

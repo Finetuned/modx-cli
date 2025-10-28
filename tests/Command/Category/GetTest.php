@@ -30,7 +30,7 @@ class GetTest extends BaseTest
     public function testConfigureHasCorrectProcessorPath()
     {
         $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('element/category/get', $processor);
+        $this->assertEquals('Element\Category\Get', $processor);
     }
 
     public function testConfigureHasCorrectName()
@@ -63,7 +63,7 @@ class GetTest extends BaseTest
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
-                'element/category/get',
+                'Element\Category\Get',
                 $this->callback(function($properties) {
                     return isset($properties['id']) && $properties['id'] === '123';
                 }),
