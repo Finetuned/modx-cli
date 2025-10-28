@@ -36,9 +36,13 @@ class TreeBuilder
      */
     public function getTree()
     {
+        if (empty($this->tree)) {
+            return [];
+        }
+        
         $root = array_shift($this->tree);
 
-        return $root['children'];
+        return isset($root['children']) ? $root['children'] : [];
     }
 
     /**
@@ -48,6 +52,11 @@ class TreeBuilder
      */
     public function buildTree()
     {
+        if (empty($this->items)) {
+            $this->tree = array();
+            return $this;
+        }
+        
         $indexed = array();
         // First sort by some "PK"
         foreach ($this->items as $row) {
@@ -58,14 +67,27 @@ class TreeBuilder
         // Then assign children to their respective parents
         $root = null;
         foreach ($indexed as $pk => $row) {
-            $indexed[$row[$this->parentField]][$this->childrenField][$row[$this->pkField]] =& $indexed[$pk];
+            $parentKey = $row[$this->parentField];
+            
+            // Track root items (those with no parent or empty parent)
             if (!$row[$this->parentField] || empty($row[$this->parentField])) {
-                $root = '';
+                $root = $parentKey;
             }
+            
+            // Initialize parent's children array if needed
+            if (!isset($indexed[$parentKey])) {
+                $indexed[$parentKey] = array($this->childrenField => array());
+            }
+            
+            $indexed[$parentKey][$this->childrenField][$row[$this->pkField]] =& $indexed[$pk];
         }
 
         // Wrap in a fake "root" so we can sort items if needed
-        $this->tree = array($root => $indexed[$root]);
+        if ($root !== null) {
+            $this->tree = array($root => $indexed[$root]);
+        } else {
+            $this->tree = array();
+        }
 
         return $this;
     }
