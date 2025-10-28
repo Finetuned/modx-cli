@@ -44,17 +44,69 @@ class PackageListRemoteTest extends TestCase
                 'name' => 'pdotools',
                 'version' => '3.0.1',
                 'release' => 'pl',
+                'signature' => 'pdotools-3.0.1-pl',
                 'provider' => 1,
                 'updateable' => true
             ],
             [
                 'name' => 'migx',
                 'version' => '2.13.0',
-                'release' => 'pl', 
+                'release' => 'pl',
+                'signature' => 'migx-2.13.0-pl',
                 'provider' => 1,
                 'updateable' => true
             ]
         ];
+
+        // Create mock package objects and providers for getObject/getOne calls
+        $mockPdoToolsPackage = $this->createMock(\MODX\Revolution\Transport\modTransportPackage::class);
+        $mockMigxPackage = $this->createMock(\MODX\Revolution\Transport\modTransportPackage::class);
+        $mockProvider = $this->createMock(\MODX\Revolution\Transport\modTransportProvider::class);
+        
+        // Mock package object methods
+        $mockPdoToolsPackage->method('get')->with('signature')->willReturn('pdotools-3.0.1-pl');
+        $mockPdoToolsPackage->method('getOne')->with('Provider')->willReturn($mockProvider);
+        
+        $mockMigxPackage->method('get')->with('signature')->willReturn('migx-2.13.0-pl');
+        $mockMigxPackage->method('getOne')->with('Provider')->willReturn($mockProvider);
+        
+        // Mock provider methods
+        $mockProvider->method('get')->willReturnCallback(function($key) {
+            if ($key === 'id') return 1;
+            if ($key === 'name') return 'modx.com';
+            return null;
+        });
+        
+        // Mock provider->latest() to return remote version data
+        $mockProvider->method('latest')->willReturnCallback(function($signature) {
+            if (str_contains($signature, 'pdotools')) {
+                return [
+                    [
+                        'signature' => 'pdotools-3.0.2-pl',
+                        'version' => '3.0.2',
+                        'release' => 'pl',
+                        'description' => 'Updated version',
+                        'author' => 'bezumkin',
+                        'createdon' => '2024-01-01',
+                        'location' => '/path/to/pdotools'
+                    ]
+                ];
+            }
+            if (str_contains($signature, 'migx')) {
+                return [
+                    [
+                        'signature' => 'migx-2.14.0-pl',
+                        'version' => '2.14.0',
+                        'release' => 'pl',
+                        'description' => 'Updated MIGX',
+                        'author' => 'bruno17',
+                        'createdon' => '2024-01-01',
+                        'location' => '/path/to/migx'
+                    ]
+                ];
+            }
+            return [];
+        });
 
         // Mock remote package versions for pdotools
         $pdotoolsRemoteResponse = [
@@ -101,54 +153,28 @@ class PackageListRemoteTest extends TestCase
         $providerResponse1 = $this->createMock(\MODX\Revolution\Processors\ProcessorResponse::class);
         $providerResponse2 = $this->createMock(\MODX\Revolution\Processors\ProcessorResponse::class);
 
-        // Mock the sequence of processor calls (updated for new implementation)
-        $this->mockModx->expects($this->exactly(5))
+        // Mock getObject to return package objects
+        $this->mockModx->method('getObject')->willReturnCallback(function($class, $criteria) use ($mockPdoToolsPackage, $mockMigxPackage) {
+            if (is_array($criteria) && isset($criteria['signature'])) {
+                if ($criteria['signature'] === 'pdotools-3.0.1-pl') {
+                    return $mockPdoToolsPackage;
+                }
+                if ($criteria['signature'] === 'migx-2.13.0-pl') {
+                    return $mockMigxPackage;
+                }
+            }
+            return null;
+        });
+
+        // Mock the processor call for getUpgradeablePackages
+        $this->mockModx->expects($this->once())
             ->method('runProcessor')
-            ->withConsecutive(
-                ['workspace/packages/getlist', ['newest_only' => true]],
-                ['workspace/packages/providers/get', ['id' => 1]],
-                ['workspace/packages/providers/packages', ['provider' => 1, 'query' => 'pdotools', 'limit' => 50, 'start' => 0]],
-                ['workspace/packages/providers/get', ['id' => 1]],
-                ['workspace/packages/providers/packages', ['provider' => 1, 'query' => 'migx', 'limit' => 50, 'start' => 0]]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $upgradeableResponse,
-                $providerResponse1,
-                $pdotoolsResponse,
-                $providerResponse2,
-                $migxResponse
-            );
+            ->with('workspace/packages/getlist', ['newest_only' => true])
+            ->willReturn($upgradeableResponse);
 
         // Mock upgradeable packages response
-        $upgradeableResponse->expects($this->once())->method('isError')->willReturn(false);
-        $upgradeableResponse->expects($this->once())->method('getResponse')->willReturn(json_encode(['results' => $upgradeablePackages]));
-
-        // Mock pdotools remote response
-        $pdotoolsResponse->expects($this->once())->method('isError')->willReturn(false);
-        $pdotoolsResponse->expects($this->once())->method('getResponse')->willReturn(json_encode($pdotoolsRemoteResponse));
-
-        // Mock provider get response for pdotools
-        $providerGetResponse = [
-            'object' => [
-                'id' => 1,
-                'name' => 'modx.com'
-            ]
-        ];
-        
-        $providerResponse1->expects($this->once())->method('isError')->willReturn(false);
-        $providerResponse1->expects($this->once())->method('getResponse')->willReturn(json_encode($providerGetResponse));
-
-        // Mock pdotools remote response
-        $pdotoolsResponse->expects($this->once())->method('isError')->willReturn(false);
-        $pdotoolsResponse->expects($this->once())->method('getResponse')->willReturn(json_encode($pdotoolsRemoteResponse));
-
-        // Mock provider get response for migx
-        $providerResponse2->expects($this->once())->method('isError')->willReturn(false);
-        $providerResponse2->expects($this->once())->method('getResponse')->willReturn(json_encode($providerGetResponse));
-
-        // Mock migx remote response
-        $migxResponse->expects($this->once())->method('isError')->willReturn(false);
-        $migxResponse->expects($this->once())->method('getResponse')->willReturn(json_encode($migxRemoteResponse));
+        $upgradeableResponse->method('isError')->willReturn(false);
+        $upgradeableResponse->method('getResponse')->willReturn(json_encode(['results' => $upgradeablePackages]));
 
         // Act: Call the functions
         require_once __DIR__ . '/../../../../custom-commands/package-upgrade-functions.php';
@@ -210,83 +236,40 @@ class PackageListRemoteTest extends TestCase
             'name' => 'pdotools',
             'version' => '3.0.1',
             'release' => 'pl',
+            'signature' => 'pdotools-3.0.1-pl',
             'provider' => 1
         ];
 
-        // Mock successful provider query response
-        $packageQueryResponse = [
-            'results' => [
-                [
-                    'name' => 'pdotools',
-                    'version' => '3.0.2',
-                    'release' => 'pl',
-                    'signature' => 'pdotools-3.0.2-pl',
-                    'description' => 'Updated version',
-                    'author' => 'bezumkin'
-                ]
+        // Create mock package object and provider
+        $mockPackage = $this->createMock(\MODX\Revolution\Transport\modTransportPackage::class);
+        $mockProvider = $this->createMock(\MODX\Revolution\Transport\modTransportProvider::class);
+        
+        // Mock package object methods
+        $mockPackage->method('get')->with('signature')->willReturn('pdotools-3.0.1-pl');
+        $mockPackage->method('getOne')->with('Provider')->willReturn($mockProvider);
+        
+        // Mock provider methods
+        $mockProvider->method('get')->willReturnCallback(function($key) {
+            if ($key === 'id') return 1;
+            if ($key === 'name') return 'modx.com';
+            return null;
+        });
+        
+        // Mock provider->latest() to return remote version data
+        $mockProvider->method('latest')->willReturn([
+            [
+                'signature' => 'pdotools-3.0.2-pl',
+                'version' => '3.0.2',
+                'release' => 'pl',
+                'description' => 'Updated version',
+                'author' => 'bezumkin',
+                'createdon' => '2024-01-01',
+                'location' => '/path/to/pdotools'
             ]
-        ];
-
-        // Mock provider list response
-        $providerListResponse = [
-            'results' => [
-                [
-                    'id' => 1,
-                    'name' => 'modx.com'
-                ]
-            ]
-        ];
-
-        // Create separate mock responses
-        $packageResponse = $this->createMock(\MODX\Revolution\Processors\ProcessorResponse::class);
-        $providerResponse = $this->createMock(\MODX\Revolution\Processors\ProcessorResponse::class);
-
-        // Expect two processor calls: one for provider details, one for remote packages
-        $this->mockModx->expects($this->exactly(2))
-            ->method('runProcessor')
-            ->withConsecutive(
-                [
-                    'workspace/packages/providers/get',
-                    [
-                        'id' => 1
-                    ]
-                ],
-                [
-                    'workspace/packages/providers/packages',
-                    [
-                        'provider' => 1,
-                        'query' => 'pdotools',
-                        'limit' => 50,
-                        'start' => 0
-                    ]
-                ]
-            )
-            ->willReturnOnConsecutiveCalls($providerResponse, $packageResponse);
-
-        // Mock package query response
-        $packageResponse->expects($this->once())
-            ->method('isError')
-            ->willReturn(false);
-
-        $packageResponse->expects($this->once())
-            ->method('getResponse')
-            ->willReturn(json_encode($packageQueryResponse));
-
-        // Mock provider get response (different format)
-        $providerGetResponse = [
-            'object' => [
-                'id' => 1,
-                'name' => 'modx.com'
-            ]
-        ];
-
-        $providerResponse->expects($this->once())
-            ->method('isError')
-            ->willReturn(false);
-
-        $providerResponse->expects($this->once())
-            ->method('getResponse')
-            ->willReturn(json_encode($providerGetResponse));
+        ]);
+        
+        // Mock getObject to return package object
+        $this->mockModx->method('getObject')->willReturn($mockPackage);
 
         // Act: Call the function
         require_once __DIR__ . '/../../../../custom-commands/package-upgrade-functions.php';
@@ -345,17 +328,30 @@ class PackageListRemoteTest extends TestCase
             'name' => 'pdotools',
             'version' => '3.0.1',
             'release' => 'pl',
+            'signature' => 'pdotools-3.0.1-pl',
             'provider' => 1
         ];
 
-        // Mock processor error response
-        $this->mockModx->expects($this->once())
-            ->method('runProcessor')
-            ->willReturn($this->mockResponse);
-
-        $this->mockResponse->expects($this->once())
-            ->method('isError')
-            ->willReturn(true);
+        // Create mock package object and provider
+        $mockPackage = $this->createMock(\MODX\Revolution\Transport\modTransportPackage::class);
+        $mockProvider = $this->createMock(\MODX\Revolution\Transport\modTransportProvider::class);
+        
+        // Mock package object methods
+        $mockPackage->method('get')->with('signature')->willReturn('pdotools-3.0.1-pl');
+        $mockPackage->method('getOne')->with('Provider')->willReturn($mockProvider);
+        
+        // Mock provider methods
+        $mockProvider->method('get')->willReturnCallback(function($key) {
+            if ($key === 'id') return 1;
+            if ($key === 'name') return 'modx.com';
+            return null;
+        });
+        
+        // Mock provider->latest() to return error (string)
+        $mockProvider->method('latest')->willReturn('Connection error');
+        
+        // Mock getObject to return package object
+        $this->mockModx->method('getObject')->willReturn($mockPackage);
 
         // Act: Call function with error response
         require_once __DIR__ . '/../../../../custom-commands/package-upgrade-functions.php';
@@ -374,7 +370,8 @@ class PackageListRemoteTest extends TestCase
         $packageWithoutProvider = [
             'name' => 'localpackage',
             'version' => '1.0.0',
-            'release' => 'pl'
+            'release' => 'pl',
+            'signature' => 'localpackage-1.0.0-pl'
             // No provider field
         ];
 

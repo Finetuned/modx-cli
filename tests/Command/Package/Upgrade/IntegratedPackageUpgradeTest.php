@@ -111,6 +111,9 @@ class IntegratedPackageUpgradeTest extends TestCase
         $input = new ArrayInput([]);
         $output = new BufferedOutput();
         
+        // Capture any console output to prevent risky test warning
+        ob_start();
+        
         // Should not throw "argument already exists" error
         // We expect this to fail gracefully (no MODX instance) but not with argument conflicts
         try {
@@ -121,6 +124,9 @@ class IntegratedPackageUpgradeTest extends TestCase
             // If it throws an exception, it should NOT be about argument conflicts
             $this->assertStringNotContainsString('argument with name "command" already exists', $e->getMessage());
             $this->assertStringNotContainsString('An argument with name "command" already exists', $e->getMessage());
+        } finally {
+            // Clean up output buffer
+            ob_end_clean();
         }
     }
 
