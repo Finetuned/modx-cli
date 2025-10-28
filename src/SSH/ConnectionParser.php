@@ -79,7 +79,7 @@ class ConnectionParser
             }
         } else {
             // Check if there's a path after the host
-            if (preg_match('/^([^\/~]+)(.+)$/', $connectionString, $matches)) {
+            if (preg_match('/^([^\\/~]+)(.*)$/', $connectionString, $matches)) {
                 $this->host = $matches[1];
                 $connectionString = $matches[2];
             } else {
