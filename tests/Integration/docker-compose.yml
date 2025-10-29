@@ -1,0 +1,52 @@
+services:
+  # MySQL database for MODX test instances
+  mysql:
+    image: mysql:8.0
+    container_name: modx_cli_test_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: testpass
+      MYSQL_DATABASE: modx_test
+    ports:
+      - "33060:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptestpass"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - modx_test_network
+
+  # MODX test instance container
+  modx_test:
+    image: php:8.1-cli
+    container_name: modx_cli_test_instance
+    working_dir: /workspace
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MODX_INTEGRATION_TESTS: "1"
+      MODX_TEST_INSTANCE_PATH: "/Users/julianweaver/Sites/cli-test"
+      MODX_TEST_DB_HOST: "mysql"
+      MODX_TEST_DB_NAME: "cli-test"
+      MODX_TEST_DB_USER: "root"
+      MODX_TEST_DB_PASS: "ant0Roubaud;"
+    volumes:
+      - ../../:/workspace
+      - modx_instance:/modx
+    command: tail -f /dev/null
+    networks:
+      - modx_test_network
+
+volumes:
+  mysql_data:
+    driver: local
+  modx_instance:
+    driver: local
+
+networks:
+  modx_test_network:
+    driver: bridge
