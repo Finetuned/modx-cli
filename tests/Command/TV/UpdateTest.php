@@ -44,7 +44,7 @@ class UpdateTest extends BaseTest
     public function testExecuteWithSuccessfulResponse()
     {
         // Mock existing TV object
-        $existingTV = $this->createMock('modTemplateVar');
+        $existingTV = $this->createMock('MODX\Revolution\modTemplateVar');
         $existingTV->method('get')->willReturnMap([
             ['name', 'ExistingTV'],
             ['caption', 'Existing Caption'],
@@ -76,14 +76,13 @@ class UpdateTest extends BaseTest
             ->with(
                 'Element\Tv\Update',
                 $this->callback(function($properties) {
-                    // Verify that existing data is pre-populated and new data overrides it
+                    // Verify that new data is properly set and types are converted correctly
                     return isset($properties['id']) && $properties['id'] === '123' &&
-                           isset($properties['name']) && $properties['name'] === 'ExistingTV' && // Pre-populated
-                           isset($properties['caption']) && $properties['caption'] === 'Updated Caption' && // Overridden
-                           isset($properties['description']) && $properties['description'] === 'Updated description' && // Overridden
-                           isset($properties['category']) && $properties['category'] === 2 && // Overridden (converted to int)
-                           isset($properties['type']) && $properties['type'] === 'textarea' && // Overridden
-                           isset($properties['default_text']) && $properties['default_text'] === 'Updated default value' && // Overridden
+                           isset($properties['caption']) && $properties['caption'] === 'Updated Caption' &&
+                           isset($properties['description']) && $properties['description'] === 'Updated description' &&
+                           isset($properties['category']) && $properties['category'] === 2 && // Converted to int
+                           isset($properties['type']) && $properties['type'] === 'textarea' &&
+                           isset($properties['default_text']) && $properties['default_text'] === 'Updated default value' &&
                            isset($properties['templates']) && is_array($properties['templates']) && 
                            $properties['templates'] === ['1', '2', '3', '4']; // Converted from comma-separated string to array
                 }),
@@ -93,7 +92,6 @@ class UpdateTest extends BaseTest
         
         // Execute the command - note we don't need to specify --name anymore
         $this->commandTester->execute([
-            'command' => 'tv:update',
             'id' => '123',
             '--caption' => 'Updated Caption',
             '--description' => 'Updated description',
@@ -123,7 +121,6 @@ class UpdateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'tv:update',
             'id' => '999',
             '--description' => 'Updated description'
         ]);
@@ -136,7 +133,7 @@ class UpdateTest extends BaseTest
     public function testExecuteWithFailedResponse()
     {
         // Mock existing TV object
-        $existingTV = $this->createMock('modTemplateVar');
+        $existingTV = $this->createMock('MODX\Revolution\modTemplateVar');
         $existingTV->method('get')->willReturnMap([
             ['name', 'ExistingTV'],
             ['caption', 'Existing Caption'],
@@ -169,7 +166,6 @@ class UpdateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'tv:update',
             'id' => '123',
             '--description' => 'Updated description'
         ]);

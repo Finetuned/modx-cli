@@ -44,7 +44,9 @@ class UpdateTest extends BaseTest
     public function testExecuteWithSuccessfulResponse()
     {
         // Mock existing template object
-        $existingTemplate = $this->createMock('modTemplate');
+        $existingTemplate = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
         $existingTemplate->method('get')->willReturnMap([
             ['templatename', 'ExistingTemplate'],
             ['description', 'Existing description'],
@@ -87,7 +89,6 @@ class UpdateTest extends BaseTest
         
         // Execute the command - note we don't need to specify --templatename anymore
         $this->commandTester->execute([
-            'command' => 'template:update',
             'id' => '123',
             '--description' => 'Updated description',
             '--category' => '2',
@@ -114,7 +115,6 @@ class UpdateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'template:update',
             'id' => '999',
             '--description' => 'Updated description'
         ]);
@@ -127,7 +127,9 @@ class UpdateTest extends BaseTest
     public function testExecuteWithFailedResponse()
     {
         // Mock existing template object
-        $existingTemplate = $this->createMock('modTemplate');
+        $existingTemplate = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
         $existingTemplate->method('get')->willReturnMap([
             ['templatename', 'ExistingTemplate'],
             ['description', 'Existing description'],
@@ -158,7 +160,6 @@ class UpdateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'template:update',
             'id' => '123',
             '--description' => 'Updated description'
         ]);
