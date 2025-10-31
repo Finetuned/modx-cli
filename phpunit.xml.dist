@@ -28,8 +28,10 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
-        <exclude>
-            <directory>src/Command</directory>
-        </exclude>
+        <report>
+            <html outputDirectory="var/coverage/html"/>
+            <text outputFile="var/coverage/coverage.txt"/>
+            <clover outputFile="var/coverage/clover.xml"/>
+        </report>
     </coverage>
 </phpunit>
