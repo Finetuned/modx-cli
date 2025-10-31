@@ -9,3 +9,4 @@
 /var/
 /.serena/
 /.clinerules/
+/tests/integration/.env
