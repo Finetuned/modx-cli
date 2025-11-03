@@ -31,19 +31,33 @@ tests/Integration/
 
 ## Environment Setup
 
-### 1. Environment Variables
+### 1. Instance Alias Configuration
 
-Integration tests require specific environment variables to be set:
+Integration tests use instance aliases to ensure commands run against the correct MODX installation. This prevents conflicts with default instances configured in `~/.modx/config.yml`.
+
+**Create/update `~/.modx/config.yml`:**
+
+```yaml
+test:
+  base_path: /path/to/modx/test/instance
+```
+
+### 2. Environment Variables
+
+Integration tests require specific environment variables to be set in `tests/Integration/.env`:
 
 ```bash
-export MODX_INTEGRATION_TESTS=1
-export MODX_TEST_INSTANCE_PATH=/path/to/modx/test/instance
-export MODX_TEST_DB_HOST=localhost
-export MODX_TEST_DB_NAME=modx_test
-export MODX_TEST_DB_PREFIX=modx_
-export MODX_TEST_DB_USER=root
-export MODX_TEST_DB_PASS=testpass
+MODX_INTEGRATION_TESTS=1
+MODX_TEST_INSTANCE_PATH=/path/to/modx/test/instance
+MODX_TEST_INSTANCE_ALIAS=test
+MODX_TEST_DB_HOST=localhost
+MODX_TEST_DB_NAME=modx_test
+MODX_TEST_DB_PREFIX=modx_
+MODX_TEST_DB_USER=root
+MODX_TEST_DB_PASS=testpass
 ```
+
+**Note**: `MODX_TEST_INSTANCE_ALIAS` must match an alias defined in `~/.modx/config.yml`. The CLI will use the `-s` flag to force execution against this instance.
 
 ### 2. Using Docker (Recommended)
 

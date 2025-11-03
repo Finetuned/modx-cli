@@ -22,6 +22,11 @@ abstract class BaseIntegrationTest extends TestCase
     protected string $modxPath;
 
     /**
+     * Instance alias name for CLI -s flag
+     */
+    protected string $instanceAlias;
+
+    /**
      * Database configuration for test instance
      */
     protected array $dbConfig;
@@ -69,6 +74,7 @@ abstract class BaseIntegrationTest extends TestCase
 
         // Load test environment configuration
         $this->modxPath = $_ENV['MODX_TEST_INSTANCE_PATH'] ?: '/tmp/modx-test';
+        $this->instanceAlias = $_ENV['MODX_TEST_INSTANCE_ALIAS'] ?: 'test';
         $this->dbConfig = [
             'host' => $_ENV['MODX_TEST_DB_HOST'] ?: 'localhost',
             'name' => $_ENV['MODX_TEST_DB_NAME'] ?: 'modx_test',
@@ -126,10 +132,15 @@ abstract class BaseIntegrationTest extends TestCase
      */
     protected function executeCommand(array $arguments, int $timeout = 30): Process
     {
-        $command = array_merge(['php', $this->binPath], $arguments);
+        // Add -s flag to force CLI to use test instance
+        $command = array_merge(
+            ['php', $this->binPath, '-s', $this->instanceAlias],
+            $arguments
+        );
         
         $process = new Process($command);
         $process->setTimeout($timeout);
+        // Working directory not needed with -s flag, but set for consistency
         $process->setWorkingDirectory($this->modxPath);
         
         // Set environment variables for the command
