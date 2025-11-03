@@ -4,6 +4,7 @@ namespace MODX\CLI\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
+use Dotenv\Dotenv;
 
 /**
  * Base class for integration tests that execute commands against real MODX instances
@@ -37,6 +38,9 @@ abstract class BaseIntegrationTest extends TestCase
     {
         parent::setUp();
 
+        // Load environment variables from .env file
+        $this->loadEnvironment();
+
         $this->binPath = realpath(__DIR__ . '/../../bin/modx');
         $this->integrationTestsEnabled = (bool) getenv('MODX_INTEGRATION_TESTS');
         
@@ -61,6 +65,19 @@ abstract class BaseIntegrationTest extends TestCase
             $this->markTestSkipped(
                 "Test MODX instance not found at {$this->modxPath}. Run setup script first."
             );
+        }
+    }
+
+    /**
+     * Load environment variables from .env file
+     */
+    protected function loadEnvironment(): void
+    {
+         $envPath = __DIR__; // .env is in the same directory as this file
+        
+        if (file_exists($envPath . '/.env')) {
+            $dotenv = Dotenv::createImmutable($envPath);
+            $dotenv->load();
         }
     }
 
@@ -204,4 +221,6 @@ abstract class BaseIntegrationTest extends TestCase
         // Subclasses can override to implement cleanup logic
         parent::tearDown();
     }
+
+
 }
