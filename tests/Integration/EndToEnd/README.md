@@ -83,7 +83,8 @@ Tests require the following environment variables (configured in `tests/Integrat
 MODX_INTEGRATION_TESTS=1
 MODX_TEST_INSTANCE_PATH="/path/to/modx/test/instance"
 MODX_TEST_DB_HOST="mysql"
-MODX_TEST_DB_NAME="cli-test"
+MODX_TEST_DB_NAME="modx-test"
+MODX_TEST_DB_PREFIX="modx_"
 MODX_TEST_DB_USER="root"
 MODX_TEST_DB_PASS="password"
 ```
@@ -238,7 +239,7 @@ $this->assertCategoryExists($categories, $name);
 ```php
 protected function tearDown(): void
 {
-    $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTest_%']);
+    $this->queryDatabase('DELETE FROM '. $this->categoriesTable .' WHERE category LIKE ?', ['IntegrationTest_%']);
     parent::tearDown();
 }
 ```
