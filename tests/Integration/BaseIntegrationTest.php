@@ -32,6 +32,20 @@ abstract class BaseIntegrationTest extends TestCase
     protected bool $integrationTestsEnabled;
 
     /**
+     * Database table prefix
+     */
+    protected string $tablePrefix;
+
+    /**
+     * Cached table names (computed once in setUp)
+     */
+    protected string $categoriesTable;
+    protected string $chunksTable;
+    protected string $snippetsTable;
+    protected string $templatesTable;
+    protected string $tvsTable;
+
+    /**
      * Setup the test environment
      */
     protected function setUp(): void
@@ -40,10 +54,12 @@ abstract class BaseIntegrationTest extends TestCase
 
         // Load environment variables from .env file
         $this->loadEnvironment();
-
+        
         $this->binPath = realpath(__DIR__ . '/../../bin/modx');
         $this->integrationTestsEnabled = (bool) getenv('MODX_INTEGRATION_TESTS');
         
+        
+
         // Skip tests if integration testing is not enabled
         if (!$this->integrationTestsEnabled) {
             $this->markTestSkipped(
@@ -52,20 +68,28 @@ abstract class BaseIntegrationTest extends TestCase
         }
 
         // Load test environment configuration
-        $this->modxPath = getenv('MODX_TEST_INSTANCE_PATH') ?: '/tmp/modx-test';
+        $this->modxPath = $_ENV['MODX_TEST_INSTANCE_PATH'] ?: '/tmp/modx-test';
         $this->dbConfig = [
-            'host' => getenv('MODX_TEST_DB_HOST') ?: 'localhost',
-            'name' => getenv('MODX_TEST_DB_NAME') ?: 'modx_test',
-            'user' => getenv('MODX_TEST_DB_USER') ?: 'root',
-            'pass' => getenv('MODX_TEST_DB_PASS') ?: '',
+            'host' => $_ENV['MODX_TEST_DB_HOST'] ?: 'localhost',
+            'name' => $_ENV['MODX_TEST_DB_NAME'] ?: 'modx_test',
+            'user' => $_ENV['MODX_TEST_DB_USER'] ?: 'root',
+            'pass' => $_ENV['MODX_TEST_DB_PASS'] ?: '',
         ];
 
         // Verify test environment exists
         if (!file_exists($this->modxPath)) {
             $this->markTestSkipped(
-                "Test MODX instance not found at {$this->modxPath}. Run setup script first."
+                "Test MODX instance not found at {$this->modxPath}. Add an environment variables file at tests/integration/.env."
             );
         }
+        $this->tablePrefix = $_ENV['MODX_TEST_DB_PREFIX'] ?? 'modx_';
+        
+        // Cache table names once
+        $this->categoriesTable = $this->getTableName('categories');
+        $this->chunksTable = $this->getTableName('site_htmlsnippets');
+        $this->snippetsTable = $this->getTableName('site_snippets');
+        $this->templatesTable = $this->getTableName('site_templates');
+        $this->tvsTable = $this->getTableName('site_tmplvars');
     }
 
     /**
@@ -73,14 +97,26 @@ abstract class BaseIntegrationTest extends TestCase
      */
     protected function loadEnvironment(): void
     {
-         $envPath = __DIR__; // .env is in the same directory as this file
-        
-        if (file_exists($envPath . '/.env')) {
-            $dotenv = Dotenv::createImmutable($envPath);
+         $envDir = __DIR__; // .env is in the same directory as this file
+        // error_log( 'env file expected in: '. $envDir, 3, '/dev/stdout' );
+
+        if (file_exists($envDir . '/.env')) {
+            $dotenv = Dotenv::createImmutable($envDir);
             $dotenv->load();
         }
     }
 
+    /**
+     * Get full table name with configured prefix
+     *
+     * @param string $tableName Base table name (e.g., 'categories', 'site_htmlsnippets')
+     * @return string Full table name with prefix
+     */
+    protected function getTableName(string $tableName): string
+    {
+        return $this->tablePrefix . $tableName;
+    }
+    
     /**
      * Execute a MODX CLI command and return the process result
      *
