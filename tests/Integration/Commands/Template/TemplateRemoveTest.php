@@ -24,11 +24,11 @@ class TemplateRemoveTest extends BaseIntegrationTest
         ]);
         
         // Get the template ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
         
         // Verify template exists
-        $beforeCount = $this->countTableRows('modx_site_templates', 'id = ?', [$templateId]);
+        $beforeCount = $this->countTableRows($this->templatesTable, 'id = ?', [$templateId]);
         $this->assertEquals(1, $beforeCount);
         
         // Remove template
@@ -41,7 +41,7 @@ class TemplateRemoveTest extends BaseIntegrationTest
         $this->assertStringContainsString('removed successfully', $output);
         
         // Verify template no longer exists
-        $afterCount = $this->countTableRows('modx_site_templates', 'id = ?', [$templateId]);
+        $afterCount = $this->countTableRows($this->templatesTable, 'id = ?', [$templateId]);
         $this->assertEquals(0, $afterCount);
     }
 
@@ -59,7 +59,7 @@ class TemplateRemoveTest extends BaseIntegrationTest
         ]);
         
         // Get template ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
         
         // Remove template with JSON
@@ -92,7 +92,7 @@ class TemplateRemoveTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
         parent::tearDown();
     }
 }

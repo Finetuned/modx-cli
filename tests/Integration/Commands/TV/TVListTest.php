@@ -33,7 +33,7 @@ class TVListTest extends BaseIntegrationTest
         $this->assertStringContainsString($tvName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
     }
 
     /**
@@ -69,7 +69,7 @@ class TVListTest extends BaseIntegrationTest
         $this->assertTrue($found, "Created TV not found in list");
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
     }
 
     /**
@@ -87,7 +87,7 @@ class TVListTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Create TV in category
@@ -108,8 +108,8 @@ class TVListTest extends BaseIntegrationTest
         $this->assertStringContainsString($tvName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -118,7 +118,7 @@ class TVListTest extends BaseIntegrationTest
     public function testTVListWhenEmpty()
     {
         // Remove all test TVs first
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name LIKE ?', ['IntegrationTestTV_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name LIKE ?', ['IntegrationTestTV_%']);
         
         $process = $this->executeCommandSuccessfully([
             'tv:list'
@@ -156,7 +156,7 @@ class TVListTest extends BaseIntegrationTest
         
         // Cleanup
         foreach ($tvNames as $name) {
-            $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$name]);
+            $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$name]);
         }
     }
 
@@ -165,8 +165,8 @@ class TVListTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name LIKE ?', ['IntegrationTestTV_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name LIKE ?', ['IntegrationTestTV_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         parent::tearDown();
     }
 }

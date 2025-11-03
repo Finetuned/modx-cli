@@ -26,7 +26,7 @@ class TVUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get TV ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
         
         // Update TV
@@ -40,11 +40,11 @@ class TVUpdateTest extends BaseIntegrationTest
         $this->assertStringContainsString('updated successfully', $output);
         
         // Verify update in database
-        $updatedRows = $this->queryDatabase('SELECT caption FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
+        $updatedRows = $this->queryDatabase('SELECT caption FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
         $this->assertEquals($newCaption, $updatedRows[0]['caption']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
 
     /**
@@ -62,7 +62,7 @@ class TVUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get TV ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
         
         // Update with JSON
@@ -77,7 +77,7 @@ class TVUpdateTest extends BaseIntegrationTest
         $this->assertTrue($data['success']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
 
     /**
@@ -102,9 +102,9 @@ class TVUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get IDs
-        $tvRows = $this->queryDatabase('SELECT id FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $tvRows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $tvRows[0]['id'];
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Update TV category
@@ -115,12 +115,12 @@ class TVUpdateTest extends BaseIntegrationTest
         ]);
         
         // Verify category updated
-        $updatedRows = $this->queryDatabase('SELECT category FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
+        $updatedRows = $this->queryDatabase('SELECT category FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
         $this->assertEquals($categoryId, $updatedRows[0]['category']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -139,7 +139,7 @@ class TVUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get TV ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
         
         // Update default value
@@ -150,11 +150,11 @@ class TVUpdateTest extends BaseIntegrationTest
         ]);
         
         // Verify default value updated
-        $updatedRows = $this->queryDatabase('SELECT default_text FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
+        $updatedRows = $this->queryDatabase('SELECT default_text FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
         $this->assertEquals($newDefault, $updatedRows[0]['default_text']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
 
     /**
@@ -177,8 +177,8 @@ class TVUpdateTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name LIKE ?', ['IntegrationTestTV_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name LIKE ?', ['IntegrationTestTV_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         parent::tearDown();
     }
 }

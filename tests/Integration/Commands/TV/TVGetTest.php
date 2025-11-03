@@ -25,7 +25,7 @@ class TVGetTest extends BaseIntegrationTest
         ]);
         
         // Get the TV ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
         
         // Get TV
@@ -38,7 +38,7 @@ class TVGetTest extends BaseIntegrationTest
         $this->assertStringContainsString($tvName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
 
     /**
@@ -56,7 +56,7 @@ class TVGetTest extends BaseIntegrationTest
         ]);
         
         // Get TV ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
         
         // Get TV with JSON
@@ -71,7 +71,7 @@ class TVGetTest extends BaseIntegrationTest
         $this->assertEquals($tvName, $data['name']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE id = ?', [$tvId]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
 
     /**
@@ -93,7 +93,7 @@ class TVGetTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name LIKE ?', ['IntegrationTestTV_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name LIKE ?', ['IntegrationTestTV_%']);
         parent::tearDown();
     }
 }

@@ -40,6 +40,7 @@ export MODX_INTEGRATION_TESTS=1
 export MODX_TEST_INSTANCE_PATH=/path/to/modx/test/instance
 export MODX_TEST_DB_HOST=localhost
 export MODX_TEST_DB_NAME=modx_test
+export MODX_TEST_DB_PREFIX=modx_
 export MODX_TEST_DB_USER=root
 export MODX_TEST_DB_PASS=testpass
 ```
@@ -84,19 +85,19 @@ If not using Docker, ensure you have:
 
 ```bash
 # From project root
-vendor/bin/phpunit --testsuite=Integration
+MODX_INTEGRATION_TESTS=1 vendor/bin/phpunit --testsuite=Integration
 ```
 
 ### Run Specific Test Class
 
 ```bash
-vendor/bin/phpunit tests/Integration/Commands/Category/CategoryListTest.php
+MODX_INTEGRATION_TESTS=1 vendor/bin/phpunit tests/Integration/Commands/Category/CategoryListTest.php
 ```
 
 ### Run with Verbose Output
 
 ```bash
-vendor/bin/phpunit --testsuite=Integration --verbose
+MODX_INTEGRATION_TESTS=1 vendor/bin/phpunit --testsuite=Integration --verbose
 ```
 
 ### Skip Integration Tests
@@ -132,7 +133,7 @@ class CategoryCreateTest extends BaseIntegrationTest
         $this->assertStringContainsString('created successfully', $output);
         
         // Verify database state
-        $count = $this->countTableRows('modx_categories', 'category = ?', ['TestCategory']);
+        $count = $this->countTableRows($this->categoriesTable, 'category = ?', ['TestCategory']);
         $this->assertEquals(1, $count);
     }
 }
@@ -203,14 +204,14 @@ Ensure commands modify database correctly:
 ```php
 public function testDatabaseChanges()
 {
-    $beforeCount = $this->countTableRows('modx_categories');
+    $beforeCount = $this->countTableRows($this->categoriesTable);
     
     $this->executeCommandSuccessfully([
         'category:create',
         'NewCategory'
     ]);
     
-    $afterCount = $this->countTableRows('modx_categories');
+    $afterCount = $this->countTableRows($this->categoriesTable);
     $this->assertEquals($beforeCount + 1, $afterCount);
 }
 ```
@@ -268,7 +269,7 @@ Always clean up test data in tearDown():
 protected function tearDown(): void
 {
     // Remove test data
-    $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['Test%']);
+    $this->queryDatabase('DELETE FROM '. $this->categoriesTable .' WHERE category LIKE ?', ['Test%']);
     
     parent::tearDown();
 }
@@ -311,7 +312,7 @@ public function testCategoryCreation()
     $this->assertStringContainsString('created successfully', $process->getOutput());
     
     // Verify database state
-    $exists = $this->countTableRows('modx_categories', 'category = ?', ['Test']) > 0;
+    $exists = $this->countTableRows($this->categoriesTable, 'category = ?', ['Test']) > 0;
     $this->assertTrue($exists);
 }
 ```

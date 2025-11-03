@@ -25,7 +25,7 @@ class TemplateUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get template ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
         
         // Update template
@@ -39,11 +39,11 @@ class TemplateUpdateTest extends BaseIntegrationTest
         $this->assertStringContainsString('updated successfully', $output);
         
         // Verify update in database
-        $updatedRows = $this->queryDatabase('SELECT content FROM modx_site_templates WHERE id = ?', [$templateId]);
+        $updatedRows = $this->queryDatabase('SELECT content FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
         $this->assertEquals($newContent, $updatedRows[0]['content']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE id = ?', [$templateId]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
     }
 
     /**
@@ -60,7 +60,7 @@ class TemplateUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get template ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
         
         // Update with JSON
@@ -75,7 +75,7 @@ class TemplateUpdateTest extends BaseIntegrationTest
         $this->assertTrue($data['success']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE id = ?', [$templateId]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
     }
 
     /**
@@ -99,9 +99,9 @@ class TemplateUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get IDs
-        $templateRows = $this->queryDatabase('SELECT id FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $templateRows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $templateRows[0]['id'];
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Update template category
@@ -112,12 +112,12 @@ class TemplateUpdateTest extends BaseIntegrationTest
         ]);
         
         // Verify category updated
-        $updatedRows = $this->queryDatabase('SELECT category FROM modx_site_templates WHERE id = ?', [$templateId]);
+        $updatedRows = $this->queryDatabase('SELECT category FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
         $this->assertEquals($categoryId, $updatedRows[0]['category']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE id = ?', [$templateId]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -135,7 +135,7 @@ class TemplateUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get template ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
         
         // Update description
@@ -146,11 +146,11 @@ class TemplateUpdateTest extends BaseIntegrationTest
         ]);
         
         // Verify description updated
-        $updatedRows = $this->queryDatabase('SELECT description FROM modx_site_templates WHERE id = ?', [$templateId]);
+        $updatedRows = $this->queryDatabase('SELECT description FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
         $this->assertEquals($newDescription, $updatedRows[0]['description']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE id = ?', [$templateId]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
     }
 
     /**
@@ -173,8 +173,8 @@ class TemplateUpdateTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         parent::tearDown();
     }
 }

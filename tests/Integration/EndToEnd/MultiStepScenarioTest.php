@@ -278,7 +278,7 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->assertNotEquals(0, $duplicateAttempt->getExitCode(), 'Duplicate creation should fail');
         
         // Step 3: Verify only one chunk exists
-        $count = $this->countTableRows('modx_site_htmlsnippets', 'name = ?', [$chunkName]);
+        $count = $this->countTableRows($this->chunksTable, 'name = ?', [$chunkName]);
         $this->assertEquals(1, $count, 'Should only have one chunk, not duplicate');
         
         // Step 4: Create chunk with different name (should succeed)
@@ -336,7 +336,7 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         
         // Step 6: Verify database consistency
         $dbContent = $this->queryDatabase(
-            'SELECT snippet FROM modx_site_htmlsnippets WHERE id = ?',
+            'SELECT snippet  ' . $this->chunksTable . 'WHERE id = ?',
             [$chunkId]
         );
         $this->assertEquals($updatedContent, $dbContent[0]['snippet']);
@@ -504,11 +504,11 @@ class MultiStepScenarioTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Clean up all integration test data
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTest_%']);
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name LIKE ?', ['TestChunk_%']);
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name LIKE ?', ['TestSnippet_%']);
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename LIKE ?', ['IntegrationTest_%']);
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name LIKE ?', ['TestTV_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable .' WHERE category LIKE ?', ['IntegrationTest_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable .' WHERE name LIKE ?', ['TestChunk_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable .' WHERE name LIKE ?', ['TestSnippet_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable .' WHERE templatename LIKE ?', ['IntegrationTest_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable .' WHERE name LIKE ?', ['TestTV_%']);
         
         parent::tearDown();
     }

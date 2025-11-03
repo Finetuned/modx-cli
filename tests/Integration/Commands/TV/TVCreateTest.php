@@ -27,7 +27,7 @@ class TVCreateTest extends BaseIntegrationTest
         $this->assertStringContainsString('created successfully', $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
     }
 
     /**
@@ -49,7 +49,7 @@ class TVCreateTest extends BaseIntegrationTest
         $this->assertTrue($data['success']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
     }
 
     /**
@@ -60,7 +60,7 @@ class TVCreateTest extends BaseIntegrationTest
         $tvName = 'IntegrationTestTV_' . uniqid();
         $caption = 'Integration Test Template Variable';
         
-        $beforeCount = $this->countTableRows('modx_site_tmplvars', 'name = ?', [$tvName]);
+        $beforeCount = $this->countTableRows($this->tvsTable, 'name = ?', [$tvName]);
         $this->assertEquals(0, $beforeCount);
         
         $this->executeCommandSuccessfully([
@@ -70,16 +70,16 @@ class TVCreateTest extends BaseIntegrationTest
             '--caption=' . $caption
         ]);
         
-        $afterCount = $this->countTableRows('modx_site_tmplvars', 'name = ?', [$tvName]);
+        $afterCount = $this->countTableRows($this->tvsTable, 'name = ?', [$tvName]);
         $this->assertEquals(1, $afterCount);
         
         // Verify TV data
-        $rows = $this->queryDatabase('SELECT caption, type FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT caption, type FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $this->assertEquals($caption, $rows[0]['caption']);
         $this->assertEquals('text', $rows[0]['type']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
     }
 
     /**
@@ -97,7 +97,7 @@ class TVCreateTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Create TV with category
@@ -109,12 +109,12 @@ class TVCreateTest extends BaseIntegrationTest
         ]);
         
         // Verify TV has correct category
-        $tvRows = $this->queryDatabase('SELECT category FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $tvRows = $this->queryDatabase('SELECT category FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $this->assertEquals($categoryId, $tvRows[0]['category']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -133,11 +133,11 @@ class TVCreateTest extends BaseIntegrationTest
         ]);
         
         // Verify default value in database
-        $rows = $this->queryDatabase('SELECT default_text FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT default_text FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $this->assertEquals($defaultValue, $rows[0]['default_text']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
     }
 
     /**
@@ -157,11 +157,11 @@ class TVCreateTest extends BaseIntegrationTest
             ]);
             
             // Verify type in database
-            $rows = $this->queryDatabase('SELECT type FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+            $rows = $this->queryDatabase('SELECT type FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
             $this->assertEquals($type, $rows[0]['type']);
             
             // Cleanup
-            $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+            $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         }
     }
 
@@ -190,7 +190,7 @@ class TVCreateTest extends BaseIntegrationTest
         $this->assertNotEmpty($output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
     }
 
     /**
@@ -199,8 +199,8 @@ class TVCreateTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test TVs
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name LIKE ?', ['IntegrationTestTV_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name LIKE ?', ['IntegrationTestTV_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         
         parent::tearDown();
     }

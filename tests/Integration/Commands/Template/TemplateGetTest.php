@@ -24,7 +24,7 @@ class TemplateGetTest extends BaseIntegrationTest
         ]);
         
         // Get the template ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
         
         // Get template
@@ -37,7 +37,7 @@ class TemplateGetTest extends BaseIntegrationTest
         $this->assertStringContainsString($templateName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE id = ?', [$templateId]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
     }
 
     /**
@@ -54,7 +54,7 @@ class TemplateGetTest extends BaseIntegrationTest
         ]);
         
         // Get template ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
         
         // Get template with JSON
@@ -69,7 +69,7 @@ class TemplateGetTest extends BaseIntegrationTest
         $this->assertEquals($templateName, $data['templatename']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE id = ?', [$templateId]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
     }
 
     /**
@@ -91,7 +91,7 @@ class TemplateGetTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
         parent::tearDown();
     }
 }

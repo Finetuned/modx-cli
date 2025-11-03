@@ -23,7 +23,7 @@ class CategoryGetTest extends BaseIntegrationTest
         ]);
         
         // Get the category ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $rows[0]['id'];
         
         // Get category
@@ -36,7 +36,7 @@ class CategoryGetTest extends BaseIntegrationTest
         $this->assertStringContainsString($categoryName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -53,7 +53,7 @@ class CategoryGetTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $rows[0]['id'];
         
         // Get category with JSON
@@ -68,7 +68,7 @@ class CategoryGetTest extends BaseIntegrationTest
         $this->assertEquals($categoryName, $data['category']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -90,7 +90,7 @@ class CategoryGetTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         parent::tearDown();
     }
 }

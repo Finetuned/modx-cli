@@ -25,11 +25,11 @@ class TVRemoveTest extends BaseIntegrationTest
         ]);
         
         // Get the TV ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
         
         // Verify TV exists
-        $beforeCount = $this->countTableRows('modx_site_tmplvars', 'id = ?', [$tvId]);
+        $beforeCount = $this->countTableRows($this->tvsTable, 'id = ?', [$tvId]);
         $this->assertEquals(1, $beforeCount);
         
         // Remove TV
@@ -42,7 +42,7 @@ class TVRemoveTest extends BaseIntegrationTest
         $this->assertStringContainsString('removed successfully', $output);
         
         // Verify TV no longer exists
-        $afterCount = $this->countTableRows('modx_site_tmplvars', 'id = ?', [$tvId]);
+        $afterCount = $this->countTableRows($this->tvsTable, 'id = ?', [$tvId]);
         $this->assertEquals(0, $afterCount);
     }
 
@@ -61,7 +61,7 @@ class TVRemoveTest extends BaseIntegrationTest
         ]);
         
         // Get TV ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_tmplvars WHERE name = ?', [$tvName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
         
         // Remove TV with JSON
@@ -94,7 +94,7 @@ class TVRemoveTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_tmplvars WHERE name LIKE ?', ['IntegrationTestTV_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name LIKE ?', ['IntegrationTestTV_%']);
         parent::tearDown();
     }
 }

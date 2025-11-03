@@ -24,7 +24,7 @@ class ChunkGetTest extends BaseIntegrationTest
         ]);
         
         // Get the chunk ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
         $chunkId = $rows[0]['id'];
         
         // Get chunk
@@ -37,7 +37,7 @@ class ChunkGetTest extends BaseIntegrationTest
         $this->assertStringContainsString($chunkName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE id = ?', [$chunkId]);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE id = ?', [$chunkId]);
     }
 
     /**
@@ -55,7 +55,7 @@ class ChunkGetTest extends BaseIntegrationTest
         ]);
         
         // Get chunk ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
         $chunkId = $rows[0]['id'];
         
         // Get chunk with JSON
@@ -70,7 +70,7 @@ class ChunkGetTest extends BaseIntegrationTest
         $this->assertEquals($chunkName, $data['name']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE id = ?', [$chunkId]);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE id = ?', [$chunkId]);
     }
 
     /**
@@ -92,7 +92,7 @@ class ChunkGetTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name LIKE ?', ['IntegrationTestChunk_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name LIKE ?', ['IntegrationTestChunk_%']);
         parent::tearDown();
     }
 }

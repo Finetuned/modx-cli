@@ -24,11 +24,11 @@ class ChunkRemoveTest extends BaseIntegrationTest
         ]);
         
         // Get the chunk ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
         $chunkId = $rows[0]['id'];
         
         // Verify chunk exists
-        $beforeCount = $this->countTableRows('modx_site_htmlsnippets', 'id = ?', [$chunkId]);
+        $beforeCount = $this->countTableRows($this->chunksTable, 'id = ?', [$chunkId]);
         $this->assertEquals(1, $beforeCount);
         
         // Remove chunk
@@ -41,7 +41,7 @@ class ChunkRemoveTest extends BaseIntegrationTest
         $this->assertStringContainsString('removed successfully', $output);
         
         // Verify chunk no longer exists
-        $afterCount = $this->countTableRows('modx_site_htmlsnippets', 'id = ?', [$chunkId]);
+        $afterCount = $this->countTableRows($this->chunksTable, 'id = ?', [$chunkId]);
         $this->assertEquals(0, $afterCount);
     }
 
@@ -59,7 +59,7 @@ class ChunkRemoveTest extends BaseIntegrationTest
         ]);
         
         // Get chunk ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
         $chunkId = $rows[0]['id'];
         
         // Remove chunk with JSON
@@ -92,7 +92,7 @@ class ChunkRemoveTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name LIKE ?', ['IntegrationTestChunk_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name LIKE ?', ['IntegrationTestChunk_%']);
         parent::tearDown();
     }
 }

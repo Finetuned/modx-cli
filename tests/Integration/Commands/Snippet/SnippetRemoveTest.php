@@ -24,11 +24,11 @@ class SnippetRemoveTest extends BaseIntegrationTest
         ]);
         
         // Get the snippet ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $snippetId = $rows[0]['id'];
         
         // Verify snippet exists
-        $beforeCount = $this->countTableRows('modx_site_snippets', 'id = ?', [$snippetId]);
+        $beforeCount = $this->countTableRows($this->snippetsTable, 'id = ?', [$snippetId]);
         $this->assertEquals(1, $beforeCount);
         
         // Remove snippet
@@ -41,7 +41,7 @@ class SnippetRemoveTest extends BaseIntegrationTest
         $this->assertStringContainsString('removed successfully', $output);
         
         // Verify snippet no longer exists
-        $afterCount = $this->countTableRows('modx_site_snippets', 'id = ?', [$snippetId]);
+        $afterCount = $this->countTableRows($this->snippetsTable, 'id = ?', [$snippetId]);
         $this->assertEquals(0, $afterCount);
     }
 
@@ -59,7 +59,7 @@ class SnippetRemoveTest extends BaseIntegrationTest
         ]);
         
         // Get snippet ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $snippetId = $rows[0]['id'];
         
         // Remove snippet with JSON
@@ -92,7 +92,7 @@ class SnippetRemoveTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
         parent::tearDown();
     }
 }

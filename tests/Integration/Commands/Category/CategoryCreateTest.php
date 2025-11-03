@@ -28,7 +28,7 @@ class CategoryCreateTest extends BaseIntegrationTest
         $this->assertStringContainsString('Category ID:', $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category = ?', [$categoryName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
     }
 
     /**
@@ -53,7 +53,7 @@ class CategoryCreateTest extends BaseIntegrationTest
         }
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category = ?', [$categoryName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
     }
 
     /**
@@ -63,7 +63,7 @@ class CategoryCreateTest extends BaseIntegrationTest
     {
         $categoryName = 'IntegrationTestCategory_' . uniqid();
         
-        $beforeCount = $this->countTableRows('modx_categories', 'category = ?', [$categoryName]);
+        $beforeCount = $this->countTableRows($this->categoriesTable, 'category = ?', [$categoryName]);
         $this->assertEquals(0, $beforeCount);
         
         $this->executeCommandSuccessfully([
@@ -71,16 +71,16 @@ class CategoryCreateTest extends BaseIntegrationTest
             $categoryName
         ]);
         
-        $afterCount = $this->countTableRows('modx_categories', 'category = ?', [$categoryName]);
+        $afterCount = $this->countTableRows($this->categoriesTable, 'category = ?', [$categoryName]);
         $this->assertEquals(1, $afterCount);
         
         // Verify category data
-        $rows = $this->queryDatabase('SELECT * FROM modx_categories WHERE category = ?', [$categoryName]);
+        $rows = $this->queryDatabase('SELECT * FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $this->assertCount(1, $rows);
         $this->assertEquals($categoryName, $rows[0]['category']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category = ?', [$categoryName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
     }
 
     /**
@@ -98,7 +98,7 @@ class CategoryCreateTest extends BaseIntegrationTest
         ]);
         
         // Get parent ID
-        $parentRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$parentName]);
+        $parentRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$parentName]);
         $parentId = $parentRows[0]['id'];
         
         // Create child
@@ -109,11 +109,11 @@ class CategoryCreateTest extends BaseIntegrationTest
         ]);
         
         // Verify child has correct parent
-        $childRows = $this->queryDatabase('SELECT parent FROM modx_categories WHERE category = ?', [$childName]);
+        $childRows = $this->queryDatabase('SELECT parent FROM ' . $this->categoriesTable . ' WHERE category = ?', [$childName]);
         $this->assertEquals($parentId, $childRows[0]['parent']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category IN (?, ?)', [$parentName, $childName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category IN (?, ?)', [$parentName, $childName]);
     }
 
     /**
@@ -141,7 +141,7 @@ class CategoryCreateTest extends BaseIntegrationTest
         $this->assertNotEmpty($output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category = ?', [$categoryName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
     }
 
     /**
@@ -150,9 +150,9 @@ class CategoryCreateTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test categories
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestParent_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestChild_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestParent_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestChild_%']);
         
         parent::tearDown();
     }

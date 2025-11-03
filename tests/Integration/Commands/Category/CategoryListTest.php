@@ -69,7 +69,7 @@ class CategoryListTest extends BaseIntegrationTest
     public function testCategoryListMatchesDatabaseState()
     {
         // Count categories in database
-        $count = $this->countTableRows('modx_categories');
+        $count = $this->countTableRows($this->categoriesTable);
         
         // Get categories from command
         $data = $this->executeCommandJson(['category:list']);

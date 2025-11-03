@@ -24,7 +24,7 @@ class SnippetGetTest extends BaseIntegrationTest
         ]);
         
         // Get the snippet ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $snippetId = $rows[0]['id'];
         
         // Get snippet
@@ -37,7 +37,7 @@ class SnippetGetTest extends BaseIntegrationTest
         $this->assertStringContainsString($snippetName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE id = ?', [$snippetId]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE id = ?', [$snippetId]);
     }
 
     /**
@@ -54,7 +54,7 @@ class SnippetGetTest extends BaseIntegrationTest
         ]);
         
         // Get snippet ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $snippetId = $rows[0]['id'];
         
         // Get snippet with JSON
@@ -69,7 +69,7 @@ class SnippetGetTest extends BaseIntegrationTest
         $this->assertEquals($snippetName, $data['name']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE id = ?', [$snippetId]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE id = ?', [$snippetId]);
     }
 
     /**
@@ -91,7 +91,7 @@ class SnippetGetTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
         parent::tearDown();
     }
 }

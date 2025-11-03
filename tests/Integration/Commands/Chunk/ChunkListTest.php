@@ -32,7 +32,7 @@ class ChunkListTest extends BaseIntegrationTest
         $this->assertStringContainsString($chunkName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
     }
 
     /**
@@ -68,7 +68,7 @@ class ChunkListTest extends BaseIntegrationTest
         $this->assertTrue($found, "Created chunk not found in list");
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
     }
 
     /**
@@ -86,7 +86,7 @@ class ChunkListTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Create chunk in category
@@ -106,8 +106,8 @@ class ChunkListTest extends BaseIntegrationTest
         $this->assertStringContainsString($chunkName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -116,7 +116,7 @@ class ChunkListTest extends BaseIntegrationTest
     public function testChunkListWhenEmpty()
     {
         // Remove all test chunks first
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name LIKE ?', ['IntegrationTestChunk_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name LIKE ?', ['IntegrationTestChunk_%']);
         
         $process = $this->executeCommandSuccessfully([
             'chunk:list'
@@ -154,7 +154,7 @@ class ChunkListTest extends BaseIntegrationTest
         
         // Cleanup
         foreach ($chunkNames as $name) {
-            $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name = ?', [$name]);
+            $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name = ?', [$name]);
         }
     }
 
@@ -163,8 +163,8 @@ class ChunkListTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name LIKE ?', ['IntegrationTestChunk_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name LIKE ?', ['IntegrationTestChunk_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         parent::tearDown();
     }
 }

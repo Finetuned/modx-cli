@@ -24,7 +24,7 @@ class CategoryUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$originalName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$originalName]);
         $categoryId = $rows[0]['id'];
         
         // Update category
@@ -38,11 +38,11 @@ class CategoryUpdateTest extends BaseIntegrationTest
         $this->assertStringContainsString('updated successfully', $output);
         
         // Verify update in database
-        $afterRows = $this->queryDatabase('SELECT category FROM modx_categories WHERE id = ?', [$categoryId]);
+        $afterRows = $this->queryDatabase('SELECT category FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
         $this->assertEquals($updatedName, $afterRows[0]['category']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -60,7 +60,7 @@ class CategoryUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$originalName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$originalName]);
         $categoryId = $rows[0]['id'];
         
         // Update with JSON
@@ -75,7 +75,7 @@ class CategoryUpdateTest extends BaseIntegrationTest
         $this->assertTrue($data['success']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -91,10 +91,10 @@ class CategoryUpdateTest extends BaseIntegrationTest
         $this->executeCommandSuccessfully(['category:create', $categoryName]);
         
         // Get IDs
-        $parentRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$parentName]);
+        $parentRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$parentName]);
         $parentId = $parentRows[0]['id'];
         
-        $categoryRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $categoryRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $categoryRows[0]['id'];
         
         // Update parent
@@ -105,11 +105,11 @@ class CategoryUpdateTest extends BaseIntegrationTest
         ]);
         
         // Verify parent in database
-        $afterRows = $this->queryDatabase('SELECT parent FROM modx_categories WHERE id = ?', [$categoryId]);
+        $afterRows = $this->queryDatabase('SELECT parent FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
         $this->assertEquals($parentId, $afterRows[0]['parent']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id IN (?, ?)', [$parentId, $categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id IN (?, ?)', [$parentId, $categoryId]);
     }
 
     /**
@@ -145,7 +145,7 @@ class CategoryUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$originalName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$originalName]);
         $categoryId = $rows[0]['id'];
         
         // Update multiple fields
@@ -157,12 +157,12 @@ class CategoryUpdateTest extends BaseIntegrationTest
         ]);
         
         // Verify updates in database
-        $afterRows = $this->queryDatabase('SELECT category, rank FROM modx_categories WHERE id = ?', [$categoryId]);
+        $afterRows = $this->queryDatabase('SELECT category, rank FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
         $this->assertEquals($updatedName, $afterRows[0]['category']);
         $this->assertEquals(5, $afterRows[0]['rank']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -171,9 +171,9 @@ class CategoryUpdateTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test categories
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategoryUpdated_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestParent_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategoryUpdated_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestParent_%']);
         
         parent::tearDown();
     }

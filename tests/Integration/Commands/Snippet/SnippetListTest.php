@@ -32,7 +32,7 @@ class SnippetListTest extends BaseIntegrationTest
         $this->assertStringContainsString($snippetName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
 
     /**
@@ -67,7 +67,7 @@ class SnippetListTest extends BaseIntegrationTest
         $this->assertTrue($found, "Created snippet not found in list");
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
 
     /**
@@ -85,7 +85,7 @@ class SnippetListTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Create snippet in category
@@ -105,8 +105,8 @@ class SnippetListTest extends BaseIntegrationTest
         $this->assertStringContainsString($snippetName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -115,7 +115,7 @@ class SnippetListTest extends BaseIntegrationTest
     public function testSnippetListWhenEmpty()
     {
         // Remove all test snippets first
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
         
         $process = $this->executeCommandSuccessfully([
             'snippet:list'
@@ -152,7 +152,7 @@ class SnippetListTest extends BaseIntegrationTest
         
         // Cleanup
         foreach ($snippetNames as $name) {
-            $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$name]);
+            $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$name]);
         }
     }
 
@@ -161,8 +161,8 @@ class SnippetListTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         parent::tearDown();
     }
 }

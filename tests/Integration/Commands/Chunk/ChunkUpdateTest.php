@@ -25,7 +25,7 @@ class ChunkUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get chunk ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
         $chunkId = $rows[0]['id'];
         
         // Update chunk
@@ -39,11 +39,11 @@ class ChunkUpdateTest extends BaseIntegrationTest
         $this->assertStringContainsString('updated successfully', $output);
         
         // Verify update in database
-        $updatedRows = $this->queryDatabase('SELECT snippet FROM modx_site_htmlsnippets WHERE id = ?', [$chunkId]);
+        $updatedRows = $this->queryDatabase('SELECT snippet FROM ' . $this->chunksTable . ' WHERE id = ?', [$chunkId]);
         $this->assertEquals($newContent, $updatedRows[0]['snippet']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE id = ?', [$chunkId]);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE id = ?', [$chunkId]);
     }
 
     /**
@@ -60,7 +60,7 @@ class ChunkUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get chunk ID
-        $rows = $this->queryDatabase('SELECT id FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
         $chunkId = $rows[0]['id'];
         
         // Update with JSON
@@ -75,7 +75,7 @@ class ChunkUpdateTest extends BaseIntegrationTest
         $this->assertTrue($data['success']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE id = ?', [$chunkId]);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE id = ?', [$chunkId]);
     }
 
     /**
@@ -99,9 +99,9 @@ class ChunkUpdateTest extends BaseIntegrationTest
         ]);
         
         // Get IDs
-        $chunkRows = $this->queryDatabase('SELECT id FROM modx_site_htmlsnippets WHERE name = ?', [$chunkName]);
+        $chunkRows = $this->queryDatabase('SELECT id FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
         $chunkId = $chunkRows[0]['id'];
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Update chunk category
@@ -112,12 +112,12 @@ class ChunkUpdateTest extends BaseIntegrationTest
         ]);
         
         // Verify category updated
-        $updatedRows = $this->queryDatabase('SELECT category FROM modx_site_htmlsnippets WHERE id = ?', [$chunkId]);
+        $updatedRows = $this->queryDatabase('SELECT category FROM ' . $this->chunksTable . ' WHERE id = ?', [$chunkId]);
         $this->assertEquals($categoryId, $updatedRows[0]['category']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE id = ?', [$chunkId]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE id = ?', [$chunkId]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -140,8 +140,8 @@ class ChunkUpdateTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_htmlsnippets WHERE name LIKE ?', ['IntegrationTestChunk_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name LIKE ?', ['IntegrationTestChunk_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         parent::tearDown();
     }
 }

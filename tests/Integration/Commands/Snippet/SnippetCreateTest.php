@@ -26,7 +26,7 @@ class SnippetCreateTest extends BaseIntegrationTest
         $this->assertStringContainsString('created successfully', $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
 
     /**
@@ -47,7 +47,7 @@ class SnippetCreateTest extends BaseIntegrationTest
         $this->assertTrue($data['success']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
 
     /**
@@ -58,7 +58,7 @@ class SnippetCreateTest extends BaseIntegrationTest
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
         $code = '<?php return $modx->getOption("test", $scriptProperties, "default");';
         
-        $beforeCount = $this->countTableRows('modx_site_snippets', 'name = ?', [$snippetName]);
+        $beforeCount = $this->countTableRows($this->snippetsTable, 'name = ?', [$snippetName]);
         $this->assertEquals(0, $beforeCount);
         
         $this->executeCommandSuccessfully([
@@ -67,15 +67,15 @@ class SnippetCreateTest extends BaseIntegrationTest
             '--snippet=' . $code
         ]);
         
-        $afterCount = $this->countTableRows('modx_site_snippets', 'name = ?', [$snippetName]);
+        $afterCount = $this->countTableRows($this->snippetsTable, 'name = ?', [$snippetName]);
         $this->assertEquals(1, $afterCount);
         
         // Verify snippet code
-        $rows = $this->queryDatabase('SELECT snippet FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $rows = $this->queryDatabase('SELECT snippet FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $this->assertEquals($code, $rows[0]['snippet']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
 
     /**
@@ -93,7 +93,7 @@ class SnippetCreateTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Create snippet with category
@@ -104,12 +104,12 @@ class SnippetCreateTest extends BaseIntegrationTest
         ]);
         
         // Verify snippet has correct category
-        $snippetRows = $this->queryDatabase('SELECT category FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $snippetRows = $this->queryDatabase('SELECT category FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $this->assertEquals($categoryId, $snippetRows[0]['category']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -135,7 +135,7 @@ class SnippetCreateTest extends BaseIntegrationTest
         $this->assertNotEmpty($output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
 
     /**
@@ -153,11 +153,11 @@ class SnippetCreateTest extends BaseIntegrationTest
         ]);
         
         // Verify description in database
-        $rows = $this->queryDatabase('SELECT description FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $rows = $this->queryDatabase('SELECT description FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $this->assertEquals($description, $rows[0]['description']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name = ?', [$snippetName]);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
 
     /**
@@ -166,8 +166,8 @@ class SnippetCreateTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test snippets
-        $this->queryDatabase('DELETE FROM modx_site_snippets WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         
         parent::tearDown();
     }

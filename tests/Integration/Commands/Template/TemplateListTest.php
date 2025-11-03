@@ -32,7 +32,7 @@ class TemplateListTest extends BaseIntegrationTest
         $this->assertStringContainsString($templateName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
     }
 
     /**
@@ -67,7 +67,7 @@ class TemplateListTest extends BaseIntegrationTest
         $this->assertTrue($found, "Created template not found in list");
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename = ?', [$templateName]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
     }
 
     /**
@@ -85,7 +85,7 @@ class TemplateListTest extends BaseIntegrationTest
         ]);
         
         // Get category ID
-        $catRows = $this->queryDatabase('SELECT id FROM modx_categories WHERE category = ?', [$categoryName]);
+        $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
         
         // Create template in category
@@ -105,8 +105,8 @@ class TemplateListTest extends BaseIntegrationTest
         $this->assertStringContainsString($templateName, $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename = ?', [$templateName]);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE id = ?', [$categoryId]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
 
     /**
@@ -115,7 +115,7 @@ class TemplateListTest extends BaseIntegrationTest
     public function testTemplateListWhenEmpty()
     {
         // Remove all test templates first
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
         
         $process = $this->executeCommandSuccessfully([
             'template:list'
@@ -152,7 +152,7 @@ class TemplateListTest extends BaseIntegrationTest
         
         // Cleanup
         foreach ($templateNames as $name) {
-            $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename = ?', [$name]);
+            $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$name]);
         }
     }
 
@@ -161,8 +161,8 @@ class TemplateListTest extends BaseIntegrationTest
      */
     protected function tearDown(): void
     {
-        $this->queryDatabase('DELETE FROM modx_site_templates WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
-        $this->queryDatabase('DELETE FROM modx_categories WHERE category LIKE ?', ['IntegrationTestCategory_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
         parent::tearDown();
     }
 }
