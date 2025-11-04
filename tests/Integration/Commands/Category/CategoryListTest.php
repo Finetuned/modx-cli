@@ -37,10 +37,12 @@ class CategoryListTest extends BaseIntegrationTest
         $data = $this->executeCommandJson(['category:list']);
         
         $this->assertIsArray($data, 'JSON output should be an array');
+        $this->assertArrayHasKey('total', $data, 'JSON should have total key');
+        $this->assertArrayHasKey('results', $data, 'JSON should have results key');
         
         // If categories exist, verify structure
-        if (!empty($data)) {
-            $firstCategory = $data[0];
+        if (!empty($data['results'])) {
+            $firstCategory = $data['results'][0];
             $this->assertArrayHasKey('category', $firstCategory);
         }
     }
@@ -76,7 +78,7 @@ class CategoryListTest extends BaseIntegrationTest
         
         $this->assertEquals(
             $count,
-            count($data),
+            count($data['results']),
             'Command output should match database category count'
         );
     }
