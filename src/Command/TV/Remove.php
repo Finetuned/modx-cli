@@ -64,6 +64,10 @@ class Remove extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+        
         if (isset($response['success']) && $response['success']) {
             $this->info('Template variable removed successfully');
         } else {
