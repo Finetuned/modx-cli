@@ -112,6 +112,11 @@ class Update extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+
+        if ($this->option('json') || $this->option('format') === 'json') {
+            return parent::processResponse($response);
+        }        
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Snippet updated successfully');
 
