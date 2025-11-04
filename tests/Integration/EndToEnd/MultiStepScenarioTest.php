@@ -22,7 +22,8 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->executeCommandSuccessfully(['category:create', $categoryName]);
         
         // Step 2: Get category ID
-        $categories = $this->executeCommandJson(['category:list']);
+        $data = $this->executeCommandJson(['category:list', '--limit=0']);
+        $categories = $data['results'];
         $categoryId = $this->findCategoryId($categories, $categoryName);
         $this->assertNotNull($categoryId, 'Category should be created and retrievable');
         
@@ -43,10 +44,12 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         ]);
         
         // Step 5: Verify both items exist and are in correct category
-        $chunks = $this->executeCommandJson(['chunk:list']);
+        $chunkData = $this->executeCommandJson(['chunk:list', '--limit=0']);
+        $chunks = $chunkData['results'];
         $this->assertChunkExists($chunks, $chunkName, $categoryId);
         
-        $snippets = $this->executeCommandJson(['snippet:list']);
+        $snippetData = $this->executeCommandJson(['snippet:list', '--limit=0']);
+        $snippets = $snippetData['results'];
         $this->assertSnippetExists($snippets, $snippetName, $categoryId);
     }
     
@@ -64,7 +67,8 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         ]);
         
         // Step 2: Get template ID
-        $templates = $this->executeCommandJson(['template:list']);
+        $templateData = $this->executeCommandJson(['template:list', '--limit=0']);
+        $templates = $templateData['results'];
         $templateId = $this->findTemplateId($templates, $templateName);
         $this->assertNotNull($templateId, 'Template should be created');
         
@@ -78,7 +82,8 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         ]);
         
         // Step 4: Verify TV exists
-        $tvs = $this->executeCommandJson(['tv:list']);
+        $tvData = $this->executeCommandJson(['tv:list', '--limit=0']);
+        $tvs = $tvData['results'];
         $tvId = $this->findTVId($tvs, $tvName);
         $this->assertNotNull($tvId, 'TV should be created');
         
@@ -97,7 +102,8 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->executeCommandSuccessfully(['category:create', $parentName]);
         
         // Step 2: Get parent ID
-        $categories = $this->executeCommandJson(['category:list']);
+        $data = $this->executeCommandJson(['category:list', '--limit=0']);
+        $categories = $data['results'];
         $parentId = $this->findCategoryId($categories, $parentName);
         
         // Step 3: Create child categories
@@ -124,7 +130,8 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         ]);
         
         // Step 5: Verify hierarchy maintained
-        $updatedCategories = $this->executeCommandJson(['category:list']);
+        $data = $this->executeCommandJson(['category:list', '--limit=0']);
+        $updatedCategories = $data['results'];
         
         // Find updated parent
         $updatedParent = $this->findCategoryById($updatedCategories, $parentId);
@@ -153,7 +160,8 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->executeCommandSuccessfully(['category:create', $category2]);
         
         // Step 2: Get category IDs
-        $categories = $this->executeCommandJson(['category:list']);
+        $data = $this->executeCommandJson(['category:list', '--limit=0']);
+        $categories = $data['results'];
         $cat1Id = $this->findCategoryId($categories, $category1);
         $cat2Id = $this->findCategoryId($categories, $category2);
         
@@ -165,17 +173,18 @@ class MultiStepScenarioTest extends BaseIntegrationTest
             'chunk:create', 
             $chunk1,
             '--category=' . $cat1Id,
-            '--content=Chunk in Category 1'
+            '--snippet=Chunk in Category 1'
         ]);
         $this->executeCommandSuccessfully([
             'chunk:create', 
             $chunk2,
             '--category=' . $cat2Id,
-            '--content=Chunk in Category 2'
+            '--snippet=Chunk in Category 2'
         ]);
         
         // Step 4: Verify initial category assignments
-        $chunksInitial = $this->executeCommandJson(['chunk:list']);
+        $chunkDataInitial = $this->executeCommandJson(['chunk:list', '--limit=0']);
+        $chunksInitial = $chunkDataInitial['results'];
         $this->assertChunkExists($chunksInitial, $chunk1, $cat1Id);
         $this->assertChunkExists($chunksInitial, $chunk2, $cat2Id);
         
@@ -184,7 +193,8 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         
         // Step 6: Verify chunk1 still exists but has NO category
         // This is MODX's actual behavior - elements are not cascade deleted
-        $chunksAfter = $this->executeCommandJson(['chunk:list']);
+        $chunkDataAfter = $this->executeCommandJson(['chunk:list', '--limit=0']);
+        $chunksAfter = $chunkDataAfter['results'];
         $chunk1Data = $this->findChunkByName($chunksAfter, $chunk1);
         
         $this->assertNotNull($chunk1Data, 'Chunk should still exist after category deletion');
@@ -214,19 +224,19 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         
         $this->executeCommandSuccessfully([
             'config:add',
-            $configName,
-            $configPath
+            '--base_path=' . $configPath,
+            $configName
         ]);
         
         // Step 3: Verify config added
-        $configs = $this->executeCommandJson(['config:list']);
+        $configs = $this->executeCommandJson(['config:list', '--json']);
         $this->assertConfigExists($configs, $configName);
         
         // Step 4: Remove config
         $this->executeCommandSuccessfully(['config:rm', $configName]);
         
         // Step 5: Verify config removed
-        $finalConfigs = $this->executeCommandJson(['config:list']);
+        $finalConfigs = $this->executeCommandJson(['config:list', '--json']);
         $this->assertConfigNotExists($finalConfigs, $configName);
     }
     
@@ -246,7 +256,8 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->assertTrue($customCmd->getExitCode() === 0 || $customCmd->getExitCode() === 1);
         
         // Step 3: Use another standard command - verify category exists
-        $categories = $this->executeCommandJson(['category:list']);
+        $data = $this->executeCommandJson(['category:list', '--limit=0']);
+        $categories = $data['results'];
         $categoryId = $this->findCategoryId($categories, $categoryName);
         $this->assertNotNull($categoryId, 'Category from standard command should exist');
         
@@ -264,14 +275,14 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->executeCommandSuccessfully([
             'chunk:create',
             $chunkName,
-            '--content=Original content'
+            '--snippet=Original content'
         ]);
         
         // Step 2: Attempt to create duplicate chunk (should fail)
         $duplicateAttempt = $this->executeCommand([
             'chunk:create',
             $chunkName,
-            '--content=Duplicate content'
+            '--snippet=Duplicate content'
         ]);
         
         // Should fail with error
@@ -286,11 +297,12 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->executeCommandSuccessfully([
             'chunk:create',
             $uniqueChunkName,
-            '--content=Unique content'
+            '--snippet=Unique content'
         ]);
         
         // Step 5: Verify both valid chunks exist
-        $chunks = $this->executeCommandJson(['chunk:list']);
+        $chunkData = $this->executeCommandJson(['chunk:list', '--limit=0']);
+        $chunks = $chunkData['results'];
         $this->assertChunkByNameExists($chunks, $chunkName);
         $this->assertChunkByNameExists($chunks, $uniqueChunkName);
     }
@@ -307,11 +319,12 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->executeCommandSuccessfully([
             'chunk:create',
             $chunkName,
-            '--content=' . $initialContent
+            '--snippet=' . $initialContent
         ]);
         
         // Step 2: Get chunk and verify initial content
-        $chunks = $this->executeCommandJson(['chunk:list']);
+        $chunkData = $this->executeCommandJson(['chunk:list', '--limit=0']);
+        $chunks = $chunkData['results'];
         $chunkId = $this->findChunkId($chunks, $chunkName);
         
         $chunkData = $this->executeCommandJson(['chunk:get', $chunkId]);
@@ -322,7 +335,7 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->executeCommandSuccessfully([
             'chunk:update',
             $chunkId,
-            '--content=' . $updatedContent
+            '--snippet=' . $updatedContent
         ]);
         
         // Step 4: Get chunk again and verify updated content persists
@@ -330,13 +343,14 @@ class MultiStepScenarioTest extends BaseIntegrationTest
         $this->assertEquals($updatedContent, $updatedChunkData['snippet']);
         
         // Step 5: List chunks and verify in results
-        $finalChunks = $this->executeCommandJson(['chunk:list']);
+        $finalChunkData = $this->executeCommandJson(['chunk:list', '--limit=0']);
+        $finalChunks = $finalChunkData['results'];
         $foundChunk = $this->findChunkByName($finalChunks, $chunkName);
         $this->assertNotNull($foundChunk, 'Updated chunk should appear in list');
         
         // Step 6: Verify database consistency
         $dbContent = $this->queryDatabase(
-            'SELECT snippet  ' . $this->chunksTable . 'WHERE id = ?',
+            'SELECT snippet FROM ' . $this->chunksTable . ' WHERE id = ?',
             [$chunkId]
         );
         $this->assertEquals($updatedContent, $dbContent[0]['snippet']);
