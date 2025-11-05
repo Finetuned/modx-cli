@@ -38,9 +38,12 @@ class SnippetUpdateTest extends BaseIntegrationTest
         $output = $process->getOutput();
         $this->assertStringContainsString('updated successfully', $output);
         
+        // Verify snippet code - MODX strips the <?php tag, so expect code without it
+        $expectedCode = 'return "Updated code";';
+
         // Verify update in database
         $updatedRows = $this->queryDatabase('SELECT snippet FROM ' . $this->snippetsTable . ' WHERE id = ?', [$snippetId]);
-        $this->assertEquals($newCode, $updatedRows[0]['snippet']);
+        $this->assertEquals($expectedCode, $updatedRows[0]['snippet']);
         
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE id = ?', [$snippetId]);
