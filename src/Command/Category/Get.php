@@ -49,7 +49,7 @@ class Get extends ProcessorCmd
                 $this->output->writeln(json_encode(['success' => false, 'message' => 'Category not found'], JSON_PRETTY_PRINT));
                 return 0;
             }
-            $this->error('Category not found');
+            $this->output->writeln('<error>Category not found</error>');
             return 1;
         }
 
@@ -87,5 +87,6 @@ class Get extends ProcessorCmd
         }
 
         $table->render();
+        return 0;
     }
 }

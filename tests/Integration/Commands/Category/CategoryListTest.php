@@ -73,8 +73,8 @@ class CategoryListTest extends BaseIntegrationTest
         // Count categories in database
         $count = $this->countTableRows($this->categoriesTable);
         
-        // Get categories from command
-        $data = $this->executeCommandJson(['category:list']);
+        // Get categories from command with NO LIMIT (--limit=0 returns all results)
+        $data = $this->executeCommandJson(['category:list', '--limit=0']);
         
         $this->assertEquals(
             $count,

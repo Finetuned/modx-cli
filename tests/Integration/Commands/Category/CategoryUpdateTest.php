@@ -123,9 +123,14 @@ class CategoryUpdateTest extends BaseIntegrationTest
             '--category=Test'
         ]);
         
+        $exitCode = $process->getExitCode();
+        
+        // The command should return non-zero exit code for error
+        $this->assertEquals(1, $exitCode, 'Command should return exit code 1 for invalid category ID');
+        
         // Should fail or return error
-        $output = $process->getOutput();
-        $this->assertNotEmpty($output);
+       // $output = $process->getOutput();
+       // $this->assertNotEmpty($output);
         // Note: Specific error behavior depends on MODX implementation
     }
 

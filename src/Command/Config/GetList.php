@@ -4,6 +4,7 @@ namespace MODX\CLI\Command\Config;
 
 use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * A command to list MODX instances in the configuration
@@ -12,6 +13,18 @@ class GetList extends BaseCmd
 {
     protected $name = 'config:list';
     protected $description = 'List MODX instances in the configuration';
+
+    protected function getOptions()
+    {
+        return array_merge(parent::getOptions(), array(
+            array(
+                'json',
+                null,
+                InputOption::VALUE_NONE,
+                'Output results as JSON'
+            ),
+        ));
+    }
 
     protected function process()
     {
@@ -26,23 +39,40 @@ class GetList extends BaseCmd
         }
 
         if (empty($all)) {
-            $this->info('No instances configured');
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([]));
+            } else {
+                $this->info('No instances configured');
+            }
             return 0;
         }
 
-        $table = new Table($this->output);
-        $table->setHeaders(array('Name', 'Base Path', 'Default'));
-
+        // Build data array
+        $data = [];
         foreach ($all as $name => $config) {
             $isDefault = ($default && isset($default['class']) && $default['class'] === $name);
-            $table->addRow(array(
-                $name,
-                isset($config['base_path']) ? $config['base_path'] : '',
-                $isDefault ? 'Yes' : 'No',
-            ));
+            $data[] = array(
+                'name' => $name,
+                'base_path' => isset($config['base_path']) ? $config['base_path'] : '',
+                'is_default' => $isDefault
+            );
         }
 
-        $table->render();
+        // Output JSON or table
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode($data, JSON_PRETTY_PRINT));
+        } else {
+            $table = new Table($this->output);
+            $table->setHeaders(array('Name', 'Base Path', 'Default'));
+            foreach ($data as $row) {
+                $table->addRow(array(
+                    $row['name'],
+                    $row['base_path'],
+                    $row['is_default'] ? 'Yes' : 'No'
+                ));
+            }
+            $table->render();
+        }
 
         return 0;
     }

@@ -70,9 +70,10 @@ class SnippetCreateTest extends BaseIntegrationTest
         $afterCount = $this->countTableRows($this->snippetsTable, 'name = ?', [$snippetName]);
         $this->assertEquals(1, $afterCount);
         
-        // Verify snippet code
+        // Verify snippet code - MODX strips the <?php tag, so expect code without it
+        $expectedCode = 'return $modx->getOption("test", $scriptProperties, "default");';
         $rows = $this->queryDatabase('SELECT snippet FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
-        $this->assertEquals($code, $rows[0]['snippet']);
+        $this->assertEquals($expectedCode, $rows[0]['snippet']);
         
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
