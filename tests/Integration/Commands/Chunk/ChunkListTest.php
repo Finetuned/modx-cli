@@ -23,9 +23,10 @@ class ChunkListTest extends BaseIntegrationTest
             '--snippet=<div>Test</div>'
         ]);
         
-        // List chunks
+        // List chunks with high limit to ensure test chunk appears
         $process = $this->executeCommandSuccessfully([
-            'chunk:list'
+            'chunk:list',
+            '--limit=100'
         ]);
         
         $output = $process->getOutput();
@@ -85,6 +86,7 @@ class ChunkListTest extends BaseIntegrationTest
         // List chunks with category filter
         $process = $this->executeCommandSuccessfully([
             'chunk:list',
+            '--limit=100',
             '--category=' . $categoryId
         ]);
         
