@@ -81,8 +81,10 @@ class CategoryGetTest extends BaseIntegrationTest
             '999999'
         ]);
         
-        $output = $process->getOutput();
-        $this->assertNotEmpty($output);
+        $exitCode = $process->getExitCode();
+        
+        // The command should return non-zero exit code for error
+        $this->assertEquals(1, $exitCode, 'Command should return exit code 1 for invalid category ID');
     }
 
     /**

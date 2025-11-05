@@ -72,19 +72,43 @@ abstract class ProcessorCmd extends BaseCmd
 
         /** @var \MODX\Revolution\Processors\ProcessorResponse $response */
         $response = $this->modx->runProcessor($this->processor, $properties, $options);
+        
         if (!($response instanceof \MODX\Revolution\Processors\ProcessorResponse) || !$response->getResponse()) {
-            $this->error('Something went wrong while executing the processor');
-            $this->error($response->getMessage());
+            $this->output->writeln('<error>Something went wrong while executing the processor</error>');
+            $this->output->writeln('<error>' . $response->getMessage() . '</error>');
             return 1; // Return non-zero for failure
         }
+        
         // Trick for "list" processors not returning "success"
         if ($response->isError() && isset($response->response['success']) && !$response->response['success']) {
             $errors = $response->getFieldErrors();
-            foreach ($errors as $e) {
-                $this->error($e->field . ' : ' . $e->message);
+            
+            // Check for --json flag
+            if ($this->option('json')) {
+                $errorData = array('success' => false);
+                if (empty($errors)) {
+                    $errorData['message'] = $response->getMessage();
+                } else {
+                    $errorData['errors'] = array_map(function($e) {
+                        return array('field' => $e->field, 'message' => $e->message);
+                    }, $errors);
+                }
+                $this->output->writeln(json_encode($errorData, JSON_PRETTY_PRINT));
+            } else {
+                // Plain text output
+                if (empty($errors)) {
+                    // No field-specific errors, output general error message
+                    $this->output->writeln('<error>' . $response->getMessage() . '</error>');
+                } else {
+                    // Output field-specific errors
+                    foreach ($errors as $e) {
+                        $this->output->writeln('<error>' . $e->field . ' : ' . $e->message . '</error>');
+                    }
+                }
             }
             return 1; // Return non-zero for failure
         }
+        
         $this->response =& $response;
 
         $result = $this->processResponse($this->decodeResponse($response));
