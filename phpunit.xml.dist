@@ -16,8 +16,13 @@
             <directory>tests</directory>
             <exclude>tests/Integration</exclude>
         </testsuite>
-        <testsuite name="Integration">
+        <testsuite name="integration">
             <directory>tests/Integration</directory>
+            <exclude>tests/Integration/Fixtures</exclude>
+            <exclude>tests/Integration/Bootstrap</exclude>
+        </testsuite>
+        <testsuite name="all">
+            <directory>tests</directory>
             <exclude>tests/Integration/Fixtures</exclude>
             <exclude>tests/Integration/Bootstrap</exclude>
         </testsuite>
