@@ -20,6 +20,12 @@ class DisabledPlugin extends ListProcessor
         'disabled' => 1
     );
 
+    protected function beforeRun(array &$properties = array(), array &$options = array())
+    {
+        // Ensure the disabled filter is properly passed to the processor
+        $properties['disabled'] = 1;
+    }
+
     protected function parseValue($value, $column)
     {
         if ($column === 'category') {
