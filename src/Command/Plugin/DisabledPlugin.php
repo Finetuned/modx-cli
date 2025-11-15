@@ -26,6 +26,25 @@ class DisabledPlugin extends ListProcessor
         $properties['disabled'] = 1;
     }
 
+    protected function processResponse(array $response = array())
+    {
+        // Filter results to only show disabled plugins
+        if (isset($response['results']) && is_array($response['results'])) {
+            $response['results'] = array_filter($response['results'], function($plugin) {
+                return isset($plugin['disabled']) && $plugin['disabled'] == 1;
+            });
+            // Re-index array to avoid gaps in keys
+            $response['results'] = array_values($response['results']);
+            
+            // Update total count if present
+            if (isset($response['total'])) {
+                $response['total'] = count($response['results']);
+            }
+        }
+
+        return parent::processResponse($response);
+    }
+
     protected function parseValue($value, $column)
     {
         if ($column === 'category') {
