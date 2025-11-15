@@ -12,8 +12,14 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Info extends ProcessorCmd
 {
-    protected $processor = 'Workspace\Providers\Get';
+    protected $processor = 'Workspace\Providers\GetList';
     protected $required = array('id');
+
+    protected function beforeRun(array &$properties = array(), array &$options = array())
+    {
+        // Filter by provider ID
+        $properties['id'] = $this->argument('id');
+    }
 
     protected $name = 'package:provider:info';
     protected $description = 'Get information about a package provider in MODX';
@@ -44,12 +50,14 @@ class Info extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
-        if (!isset($response['object'])) {
+        // GetList returns 'results' array instead of 'object'
+        if (!isset($response['results']) || empty($response['results'])) {
             $this->error('Provider not found');
-            return;
+            return 1;
         }
 
-        $provider = $response['object'];
+        // Get the first (and only) provider from results
+        $provider = $response['results'][0];
         $format = $this->option('format');
 
         if ($format === 'json') {

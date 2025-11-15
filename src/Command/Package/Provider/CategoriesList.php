@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class CategoriesList extends ListProcessor
 {
-    protected $processor = 'Workspace\Providers\Categories';
+    protected $processor = 'Workspace\Packages\Rest\GetNodes';
     protected $required = array('provider');
     protected $headers = array(
         'id', 'name', 'description'
@@ -28,5 +28,12 @@ class CategoriesList extends ListProcessor
                 'The ID of the provider'
             ),
         );
+    }
+
+    protected function beforeRun(array &$properties = array(), array &$options = array())
+    {
+        // Set node type to 'repository' to get categories
+        // The GetNodes processor uses id format 'n_{type}_{key}'
+        $properties['id'] = 'n_repository_0';
     }
 }
