@@ -60,7 +60,7 @@ class Info extends ProcessorCmd
         $provider = $response['results'][0];
         $format = $this->option('format');
 
-        if ($format === 'json') {
+        if ($format === 'json' || $this->option('json')) {
             $this->output->writeln(json_encode($provider, JSON_PRETTY_PRINT));
             return;
         }
