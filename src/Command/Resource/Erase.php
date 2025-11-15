@@ -7,15 +7,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * A command to purge a MODX resource
+ * A command to erase a MODX resource (permanently delete from trash)
  */
-class Purge extends ProcessorCmd
+class Erase extends ProcessorCmd
 {
-    protected $processor = 'Resource\Purge';
-    protected $required = array('id');
+    protected $processor = 'Resource\Trash\Purge';
+    protected $required = array();
 
-    protected $name = 'resource:purge';
-    protected $description = 'Purge a MODX resource (permanently delete)';
+    protected $name = 'resource:erase';
+    protected $description = 'Erase a MODX resource (permanently delete from trash)';
 
     protected function getArguments()
     {
@@ -23,7 +23,7 @@ class Purge extends ProcessorCmd
             array(
                 'id',
                 InputArgument::REQUIRED,
-                'The ID of the resource to purge'
+                'The ID of the resource to erase'
             ),
         );
     }
@@ -35,7 +35,7 @@ class Purge extends ProcessorCmd
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
-                'Force purge without confirmation'
+                'Force erase without confirmation'
             ),
         ));
     }
@@ -52,11 +52,22 @@ class Purge extends ProcessorCmd
         }
 
         $pagetitle = $resource->get('pagetitle');
+        $isDeleted = $resource->get('deleted');
 
-        // Confirm purge unless --force is used
+        // Check if resource is in trash
+        if (!$isDeleted) {
+            $this->error("Resource '{$pagetitle}' (ID: {$id}) is not in the trash");
+            $this->info("Use 'resource:delete' to move it to trash first");
+            return false;
+        }
+
+        // The processor expects 'ids' parameter (comma-separated list)
+        $properties['ids'] = (string)$id;
+
+        // Confirm erase unless --force is used
         if (!$this->option('force')) {
             $this->error('WARNING: This operation is irreversible!');
-            if (!$this->confirm("Are you sure you want to permanently delete resource '{$pagetitle}' (ID: {$id})?")) {
+            if (!$this->confirm("Are you sure you want to permanently erase resource '{$pagetitle}' (ID: {$id}) from trash?")) {
                 $this->info('Operation aborted');
                 return false;
             }
@@ -66,9 +77,9 @@ class Purge extends ProcessorCmd
     protected function processResponse(array $response = array())
     {
         if (isset($response['success']) && $response['success']) {
-            $this->info('Resource purged successfully');
+            $this->info('Resource erased successfully (permanently deleted)');
         } else {
-            $this->error('Failed to purge resource');
+            $this->error('Failed to erase resource');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

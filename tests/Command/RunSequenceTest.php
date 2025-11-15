@@ -299,7 +299,7 @@ class RunSequenceTest extends TestCase
                     'resource:get --format=json',
                     'resource:update --pagetitle="Updated Resource" --content="Updated Content"',
                     'resource:get --format=json',
-                    'resource:remove --force=1'
+                    'resource:delete --force=1'
                 ],
                 'is_asynchronous' => false,
                 'continue_after_error' => false
@@ -319,7 +319,7 @@ class RunSequenceTest extends TestCase
         $this->assertStringContainsString('Running command: modx resource:create', $output);
         $this->assertStringContainsString('Running command: modx resource:get', $output);
         $this->assertStringContainsString('Running command: modx resource:update', $output);
-        $this->assertStringContainsString('Running command: modx resource:remove', $output);
+        $this->assertStringContainsString('Running command: modx resource:delete', $output);
         $this->assertStringContainsString('All command sets have been executed', $output);
     }
     

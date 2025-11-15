@@ -7,15 +7,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * A command to remove a MODX resource
+ * A command to delete a MODX resource (move to trash)
  */
-class Remove extends ProcessorCmd
+class Delete extends ProcessorCmd
 {
     protected $processor = 'Resource\Delete';
     protected $required = array('id');
 
-    protected $name = 'resource:remove';
-    protected $description = 'Remove a MODX resource';
+    protected $name = 'resource:delete';
+    protected $description = 'Delete a MODX resource (move to trash)';
 
     protected function getArguments()
     {
@@ -23,7 +23,7 @@ class Remove extends ProcessorCmd
             array(
                 'id',
                 InputArgument::REQUIRED,
-                'The ID of the resource to remove'
+                'The ID of the resource to delete'
             ),
         );
     }
@@ -35,7 +35,7 @@ class Remove extends ProcessorCmd
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
-                'Force removal without confirmation'
+                'Force deletion without confirmation'
             ),
         ));
     }
@@ -53,9 +53,9 @@ class Remove extends ProcessorCmd
 
         $pagetitle = $resource->get('pagetitle');
 
-        // Confirm removal unless --force is used
+        // Confirm deletion unless --force is used
         if (!$this->option('force')) {
-            if (!$this->confirm("Are you sure you want to remove resource '{$pagetitle}' (ID: {$id})?")) {
+            if (!$this->confirm("Are you sure you want to delete resource '{$pagetitle}' (ID: {$id})?")) {
                 $this->info('Operation aborted');
                 return false;
             }
@@ -65,9 +65,9 @@ class Remove extends ProcessorCmd
     protected function processResponse(array $response = array())
     {
         if (isset($response['success']) && $response['success']) {
-            $this->info('Resource removed successfully');
+            $this->info('Resource deleted successfully (moved to trash)');
         } else {
-            $this->error('Failed to remove resource');
+            $this->error('Failed to delete resource');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
