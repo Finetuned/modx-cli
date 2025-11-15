@@ -24,7 +24,7 @@ class GetList extends ListProcessor
         }
 
         if ($column === 'disabled') {
-            return $this->renderBoolean(!$value);
+            return $this->renderBoolean($value);
         }
 
         return parent::parseValue($value, $column);
