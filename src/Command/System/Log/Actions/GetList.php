@@ -70,6 +70,9 @@ class GetList extends ListProcessor
                 $properties[$key] = $this->option($key);
             }
         }
+        
+        // Call parent to handle pagination
+        return parent::beforeRun($properties, $options);
     }
 
     protected function parseValue($value, $column)
