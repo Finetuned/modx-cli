@@ -55,3 +55,22 @@ custom_commands:
             description: "Download packages asynchronously"
           - name: backup
             description: "Create backup before upgrading"
+  
+  # User Utilities
+  user_utils:
+    functions_file: "user-functions.php"
+    commands:
+      user:reset-password:
+        function: userResetPassword
+        description: "Reset user password by username, email, or ID"
+        options:
+          - name: username
+            description: "User's username"
+          - name: email
+            description: "User's email address"
+          - name: id
+            description: "User's ID"
+          - name: password
+            description: "New password (will prompt if not provided)"
+          - name: generate
+            description: "Generate a random password"
