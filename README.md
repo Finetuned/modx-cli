@@ -252,10 +252,20 @@ For more information, see [SSH and Aliases Documentation](docs/ssh-and-aliases.m
 
 ## Documentation
 
+### User Guides
 - [Update Commands](docs/update-commands.md) - Detailed guide to the enhanced update functionality
 - [List Commands](docs/list-commands.md) - Pagination and filtering for list commands
 - [SSH and Aliases](docs/ssh-and-aliases.md) - Remote command execution and aliases
 - [Internal API](docs/internal-api.md) - Programmatic usage and extending the CLI
+
+### Developer Guides
+- [Running Tests](docs/running-tests.md) - Guide to running the test suite
+- [Debugging Setup](docs/debugging-setup.md) - VS Code debugging configuration
+- [Code Style Guide](docs/code-style-guide.md) - Coding standards and PHP_CodeSniffer setup
+
+### Project Planning
+- [TODO Priority List](docs/todo-priority-list.md) - Prioritized list of technical debt items
+- [GitHub Issues to Create](docs/github-issues-to-create.md) - Major initiative issue templates
 
 ## Bash Completion
 
@@ -276,9 +286,44 @@ box compile
 
 This will create a `modx-cli.phar` file in the root directory.
 
+## Development
+
+### Code Quality
+
+This project follows PSR-12 coding standards. Check your code style:
+
+```bash
+# Check code style
+composer cs:check
+
+# Automatically fix code style issues
+composer cs:fix
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+composer test
+
+# Run unit tests only
+composer test:unit
+
+# Run integration tests only
+composer test:integration
+```
+
+See [Running Tests](docs/running-tests.md) for more details.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+Before contributing, please:
+1. Read the [Code Style Guide](docs/code-style-guide.md)
+2. Ensure your code passes `composer cs:check`
+3. Add tests for new functionality
+4. Update documentation as needed
 
 ## License
 

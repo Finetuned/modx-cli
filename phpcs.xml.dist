@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<ruleset name="MODX CLI Coding Standard">
+    <description>PHP_CodeSniffer configuration for MODX CLI</description>
+
+    <!-- Use PSR-12 as the base standard -->
+    <rule ref="PSR12"/>
+
+    <!-- Show progress and use colors -->
+    <arg value="p"/>
+    <arg name="colors"/>
+
+    <!-- Show sniff codes in all reports -->
+    <arg value="s"/>
+
+    <!-- Paths to check -->
+    <file>src</file>
+    <file>tests</file>
+
+    <!-- Exclude patterns -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/var/*</exclude-pattern>
+    <exclude-pattern>*/tests/Integration/Fixtures/*</exclude-pattern>
+    <exclude-pattern>*/tests/Integration/Bootstrap/*</exclude-pattern>
+    <exclude-pattern>*/custom-commands/*</exclude-pattern>
+
+    <!-- Additional rules for code quality -->
+
+    <!-- Require strict types declaration (can be enabled when ready for PHP 7+) -->
+    <!-- <rule ref="Generic.PHP.RequireStrictTypes"/> -->
+
+    <!-- Forbid deprecated functions -->
+    <rule ref="Generic.PHP.DeprecatedFunctions"/>
+
+    <!-- Forbid backtick operator -->
+    <rule ref="Generic.PHP.BacktickOperator"/>
+
+    <!-- Forbid goto -->
+    <rule ref="Generic.PHP.DiscourageGoto"/>
+
+    <!-- Require proper array syntax -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <!-- Check for TODO/FIXME comments to ensure they're tracked -->
+    <rule ref="Generic.Commenting.Todo"/>
+    <rule ref="Generic.Commenting.Fixme"/>
+
+    <!-- Line length: warn at 120, error at 150 -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="150"/>
+        </properties>
+    </rule>
+
+    <!-- Ensure proper spacing -->
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
+        <properties>
+            <property name="ignoreBlankLines" value="false"/>
+        </properties>
+    </rule>
+
+    <!-- Check for proper use of namespaces -->
+    <rule ref="PSR1.Classes.ClassDeclaration"/>
+
+    <!-- Require proper DocBlock formatting -->
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <!-- Allow missing @return for void methods -->
+        <exclude name="Squiz.Commenting.FunctionComment.MissingReturn"/>
+        <!-- Allow missing @param in some cases -->
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+    </rule>
+
+    <!-- Check for unused use statements -->
+    <rule ref="PSR2.Namespaces.UseDeclaration"/>
+
+    <!-- Configuration for specific files -->
+
+    <!-- Allow longer lines in test files -->
+    <rule ref="Generic.Files.LineLength">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Relax comment requirements for test files -->
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+</ruleset>

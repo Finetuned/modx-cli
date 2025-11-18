@@ -10,3 +10,7 @@
 /.serena/
 /.clinerules/
 /tests/integration/.env
+
+# PHP_CodeSniffer cache
+.phpcs-cache
+/.phpcs.xml.dist.cache

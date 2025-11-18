@@ -48,5 +48,14 @@
         "branch-alias": {
             "dev-master": "1.0.0-dev"
         }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite default",
+        "test:integration": "phpunit --testsuite integration",
+        "test:all": "phpunit --testsuite all",
+        "cs:check": "phpcs",
+        "cs:fix": "phpcbf",
+        "cs": "@cs:check"
     }
 }
