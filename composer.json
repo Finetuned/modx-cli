@@ -24,7 +24,8 @@
         "phpspec/prophecy": "^1.20",
         "roave/security-advisories": "dev-latest",
         "squizlabs/php_codesniffer": "^3.12",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "phpstan/phpstan": "^1.10"
     },
     "bin": [
         "bin/modx"
@@ -56,6 +57,8 @@
         "test:all": "phpunit --testsuite all",
         "cs:check": "phpcs",
         "cs:fix": "phpcbf",
-        "cs": "@cs:check"
+        "cs": "@cs:check",
+        "analyse": "phpstan analyse",
+        "analyse:baseline": "phpstan analyse --generate-baseline"
     }
 }
