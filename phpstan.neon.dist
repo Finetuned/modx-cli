@@ -1,0 +1,35 @@
+parameters:
+    level: 5
+    paths:
+        - src
+
+    excludePaths:
+        - src/Xdom.php
+        - tests/Integration/Fixtures/*
+        - tests/Integration/Bootstrap/*
+
+    # Ignore errors for external classes we don't control
+    ignoreErrors:
+        # MODX Revolution classes may not be available during analysis
+        - '#Access to an undefined property MODX\\Revolution\\modX::#'
+        - '#Call to an undefined method MODX\\Revolution\\modX::#'
+        - '#Parameter .* expects MODX\\Revolution\\modX, MODX\\Revolution\\modX\|null given#'
+
+        # Allow dynamic properties for now (can be addressed in future)
+        - '#Access to an undefined property MODX\\CLI\\Application::#'
+
+    # Bootstrap file for MODX stubs if needed
+    # bootstrapFiles:
+    #     - tests/bootstrap.php
+
+    # Report unknown classes
+    reportUnmatchedIgnoredErrors: false
+
+    # Check return types
+    checkMissingReturnTypes: true
+
+    # Check parameter types
+    checkMissingParameterTypes: false
+
+    # Treat PHPDoc as source of truth
+    treatPhpDocTypesAsCertain: false

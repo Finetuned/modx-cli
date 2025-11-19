@@ -14,3 +14,8 @@
 # PHP_CodeSniffer cache
 .phpcs-cache
 /.phpcs.xml.dist.cache
+
+# PHPStan
+/phpstan.neon
+phpstan-baseline.neon
+.phpstan.cache
