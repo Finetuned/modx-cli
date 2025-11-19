@@ -81,7 +81,7 @@ class GetListTest extends BaseTest
     public function testExecuteWithEmptyResults()
     {
         // Mock the runProcessor method to return empty results
-        $processorResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
         $processorResponse->method('getResponse')
@@ -109,7 +109,7 @@ class GetListTest extends BaseTest
     public function testExecuteWithFailedResponse()
     {
         // Mock the runProcessor method to return a failed response
-        $processorResponse = $this->getMockBuilder('MODX\\\\Revolution\\\\Processors\\\\ProcessorResponse')
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
         $processorResponse->method('getResponse')
