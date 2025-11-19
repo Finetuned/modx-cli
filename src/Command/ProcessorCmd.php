@@ -2,6 +2,8 @@
 
 namespace MODX\CLI\Command;
 
+use MODX\CLI\Configuration\FieldMappings;
+use MODX\CLI\Messages\ErrorMessages;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -72,9 +74,9 @@ abstract class ProcessorCmd extends BaseCmd
 
         /** @var \MODX\Revolution\Processors\ProcessorResponse $response */
         $response = $this->modx->runProcessor($this->processor, $properties, $options);
-        
+
         if (!($response instanceof \MODX\Revolution\Processors\ProcessorResponse) || !$response->getResponse()) {
-            $this->output->writeln('<error>Something went wrong while executing the processor</error>');
+            $this->output->writeln('<error>' . ErrorMessages::get(ErrorMessages::PROCESSOR_FAILED) . '</error>');
             $this->output->writeln('<error>' . $response->getMessage() . '</error>');
             return 1; // Return non-zero for failure
         }
@@ -183,31 +185,8 @@ abstract class ProcessorCmd extends BaseCmd
             return false;
         }
 
-        // Default field mappings for common MODX objects
-        $defaultMappings = array(
-            'modChunk' => array('name' => 'name', 'description' => 'description', 'category' => 'category', 'snippet' => 'snippet'),
-            'modTemplate' => array('templatename' => 'templatename', 'description' => 'description', 'category' => 'category', 'content' => 'content'),
-            'modSnippet' => array('name' => 'name', 'description' => 'description', 'category' => 'category', 'snippet' => 'snippet'),
-            'modTemplateVar' => array('name' => 'name', 'caption' => 'caption', 'description' => 'description', 'category' => 'category'),
-            'modResource' => array(
-                'pagetitle' => 'pagetitle',
-                'parent' => 'parent', 
-                'template' => 'template',
-                'published' => 'published',
-                'class_key' => 'class_key',        // CRITICAL - prevents null classKey error
-                'context_key' => 'context_key',    // CRITICAL - required by processor
-                'content_type' => 'content_type',  // Usually defaults to 1
-                'alias' => 'alias',
-                'content' => 'content',
-                'hidemenu' => 'hidemenu',
-                'searchable' => 'searchable',
-                'cacheable' => 'cacheable'
-            ),
-            'modCategory' => array('name' => 'category', 'parent' => 'parent'),
-        );
-
-        // Use provided field map or default mapping
-        $mapping = !empty($fieldMap) ? $fieldMap : (isset($defaultMappings[$class]) ? $defaultMappings[$class] : array());
+        // Use provided field map or get from FieldMappings configuration
+        $mapping = !empty($fieldMap) ? $fieldMap : FieldMappings::get($class);
 
         // Pre-populate properties with existing values if not already set
         foreach ($mapping as $propertyName => $fieldName) {
