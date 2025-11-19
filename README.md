@@ -4,7 +4,7 @@ A command-line interface for MODX 3, built with Symfony Console.
 
 ## Requirements
 
-- PHP 7.4 or higher
+- PHP 8.0 or higher
 - MODX 3.0.0 or higher
 
 ## Installation
@@ -120,6 +120,80 @@ $this->logError('Operation failed: {error}', ['error' => $e->getMessage()]);
 ```
 
 For complete documentation, see [Enhanced Logging System](docs/enhanced-logging-system.md).
+
+### Plugin Architecture
+
+MODX CLI features a powerful plugin system for extending functionality without modifying core code:
+
+```php
+// Create a plugin by extending AbstractPlugin
+class MyPlugin extends AbstractPlugin
+{
+    public function getName(): string
+    {
+        return 'my-plugin';
+    }
+
+    public function getCommands(): array
+    {
+        return [MyCommand::class];
+    }
+
+    public function getHooks(): array
+    {
+        return [
+            'command.before' => [$this, 'onCommandBefore']
+        ];
+    }
+}
+```
+
+**Features:**
+- Automatic plugin discovery and loading
+- Hook system for event-driven extensions
+- Command registration
+- Configuration management
+- Enable/disable functionality
+
+For complete documentation, see [Plugin Architecture](docs/plugin-architecture.md).
+
+### Command Output Streaming
+
+Enhanced output capabilities for long-running commands:
+
+```php
+class MyCommand extends BaseCmd
+{
+    use StreamingOutputTrait;
+
+    protected function process()
+    {
+        // Progress bars
+        $this->startProgress(100, 'Processing...');
+        $this->advanceProgress(10);
+        $this->finishProgress();
+
+        // Real-time streaming
+        $this->stream('Processing item...');
+
+        // Section-based output
+        $section = $this->createSection();
+        $section->write('Status: Running');
+        $section->overwrite('Status: Complete');
+
+        return 0;
+    }
+}
+```
+
+**Features:**
+- Real-time streaming output
+- Progress bars with custom formats
+- Buffered and unbuffered modes
+- Section-based output
+- Event callbacks and statistics
+
+For complete documentation, see [Command Output Streaming](docs/command-output-streaming.md).
 
 ### Examples
 

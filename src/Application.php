@@ -3,6 +3,8 @@
 namespace MODX\CLI;
 
 use MODX\CLI\Logging\Logger;
+use MODX\CLI\Plugin\HookManager;
+use MODX\CLI\Plugin\PluginManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application as BaseApp;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -50,6 +52,16 @@ class Application extends BaseApp
      */
     protected $logger;
 
+    /**
+     * @var HookManager
+     */
+    protected $hookManager;
+
+    /**
+     * @var PluginManager
+     */
+    protected $pluginManager;
+
     public function __construct()
     {
         $this->instances = new Configuration\Instance();
@@ -62,7 +74,16 @@ class Application extends BaseApp
         // Initialize logger
         $this->initializeLogger();
 
+        // Initialize hook manager
+        $this->hookManager = new HookManager($this->logger);
+
+        // Initialize plugin manager
+        $this->pluginManager = new PluginManager($this, $this->logger);
+
         parent::__construct('MODX CLI', '1.0.0');
+
+        // Load plugins after parent construction
+        $this->pluginManager->loadPlugins();
     }
 
     protected function getDefaultInputDefinition()
@@ -500,6 +521,26 @@ class Application extends BaseApp
         }
 
         return $this->logger;
+    }
+
+    /**
+     * Get the hook manager instance
+     *
+     * @return HookManager
+     */
+    public function getHookManager(): HookManager
+    {
+        return $this->hookManager;
+    }
+
+    /**
+     * Get the plugin manager instance
+     *
+     * @return PluginManager
+     */
+    public function getPluginManager(): PluginManager
+    {
+        return $this->pluginManager;
     }
 
     /**
