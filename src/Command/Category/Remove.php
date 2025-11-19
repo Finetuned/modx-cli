@@ -70,12 +70,14 @@ class Remove extends ProcessorCmd
 
         if (isset($response['success']) && $response['success']) {
             $this->info('Category removed successfully');
+            return 0;
         } else {
             $this->error('Failed to remove category');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

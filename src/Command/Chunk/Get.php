@@ -50,10 +50,10 @@ class Get extends ProcessorCmd
                     'success' => false,
                     'message' => 'Chunk not found'
                 ], JSON_PRETTY_PRINT));
-                return;
+                return 1;
             }
             $this->error('Chunk not found');
-            return;
+            return 1;
         }
 
         $chunk = $response['object'];
@@ -61,7 +61,7 @@ class Get extends ProcessorCmd
         // Check for both --json flag and --format=json
         if ($this->option('json') || $this->option('format') === 'json') {
             $this->output->writeln(json_encode($chunk, JSON_PRETTY_PRINT));
-            return;
+            return 0;
         }
 
         // Default to table format
@@ -95,5 +95,6 @@ class Get extends ProcessorCmd
         }
 
         $table->render();
+        return 0;
     }
 }

@@ -78,12 +78,14 @@ class Update extends ProcessorCmd
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Category ID: ' . $response['object']['id']);
             }
+            return 0;
         } else {
             $this->error('Failed to update category');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

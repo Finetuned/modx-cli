@@ -104,12 +104,14 @@ class Create extends ProcessorCmd
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Chunk ID: ' . $response['object']['id']);
             }
+            return 0;
         } else {
             $this->error('Failed to create chunk');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

@@ -71,12 +71,14 @@ class Remove extends ProcessorCmd
         
         if (isset($response['success']) && $response['success']) {
             $this->info('Chunk removed successfully');
+            return 0;
         } else {
             $this->error('Failed to remove chunk');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }
