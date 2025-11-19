@@ -91,6 +91,36 @@ modx list
 
 **JSON Output**: All commands support `--json` flag for machine-readable output.
 
+**Enhanced Logging**: Built-in PSR-3 compliant logging system with file logging, automatic rotation, and verbosity controls.
+
+### Logging
+
+The CLI includes a comprehensive logging system for better debugging and operational visibility:
+
+```bash
+# Control console output verbosity
+modx command -v          # verbose
+modx command -vv         # very verbose
+modx command -vvv        # debug
+modx command --quiet     # no output
+
+# Write logs to a file
+modx command --log-file=/var/log/modx-cli.log
+
+# Set log level (filters which messages are logged)
+modx command --log-level=debug
+```
+
+All commands extending `BaseCmd` have automatic access to logging:
+
+```php
+$this->logInfo('Processing started');
+$this->logDebug('Item {id} processed', ['id' => 123]);
+$this->logError('Operation failed: {error}', ['error' => $e->getMessage()]);
+```
+
+For complete documentation, see [Enhanced Logging System](docs/enhanced-logging-system.md).
+
 ### Examples
 
 Display the CLI version:

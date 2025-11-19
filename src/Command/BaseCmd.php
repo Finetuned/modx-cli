@@ -2,6 +2,7 @@
 
 namespace MODX\CLI\Command;
 
+use MODX\CLI\Logging\LoggerAwareTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,6 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class BaseCmd extends Command
 {
+    use LoggerAwareTrait;
     /**
      * Define whether or not a modX instance is required to run the command
      */
@@ -127,6 +129,12 @@ abstract class BaseCmd extends Command
     {
         $this->input = $input;
         $this->output = $output;
+
+        // Initialize logger from application
+        $app = $this->getApplication();
+        if ($app && method_exists($app, 'getLogger')) {
+            $this->setLogger($app->getLogger());
+        }
 
         return parent::run($input, $output);
     }

@@ -2,6 +2,8 @@
 
 namespace MODX\CLI;
 
+use MODX\CLI\Logging\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application as BaseApp;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -43,6 +45,11 @@ class Application extends BaseApp
      */
     public $modx;
 
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     public function __construct()
     {
         $this->instances = new Configuration\Instance();
@@ -51,6 +58,10 @@ class Application extends BaseApp
         $this->extensions = new Configuration\Extension();
         $this->excludedCommands = new Configuration\ExcludedCommands();
         $this->components = new Configuration\Component($this);
+
+        // Initialize logger
+        $this->initializeLogger();
+
         parent::__construct('MODX CLI', '1.0.0');
     }
 
@@ -67,6 +78,14 @@ class Application extends BaseApp
         );
         $def->addOption(
             new InputOption('--ssh', null, InputOption::VALUE_REQUIRED, 'Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]')
+        );
+
+        // Logging options
+        $def->addOption(
+            new InputOption('--log-level', null, InputOption::VALUE_REQUIRED, 'Set log level (debug, info, notice, warning, error, critical, alert, emergency)')
+        );
+        $def->addOption(
+            new InputOption('--log-file', null, InputOption::VALUE_REQUIRED, 'Write logs to specified file')
         );
 
         return $def;
@@ -406,6 +425,84 @@ class Application extends BaseApp
     }
 
     /**
+     * Initialize the logger with default settings
+     *
+     * @return void
+     */
+    protected function initializeLogger(): void
+    {
+        // Create logger with default verbosity (normal)
+        $this->logger = new Logger(Logger::VERBOSITY_NORMAL);
+    }
+
+    /**
+     * Configure the logger based on input options
+     *
+     * @param InputInterface $input An Input instance
+     * @param OutputInterface $output An Output instance
+     *
+     * @return void
+     */
+    protected function configureLogger(InputInterface $input, OutputInterface $output): void
+    {
+        if (!$this->logger) {
+            $this->initializeLogger();
+        }
+
+        // Map Symfony Console verbosity to Logger verbosity
+        $verbosity = $output->getVerbosity();
+        switch ($verbosity) {
+            case OutputInterface::VERBOSITY_QUIET:
+                $this->logger->setVerbosity(Logger::VERBOSITY_QUIET);
+                break;
+            case OutputInterface::VERBOSITY_NORMAL:
+                $this->logger->setVerbosity(Logger::VERBOSITY_NORMAL);
+                break;
+            case OutputInterface::VERBOSITY_VERBOSE:
+                $this->logger->setVerbosity(Logger::VERBOSITY_VERBOSE);
+                break;
+            case OutputInterface::VERBOSITY_VERY_VERBOSE:
+                $this->logger->setVerbosity(Logger::VERBOSITY_VERY_VERBOSE);
+                break;
+            case OutputInterface::VERBOSITY_DEBUG:
+                $this->logger->setVerbosity(Logger::VERBOSITY_DEBUG);
+                break;
+        }
+
+        // Configure log level if specified
+        if ($input->hasParameterOption('--log-level')) {
+            $logLevel = $input->getParameterOption('--log-level');
+            $this->logger->setLogLevel($logLevel);
+        }
+
+        // Configure log file if specified
+        if ($input->hasParameterOption('--log-file')) {
+            $logFile = $input->getParameterOption('--log-file');
+            $this->logger->setLogFile($logFile);
+        }
+
+        // Set console output for the logger
+        $this->logger->setConsoleOutput($output);
+
+        // Log application start
+        $this->logger->debug('MODX CLI application started');
+    }
+
+    /**
+     * Get the logger instance
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        if (!$this->logger) {
+            $this->initializeLogger();
+        }
+
+        return $this->logger;
+    }
+
+    /**
      * Runs the current application.
      *
      * @param InputInterface $input An Input instance
@@ -415,6 +512,9 @@ class Application extends BaseApp
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
+        // Configure logger based on input options
+        $this->configureLogger($input, $output);
+
         $command = $input->getFirstArgument();
 
         // Check for alias
