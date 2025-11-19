@@ -117,7 +117,7 @@ class GetListTest extends BaseTest
     public function testExecuteWithFailedResponse()
     {
         // Mock the runProcessor method to return a failed response
-        $processorResponse = $this->getMockBuilder('MODX\\\\Revolution\\\\Processors\\\\ProcessorResponse')
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
         $processorResponse->method('getResponse')

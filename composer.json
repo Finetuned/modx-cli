@@ -58,6 +58,8 @@
         "test:all": "phpunit --testsuite all",
         "cs:check": "phpcs",
         "cs:fix": "phpcbf",
-        "cs": "@cs:check"
+        "cs": "@cs:check",
+        "analyse": "phpstan analyse",
+        "analyse:baseline": "phpstan analyse --generate-baseline"
     }
 }

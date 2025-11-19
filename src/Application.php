@@ -86,7 +86,7 @@ class Application extends BaseApp
         $this->pluginManager->loadPlugins();
     }
 
-    protected function getDefaultInputDefinition()
+    protected function getDefaultInputDefinition(): InputDefinition
     {
         $def = parent::getDefaultInputDefinition();
         $def->addOption(
@@ -117,7 +117,7 @@ class Application extends BaseApp
      *
      * @return \Symfony\Component\Console\Command\Command[]
      */
-    protected function getDefaultCommands()
+    protected function getDefaultCommands(): array
     {
         // Regular Symfony Console commands
         $commands = parent::getDefaultCommands();
@@ -137,8 +137,9 @@ class Application extends BaseApp
      * Load commands registered via the internal API
      *
      * @param array $commands
+     * @return void
      */
-    protected function loadInternalAPICommands(array &$commands = array())
+    protected function loadInternalAPICommands(array &$commands = array()): void
     {
         // Add commands from the CommandRegistry
         foreach (MODX_CLI::get_commands() as $command) {
@@ -150,8 +151,9 @@ class Application extends BaseApp
      * Iterate over existing commands to declare them in the application
      *
      * @param array $commands
+     * @return void
      */
-    protected function loadCommands(array &$commands = array())
+    protected function loadCommands(array &$commands = array()): void
     {
         $basePath = __DIR__ . '/Command';
 
@@ -171,8 +173,10 @@ class Application extends BaseApp
 
     /**
      * Adds the ability to run a command on an instance without being in its folders/path
+     *
+     * @return void
      */
-    protected function handleForcedInstance()
+    protected function handleForcedInstance(): void
     {
         if ($this->instances->current()) {
             return;
@@ -192,9 +196,9 @@ class Application extends BaseApp
     /**
      * Get the configured default instance, if any
      *
-     * @return null|string
+     * @return string|null
      */
-    protected function getDefaultInstance()
+    protected function getDefaultInstance(): ?string
     {
         return $this->instances->getConfig('__default__', 'class');
     }
@@ -206,7 +210,7 @@ class Application extends BaseApp
      *
      * @return string|null
      */
-    protected function checkInstanceAsArgument($instance)
+    protected function checkInstanceAsArgument(?string $instance): ?string
     {
         $app = $this;
         if (isset($_SERVER['argv'])) {
@@ -231,7 +235,7 @@ class Application extends BaseApp
      *
      * @return string
      */
-    protected function getCommandClass(\Symfony\Component\Finder\SplFileInfo &$file)
+    protected function getCommandClass(\Symfony\Component\Finder\SplFileInfo &$file): string
     {
         $name = rtrim($file->getRelativePathname(), '.php');
         $name = str_replace('/', '\\', $name);
@@ -243,8 +247,9 @@ class Application extends BaseApp
      * Allow custom commands to be added (ie. a composer library)
      *
      * @param array $commands
+     * @return void
      */
-    protected function loadExtraCommands(array &$commands = array())
+    protected function loadExtraCommands(array &$commands = array()): void
     {
         $toRemove = false;
 
@@ -266,8 +271,9 @@ class Application extends BaseApp
      * Load registered commands within the modX instance
      *
      * @param array $commands
+     * @return void
      */
-    protected function loadComponentsCommands(array &$commands = array())
+    protected function loadComponentsCommands(array &$commands = array()): void
     {
         if ($this->getMODX()) {
             foreach ($this->components->getAll() as $k => $config) {
@@ -289,9 +295,9 @@ class Application extends BaseApp
      *
      * @param array $data
      *
-     * @return null|object
+     * @return object|null
      */
-    public function getExtraService(array $data = array())
+    public function getExtraService(array $data = array()): ?object
     {
         $service = $data['service'];
 
@@ -308,7 +314,7 @@ class Application extends BaseApp
      *
      * @return \MODX\Revolution\modX|null The modX instance if any
      */
-    public function getMODX()
+    public function getMODX(): ?\MODX\Revolution\modX
     {
         if (null === $this->modx) {
             $coreConfig = $this->instances->getCurrentConfig('base_path');
@@ -331,7 +337,7 @@ class Application extends BaseApp
     /**
      * Get the current working dir with trailing slash
      *
-     * @return string|bool
+     * @return string|false
      */
     public function getCwd()
     {
@@ -346,9 +352,9 @@ class Application extends BaseApp
     /**
      * Instantiate the MODx object from the given configuration file
      *
-     * @param string $config The path to MODX configuration file
+     * @param string|false $config The path to MODX configuration file
      *
-     * @return bool|\MODX\Revolution\modX False if modX was not instantiated, or a modX instance
+     * @return \MODX\Revolution\modX|false False if modX was not instantiated, or a modX instance
      */
     protected function loadMODX($config)
     {
@@ -385,7 +391,7 @@ class Application extends BaseApp
      *
      * @return \MODX\Revolution\modX
      */
-    protected function initialize($modx)
+    protected function initialize(\MODX\Revolution\modX $modx): \MODX\Revolution\modX
     {
         $modx->initialize('mgr');
         $modx->getService('error', 'error.modError', '', '');
@@ -402,9 +408,9 @@ class Application extends BaseApp
      * @param string $name The service name
      * @param array $params Some parameters to construct the service class
      *
-     * @return null|object The instantiated service class if found
+     * @return object|null The instantiated service class if found
      */
-    public function getService($name = '', $params = array())
+    public function getService(string $name = '', array $params = array()): ?object
     {
         if (empty($name)) {
             $name = $this->instances->current();
@@ -440,7 +446,7 @@ class Application extends BaseApp
      *
      * @return array
      */
-    public function getExcludedCommands()
+    public function getExcludedCommands(): array
     {
         return $this->excludedCommands->getAll();
     }
@@ -551,7 +557,7 @@ class Application extends BaseApp
      *
      * @return int 0 if everything went fine, or an error code
      */
-    public function doRun(InputInterface $input, OutputInterface $output)
+    public function doRun(InputInterface $input, OutputInterface $output): int
     {
         // Configure logger based on input options
         $this->configureLogger($input, $output);
@@ -581,7 +587,7 @@ class Application extends BaseApp
      *
      * @return int 0 if everything went fine, or an error code
      */
-    protected function runWithAlias($alias, InputInterface $input, OutputInterface $output)
+    protected function runWithAlias(string $alias, InputInterface $input, OutputInterface $output): int
     {
         $config = new YamlConfig();
         $resolver = new Resolver($config);
@@ -615,7 +621,7 @@ class Application extends BaseApp
      *
      * @return int 0 if everything went fine, or an error code
      */
-    protected function runWithAliasGroup($group, InputInterface $input, OutputInterface $output)
+    protected function runWithAliasGroup(array $group, InputInterface $input, OutputInterface $output): int
     {
         $resolver = new Resolver(new YamlConfig());
         $exitCode = 0;
@@ -645,7 +651,7 @@ class Application extends BaseApp
      *
      * @return int 0 if everything went fine, or an error code
      */
-    protected function runInSSHMode(InputInterface $input, OutputInterface $output)
+    protected function runInSSHMode(InputInterface $input, OutputInterface $output): int
     {
         // Parse connection string
         $sshString = $input->getParameterOption('--ssh');
@@ -691,7 +697,7 @@ class Application extends BaseApp
      *
      * @return int 0 if everything went fine, or an error code
      */
-    protected function runWithSSH($sshString, InputInterface $input, OutputInterface $output)
+    protected function runWithSSH(string $sshString, InputInterface $input, OutputInterface $output): int
     {
         // Similar to runInSSHMode but uses the SSH string from the alias
         $handler = new Handler($sshString);

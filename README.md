@@ -366,10 +366,12 @@ For more information, see [SSH and Aliases Documentation](docs/ssh-and-aliases.m
 - [Running Tests](docs/running-tests.md) - Guide to running the test suite
 - [Debugging Setup](docs/debugging-setup.md) - VS Code debugging configuration
 - [Code Style Guide](docs/code-style-guide.md) - Coding standards and PHP_CodeSniffer setup
+- [Medium-Term Enhancements](docs/medium-term-enhancements.md) - Centralized error messages, field mappings, and metadata registry
 
 ### Project Planning
 - [TODO Priority List](docs/todo-priority-list.md) - Prioritized list of technical debt items
 - [GitHub Issues to Create](docs/github-issues-to-create.md) - Major initiative issue templates
+- [Type Declarations Progress](docs/type-declarations-progress.md) - Tracking type hint implementation
 
 ## Bash Completion
 
@@ -418,6 +420,18 @@ composer test:integration
 ```
 
 See [Running Tests](docs/running-tests.md) for more details.
+
+### Static Analysis
+
+This project uses PHPStan for static analysis:
+
+```bash
+# Run static analysis
+composer analyse
+
+# Generate baseline for existing issues
+composer analyse:baseline
+```
 
 ## Contributing
 
