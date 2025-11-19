@@ -26,10 +26,10 @@ parameters:
     reportUnmatchedIgnoredErrors: false
 
     # Check return types
-    checkMissingReturnTypes: true
+    # checkMissingReturnTypes: true
 
     # Check parameter types
-    checkMissingParameterTypes: false
+    # checkMissingParameterTypes: false
 
     # Treat PHPDoc as source of truth
     treatPhpDocTypesAsCertain: false
