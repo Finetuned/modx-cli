@@ -8,6 +8,10 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @group integration
+ * @group requires-modx
+ */
 class IntegratedPackageUpgradeTest extends TestCase
 {
     protected function setUp(): void
@@ -60,6 +64,14 @@ class IntegratedPackageUpgradeTest extends TestCase
 
     public function testIntegratedCommandNamesAreRegistered()
     {
+        // Skip this test if MODX config is not available (e.g., when running with coverage)
+        // This is an integration test that requires loading actual command functions
+        // which instantiate Application objects that need MODX config
+        if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
+            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            return;
+        }
+        
         $this->registerIntegratedCommands();
         
         $commands = MODX_CLI::get_commands();
@@ -80,6 +92,11 @@ class IntegratedPackageUpgradeTest extends TestCase
 
     public function testIntegratedCommandsCanBeRetrieved()
     {
+        if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
+            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            return;
+        }
+        
         $this->registerIntegratedCommands();
         
         // Test that each integrated command can be retrieved
@@ -102,6 +119,11 @@ class IntegratedPackageUpgradeTest extends TestCase
 
     public function testIntegratedCommandsExecuteWithoutArgumentConflict()
     {
+        if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
+            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            return;
+        }
+        
         $this->registerIntegratedCommands();
         
         // Test that each integrated command can be executed without argument conflicts
@@ -180,6 +202,11 @@ class IntegratedPackageUpgradeTest extends TestCase
 
     public function testCommandNamesFollowExistingPackageNamespace()
     {
+        if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
+            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            return;
+        }
+        
         $this->registerIntegratedCommands();
         
         $commands = MODX_CLI::get_commands();
