@@ -16,6 +16,11 @@ class IntegratedPackageUpgradeTest extends TestCase
 {
     protected function setUp(): void
     {
+        // Skip all tests in this class if MODX config is unavailable; avoids booting Application in MODX_CLI singleton.
+        if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
+            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+        }
+
         // Clear any existing commands before each test
         $this->clearRegisteredCommands();
     }
