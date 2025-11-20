@@ -2,128 +2,148 @@
 
 use PHPUnit\Framework\TestCase;
 
-/**
- * Test Xdom functionality
- * 
- * NOTE: Xdom extends modX (MODX CMS core class), which is not available in unit tests.
- * These tests are skipped because they require a full MODX installation to run.
- * Xdom is a utility class for MODX processors and cannot be tested in isolation.
- */
 class XdomTest extends TestCase
 {
+    /** @var \MODX\CLI\Xdom */
+    private $xdom;
+
     protected function setUp(): void
     {
-        $this->markTestSkipped(
-            'Xdom tests skipped: Xdom extends modX class which requires MODX CMS installation. ' .
-            'These tests should be run as integration tests with a full MODX environment.'
-        );
+        if (!class_exists(\MODX\CLI\Xdom::class)) {
+            $this->markTestSkipped('Xdom class unavailable');
+        }
+
+        $this->xdom = new \MODX\CLI\Xdom();
+    }
+
+    private function decodeOutput(string $output): array
+    {
+        $decoded = json_decode($output, true);
+        $this->assertNotNull($decoded, 'Output is not valid JSON: ' . $output);
+        $this->assertArrayHasKey('total', $decoded);
+        $this->assertArrayHasKey('results', $decoded);
+        $this->assertArrayHasKey('success', $decoded);
+        return $decoded;
+    }
+
+    private function assertOutputMatches(array $input, $count = false): array
+    {
+        $output = $this->xdom->outputArray($input, $count);
+        $this->assertIsString($output);
+
+        $decoded = $this->decodeOutput($output);
+        $expectedCount = $count === false ? count($input) : $count;
+
+        $this->assertSame((string) $expectedCount, $decoded['total']);
+        $this->assertEquals($input, $decoded['results']);
+        $this->assertTrue($decoded['success']);
+
+        return $decoded;
     }
 
     public function testOutputArrayWithSimpleArray()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $this->assertOutputMatches([['key' => 'web']]);
     }
 
     public function testOutputArrayWithEmptyArray()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $this->assertOutputMatches([]);
     }
 
     public function testOutputArrayWithExplicitCount()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $this->assertOutputMatches([['a' => 1], ['a' => 2]], 10);
     }
 
     public function testOutputArrayWithAutomaticCount()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $this->assertOutputMatches([['a' => 1], ['a' => 2]]);
     }
 
     public function testOutputArrayWithNonArray()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $this->assertFalse($this->xdom->outputArray('not-an-array'));
     }
 
     public function testOutputArrayWithNull()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $this->assertFalse($this->xdom->outputArray(null));
     }
 
     public function testJSONStructureCompliance()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $decoded = $this->assertOutputMatches([['a' => 1]]);
+        $this->assertIsArray($decoded['results']);
+        $this->assertIsString($decoded['total']);
     }
 
     public function testJSONStructureHasCorrectTypes()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $decoded = $this->assertOutputMatches([['a' => 1]]);
+        $this->assertTrue($decoded['success']);
     }
 
     public function testOutputArrayWithSpecialCharacters()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $data = [['text' => 'hello "quoted" & escaped']];
+        $decoded = $this->assertOutputMatches($data);
+        $this->assertSame($data, $decoded['results']);
     }
 
     public function testOutputArrayWithNestedArrays()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $data = [['nested' => ['child' => 'value']]];
+        $decoded = $this->assertOutputMatches($data);
+        $this->assertSame($data, $decoded['results']);
     }
 
     public function testOutputArrayWithUnicodeCharacters()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $data = [['text' => 'unicode-test']];
+        $decoded = $this->assertOutputMatches($data);
+        $this->assertSame($data, $decoded['results']);
     }
 
     public function testOutputArrayWithZeroCount()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $this->assertOutputMatches([['x' => 1]], 0);
     }
 
     public function testOutputArrayCountParameterOverridesArrayCount()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $this->assertOutputMatches([['x' => 1], ['x' => 2]], 5);
     }
 
     public function testOutputArrayWithLargeDataset()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $data = array_map(fn($i) => ['i' => $i], range(1, 100));
+        $this->assertOutputMatches($data);
     }
 
     public function testOutputArrayFormat()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $output = $this->xdom->outputArray([['x' => 1]]);
+        $this->assertStringContainsString('"total":"1"', $output);
+        $this->assertStringContainsString('"success": true', $output);
     }
 
     public function testOutputArraySuccessFieldIsAlwaysTrue()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $decoded = $this->assertOutputMatches([]);
+        $this->assertTrue($decoded['success']);
     }
 
     public function testOutputArrayWithAssociativeArray()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $data = [['key' => 'value']];
+        $this->assertOutputMatches($data);
     }
 
     public function testOutputArrayWithMixedDataTypes()
     {
-        // Skipped - see setUp()
-        $this->assertTrue(true);
+        $data = [['int' => 1, 'float' => 1.5, 'bool' => true, 'null' => null]];
+        $decoded = $this->assertOutputMatches($data);
+        $this->assertSame($data, $decoded['results']);
     }
 }
