@@ -41,22 +41,24 @@ class IntegratedPackageUpgradeTest extends TestCase
 
     private function resolveConfigPath(): ?string
     {
+        if (defined('MODX_CORE_PATH')) {
+            return MODX_CORE_PATH;
+        }
+
         // Prefer explicit env override used by integration tests
         $instancePath = $_ENV['MODX_TEST_INSTANCE_PATH'] ?? getenv('MODX_TEST_INSTANCE_PATH');
-        if ($instancePath && file_exists($instancePath . '/config.core.php')) {
+        if (!class_exists('modX') && $instancePath && file_exists($instancePath . '/config.core.php')) {
             /** @noinspection PhpIncludeInspection */
             require_once $instancePath . '/config.core.php';
-            return defined('MODX_CORE_PATH') ? MODX_CORE_PATH : null;
         }
 
         // Fallback to current working directory config
-        if (file_exists(getcwd() . '/config.core.php')) {
+        if (!class_exists('modX') && file_exists(getcwd() . '/config.core.php')) {
             /** @noinspection PhpIncludeInspection */
             require_once getcwd() . '/config.core.php';
-            return defined('MODX_CORE_PATH') ? MODX_CORE_PATH : null;
         }
 
-        return getenv('MODX_CORE_PATH') ?: null;
+        return getenv('MODX_CORE_PATH') ?: (defined('MODX_CORE_PATH') ? MODX_CORE_PATH : null);
     }
 
     private function applyConfigEnv(?string $configPath): void
