@@ -17,6 +17,12 @@ class IntegratedPackageUpgradeTest extends TestCase
 {
     protected function setUp(): void
     {
+        // Only run when explicitly enabled via env; do NOT load .env to avoid toggling unit runs.
+        // Also skip if a global modX already exists to avoid class redeclaration.
+        if (!getenv('MODX_INTEGRATION_TESTS') || class_exists('modX')) {
+            $this->markTestSkipped('Integration tests are disabled. Set MODX_INTEGRATION_TESTS=1 to enable.');
+        }
+
         // Attempt to load integration MODX config; skip only if truly unavailable.
         $this->loadIntegrationEnv();
         $configPath = $this->resolveConfigPath();

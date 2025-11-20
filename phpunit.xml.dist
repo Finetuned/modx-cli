@@ -15,11 +15,13 @@
         <testsuite name="default">
             <directory>tests</directory>
             <exclude>tests/Integration</exclude>
+            <exclude>tests/Command/Package/Upgrade/IntegratedPackageUpgradeTest.php</exclude>
         </testsuite>
         <testsuite name="integration">
             <directory>tests/Integration</directory>
             <exclude>tests/Integration/Fixtures</exclude>
             <exclude>tests/Integration/Bootstrap</exclude>
+            <file>tests/Command/Package/Upgrade/IntegratedPackageUpgradeTest.php</file>
         </testsuite>
         <testsuite name="all">
             <directory>tests</directory>
