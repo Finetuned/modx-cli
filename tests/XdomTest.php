@@ -2,6 +2,31 @@
 
 use PHPUnit\Framework\TestCase;
 
+// Ensure a global modX class exists before tests run.
+if (!class_exists('\\modX')) {
+    $isIntegration = (bool) getenv('MODX_INTEGRATION_TESTS');
+    if ($isIntegration) {
+        $instancePath = $_ENV['MODX_TEST_INSTANCE_PATH'] ?? getenv('MODX_TEST_INSTANCE_PATH');
+        $configPath = $instancePath ? rtrim($instancePath, '/').'/config.core.php' : '';
+        if ($configPath && file_exists($configPath)) {
+            /** @noinspection PhpIncludeInspection */
+            require_once $configPath;
+        }
+    } elseif (class_exists('\\MODX\\Revolution\\modX')) {
+        class_alias('\\MODX\\Revolution\\modX', 'modX');
+    } else {
+        // Lightweight stub only for unit/coverage runs (avoid defining in integration to prevent conflicts)
+        class XdomTestModXStub
+        {
+            public function toJSON($data)
+            {
+                return json_encode($data);
+            }
+        }
+        class_alias(__NAMESPACE__ . '\\XdomTestModXStub', 'modX');
+    }
+}
+
 class XdomTest extends TestCase
 {
     /** @var \MODX\CLI\Xdom */
