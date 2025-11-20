@@ -119,12 +119,23 @@ class FieldMappings
     {
         self::loadCustomMappings();
 
-        // Return custom mapping if exists, otherwise default
+        $normalized = $class;
+        if (str_contains($class, '\\')) {
+            $normalized = substr($class, strrpos($class, '\\') + 1);
+        }
+
         if (isset(self::$customMappings[$class])) {
             return self::$customMappings[$class];
         }
+        if (isset(self::$customMappings[$normalized])) {
+            return self::$customMappings[$normalized];
+        }
 
-        return self::$defaultMappings[$class] ?? [];
+        if (isset(self::$defaultMappings[$class])) {
+            return self::$defaultMappings[$class];
+        }
+
+        return self::$defaultMappings[$normalized] ?? [];
     }
 
     /**
