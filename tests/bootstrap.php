@@ -42,9 +42,9 @@ if (!getenv('MODX_INTEGRATION_TESTS') && !class_exists('modX')) {
             return $default;
         }
     }
-}
 
-// Provide a namespaced alias to prevent autoloading the real MODX class when the stub is in use during unit runs.
-if (!getenv('MODX_INTEGRATION_TESTS') && class_exists('modX') && !class_exists('MODX\\Revolution\\modX')) {
-    class_alias('modX', 'MODX\\Revolution\\modX');
+    // Provide a namespaced alias to prevent autoloading the real MODX class when the stub is in use during unit runs.
+    if (!class_exists('MODX\\Revolution\\modX')) {
+        class_alias('modX', 'MODX\\Revolution\\modX');
+    }
 }
