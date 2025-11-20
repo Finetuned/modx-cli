@@ -40,7 +40,7 @@ class ExtrasTest extends BaseTest
         // Mock getCollection to return empty array
         $this->modx->expects($this->once())
             ->method('getCollection')
-            ->with('modNamespace')
+            ->with(\MODX\Revolution\modNamespace::class, $this->anything(), $this->anything())
             ->willReturn([]);
         
         // Execute the command
@@ -66,7 +66,7 @@ class ExtrasTest extends BaseTest
         // Mock getCollection to return core namespace
         $this->modx->method('getCollection')
             ->willReturnCallback(function($class) use ($namespace) {
-                if ($class === 'modNamespace') {
+                if ($class === \MODX\Revolution\modNamespace::class) {
                     return [$namespace];
                 }
                 return []; // For transport.modTransportPackage calls
@@ -113,7 +113,7 @@ class ExtrasTest extends BaseTest
         // Mock getCollection to return namespaces
         $this->modx->expects($this->once())
             ->method('getCollection')
-            ->with('modNamespace')
+            ->with(\MODX\Revolution\modNamespace::class, $this->anything(), $this->anything())
             ->willReturn([$namespace1, $namespace2]);
         
         // Mock runProcessor for package list
@@ -166,7 +166,7 @@ class ExtrasTest extends BaseTest
         // Mock getCollection
         $this->modx->method('getCollection')
             ->willReturnCallback(function($class) use ($namespace) {
-                if ($class === 'modNamespace') {
+                if ($class === \MODX\Revolution\modNamespace::class) {
                     return [$namespace];
                 }
                 return []; // For transport.modTransportPackage calls
@@ -213,7 +213,7 @@ class ExtrasTest extends BaseTest
         // Mock getCollection
         $this->modx->method('getCollection')
             ->willReturnCallback(function($class) use ($namespace1, $namespace2) {
-                if ($class === 'modNamespace') {
+                if ($class === \MODX\Revolution\modNamespace::class) {
                     return [$namespace1, $namespace2];
                 }
                 return []; // For transport.modTransportPackage calls

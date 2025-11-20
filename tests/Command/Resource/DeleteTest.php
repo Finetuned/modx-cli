@@ -53,7 +53,7 @@ class DeleteTest extends BaseTest
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modResource', '123')
+            ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
         
         // Mock the runProcessor method to return a successful response
@@ -94,7 +94,7 @@ class DeleteTest extends BaseTest
         // Mock getObject to return null (resource doesn't exist)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modResource', '999')
+            ->with(\MODX\Revolution\modResource::class, '999', $this->anything())
             ->willReturn(null);
         
         // runProcessor should not be called since the resource doesn't exist
@@ -126,7 +126,7 @@ class DeleteTest extends BaseTest
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modResource', '123')
+            ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
         
         // Mock the runProcessor method to return a failed response
@@ -170,7 +170,7 @@ class DeleteTest extends BaseTest
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modResource', '123')
+            ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
         
         // Mock the runProcessor method to return a successful response

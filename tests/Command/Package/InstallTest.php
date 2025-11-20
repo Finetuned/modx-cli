@@ -56,7 +56,7 @@ class InstallTest extends BaseTest
         // Mock getObject to return package
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('transport.modTransportPackage', ['signature' => 'package1-1.0.0-pl'])
+            ->with(\MODX\Revolution\Transport\modTransportPackage::class, ['signature' => 'package1-1.0.0-pl'], $this->anything())
             ->willReturn($package);
         
         // Mock the runProcessor method to return a successful response
@@ -96,7 +96,7 @@ class InstallTest extends BaseTest
         // Mock getObject to return null (package doesn't exist)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('transport.modTransportPackage', ['signature' => 'nonexistent-1.0.0-pl'])
+            ->with(\MODX\Revolution\Transport\modTransportPackage::class, ['signature' => 'nonexistent-1.0.0-pl'], $this->anything())
             ->willReturn(null);
         
         // runProcessor should not be called since the package doesn't exist
@@ -127,7 +127,7 @@ class InstallTest extends BaseTest
         // Mock getObject to return already installed package
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('transport.modTransportPackage', ['signature' => 'package1-1.0.0-pl'])
+            ->with(\MODX\Revolution\Transport\modTransportPackage::class, ['signature' => 'package1-1.0.0-pl'], $this->anything())
             ->willReturn($package);
         
         // runProcessor should not be called since the package is already installed
@@ -158,7 +158,7 @@ class InstallTest extends BaseTest
         // Mock getObject to return package
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('transport.modTransportPackage', ['signature' => 'package1-1.0.0-pl'])
+            ->with(\MODX\Revolution\Transport\modTransportPackage::class, ['signature' => 'package1-1.0.0-pl'], $this->anything())
             ->willReturn($package);
         
         // Mock the runProcessor method to return a failed response

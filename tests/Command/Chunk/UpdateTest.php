@@ -57,7 +57,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return existing chunk
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modChunk', '123')
+            ->with(\MODX\Revolution\modChunk::class, '123', $this->anything())
             ->willReturn($existingChunk);
         
         // Mock the runProcessor method to return a successful response
@@ -106,7 +106,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return null (chunk doesn't exist)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modChunk', '999')
+            ->with(\MODX\Revolution\modChunk::class, '999', $this->anything())
             ->willReturn(null);
         
         // runProcessor should not be called since the chunk doesn't exist
@@ -140,7 +140,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return existing chunk
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modChunk', '123')
+            ->with(\MODX\Revolution\modChunk::class, '123', $this->anything())
             ->willReturn($existingChunk);
         
         // Mock the runProcessor method to return a failed response

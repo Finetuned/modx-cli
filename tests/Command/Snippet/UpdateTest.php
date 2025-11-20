@@ -57,7 +57,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return existing snippet
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modSnippet', '123')
+            ->with(\MODX\Revolution\modSnippet::class, '123', $this->anything())
             ->willReturn($existingSnippet);
         
         // Mock the runProcessor method to return a successful response
@@ -106,7 +106,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return null (snippet doesn't exist)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modSnippet', '999')
+            ->with(\MODX\Revolution\modSnippet::class, '999', $this->anything())
             ->willReturn(null);
         
         // runProcessor should not be called since the snippet doesn't exist
@@ -140,7 +140,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return existing snippet
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modSnippet', '123')
+            ->with(\MODX\Revolution\modSnippet::class, '123', $this->anything())
             ->willReturn($existingSnippet);
         
         // Mock the runProcessor method to return a failed response

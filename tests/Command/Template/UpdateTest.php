@@ -57,7 +57,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return existing template
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modTemplate', '123')
+            ->with(\MODX\Revolution\modTemplate::class, '123', $this->anything())
             ->willReturn($existingTemplate);
         
         // Mock the runProcessor method to return a successful response
@@ -106,7 +106,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return null (template doesn't exist)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modTemplate', '999')
+            ->with(\MODX\Revolution\modTemplate::class, '999', $this->anything())
             ->willReturn(null);
         
         // runProcessor should not be called since the template doesn't exist
@@ -140,7 +140,7 @@ class UpdateTest extends BaseTest
         // Mock getObject to return existing template
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modTemplate', '123')
+            ->with(\MODX\Revolution\modTemplate::class, '123', $this->anything())
             ->willReturn($existingTemplate);
         
         // Mock the runProcessor method to return a failed response

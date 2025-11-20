@@ -50,7 +50,7 @@ class RemoveTest extends BaseTest
         // Mock getObject to return existing namespace
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modNamespace', ['name' => 'testnamespace'])
+            ->with(\MODX\Revolution\modNamespace::class, ['name' => 'testnamespace'], $this->anything())
             ->willReturn($existingNamespace);
         
         // Mock the runProcessor method to return a successful response
@@ -91,7 +91,7 @@ class RemoveTest extends BaseTest
         // Mock getObject to return null (namespace doesn't exist)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modNamespace', ['name' => 'nonexistent'])
+            ->with(\MODX\Revolution\modNamespace::class, ['name' => 'nonexistent'], $this->anything())
             ->willReturn(null);
         
         // runProcessor should not be called since the namespace doesn't exist
@@ -120,7 +120,7 @@ class RemoveTest extends BaseTest
         // Mock getObject to return existing namespace
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('modNamespace', ['name' => 'protected'])
+            ->with(\MODX\Revolution\modNamespace::class, ['name' => 'protected'], $this->anything())
             ->willReturn($existingNamespace);
         
         // Mock the runProcessor method to return a failed response
