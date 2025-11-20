@@ -21,6 +21,46 @@ if (!defined('MODX_CORE_PATH')) {
 
 class ComponentTest extends TestCase
 {
+    private string $originalHome = '';
+    private string $tempHome = '';
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->originalHome = (string) getenv('HOME');
+        $this->tempHome = sys_get_temp_dir() . '/modx_cli_home';
+
+        if (!is_dir($this->tempHome)) {
+            mkdir($this->tempHome, 0777, true);
+        }
+
+        putenv('HOME=' . $this->tempHome);
+    }
+
+    protected function tearDown(): void
+    {
+        $configDir = $this->tempHome . '/.modx';
+        $configFile = $configDir . '/components.json';
+
+        if (is_file($configFile)) {
+            unlink($configFile);
+        }
+
+        if (is_dir($configDir)) {
+            rmdir($configDir);
+        }
+
+        if ($this->originalHome !== '') {
+            putenv('HOME=' . $this->originalHome);
+        }
+
+        if (is_dir($this->tempHome)) {
+            rmdir($this->tempHome);
+        }
+
+        parent::tearDown();
+    }
+
     public function testGettingModxInstance()
     {
          /** @var \MODX\CLI\Application|\PHPUnit\Framework\MockObject\MockObject $app */
@@ -116,7 +156,7 @@ class ComponentTest extends TestCase
             ->getMock();
         $setting->expects($this->once())->method('save')->willReturn($setting);
 
-        $modx->expects($this->once())->method('getObject')->with('modSystemSetting', ['key' => 'console_commands'])->willReturn($setting);
+        $modx->expects($this->once())->method('getObject')->with(\MODX\Revolution\modSystemSetting::class, ['key' => 'console_commands'], $this->anything())->willReturn($setting);
 
         $cache = $this->getMockBuilder('MODX\Revolution\modCacheManager')
             ->disableOriginalConstructor()
@@ -148,8 +188,8 @@ class ComponentTest extends TestCase
             ->getMock();
         $setting->expects($this->once())->method('save')->willReturn($setting);
 
-        $modx->expects($this->once())->method('getObject')->with('modSystemSetting', ['key' => 'console_commands'])->willReturn(null);
-        $modx->expects($this->once())->method('newObject')->with('modSystemSetting')->willReturn($setting);
+        $modx->expects($this->once())->method('getObject')->with(\MODX\Revolution\modSystemSetting::class, ['key' => 'console_commands'], $this->anything())->willReturn(null);
+        $modx->expects($this->once())->method('newObject')->with(\MODX\Revolution\modSystemSetting::class)->willReturn($setting);
 
         $cache = $this->getMockBuilder('MODX\Revolution\modCacheManager')
             ->disableOriginalConstructor()
@@ -181,7 +221,7 @@ class ComponentTest extends TestCase
             ->getMock();
         $setting->expects($this->once())->method('save')->willReturn(false);
 
-        $modx->expects($this->once())->method('getObject')->with('modSystemSetting', ['key' => 'console_commands'])->willReturn($setting);
+        $modx->expects($this->once())->method('getObject')->with(\MODX\Revolution\modSystemSetting::class, ['key' => 'console_commands'], $this->anything())->willReturn($setting);
 
         $this->assertFalse($config->save(), 'Failing to save system setting should not trigger a cache refresh');
     }
