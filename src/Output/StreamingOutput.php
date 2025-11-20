@@ -2,6 +2,7 @@
 
 namespace MODX\CLI\Output;
 
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -44,7 +45,7 @@ class StreamingOutput
     /**
      * Stream callbacks
      *
-     * @var array<string, callable>
+     * @var array<string, array<int, callable>>
      */
     protected array $callbacks = [];
 
@@ -381,14 +382,16 @@ class StreamingOutput
     }
 
     /**
-     * Create a section output for nested/hierarchical output
+     * Create a section output for nested/hierarchical output when supported.
      *
-     * Sections allow for independent output areas that can be updated separately.
-     *
-     * @return SectionOutput
+     * @return OutputInterface
      */
-    public function section(): SectionOutput
+    public function section(): OutputInterface
     {
-        return new SectionOutput($this->output->section());
+        if ($this->output instanceof ConsoleOutputInterface) {
+            return $this->output->section();
+        }
+
+        return $this->output;
     }
 }

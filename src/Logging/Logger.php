@@ -38,6 +38,25 @@ class Logger extends AbstractLogger
     private $outputCallback = null;
 
     /**
+     * @var string Minimum log level to record
+     */
+    private $logLevelThreshold = LogLevel::DEBUG;
+
+    /**
+     * @var array<string,int> Order of log levels from highest priority (0) to lowest (7)
+     */
+    private static $levelOrder = [
+        LogLevel::EMERGENCY => 0,
+        LogLevel::ALERT => 1,
+        LogLevel::CRITICAL => 2,
+        LogLevel::ERROR => 3,
+        LogLevel::WARNING => 4,
+        LogLevel::NOTICE => 5,
+        LogLevel::INFO => 6,
+        LogLevel::DEBUG => 7,
+    ];
+
+    /**
      * @var int Maximum log file size in bytes (default 10MB)
      */
     private $maxFileSize = 10485760;
@@ -202,6 +221,30 @@ class Logger extends AbstractLogger
     }
 
     /**
+     * Set a minimum PSR-3 log level to record
+     *
+     * @param string $level
+     * @return void
+     */
+    public function setLogLevel(string $level): void
+    {
+        if (!isset(self::$levelOrder[$level])) {
+            return;
+        }
+        $this->logLevelThreshold = $level;
+    }
+
+    /**
+     * Get current log level threshold
+     *
+     * @return string
+     */
+    public function getLogLevel(): string
+    {
+        return $this->logLevelThreshold;
+    }
+
+    /**
      * Set output callback
      *
      * @param callable $callback
@@ -243,7 +286,14 @@ class Logger extends AbstractLogger
     private function shouldLog(string $level): bool
     {
         $required = self::$levelVerbosity[$level] ?? self::VERBOSITY_NORMAL;
-        return $this->verbosity >= $required;
+        if ($this->verbosity < $required) {
+            return false;
+        }
+
+        $threshold = self::$levelOrder[$this->logLevelThreshold] ?? self::$levelOrder[LogLevel::DEBUG];
+        $current = self::$levelOrder[$level] ?? $threshold;
+
+        return $current <= $threshold;
     }
 
     /**

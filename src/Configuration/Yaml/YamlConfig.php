@@ -61,6 +61,39 @@ class YamlConfig
     }
 
     /**
+     * Load a YAML configuration file
+     *
+     * @param string $path
+     * @return array|null
+     */
+    public function load(string $path): ?array
+    {
+        if (!file_exists($path)) {
+            return null;
+        }
+
+        $data = $this->parseYaml($path);
+        if (is_array($data)) {
+            return $data;
+        }
+
+        return null;
+    }
+
+    /**
+     * Save configuration data to a YAML file
+     *
+     * @param string $path
+     * @param array $data
+     * @return bool
+     */
+    public function save(string $path, array $data): bool
+    {
+        $yaml = Yaml::dump($data, 4, 2);
+        return file_put_contents($path, $yaml) !== false;
+    }
+
+    /**
      * Merge new configuration data with existing data
      *
      * @param array $newConfig The new configuration data

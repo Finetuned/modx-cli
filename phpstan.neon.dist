@@ -17,6 +17,8 @@ parameters:
 
         # Allow dynamic properties for now (can be addressed in future)
         - '#Access to an undefined property MODX\\CLI\\Application::#'
+        # StreamingOutputTrait is optional helper and may not be used in code yet
+        - '#StreamingOutputTrait is used zero times#'
 
     # Bootstrap file for MODX stubs if needed
     # bootstrapFiles:

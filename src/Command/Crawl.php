@@ -8,6 +8,9 @@ use Symfony\Component\Console\Input\InputArgument;
 /**
  * A command to crawl resources (to cache them)
  */
+use MODX\Revolution\modResource;
+use xPDO\Om\xPDOQuery;
+
 class Crawl extends BaseCmd
 {
     const MODX = true;
@@ -25,7 +28,7 @@ class Crawl extends BaseCmd
         try {
             $c = $this->getCriteria($from);
 
-            $total = $this->modx->getCount('modResource', $c);
+            $total = $this->modx->getCount(modResource::class, $c);
             if ($total > 0) {
                 if (!$this->prepareCurl()) {
                     $this->error('Failed to initialize cURL');
@@ -33,27 +36,28 @@ class Crawl extends BaseCmd
                 }
             } else {
                 $this->comment('No resources to crawl found with criteria');
-                $this->line($c->toSQL());
                 return 0;
             }
 
             $this->comment("\n<info>{$total}</info> 'root' resources found");
 
-            $collection = $this->modx->getCollection('modResource', $c);
+            $collection = $this->modx->getCollection(modResource::class, $c);
             $context = '';
-            /** @var \modResource $resource */
+            /** @var \MODX\Revolution\modResource $resource */
             foreach ($collection as $resource) {
-                if ($context !== $resource->context_key) {
-                    $this->comment("\nProcessing context {$resource->context_key}");
-                    $this->modx->switchContext($resource->context_key);
-                    $context = $resource->context_key;
+                $contextKey = (string) $resource->get('context_key');
+                $resourceId = (int) $resource->get('id');
+                if ($context !== $contextKey) {
+                    $this->comment("\nProcessing context {$contextKey}");
+                    $this->modx->switchContext($contextKey);
+                    $context = $contextKey;
                     //$this->modx->context->setOption('session_enabled', false);
                 }
-                $this->crawl($resource->id);
+                $this->crawl($resourceId);
 
                 if (is_numeric($from)) {
                     // Process children too
-                    $children = $this->modx->getChildIds($resource->id, 999);
+                    $children = $this->modx->getChildIds($resourceId, 999);
                     foreach ($children as $id) {
                         $this->crawl($id);
                     }
@@ -62,7 +66,7 @@ class Crawl extends BaseCmd
 
             if (is_numeric($from)) {
                 // Crawl the container too
-                $this->crawl($from);
+                $this->crawl((int) $from);
             }
 
             if ($this->curl) {
@@ -85,9 +89,9 @@ class Crawl extends BaseCmd
      *
      * @param mixed $from Either the context key (string) or a resource id (int) to grab the resources to crawl from
      *
-     * @return \xPDOQuery
+     * @return xPDOQuery
      */
-    protected function getCriteria($from)
+    protected function getCriteria($from): xPDOQuery
     {
         $criteria = array(
             'published' => true,
@@ -107,8 +111,8 @@ class Crawl extends BaseCmd
             }
         }
 
-        $c = $this->modx->newQuery('modResource');
-        $c->select(array('id', 'pagetitle', 'context_key'));
+        $c = $this->modx->newQuery(modResource::class);
+        $c->select('id,pagetitle,context_key');
         $c->where($criteria);
         $c->sortby('context_key');
 
@@ -120,7 +124,7 @@ class Crawl extends BaseCmd
      *
      * @param int $id
      */
-    protected function crawl($id)
+    protected function crawl(int $id)
     {
         $url = $this->modx->makeUrl($id, '', '', 'full');
         curl_setopt($this->curl, CURLOPT_URL, $url);
@@ -163,7 +167,7 @@ class Crawl extends BaseCmd
             CURLOPT_RETURNTRANSFER => true,
 
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
             CURLOPT_HEADER => true,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_CONNECTTIMEOUT => 10,

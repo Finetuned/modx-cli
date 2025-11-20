@@ -1,0 +1,188 @@
+PHPUnit 9.6.29 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.27 with Xdebug 3.3.1
+Configuration: /Users/julianweaver/dev/finetuned/modx-cli/phpunit.xml.dist
+
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testHandlesMissingProviderData' started
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testHandlesMissingProviderData' ended
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testCorrectMODXProcessorCallsForProviderQuerying' started
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testCorrectMODXProcessorCallsForProviderQuerying' ended
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testHandlesProviderConnectionErrors' started
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testHandlesProviderConnectionErrors' ended
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testPackageListRemoteFindsVersionsWhenUpgradeableExists' started
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testPackageListRemoteFindsVersionsWhenUpgradeableExists' ended
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testProviderDataExtractionFromUpgradeablePackages' started
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testProviderDataExtractionFromUpgradeablePackages' ended
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testRemoteVersionFilteringNewerThanCurrent' started
+Test 'MODX\CLI\Tests\Command\Package\Upgrade\PackageListRemoteTest::testRemoteVersionFilteringNewerThanCurrent' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testPrePopulateFromExistingWithDefaultMapping' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testPrePopulateFromExistingWithDefaultMapping' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testPrePopulateFromExistingWithModResourceMissingCriticalFields' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testPrePopulateFromExistingWithModResourceMissingCriticalFields' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testPrePopulateFromExistingWithModResource' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testPrePopulateFromExistingWithModResource' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testGetExistingObject' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testGetExistingObject' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testPrePopulateFromExistingWithNonExistentObject' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testPrePopulateFromExistingWithNonExistentObject' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testApplyDefaults' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testApplyDefaults' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testSetterAndGetter with data set #0 ('key', 'value')' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testSetterAndGetter with data set #0 ('key', 'value')' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testSetterAndGetter with data set #1 ('array', array('b', 'd'))' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testSetterAndGetter with data set #1 ('array', array('b', 'd'))' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testRemove with data set #0 ('key', 'value')' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testRemove with data set #0 ('key', 'value')' ended
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testRemove with data set #1 ('array', array('b', 'd'))' started
+Test 'MODX\CLI\Tests\Command\ProcessorCmdTest::testRemove with data set #1 ('array', array('b', 'd'))' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithEmptyResults' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithEmptyResults' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithTopicFilter' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithTopicFilter' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithMultipleMessages' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithMultipleMessages' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithSuccessfulResponse' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithSuccessfulResponse' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testConfigureHasCorrectProcessor' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testConfigureHasCorrectProcessor' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithFailedResponse' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testExecuteWithFailedResponse' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testConfigureHasCorrectName' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testConfigureHasCorrectName' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testConfigureHasCorrectDescription' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testConfigureHasCorrectDescription' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testSetterAndGetter with data set #0 ('key', 'value')' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testSetterAndGetter with data set #0 ('key', 'value')' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testSetterAndGetter with data set #1 ('array', array('b', 'd'))' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testSetterAndGetter with data set #1 ('array', array('b', 'd'))' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testRemove with data set #0 ('key', 'value')' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testRemove with data set #0 ('key', 'value')' ended
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testRemove with data set #1 ('array', array('b', 'd'))' started
+Test 'MODX\CLI\Tests\Command\Registry\Message\GetListTest::testRemove with data set #1 ('array', array('b', 'd'))' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testExecuteWithNonExistentTV' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testExecuteWithNonExistentTV' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testExecuteWithFailedResponse' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testExecuteWithFailedResponse' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testConfigureHasCorrectProcessorPath' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testConfigureHasCorrectProcessorPath' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testExecuteWithSuccessfulResponse' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testExecuteWithSuccessfulResponse' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testConfigureHasCorrectName' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testConfigureHasCorrectName' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testConfigureHasCorrectDescription' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testConfigureHasCorrectDescription' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testSetterAndGetter with data set #0 ('key', 'value')' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testSetterAndGetter with data set #0 ('key', 'value')' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testSetterAndGetter with data set #1 ('array', array('b', 'd'))' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testSetterAndGetter with data set #1 ('array', array('b', 'd'))' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testRemove with data set #0 ('key', 'value')' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testRemove with data set #0 ('key', 'value')' ended
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testRemove with data set #1 ('array', array('b', 'd'))' started
+Test 'MODX\CLI\Tests\Command\TV\UpdateTest::testRemove with data set #1 ('array', array('b', 'd'))' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testExecuteWithNonExistentTemplate' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testExecuteWithNonExistentTemplate' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testExecuteWithSuccessfulResponse' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testExecuteWithSuccessfulResponse' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testExecuteWithFailedResponse' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testExecuteWithFailedResponse' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testConfigureHasCorrectProcessorPath' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testConfigureHasCorrectProcessorPath' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testConfigureHasCorrectName' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testConfigureHasCorrectName' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testConfigureHasCorrectDescription' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testConfigureHasCorrectDescription' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testSetterAndGetter with data set #0 ('key', 'value')' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testSetterAndGetter with data set #0 ('key', 'value')' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testSetterAndGetter with data set #1 ('array', array('b', 'd'))' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testSetterAndGetter with data set #1 ('array', array('b', 'd'))' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testRemove with data set #0 ('key', 'value')' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testRemove with data set #0 ('key', 'value')' ended
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testRemove with data set #1 ('array', array('b', 'd'))' started
+Test 'MODX\CLI\Tests\Command\Template\UpdateTest::testRemove with data set #1 ('array', array('b', 'd'))' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetCommandClassHandlesSimpleFilename' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetCommandClassHandlesSimpleFilename' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetCommandClassHandlesNestedDirectories' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetCommandClassHandlesNestedDirectories' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetCommandClassGeneratesCorrectClassName' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetCommandClassGeneratesCorrectClassName' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetNSReturnsCorrectNamespace' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetNSReturnsCorrectNamespace' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetRootPathReturnsCorrectPath' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetRootPathReturnsCorrectPath' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testUnRegisterWithDeprecatedFile' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testUnRegisterWithDeprecatedFile' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testListCommandsFindsCommandFiles' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testListCommandsFindsCommandFiles' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testListCommandsExcludesAbstractClasses' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testListCommandsExcludesAbstractClasses' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetReflectionReturnsReflectionClass' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testGetReflectionReturnsReflectionClass' ended
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testUnRegisterWithoutDeprecatedFile' started
+Test 'MODX\CLI\Tests\CommandRegistrarTest::testUnRegisterWithoutDeprecatedFile' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testListUpgradeablePackagesReturnsEmptyArray' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testListUpgradeablePackagesReturnsEmptyArray' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testListUpgradeablePackagesProducesOutput' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testListUpgradeablePackagesProducesOutput' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithValidParameters' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithValidParameters' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithEmptyName' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithEmptyName' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithEmptyUrl' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithEmptyUrl' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithSpecialCharacters' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithSpecialCharacters' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderDoesNotReturnValue' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderDoesNotReturnValue' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testMultipleListUpgradeablePackagesCalls' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testMultipleListUpgradeablePackagesCalls' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testMultipleAddProviderCalls' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testMultipleAddProviderCalls' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testPackageManagerCanBeInstantiated' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testPackageManagerCanBeInstantiated' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testListUpgradeablePackagesConsistentBehavior' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testListUpgradeablePackagesConsistentBehavior' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithLongUrl' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithLongUrl' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithNumericName' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testAddProviderWithNumericName' ended
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testOutputFormatIsConsistent' started
+Test 'MODX\CLI\Tests\Mock\PackageManagerTest::testOutputFormatIsConsistent' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeConstructionWithEmptyArray' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeConstructionWithEmptyArray' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testComplexHierarchicalStructure' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testComplexHierarchicalStructure' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testMultipleRootNodes' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testMultipleRootNodes' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testMissingParentHandling' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testMissingParentHandling' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testSingleItemTree' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testSingleItemTree' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeWithStringIds' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeWithStringIds' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testChildrenFieldIsAlwaysArray' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testChildrenFieldIsAlwaysArray' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testOriginalDataPreserved' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testOriginalDataPreserved' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testBuildTreeMethodChaining' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testBuildTreeMethodChaining' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testDeepNestingHandling' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testDeepNestingHandling' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testBasicTreeConstruction' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testBasicTreeConstruction' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testNullParentHandling' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testNullParentHandling' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testLargeTreeConstruction' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testLargeTreeConstruction' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeSortingAscending' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeSortingAscending' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeSortingDescending' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeSortingDescending' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testRecursiveSorting' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testRecursiveSorting' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testSortTreeMethodChaining' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testSortTreeMethodChaining' ended
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeConstructionWithCustomFieldNames' started
+Test 'MODX\CLI\Tests\TreeBuilderTest::testTreeConstructionWithCustomFieldNames' ended
+Test 'MODX\CLI\Tests\Command\Category\CreateTest::testConfigureHasCorrectProcessorPath' started
+Unavailable
+Could not load MODX config file.

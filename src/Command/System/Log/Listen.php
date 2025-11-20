@@ -79,12 +79,12 @@ class Listen extends BaseCmd
      */
     protected function getLastLogId()
     {
-        $c = $this->modx->newQuery('modLog');
+        $c = $this->modx->newQuery(\MODX\Revolution\modManagerLog::class);
         $c->sortby('id', 'DESC');
         $c->limit(1);
 
-        /** @var \MODX\Revolution\modLog $log */
-        $log = $this->modx->getObject('modLog', $c);
+        /** @var \MODX\Revolution\modManagerLog|null $log */
+        $log = $this->modx->getObject(\MODX\Revolution\modManagerLog::class, $c);
 
         return $log ? $log->get('id') : 0;
     }
@@ -96,11 +96,11 @@ class Listen extends BaseCmd
      */
     protected function displayLastLogEntries($limit)
     {
-        $c = $this->modx->newQuery('modLog');
+        $c = $this->modx->newQuery(\MODX\Revolution\modManagerLog::class);
         $c->sortby('id', 'DESC');
         $c->limit($limit);
 
-        $logs = $this->modx->getCollection('modLog', $c);
+        $logs = $this->modx->getCollection(\MODX\Revolution\modManagerLog::class, $c);
 
         if (!$logs || count($logs) === 0) {
             $this->info('No log entries found');
@@ -110,7 +110,7 @@ class Listen extends BaseCmd
         $formatter = new ColoredLog();
         $entries = array();
 
-        /** @var \MODX\Revolution\modLog $log */
+        /** @var \MODX\Revolution\modManagerLog $log */
         foreach ($logs as $log) {
             $entries[] = array(
                 'level' => $log->get('level'),
@@ -134,13 +134,13 @@ class Listen extends BaseCmd
      */
     protected function checkForNewLogEntries()
     {
-        $c = $this->modx->newQuery('modLog');
+        $c = $this->modx->newQuery(\MODX\Revolution\modManagerLog::class);
         $c->where(array(
             'id:>' => $this->lastLogId,
         ));
         $c->sortby('id', 'ASC');
 
-        $logs = $this->modx->getCollection('modLog', $c);
+        $logs = $this->modx->getCollection(\MODX\Revolution\modManagerLog::class, $c);
 
         if (!$logs || count($logs) === 0) {
             return;
@@ -149,7 +149,7 @@ class Listen extends BaseCmd
         $formatter = new ColoredLog();
         $entries = array();
 
-        /** @var \MODX\Revolution\modLog $log */
+        /** @var \MODX\Revolution\modManagerLog $log */
         foreach ($logs as $log) {
             $entries[] = array(
                 'level' => $log->get('level'),

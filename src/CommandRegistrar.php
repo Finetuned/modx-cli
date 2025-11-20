@@ -12,11 +12,11 @@ use MODX\CLI\Configuration\ConfigurationInterface;
 abstract class CommandRegistrar
 {
     /**
-     * @var \Composer\IO\IOInterface $io
+     * @var \Composer\IO\IOInterface|null
      */
     public static $io;
     /**
-     * @var \ReflectionClass
+     * @var \ReflectionClass|null
      */
     protected static $reflection = null;
     protected static $unregistered = array();
