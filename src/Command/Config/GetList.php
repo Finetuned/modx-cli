@@ -3,6 +3,7 @@
 namespace MODX\CLI\Command\Config;
 
 use MODX\CLI\Command\BaseCmd;
+use MODX\CLI\Configuration\Instance;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -28,7 +29,10 @@ class GetList extends BaseCmd
 
     protected function process()
     {
-        $instances = $this->getApplication()->instances;
+        $app = $this->getApplication();
+        $instances = ($app && isset($app->instances))
+            ? $app->instances
+            : new Instance([], false);
         $all = $instances->getAll();
 
         // Remove the default instance from the list
