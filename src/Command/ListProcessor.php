@@ -86,21 +86,22 @@ abstract class ListProcessor extends ProcessorCmd
     }
     protected function processResponse(array $results = array())
     {
-        $total = $results['total'];
-        $results = $results['results'];
+        // Some MODX list processors omit a separate total in unit tests; fall back to count.
+        $items = $results['results'] ?? array();
+        $total = $results['total'] ?? count($items);
 
         if ($this->option('json')) {
             $output = [
                 'total' => $total,
-                'results' => $results
+                'results' => $items
             ];
             $this->output->writeln(json_encode($output, JSON_PRETTY_PRINT));
             return 0;
         }
 
-        $this->renderBody($results);
+        $this->renderBody($items);
         if ($this->showPagination) {
-            $this->renderPagination($results, $total);
+            $this->renderPagination($items, $total);
         }
 
         return 0; // Return 0 for success
