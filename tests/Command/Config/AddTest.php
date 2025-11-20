@@ -14,11 +14,9 @@ class AddTest extends BaseTest
     protected function setUp(): void
     {
         // Create the application
-        $this->application = new Application();
         
         // Create the command
         $this->command = new Add();
-        $this->application->add($this->command);
         
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);

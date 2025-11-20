@@ -21,8 +21,6 @@ class GetListTest extends BaseTest
         $this->command->modx = $this->modx;
         
         // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -76,7 +74,7 @@ class GetListTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
         ]);
         
         // Verify the output contains user data
@@ -106,7 +104,7 @@ class GetListTest extends BaseTest
         
         // Execute the command with --json option
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             '--json' => true,
         ]);
         
@@ -144,7 +142,7 @@ class GetListTest extends BaseTest
         
         // Execute the command with --active filter
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             '--active' => '1',
         ]);
         
@@ -180,7 +178,7 @@ class GetListTest extends BaseTest
         
         // Execute the command with --query filter
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             '--query' => 'admin',
         ]);
         

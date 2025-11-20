@@ -22,8 +22,6 @@ class GetTest extends BaseTest
         $this->command->modx = $this->modx;
         
         // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -73,7 +71,7 @@ class GetTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '123',
             '--format' => 'table'
         ]);
@@ -107,7 +105,7 @@ class GetTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '123',
             '--format' => 'json'
         ]);
@@ -143,7 +141,7 @@ class GetTest extends BaseTest
         
         // Execute the command with --json option
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '123',
             '--json' => true
         ]);
@@ -172,7 +170,7 @@ class GetTest extends BaseTest
         
         // Execute the command with --json option
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '999',
             '--json' => true
         ]);
@@ -201,7 +199,7 @@ class GetTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '999'
         ]);
         

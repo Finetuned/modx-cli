@@ -14,11 +14,9 @@ class GetListTest extends BaseTest
     protected function setUp(): void
     {
         // Create the application
-        $this->application = new Application();
         
         // Create the command
         $this->command = new GetList();
-        $this->application->add($this->command);
         
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
@@ -38,7 +36,7 @@ class GetListTest extends BaseTest
     {
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
         ]);
         
         // Verify the output contains appropriate message
@@ -54,7 +52,7 @@ class GetListTest extends BaseTest
     {
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
         ]);
         
         $output = $this->commandTester->getDisplay();
@@ -71,7 +69,7 @@ class GetListTest extends BaseTest
     {
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
         ]);
         
         // Verify successful execution

@@ -22,8 +22,6 @@ class CreateTest extends BaseTest
         $this->command->modx = $this->modx;
         
         // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -69,7 +67,6 @@ class CreateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'template:create',
             'templatename' => 'TestTemplate',
             '--description' => 'Test description',
             '--category' => '1',
@@ -101,7 +98,6 @@ class CreateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'template:create',
             'templatename' => 'TestTemplate'
         ]);
         

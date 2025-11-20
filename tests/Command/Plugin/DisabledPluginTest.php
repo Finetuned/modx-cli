@@ -21,8 +21,6 @@ class DisabledPluginTest extends BaseTest
         $this->command->modx = $this->modx;
         
         // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -103,7 +101,7 @@ class DisabledPluginTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
         ]);
         
         // Verify the output contains only disabled plugin data
@@ -131,7 +129,7 @@ class DisabledPluginTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
         ]);
         
         // Verify appropriate message is displayed (showing 0 items)
@@ -160,7 +158,7 @@ class DisabledPluginTest extends BaseTest
         
         // Execute the command with --json option
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             '--json' => true,
         ]);
         
@@ -202,7 +200,7 @@ class DisabledPluginTest extends BaseTest
         
         // Execute the command with pagination options
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             '--limit' => 5,
             '--start' => 10,
         ]);
@@ -251,7 +249,7 @@ class DisabledPluginTest extends BaseTest
             ->willReturn($processorResponse);
         
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
         ]);
         
         $output = $this->commandTester->getDisplay();

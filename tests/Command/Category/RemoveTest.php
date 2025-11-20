@@ -22,8 +22,6 @@ class RemoveTest extends BaseTest
         $this->command->modx = $this->modx;
         
         // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -55,7 +53,7 @@ class RemoveTest extends BaseTest
         
         // Mock the getObject method
         $this->modx->method('getObject')
-            ->with('modCategory', '123')
+            ->with(\MODX\Revolution\modCategory::class, '123', $this->anything())
             ->willReturn($category);
         
         // We'll skip the confirmation by using the force option
@@ -83,7 +81,6 @@ class RemoveTest extends BaseTest
         
         // Execute the command with force option
         $this->commandTester->execute([
-            'command' => 'category:remove',
             'id' => '123',
             '--force' => true
         ]);
@@ -105,7 +102,7 @@ class RemoveTest extends BaseTest
         
         // Mock the getObject method
         $this->modx->method('getObject')
-            ->with('modCategory', '123')
+            ->with(\MODX\Revolution\modCategory::class, '123', $this->anything())
             ->willReturn($category);
         
         // Mock the runProcessor method to return a successful response
@@ -124,7 +121,7 @@ class RemoveTest extends BaseTest
         
         // Execute the command with force option
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '123',
             '--force' => true
         ]);
@@ -138,12 +135,12 @@ class RemoveTest extends BaseTest
     {
         // Mock the getObject method to return null (category not found)
         $this->modx->method('getObject')
-            ->with('modCategory', '999')
+            ->with(\MODX\Revolution\modCategory::class, '999', $this->anything())
             ->willReturn(null);
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '999'
         ]);
         
@@ -164,7 +161,7 @@ class RemoveTest extends BaseTest
         
         // Mock the getObject method
         $this->modx->method('getObject')
-            ->with('modCategory', '123')
+            ->with(\MODX\Revolution\modCategory::class, '123')
             ->willReturn($category);
         
         // We'll skip the confirmation by using the force option
@@ -186,7 +183,6 @@ class RemoveTest extends BaseTest
         
         // Execute the command with force option
         $this->commandTester->execute([
-            'command' => 'category:remove',
             '--force' => true,
             'id' => '123'
         ]);

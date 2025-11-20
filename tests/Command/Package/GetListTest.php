@@ -21,8 +21,6 @@ class GetListTest extends BaseTest
         $this->command->modx = $this->modx;
         
         // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -91,7 +89,7 @@ class GetListTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
         ]);
         
         // Verify the output contains package data
@@ -128,7 +126,7 @@ class GetListTest extends BaseTest
         
         // Execute the command with --json option
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             '--json' => true,
         ]);
         
@@ -174,7 +172,7 @@ class GetListTest extends BaseTest
         
         // Execute the command with pagination options
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             '--limit' => 10,
             '--start' => 20,
         ]);

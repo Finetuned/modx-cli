@@ -22,8 +22,6 @@ class UpdateTest extends BaseTest
         $this->command->modx = $this->modx;
         
         // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -70,7 +68,7 @@ class UpdateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '123',
             '--category' => 'Updated Category',
             '--parent' => '1',
@@ -102,7 +100,7 @@ class UpdateTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => $this->command->getName(),
+            
             'id' => '123',
             '--category' => 'Updated Category'
         ]);

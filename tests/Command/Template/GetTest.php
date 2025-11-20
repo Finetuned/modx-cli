@@ -22,8 +22,6 @@ class GetTest extends BaseTest
         $this->command->modx = $this->modx;
         
         // Create a command tester
-        $application = new Application();
-        $application->add($this->command);
         $this->commandTester = new CommandTester($this->command);
     }
 
@@ -75,7 +73,7 @@ class GetTest extends BaseTest
         
         // Mock the getObject method
         $this->modx->method('getObject')
-            ->with('modCategory', 1)
+            ->with(\MODX\Revolution\modCategory::class, 1, $this->anything())
             ->willReturn($category);
         
         $this->modx->expects($this->once())
@@ -91,7 +89,6 @@ class GetTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'template:get',
             'id' => '123',
             '--format' => 'table'
         ]);
@@ -131,7 +128,6 @@ class GetTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'template:get',
             'id' => '123',
             '--format' => 'json'
         ]);
@@ -173,7 +169,6 @@ class GetTest extends BaseTest
         
         // Execute the command with --json option
         $this->commandTester->execute([
-            'command' => 'template:get',
             'id' => '123',
             '--json' => true
         ]);
@@ -203,7 +198,6 @@ class GetTest extends BaseTest
         
         // Execute the command with --json option
         $this->commandTester->execute([
-            'command' => 'template:get',
             'id' => '999',
             '--json' => true
         ]);
@@ -232,7 +226,6 @@ class GetTest extends BaseTest
         
         // Execute the command
         $this->commandTester->execute([
-            'command' => 'template:get',
             'id' => '999'
         ]);
         
