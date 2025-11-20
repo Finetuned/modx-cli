@@ -1,15 +1,17 @@
 <?php
 
-namespace MODX\CLI\Tests\Command\Package\Upgrade;
+namespace MODX\CLI\Tests\Integration;
 
 use MODX\CLI\API\MODX_CLI;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
-use Dotenv\Dotenv;
 
 /**
+ * Integration tests for Package Upgrade custom commands
+ * These tests verify the integrated command naming and functionality
+ * 
  * @group integration
  * @group requires-modx
  */
@@ -38,9 +40,9 @@ class IntegratedPackageUpgradeTest extends TestCase
 
     private function loadIntegrationEnv(): void
     {
-        $envPath = __DIR__ . '/../../../Integration/.env';
+        $envPath = __DIR__ . '/.env';
         if (file_exists($envPath)) {
-            $dotenv = Dotenv::createImmutable(dirname($envPath));
+            $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
             $dotenv->load();
         }
     }
@@ -103,7 +105,7 @@ class IntegratedPackageUpgradeTest extends TestCase
     private function registerIntegratedCommands()
     {
         // Load the functions file
-        require_once __DIR__ . '/../../../../custom-commands/package-upgrade-functions.php';
+        require_once __DIR__ . '/../../custom-commands/package-upgrade-functions.php';
         
         // Register the integrated commands using the internal API
         MODX_CLI::add_command('package:list-upgrades', 'packageUpgradeList', [

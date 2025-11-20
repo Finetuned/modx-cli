@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
-         bootstrap="tests/bootstrap.php"
-         cacheResultFile="var/cache/.phpunit.result.cache"
+         bootstrap="tests/Integration/bootstrap.php"
+         cacheResultFile="var/cache/.phpunit.integration.cache"
          executionOrder="depends,defects"
          forceCoversAnnotation="false"
          beStrictAboutCoversAnnotation="true"
@@ -14,16 +14,8 @@
          backupGlobals="false"
          backupStaticAttributes="false">
     <testsuites>
-        <testsuite name="default">
-            <directory>tests</directory>
-            <exclude>tests/Integration</exclude>
-        </testsuite>
         <testsuite name="integration">
             <directory>tests/Integration</directory>
-            <exclude>tests/Integration/Fixtures</exclude>
-        </testsuite>
-        <testsuite name="all">
-            <directory>tests</directory>
             <exclude>tests/Integration/Fixtures</exclude>
         </testsuite>
     </testsuites>

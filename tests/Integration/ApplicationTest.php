@@ -1,4 +1,4 @@
-<?php namespace MODX\CLI\Tests;
+<?php namespace MODX\CLI\Tests\Integration;
 
 use MODX\CLI\Application;
 use MODX\CLI\Configuration\Instance;
@@ -11,6 +11,9 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
+ * Integration tests for Application class
+ * These tests verify Application functionality with a real MODX instance
+ * 
  * @group integration
  * @group requires-modx
  */

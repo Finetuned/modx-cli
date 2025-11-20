@@ -1,437 +1,192 @@
-# MODX CLI Integration Testing
+# Integration Tests
 
-## Overview
-
-This directory contains integration tests for the MODX CLI. Unlike unit tests that use mocked dependencies, integration tests execute the actual CLI commands against real MODX instances to verify end-to-end functionality.
+This directory contains integration tests that require a real MODX installation.
 
 ## Directory Structure
 
 ```
 tests/Integration/
-├── README.md                           # This file
-├── BaseIntegrationTest.php              # Base class for all integration tests
-├── docker-compose.yml                   # Docker environment for tests
-├── Fixtures/                           # Test data and configurations
-│   ├── MODXInstances.php                # MODX instance management
-│   ├── SampleData.php                   # Sample test data
-│   └── TestConfigs/                     # Configuration files
-├── Commands/                           # Command integration tests
-│   └── Category/
-│       └── CategoryListTest.php         # Example test
-└── EndToEnd/                          # Full workflow tests
+├── bootstrap.php              # Integration-specific bootstrap
+├── .env                       # Integration test configuration
+├── BaseIntegrationTest.php    # Base class for integration tests
+├── ApplicationTest.php        # Application integration tests
+├── XdomIntegrationTest.php    # Xdom integration tests
+├── IntegratedPackageUpgradeTest.php  # Package upgrade integration tests
+├── Commands/                  # Command integration tests
+├── EndToEnd/                  # End-to-end workflow tests
+├── SSH/                       # SSH functionality tests
+└── Fixtures/                  # Test fixtures and helpers
 ```
 
-## Requirements
+## Key Changes to Resolve modX Redeclare Errors
 
-- Docker and Docker Compose
-- PHP 7.4 or higher
-- MySQL 8.0 (via Docker)
-- PHPUnit 9.5+
-- A MODX 3.x installation for testing
+### Problem
+Previously, running integration tests would cause "Cannot declare class modX" errors because:
+1. Unit tests used a stub `modX` class via `tests/fixtures/XdomModxStub.php`
+2. Integration tests needed to load the real MODX CMS `modX` class
+3. These two conflicted when run in the same process
+
+### Solution
+We implemented **complete test isolation** using separate directories and bootstraps:
+
+1. **Unit Tests**: Use `tests/bootstrap.php` which sets up a temporary HOME and loads stubs
+2. **Integration Tests**: Use `tests/Integration/bootstrap.php` which NEVER loads stubs
+
+### File Movements
+- `tests/XdomIntegrationTest.php` → `tests/Integration/XdomIntegrationTest.php`
+- `tests/ApplicationTest.php` → `tests/Integration/ApplicationTest.php`
+- `tests/Command/Package/Upgrade/IntegratedPackageUpgradeTest.php` → `tests/Integration/IntegratedPackageUpgradeTest.php`
+
+All moved files had their namespaces updated from `MODX\CLI\Tests` to `MODX\CLI\Tests\Integration`.
+
+## Running Tests
+
+### Unit Tests (Default)
+Run unit tests without MODX requirement:
+
+```bash
+./vendor/bin/phpunit --testsuite default
+```
+
+This runs all tests EXCEPT integration tests, using `tests/bootstrap.php`.
+
+### Integration Tests
+Run integration tests with a real MODX instance:
+
+```bash
+MODX_INTEGRATION_TESTS=1 ./vendor/bin/phpunit -c phpunit.integration.xml
+```
+
+This runs ONLY integration tests, using `tests/Integration/bootstrap.php`.
+
+**Important**: Integration tests require:
+- A real MODX installation configured in `tests/Integration/.env`
+- `MODX_INTEGRATION_TESTS=1` environment variable set
+
+### All Tests
+To run all tests (unit + integration):
+
+```bash
+MODX_INTEGRATION_TESTS=1 ./vendor/bin/phpunit --testsuite all
+```
+
+Note: This will run unit tests first (with unit bootstrap), then integration tests will be skipped unless you use the integration config.
+
+## Configuration
+
+### Unit Test Configuration
+- File: `phpunit.xml.dist`
+- Bootstrap: `tests/bootstrap.php`
+- Test Suite: `default`
+- Excludes: `tests/Integration/`
+
+### Integration Test Configuration
+- File: `phpunit.integration.xml`
+- Bootstrap: `tests/Integration/bootstrap.php`
+- Test Suite: `integration`
+- Includes: Only `tests/Integration/`
 
 ## Environment Setup
 
-### 1. Instance Alias Configuration
+Integration tests require a `.env` file in this directory with the following variables:
 
-Integration tests use instance aliases to ensure commands run against the correct MODX installation. This prevents conflicts with default instances configured in `~/.modx/config.yml`.
-
-**Create/update `~/.modx/config.yml`:**
-
-```yaml
-test:
-  base_path: /path/to/modx/test/instance
-```
-
-### 2. Environment Variables
-
-Integration tests require specific environment variables to be set in `tests/Integration/.env`:
-
-```bash
+```env
 MODX_INTEGRATION_TESTS=1
-MODX_TEST_INSTANCE_PATH=/path/to/modx/test/instance
+MODX_TEST_INSTANCE_PATH=/path/to/modx
 MODX_TEST_INSTANCE_ALIAS=test
 MODX_TEST_DB_HOST=localhost
 MODX_TEST_DB_NAME=modx_test
-MODX_TEST_DB_PREFIX=modx_
 MODX_TEST_DB_USER=root
-MODX_TEST_DB_PASS=testpass
+MODX_TEST_DB_PASS=
+MODX_TEST_DB_PREFIX=modx_
 ```
 
-**Note**: `MODX_TEST_INSTANCE_ALIAS` must match an alias defined in `~/.modx/config.yml`. The CLI will use the `-s` flag to force execution against this instance.
+See `tests/Integration/.env.example` for a template (if available).
 
-### 2. Using Docker (Recommended)
+## Bootstrap Differences
 
-Start the test environment using Docker Compose:
+### Unit Bootstrap (`tests/bootstrap.php`)
+- Sets temporary `HOME` directory to isolate unit tests
+- Loads Composer autoloader
+- Loads `XdomModxStub.php` when needed by unit tests
 
-```bash
-cd tests/Integration
-docker-compose up -d
-```
+### Integration Bootstrap (`tests/Integration/bootstrap.php`)
+- Uses REAL user `HOME` directory to find MODX configurations
+- Loads Composer autoloader
+- Loads `.env` file from `tests/Integration/.env`
+- NEVER loads modX stubs - relies on real MODX class
 
-This will create:
-- A MySQL container for test databases
-- A PHP container for running tests
-- Isolated networks and volumes
+## Why This Works
 
-To stop the environment:
+The separation ensures:
+1. **Unit tests** run in isolation with stubs, testing code logic without MODX
+2. **Integration tests** run in isolation with real MODX, testing actual MODX interactions
+3. **No cross-contamination**: The two test types never share the same PHP process with conflicting `modX` definitions
 
-```bash
-docker-compose down
-```
+## Troubleshooting
 
-To clean up everything including volumes:
+### "Cannot declare class modX" error
+This means a stub was loaded before the real MODX class. Ensure:
+- You're using `phpunit.integration.xml` for integration tests
+- `MODX_INTEGRATION_TESTS=1` is set
+- Integration tests extend `BaseIntegrationTest` or properly guard against modX conflicts
 
-```bash
-docker-compose down -v
-```
+### Integration tests are skipped
+Integration tests require:
+1. `MODX_INTEGRATION_TESTS=1` environment variable
+2. Valid MODX installation path in `.env`
+3. Database configured and accessible
 
-### 3. Manual Setup
+### Tests fail to find MODX
+Check your `.env` file has correct paths:
+- `MODX_TEST_INSTANCE_PATH` should point to your MODX installation root
+- Path should contain `config.core.php`
 
-If not using Docker, ensure you have:
+## Writing New Integration Tests
 
-1. A MySQL database accessible for testing
-2. A MODX 3.x installation configured to use the test database
-3. PHP CLI with required extensions (PDO, MySQL)
+When creating new integration tests:
 
-## Running Integration Tests
+1. **Place in `tests/Integration/` directory**
+2. **Extend `BaseIntegrationTest`** for helper methods
+3. **Use namespace `MODX\CLI\Tests\Integration`**
+4. **Add `@group integration` annotation**
 
-### Run All Integration Tests
-
-```bash
-# From project root
-MODX_INTEGRATION_TESTS=1 vendor/bin/phpunit --testsuite=Integration
-```
-
-### Run Specific Test Class
-
-```bash
-MODX_INTEGRATION_TESTS=1 vendor/bin/phpunit tests/Integration/Commands/Category/CategoryListTest.php
-```
-
-### Run with Verbose Output
-
-```bash
-MODX_INTEGRATION_TESTS=1 vendor/bin/phpunit --testsuite=Integration --verbose
-```
-
-### Skip Integration Tests
-
-Integration tests are automatically skipped if `MODX_INTEGRATION_TESTS` is not set to `1`. This prevents accidental execution during regular unit test runs.
-
-## Writing Integration Tests
-
-### Basic Structure
-
-All integration tests should extend `BaseIntegrationTest`:
+Example:
 
 ```php
 <?php
 
-namespace MODX\CLI\Tests\Integration\Commands\Category;
+namespace MODX\CLI\Tests\Integration;
 
-use MODX\CLI\Tests\Integration\BaseIntegrationTest;
-
-class CategoryCreateTest extends BaseIntegrationTest
+/**
+ * @group integration
+ * @group requires-modx
+ */
+class MyFeatureTest extends BaseIntegrationTest
 {
-    public function testCategoryCreation()
+    protected function setUp(): void
     {
-        // Execute command
-        $process = $this->executeCommandSuccessfully([
-            'category:create',
-            'TestCategory',
-            '--parent=0'
-        ]);
-        
-        // Verify output
-        $output = $process->getOutput();
-        $this->assertStringContainsString('created successfully', $output);
-        
-        // Verify database state
-        $count = $this->countTableRows($this->categoriesTable, 'category = ?', ['TestCategory']);
-        $this->assertEquals(1, $count);
+        parent::setUp();
+        // Your setup code
+    }
+    
+    public function testMyFeature()
+    {
+        // Test using real MODX via $this->executeCommand(), etc.
     }
 }
 ```
-
-### Available Helper Methods
-
-#### Command Execution
-
-**executeCommand(array $arguments, int $timeout = 30): Process**
-- Execute a CLI command and return the Process object
-- Does not assert success or failure
-
-**executeCommandSuccessfully(array $arguments): Process**
-- Execute a command and assert it succeeded (exit code 0)
-- Throws assertion failure with output on error
-
-**executeCommandJson(array $arguments): array**
-- Execute a command with --json flag
-- Returns decoded JSON array
-- Asserts valid JSON output
-
-#### Database Operations
-
-**getTestDatabase(): \PDO**
-- Get a PDO connection to the test database
-
-**queryDatabase(string $sql, array $params = []): array**
-- Execute a SQL query and return results
-
-**countTableRows(string $table, string $where = '', array $params = []): int**
-- Count rows in a table with optional WHERE clause
-
-### Testing Patterns
-
-#### 1. Command Execution Tests
-
-Test that commands execute without errors:
-
-```php
-public function testCommandExecutes()
-{
-    $process = $this->executeCommand(['category:list']);
-    $this->assertEquals(0, $process->getExitCode());
-}
-```
-
-#### 2. JSON Output Tests
-
-Verify JSON output format:
-
-```php
-public function testJsonOutput()
-{
-    $data = $this->executeCommandJson(['category:list']);
-    $this->assertIsArray($data);
-    
-    if (!empty($data)) {
-        $this->assertArrayHasKey('category', $data[0]);
-    }
-}
-```
-
-#### 3. Database State Verification
-
-Ensure commands modify database correctly:
-
-```php
-public function testDatabaseChanges()
-{
-    $beforeCount = $this->countTableRows($this->categoriesTable);
-    
-    $this->executeCommandSuccessfully([
-        'category:create',
-        'NewCategory'
-    ]);
-    
-    $afterCount = $this->countTableRows($this->categoriesTable);
-    $this->assertEquals($beforeCount + 1, $afterCount);
-}
-```
-
-#### 4. Error Handling Tests
-
-Verify proper error messages:
-
-```php
-public function testErrorHandling()
-{
-    $process = $this->executeCommand([
-        'category:get',
-        '999999'  // Non-existent ID
-    ]);
-    
-    $this->assertNotEquals(0, $process->getExitCode());
-    $this->assertStringContainsString('not found', $process->getOutput());
-}
-```
-
-#### 5. Performance Tests
-
-Ensure commands execute within acceptable time:
-
-```php
-public function testPerformance()
-{
-    $startTime = microtime(true);
-    $this->executeCommandSuccessfully(['category:list']);
-    $executionTime = microtime(true) - $startTime;
-    
-    $this->assertLessThan(5.0, $executionTime);
-}
-```
-
-## Test Data Management
-
-### Using Fixtures
-
-The `SampleData` class provides test data:
-
-```php
-use MODX\CLI\Tests\Integration\Fixtures\SampleData;
-
-$categories = SampleData::getCategories();
-$chunks = SampleData::getChunks();
-```
-
-### Database Cleanup
-
-Always clean up test data in tearDown():
-
-```php
-protected function tearDown(): void
-{
-    // Remove test data
-    $this->queryDatabase('DELETE FROM '. $this->categoriesTable .' WHERE category LIKE ?', ['Test%']);
-    
-    parent::tearDown();
-}
-```
-
-## Best Practices
-
-### 1. Test Isolation
-
-Each test should be independent:
-- Don't rely on data from other tests
-- Clean up after each test
-- Use unique identifiers for test data
-
-### 2. Descriptive Test Names
-
-Use clear, descriptive test method names:
-
-```php
-// Good
-public function testCategoryCreationWithValidData()
-
-// Bad
-public function testCategory()
-```
-
-### 3. Comprehensive Assertions
-
-Verify multiple aspects of behavior:
-
-```php
-public function testCategoryCreation()
-{
-    $process = $this->executeCommandSuccessfully(['category:create', 'Test']);
-    
-    // Verify exit code
-    $this->assertEquals(0, $process->getExitCode());
-    
-    // Verify output message
-    $this->assertStringContainsString('created successfully', $process->getOutput());
-    
-    // Verify database state
-    $exists = $this->countTableRows($this->categoriesTable, 'category = ?', ['Test']) > 0;
-    $this->assertTrue($exists);
-}
-```
-
-### 4. Error Message Verification
-
-Test both success and failure paths:
-
-```php
-public function testCreateWithInvalidData()
-{
-    $process = $this->executeCommand(['category:create', '']);
-    
-    $this->assertNotEquals(0, $process->getExitCode());
-    $this->assertStringContainsString('required', $process->getErrorOutput());
-}
-```
-
-### 5. Performance Considerations
-
-Keep tests fast:
-- Use minimal test data
-- Clean up efficiently
-- Run expensive tests separately if needed
-
-## Troubleshooting
-
-### Tests Are Skipped
-
-**Problem**: All integration tests are skipped
-
-**Solution**: Set environment variable `MODX_INTEGRATION_TESTS=1`
-
-### Cannot Connect to Database
-
-**Problem**: Tests fail with database connection errors
-
-**Solution**: 
-- Verify Docker containers are running: `docker-compose ps`
-- Check environment variables are set correctly
-- Ensure MySQL is healthy: `docker-compose logs mysql`
-
-### MODX Instance Not Found
-
-**Problem**: Tests skip with "Test MODX instance not found"
-
-**Solution**:
-- Verify `MODX_TEST_INSTANCE_PATH` points to valid MODX installation
-- Ensure MODX is properly configured with test database
-
-### Command Not Found
-
-**Problem**: Tests fail with "Command ... not found"
-
-**Solution**:
-- Verify `bin/modx` file exists and is executable
-- Check working directory is set correctly
-- Ensure MODX CLI is properly installed
 
 ## CI/CD Integration
 
-### GitHub Actions Example
+For continuous integration:
 
-```yaml
-name: Integration Tests
+```bash
+# Run unit tests (no MODX required)
+./vendor/bin/phpunit --testsuite default
 
-on: [push, pull_request]
-
-jobs:
-  integration:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2
-      
-      - name: Start Docker Environment
-        run: |
-          cd tests/Integration
-          docker-compose up -d
-          
-      - name: Run Integration Tests
-        env:
-          MODX_INTEGRATION_TESTS: 1
-        run: vendor/bin/phpunit --testsuite=Integration
-        
-      - name: Stop Docker Environment
-        run: |
-          cd tests/Integration
-          docker-compose down -v
+# Run integration tests (requires MODX setup)
+MODX_INTEGRATION_TESTS=1 ./vendor/bin/phpunit -c phpunit.integration.xml
 ```
 
-## Contributing
-
-When adding new integration tests:
-
-1. Follow existing patterns and structure
-2. Extend `BaseIntegrationTest`
-3. Use descriptive test and assertion messages
-4. Include both success and failure scenarios
-5. Document any special setup requirements
-6. Ensure tests clean up after themselves
-
-## Additional Resources
-
-- [PHPUnit Documentation](https://phpunit.de/documentation.html)
-- [Symfony Process Component](https://symfony.com/doc/current/components/process.html)
-- [MODX Documentation](https://docs.modx.com/)
-- [Docker Compose Documentation](https://docs.docker.com/compose/)
+Consider running these as separate CI jobs for better isolation.

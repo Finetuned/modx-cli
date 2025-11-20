@@ -13,6 +13,11 @@ class CustomPackageUpgradeTest extends TestCase
 
     protected function setUp(): void
     {
+        // Skip if running in integration mode where real modX is already loaded
+        if (getenv('MODX_INTEGRATION_TESTS')) {
+            $this->markTestSkipped('Skipping unit test in integration mode to avoid modX class conflicts');
+        }
+        
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
         
