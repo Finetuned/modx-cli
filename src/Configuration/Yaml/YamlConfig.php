@@ -34,7 +34,10 @@ class YamlConfig
     {
         $globalConfigPath = $this->getHomeDir() . '/.modx/config.yml';
         if (file_exists($globalConfigPath)) {
-            $this->mergeConfig($this->parseYaml($globalConfigPath));
+            $parsed = $this->parseYaml($globalConfigPath);
+            if (is_array($parsed)) {
+                $this->mergeConfig($parsed);
+            }
         }
     }
 
@@ -45,7 +48,10 @@ class YamlConfig
     {
         $projectConfigPath = getcwd() . '/modx-cli.yml';
         if (file_exists($projectConfigPath)) {
-            $this->mergeConfig($this->parseYaml($projectConfigPath));
+            $parsed = $this->parseYaml($projectConfigPath);
+            if (is_array($parsed)) {
+                $this->mergeConfig($parsed);
+            }
         }
     }
 
