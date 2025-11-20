@@ -10,6 +10,10 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
+/**
+ * @group integration
+ * @group requires-modx
+ */
 class ApplicationTest extends TestCase
 {
     protected $app;
