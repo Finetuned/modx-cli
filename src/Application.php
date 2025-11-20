@@ -48,7 +48,7 @@ class Application extends BaseApp
     public $modx;
 
     /**
-     * @var LoggerInterface
+     * @var Logger
      */
     protected $logger;
 
@@ -165,7 +165,7 @@ class Application extends BaseApp
 
         /** @var \Symfony\Component\Finder\SplFileInfo $file */
         foreach ($finder as $file) {
-            /** @var \MODX\CLI\Command\BaseCmd $className */
+            /** @var class-string<\MODX\CLI\Command\BaseCmd> $className */
             $className = $this->getCommandClass($file);
             $commands[] = new $className();
         }
@@ -212,9 +212,8 @@ class Application extends BaseApp
      */
     protected function checkInstanceAsArgument(?string $instance): ?string
     {
-        $app = $this;
         if (isset($_SERVER['argv'])) {
-            array_filter($_SERVER['argv'], function ($value) use ($app, &$instance) {
+            array_filter($_SERVER['argv'], function ($value) use (&$instance) {
                 if (strpos($value, '-s') === 0) {
                     $instance = str_replace('-s', '', $value);
 
@@ -364,6 +363,9 @@ class Application extends BaseApp
             }
 
             require_once $config;
+            if (!defined('MODX_CORE_PATH')) {
+                return false;
+            }
         }
         $loader = MODX_CORE_PATH . 'vendor/autoload.php';
         if (file_exists($loader)) {
@@ -374,11 +376,7 @@ class Application extends BaseApp
         $modxClass = '\\MODX\\Revolution\\modX';
         if (class_exists($modxClass)) {
             $modx = new $modxClass();
-            $this->initialize($modx);
-
-            if ($modx instanceof $modxClass) {
-                return $modx;
-            }
+            return $this->initialize($modx);
         }
 
         return false;
@@ -394,7 +392,7 @@ class Application extends BaseApp
     protected function initialize(\MODX\Revolution\modX $modx): \MODX\Revolution\modX
     {
         $modx->initialize('mgr');
-        $modx->getService('error', 'error.modError', '', '');
+        $modx->getService('error', 'error.modError', '', array());
         //$this->modx->setLogTarget('ECHO');
 
         // @todo: ability to define a user (or anything else)
@@ -509,7 +507,10 @@ class Application extends BaseApp
         }
 
         // Set console output for the logger
-        $this->logger->setConsoleOutput($output);
+        $this->logger->setConsoleOutput(true);
+        $this->logger->setOutputCallback(function (string $message) use ($output): void {
+            $output->writeln($message);
+        });
 
         // Log application start
         $this->logger->debug('MODX CLI application started');
@@ -518,9 +519,9 @@ class Application extends BaseApp
     /**
      * Get the logger instance
      *
-     * @return LoggerInterface
+     * @return Logger
      */
-    public function getLogger(): LoggerInterface
+    public function getLogger(): Logger
     {
         if (!$this->logger) {
             $this->initializeLogger();

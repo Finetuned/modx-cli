@@ -50,7 +50,7 @@ class RemoveComponent extends BaseCmd
         $namespace = $this->argument('namespace');
 
         // Check if the namespace exists
-        $ns = $this->modx->getObject('modNamespace', $namespace);
+        $ns = $this->modx->getObject(\MODX\Revolution\modNamespace::class, $namespace);
         if (!$ns) {
             $this->error("Namespace '{$namespace}' does not exist");
             return 1;
@@ -69,7 +69,7 @@ class RemoveComponent extends BaseCmd
         }
 
         // Remove the menu
-        $menu = $this->modx->getObject('modMenu', array(
+        $menu = $this->modx->getObject(\MODX\Revolution\modMenu::class, array(
             'namespace' => $namespace,
             'action' => 'index',
         ));

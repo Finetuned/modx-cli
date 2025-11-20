@@ -16,10 +16,19 @@ class Clear extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('System log cleared successfully');
+            return 0;
         } else {
             $this->error('Failed to clear system log');
+            if (isset($response['message'])) {
+                $this->error($response['message']);
+            }
+            return 1;
         }
     }
 }

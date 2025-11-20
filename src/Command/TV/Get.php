@@ -50,10 +50,10 @@ class Get extends ProcessorCmd
                     'success' => false,
                     'message' => 'Template variable not found'
                 ], JSON_PRETTY_PRINT));
-                return;
+                return 1;
             }
             $this->error('Template variable not found');
-            return;
+            return 1;
         }
 
         $tv = $response['object'];
@@ -61,7 +61,7 @@ class Get extends ProcessorCmd
         // Check for both --json flag and --format=json
         if ($this->option('json') || $this->option('format') === 'json') {
             $this->output->writeln(json_encode($tv, JSON_PRETTY_PRINT));
-            return;
+            return 0;
         }
 
         // Default to table format
@@ -85,7 +85,7 @@ class Get extends ProcessorCmd
 
                 // Format category
                 if ($property === 'category' && !empty($value)) {
-                    $category = $this->modx->getObject('modCategory', $value);
+                    $category = $this->modx->getObject(\MODX\Revolution\modCategory::class, $value);
                     if ($category) {
                         $value .= ' (' . $category->get('category') . ')';
                     }
@@ -108,7 +108,7 @@ class Get extends ProcessorCmd
                 $templateTable->setHeaders(array('Template ID', 'Template Name'));
 
                 foreach ($tv['template_access'] as $templateId) {
-                    $template = $this->modx->getObject('modTemplate', $templateId);
+                    $template = $this->modx->getObject(\MODX\Revolution\modTemplate::class, $templateId);
                     $templateName = $template ? $template->get('templatename') : 'Unknown';
                     $templateTable->addRow(array($templateId, $templateName));
                 }
@@ -116,5 +116,6 @@ class Get extends ProcessorCmd
                 $templateTable->render();
             }
         }
+        return 0;
     }
 }

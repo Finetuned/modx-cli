@@ -40,14 +40,20 @@ class FlushPermissions extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Permissions flushed successfully');
+            return 0;
         } else {
             $this->error('Failed to flush permissions');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

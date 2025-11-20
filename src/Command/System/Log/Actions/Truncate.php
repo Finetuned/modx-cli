@@ -58,18 +58,24 @@ class Truncate extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Action logs truncated successfully');
 
             if (isset($response['total'])) {
                 $this->info('Total logs removed: ' . $response['total']);
             }
+            return 0;
         } else {
             $this->error('Failed to truncate action logs');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

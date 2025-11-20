@@ -39,7 +39,8 @@ class Rm extends BaseCmd
         $default = $instances->get('__default__');
         if ($default && isset($default['class']) && $default['class'] === $name) {
             if (!$this->confirm("Instance '{$name}' is the default instance. Do you want to remove it?")) {
-                return $this->info('Operation aborted');
+                $this->info('Operation aborted');
+                return 0;
             }
 
             // Remove the default instance

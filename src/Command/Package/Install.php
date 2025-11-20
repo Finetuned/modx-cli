@@ -45,7 +45,7 @@ class Install extends ProcessorCmd
         $signature = $this->argument('signature');
 
         // Get the package to display information
-        $package = $this->modx->getObject('transport.modTransportPackage', array('signature' => $signature));
+        $package = $this->modx->getObject(\MODX\Revolution\Transport\modTransportPackage::class, array('signature' => $signature));
         if (!$package) {
             $this->error("Package with signature '{$signature}' not found");
             return false;
@@ -68,14 +68,20 @@ class Install extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Package installed successfully');
+            return 0;
         } else {
             $this->error('Failed to install package');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

@@ -48,12 +48,13 @@ class Upgradeable extends ListProcessor
 
         if (empty($upgradeable)) {
             $this->info('No upgradeable packages found');
-            return;
+            return 0;
         }
 
         $this->renderBody($upgradeable);
         if ($this->showPagination) {
             $this->renderPagination($upgradeable, count($upgradeable));
         }
+        return 0;
     }
 }

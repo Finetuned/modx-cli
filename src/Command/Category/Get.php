@@ -76,7 +76,7 @@ class Get extends ProcessorCmd
 
                 // Format parent category
                 if ($property === 'parent' && !empty($value)) {
-                    $parentCategory = $this->modx->getObject('modCategory', $value);
+                    $parentCategory = $this->modx->getObject(\MODX\Revolution\modCategory::class, $value);
                     if ($parentCategory) {
                         $value .= ' (' . $parentCategory->get('category') . ')';
                     }

@@ -85,34 +85,4 @@ class CommandPublisher
         return new Process(explode(' ', $cmdString));
     }
 
-    /**
-     * Execute a command asynchronously
-     *
-     * @param string $command The command to execute
-     * @param callable $callback The callback to execute after the command
-     * @return callable A function that executes the command when called
-     */
-    private function executeAsync(string $command, callable $callback): callable
-    {
-        return function () use ($command, $callback) {
-            \MODX\CLI\API\MODX_CLI::log("Running command asynchronously: modx $command");
-
-            $result = \MODX\CLI\API\MODX_CLI::run_command($command, [], [
-                'return' => true,
-                'exit_error' => false
-            ]);
-
-            if ($result->return_code !== 0) {
-                $callback([
-                    'success' => false,
-                    'error' => $result->stderr,
-                ]);
-            } else {
-                $callback([
-                    'success' => true,
-                    'data' => $result->stdout,
-                ]);
-            }
-        };
-    }
 }

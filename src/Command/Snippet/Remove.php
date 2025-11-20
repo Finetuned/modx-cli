@@ -45,7 +45,7 @@ class Remove extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the snippet to display information
-        $snippet = $this->modx->getObject('modSnippet', $id);
+        $snippet = $this->modx->getObject(\MODX\Revolution\modSnippet::class, $id);
         if (!$snippet) {
             $this->error("Snippet with ID {$id} not found");
             return false;
@@ -70,12 +70,14 @@ class Remove extends ProcessorCmd
         
         if (isset($response['success']) && $response['success']) {
             $this->info('Snippet removed successfully');
+            return 0;
         } else {
             $this->error('Failed to remove snippet');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

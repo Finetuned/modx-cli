@@ -190,7 +190,7 @@ abstract class ProcessorCmd extends BaseCmd
 
         // Pre-populate properties with existing values if not already set
         foreach ($mapping as $propertyName => $fieldName) {
-            if (!isset($properties[$propertyName]) || $properties[$propertyName] === null) {
+            if (!array_key_exists($propertyName, $properties) || $properties[$propertyName] === null) {
                 $value = $object->get($fieldName);
                 // Only set the property if the value is not null and not an empty string
                 if ($value !== null && $value !== '') {
@@ -213,7 +213,7 @@ abstract class ProcessorCmd extends BaseCmd
     {
         foreach ($defaults as $key => $defaultValue) {
             // Only apply default if the property is not already set
-            if (!isset($properties[$key]) || $properties[$key] === null) {
+            if (!array_key_exists($key, $properties) || $properties[$key] === null) {
                 // Check if there's an option for this property
                 $optionValue = $this->option($key);
                 if ($optionValue !== null) {
@@ -343,7 +343,7 @@ abstract class ProcessorCmd extends BaseCmd
     {
         // Support columns "removal"
         $unset = $this->option('unset');
-        if ($unset && !empty($unset)) {
+        if (!empty($unset)) {
             foreach ($unset as $k) {
                 if (in_array($k, $this->headers)) {
                     $idx = array_search($k, $this->headers);
@@ -356,7 +356,7 @@ abstract class ProcessorCmd extends BaseCmd
 
         // Support columns "addition"
         $add = $this->option('add');
-        if ($add && !empty($add)) {
+        if (!empty($add)) {
             foreach ($add as $k) {
                 if (!in_array($k, $this->headers)) {
                     $this->headers[] = $k;

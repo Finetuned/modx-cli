@@ -48,7 +48,7 @@ class Remove extends ProcessorCmd
         $properties['name'] = $name;
 
         // Get the namespace to display information
-        $namespace = $this->modx->getObject('modNamespace', array('name' => $name));
+        $namespace = $this->modx->getObject(\MODX\Revolution\modNamespace::class, array('name' => $name));
         if (!$namespace) {
             $this->error("Namespace '{$name}' not found");
             return false;
@@ -65,14 +65,20 @@ class Remove extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Namespace removed successfully');
+            return 0;
         } else {
             $this->error('Failed to remove namespace');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

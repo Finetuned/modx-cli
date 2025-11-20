@@ -23,7 +23,8 @@ class WipeExcludeCommand extends BaseCmd
         }
 
         if (!$this->confirm('Are you sure you want to wipe all excluded commands?')) {
-            return $this->info('Operation aborted');
+            $this->info('Operation aborted');
+            return 0;
         }
 
         // Wipe all excluded commands

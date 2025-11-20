@@ -61,9 +61,9 @@ class Component extends Base
         }
 
         // Save to MODX system settings
-        $setting = $modx->getObject('modSystemSetting', ['key' => 'console_commands']);
+        $setting = $modx->getObject(modSystemSetting::class, ['key' => 'console_commands']);
         if (!$setting) {
-            $setting = $modx->newObject('modSystemSetting');
+            $setting = $modx->newObject(modSystemSetting::class);
             $setting->set('key', 'console_commands');
             $setting->set('namespace', 'core');
             $setting->set('area', 'system');

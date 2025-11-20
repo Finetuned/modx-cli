@@ -50,10 +50,10 @@ class Get extends ProcessorCmd
                     'success' => false,
                     'message' => 'Snippet not found'
                 ], JSON_PRETTY_PRINT));
-                return;
+                return 1;
             }
             $this->error('Snippet not found');
-            return;
+            return 1;
         }
 
         $snippet = $response['object'];
@@ -61,7 +61,7 @@ class Get extends ProcessorCmd
         // Check for both --json flag and --format=json
         if ($this->option('json') || $this->option('format') === 'json') {
             $this->output->writeln(json_encode($snippet, JSON_PRETTY_PRINT));
-            return;
+            return 0;
         }
 
         // Default to table format
@@ -84,7 +84,7 @@ class Get extends ProcessorCmd
 
                 // Format category
                 if ($property === 'category' && !empty($value)) {
-                    $category = $this->modx->getObject('modCategory', $value);
+                    $category = $this->modx->getObject(\MODX\Revolution\modCategory::class, $value);
                     if ($category) {
                         $value .= ' (' . $category->get('category') . ')';
                     }
@@ -116,5 +116,6 @@ class Get extends ProcessorCmd
                 $this->output->writeln(json_encode($snippet['properties'], JSON_PRETTY_PRINT));
             }
         }
+        return 0;
     }
 }

@@ -45,7 +45,7 @@ class Remove extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the chunk to display information
-        $chunk = $this->modx->getObject('modChunk', $id);
+        $chunk = $this->modx->getObject(\MODX\Revolution\modChunk::class, $id);
         if (!$chunk) {
             $this->error("Chunk with ID {$id} not found");
             return false;

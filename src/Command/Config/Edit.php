@@ -68,7 +68,8 @@ class Edit extends BaseCmd
             // Check if the MODX instance exists at the given path
             if (!file_exists($basePath . 'config.core.php')) {
                 if (!$this->confirm("No MODX instance found at '{$basePath}'. Do you want to continue?")) {
-                    return $this->info('Operation aborted');
+                    $this->info('Operation aborted');
+                    return 0;
                 }
             }
 

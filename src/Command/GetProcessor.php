@@ -15,6 +15,15 @@ abstract class GetProcessor extends ProcessorCmd
 
     protected function processResponse(array $results = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($results);
+        }
+
+        if (!isset($results['object'])) {
+            $this->error('No object found');
+            return 1;
+        }
+
         $object = $results['object'];
 
         $table = new Table($this->output);
@@ -22,5 +31,6 @@ abstract class GetProcessor extends ProcessorCmd
         $table->addRow($this->processRow($object));
 
         $table->render();
+        return 0;
     }
 }

@@ -47,7 +47,7 @@ class Get extends ProcessorCmd
         if (!isset($response['object'])) {
             if ($this->option('json') || $this->option('format') === 'json') {
                 $this->output->writeln(json_encode(['success' => false, 'message' => 'Resource not found'], JSON_PRETTY_PRINT));
-                return 0;
+                return 1;
             }
             $this->error('Resource not found');
             return 1;
@@ -97,5 +97,6 @@ class Get extends ProcessorCmd
         }
 
         $table->render();
+        return 0;
     }
 }

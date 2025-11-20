@@ -45,7 +45,7 @@ class Remove extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the category to display information
-        $category = $this->modx->getObject('modCategory', $id);
+        $category = $this->modx->getObject(\MODX\Revolution\modCategory::class, $id);
         if (!$category) {
             $this->error("Category with ID {$id} not found");
             return false;

@@ -28,7 +28,8 @@ abstract class Download extends BaseCmd
         $destination = $storage . $this->buildFileName();
         // Check if already stored
         if (file_exists($destination)) {
-            return $this->info("Version already downloaded and available in {$storage}");
+            $this->info("Version already downloaded and available in {$storage}");
+            return 0;
         }
 
         // Compute URL
@@ -42,6 +43,7 @@ abstract class Download extends BaseCmd
         $this->comment("Downloading {$url} to {$destination}");
         $this->download($url, $destination);
         $this->comment("Done");
+        return 0;
     }
 
     /**
@@ -56,7 +58,7 @@ abstract class Download extends BaseCmd
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $data = curl_exec($ch);

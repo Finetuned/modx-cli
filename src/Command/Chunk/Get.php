@@ -84,7 +84,7 @@ class Get extends ProcessorCmd
 
                 // Format category
                 if ($property === 'category' && !empty($value)) {
-                    $category = $this->modx->getObject('modCategory', $value);
+                    $category = $this->modx->getObject(\MODX\Revolution\modCategory::class, $value);
                     if ($category) {
                         $value .= ' (' . $category->get('category') . ')';
                     }

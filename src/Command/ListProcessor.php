@@ -134,7 +134,7 @@ abstract class ListProcessor extends ProcessorCmd
      */
     protected function renderPagination(array $results = array(), $total = 0)
     {
-        /** @var \Symfony\Component\Console\Helper\Table $t */
+        /** @var \Symfony\Component\Console\Helper\Table $table */
         $table = new Table($this->output);
         $table->setHeaders(array('', ''));
         $table->setStyle('compact');

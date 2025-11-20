@@ -79,10 +79,10 @@ class Update extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         // Get the snippet ID from arguments
-        $snippetId = $this->argument('id');
+        $snippetId = (int) $this->argument('id');
         
         // Pre-populate properties with existing snippet data to avoid requiring name parameter
-        if (!$this->prePopulateFromExisting($properties, 'modSnippet', $snippetId)) {
+        if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modSnippet::class, $snippetId)) {
             $this->error("Snippet with ID {$snippetId} not found");
             return false;
         }
@@ -123,12 +123,14 @@ class Update extends ProcessorCmd
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Snippet ID: ' . $response['object']['id']);
             }
+            return 0;
         } else {
             $this->error('Failed to update snippet');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

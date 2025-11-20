@@ -85,10 +85,10 @@ class Update extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         // Get the resource ID from arguments
-        $resourceId = $this->argument('id');
+        $resourceId = (int) $this->argument('id');
         
         // Pre-populate properties with existing resource data to avoid requiring name parameter
-        if (!$this->prePopulateFromExisting($properties, 'modResource', $resourceId)) {
+        if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modResource::class, $resourceId)) {
             $this->error("Resource with ID {$resourceId} not found");
             return false;
         }
@@ -132,18 +132,24 @@ class Update extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Resource updated successfully');
 
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Resource ID: ' . $response['object']['id']);
             }
+            return 0;
         } else {
             $this->error('Failed to update resource');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

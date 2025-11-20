@@ -85,10 +85,10 @@ class Update extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         // Get the template ID from arguments
-        $templateId = $this->argument('id');
+        $templateId = (int) $this->argument('id');
         
         // Pre-populate properties with existing template data to avoid requiring name parameter
-        if (!$this->prePopulateFromExisting($properties, 'modTemplate', $templateId)) {
+        if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modTemplate::class, $templateId)) {
             $this->error("Template with ID {$templateId} not found");
             return false;
         }
@@ -128,12 +128,14 @@ class Update extends ProcessorCmd
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Template ID: ' . $response['object']['id']);
             }
+            return 0;
         } else {
             $this->error('Failed to update template');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

@@ -18,7 +18,7 @@ class Extras extends BaseCmd
     protected function process()
     {
         // Get all namespaces
-        $namespaces = $this->modx->getCollection('modNamespace');
+        $namespaces = $this->modx->getCollection(\MODX\Revolution\modNamespace::class);
 
         if (empty($namespaces)) {
             $this->info('No namespaces found');
@@ -136,7 +136,7 @@ class Extras extends BaseCmd
 
         // Fallback: If processor fails, try direct database query
         if (empty($lookup)) {
-            $packages = $this->modx->getCollection('transport.modTransportPackage');
+            $packages = $this->modx->getCollection(\MODX\Revolution\Transport\modTransportPackage::class);
             if ($packages) {
                 foreach ($packages as $package) {
                     $packageName = $package->get('package_name');
@@ -201,7 +201,7 @@ class Extras extends BaseCmd
         }
 
         // Try direct database query as last resort
-        $package = $this->modx->getObject('transport.modTransportPackage', [
+        $package = $this->modx->getObject(\MODX\Revolution\Transport\modTransportPackage::class, [
             'package_name' => $namespaceName
         ]);
 

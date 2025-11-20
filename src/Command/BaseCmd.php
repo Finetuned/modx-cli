@@ -94,11 +94,12 @@ abstract class BaseCmd extends Command
     /**
      * Gets the application instance for this command.
      *
-     * @return \MODX\CLI\Application An Application instance
+     * @return \MODX\CLI\Application|null Application instance or null when not available
      */
-    public function getApplication()
+    public function getApplication(): ?\MODX\CLI\Application
     {
-        return parent::getApplication();
+        $app = parent::getApplication();
+        return $app instanceof \MODX\CLI\Application ? $app : null;
     }
 
     /**
@@ -132,7 +133,7 @@ abstract class BaseCmd extends Command
 
         // Initialize logger from application
         $app = $this->getApplication();
-        if ($app && method_exists($app, 'getLogger')) {
+        if ($app) {
             $this->setLogger($app->getLogger());
         }
 
@@ -160,7 +161,8 @@ abstract class BaseCmd extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->init()) {
-            return $this->error('Unable to init the command!');
+            $this->error('Unable to init the command!');
+            return 1;
         }
         $this->start = microtime(true);
 
@@ -445,8 +447,12 @@ abstract class BaseCmd extends Command
     protected function convertBytes($bytes)
     {
         $unit = array('b','kb','mb','gb','tb','pb');
-        $i = floor(log($bytes, 1024));
-        return @round($bytes / pow(1024, $i), 2) . ' ' . $unit[$i];
+        if ($bytes <= 0) {
+            return '0 b';
+        }
+        $i = (int) floor(log($bytes, 1024));
+        $i = max(0, min($i, count($unit) - 1));
+        return round($bytes / pow(1024, $i), 2) . ' ' . $unit[$i];
     }
 
     /**

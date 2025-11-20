@@ -62,7 +62,7 @@ class Info extends ProcessorCmd
 
         if ($format === 'json' || $this->option('json')) {
             $this->output->writeln(json_encode($provider, JSON_PRETTY_PRINT));
-            return;
+            return 0;
         }
 
         // Default to table format
@@ -88,5 +88,6 @@ class Info extends ProcessorCmd
         }
 
         $table->render();
+        return 0;
     }
 }

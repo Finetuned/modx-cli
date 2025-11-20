@@ -45,7 +45,7 @@ class Remove extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the template variable to display information
-        $tv = $this->modx->getObject('modTemplateVar', $id);
+        $tv = $this->modx->getObject(\MODX\Revolution\modTemplateVar::class, $id);
         if (!$tv) {
             $this->error("Template variable with ID {$id} not found");
             return false;
@@ -70,12 +70,14 @@ class Remove extends ProcessorCmd
         
         if (isset($response['success']) && $response['success']) {
             $this->info('Template variable removed successfully');
+            return 0;
         } else {
             $this->error('Failed to remove template variable');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

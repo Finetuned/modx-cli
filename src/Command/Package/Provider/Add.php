@@ -74,18 +74,24 @@ class Add extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Provider added successfully');
 
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Provider ID: ' . $response['object']['id']);
             }
+            return 0;
         } else {
             $this->error('Failed to add provider');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

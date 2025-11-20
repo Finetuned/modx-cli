@@ -45,7 +45,7 @@ class Erase extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the resource to display information
-        $resource = $this->modx->getObject('modResource', $id);
+        $resource = $this->modx->getObject(\MODX\Revolution\modResource::class, $id);
         if (!$resource) {
             $this->error("Resource with ID {$id} not found");
             return false;
@@ -76,14 +76,20 @@ class Erase extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Resource erased successfully (permanently deleted)');
+            return 0;
         } else {
             $this->error('Failed to erase resource');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

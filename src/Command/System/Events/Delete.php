@@ -45,7 +45,7 @@ class Delete extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the event to display information
-        $event = $this->modx->getObject('modEvent', $id);
+        $event = $this->modx->getObject(\MODX\Revolution\modEvent::class, $id);
         if (!$event) {
             $this->error("Event with ID {$id} not found");
             return false;
@@ -64,14 +64,20 @@ class Delete extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Event deleted successfully');
+            return 0;
         } else {
             $this->error('Failed to delete event');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

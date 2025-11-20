@@ -56,7 +56,7 @@ class AddComponent extends BaseCmd
         $namespace = $this->argument('namespace');
 
         // Check if the namespace already exists
-        $ns = $this->modx->getObject('modNamespace', $namespace);
+        $ns = $this->modx->getObject(\MODX\Revolution\modNamespace::class, $namespace);
         if ($ns) {
             if (!$this->option('force')) {
                 if (!$this->confirm("Namespace '{$namespace}' already exists. Do you want to update it?")) {
@@ -65,7 +65,7 @@ class AddComponent extends BaseCmd
                 }
             }
         } else {
-            $ns = $this->modx->newObject('modNamespace');
+            $ns = $this->modx->newObject(\MODX\Revolution\modNamespace::class);
             $ns->set('name', $namespace);
         }
 
@@ -212,13 +212,13 @@ EOT;
             }
 
             // Create a menu for the component
-            $menu = $this->modx->getObject('modMenu', array(
+            $menu = $this->modx->getObject(\MODX\Revolution\modMenu::class, array(
                 'namespace' => $namespace,
                 'action' => 'index',
             ));
 
             if (!$menu) {
-                $menu = $this->modx->newObject('modMenu');
+                $menu = $this->modx->newObject(\MODX\Revolution\modMenu::class);
                 $menu->fromArray(array(
                     'namespace' => $namespace,
                     'action' => 'index',

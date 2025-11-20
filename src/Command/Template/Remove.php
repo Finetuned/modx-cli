@@ -45,7 +45,7 @@ class Remove extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the template to display information
-        $template = $this->modx->getObject('modTemplate', $id);
+        $template = $this->modx->getObject(\MODX\Revolution\modTemplate::class, $id);
         if (!$template) {
             $this->error("Template with ID {$id} not found");
             return false;
@@ -70,12 +70,14 @@ class Remove extends ProcessorCmd
 
         if (isset($response['success']) && $response['success']) {
             $this->info('Template removed successfully');
+            return 0;
         } else {
             $this->error('Failed to remove template');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

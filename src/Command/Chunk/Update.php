@@ -79,10 +79,10 @@ class Update extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         // Get the chunk ID from arguments
-        $chunkId = $this->argument('id');
+        $chunkId = (int) $this->argument('id');
         
         // Pre-populate properties with existing chunk data to avoid requiring name parameter
-        if (!$this->prePopulateFromExisting($properties, 'modChunk', $chunkId)) {
+        if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modChunk::class, $chunkId)) {
             $this->error("Chunk with ID {$chunkId} not found");
             return false;
         }

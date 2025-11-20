@@ -140,4 +140,14 @@ class Instance extends Base
 
         return $iniString;
     }
+
+    /**
+     * Get the configured default instance name, if any
+     *
+     * @return string|null
+     */
+    public function getDefaultInstance(): ?string
+    {
+        return $this->getConfig('__default__', 'class');
+    }
 }

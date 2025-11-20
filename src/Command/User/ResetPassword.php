@@ -16,6 +16,10 @@ class ResetPassword extends ProcessorCmd
 
     protected $name = 'user:resetpassword';
     protected $description = 'Reset a user\'s password in MODX';
+    /**
+     * @var string|null
+     */
+    protected $password;
 
     protected function getArguments()
     {
@@ -51,7 +55,7 @@ class ResetPassword extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the user to display information
-        $user = $this->modx->getObject('modUser', $id);
+        $user = $this->modx->getObject(\MODX\Revolution\modUser::class, $id);
         if (!$user) {
             $this->error("User with ID {$id} not found");
             return false;
@@ -79,18 +83,24 @@ class ResetPassword extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Password reset successfully');
 
             if (isset($this->password)) {
                 $this->info('New password: ' . $this->password);
             }
+            return 0;
         } else {
             $this->error('Failed to reset password');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 

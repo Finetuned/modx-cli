@@ -115,10 +115,10 @@ class Update extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         // Get the TV ID from arguments
-        $tvId = $this->argument('id');
+        $tvId = (int) $this->argument('id');
         
         // Pre-populate properties with existing TV data to avoid requiring name parameter
-        if (!$this->prePopulateFromExisting($properties, 'modTemplateVar', $tvId)) {
+        if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modTemplateVar::class, $tvId)) {
             $this->error("Template Variable with ID {$tvId} not found");
             return false;
         }
@@ -170,12 +170,14 @@ class Update extends ProcessorCmd
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Template variable ID: ' . $response['object']['id']);
             }
+            return 0;
         } else {
             $this->error('Failed to update template variable');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

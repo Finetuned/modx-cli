@@ -46,7 +46,8 @@ class Rename extends BaseCmd
         // Check if the new instance already exists
         if ($instances->get($newName)) {
             if (!$this->confirm("Instance '{$newName}' already exists. Do you want to overwrite it?")) {
-                return $this->info('Operation aborted');
+                $this->info('Operation aborted');
+                return 0;
             }
         }
 

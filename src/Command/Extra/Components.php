@@ -21,7 +21,7 @@ class Components extends BaseCmd
         $components = array();
 
         // Get all namespaces
-        $namespaces = $this->modx->getCollection('modNamespace');
+        $namespaces = $this->modx->getCollection(\MODX\Revolution\modNamespace::class);
 
         if (empty($namespaces)) {
             $this->info('No namespaces found');

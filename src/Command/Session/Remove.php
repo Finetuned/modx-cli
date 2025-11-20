@@ -45,7 +45,7 @@ class Remove extends ProcessorCmd
         $id = $this->argument('id');
 
         // Get the session to display information
-        $session = $this->modx->getObject('modSession', $id);
+        $session = $this->modx->getObject(\MODX\Revolution\modSession::class, $id);
         if (!$session) {
             $this->error("Session with ID {$id} not found");
             return false;
@@ -55,7 +55,7 @@ class Remove extends ProcessorCmd
         $username = '';
         $userId = $session->get('user');
         if ($userId) {
-            $user = $this->modx->getObject('modUser', $userId);
+            $user = $this->modx->getObject(\MODX\Revolution\modUser::class, $userId);
             if ($user) {
                 $username = $user->get('username');
             }
@@ -78,14 +78,20 @@ class Remove extends ProcessorCmd
 
     protected function processResponse(array $response = array())
     {
+        if ($this->option('json')) {
+            return parent::processResponse($response);
+        }
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Session removed successfully');
+            return 0;
         } else {
             $this->error('Failed to remove session');
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
+            return 1;
         }
     }
 }

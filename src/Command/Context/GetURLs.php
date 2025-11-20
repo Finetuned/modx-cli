@@ -17,7 +17,7 @@ class GetURLs extends BaseCmd
 
     protected function process()
     {
-        $contexts = $this->modx->getCollection('modContext');
+        $contexts = $this->modx->getCollection(\MODX\Revolution\modContext::class);
 
         if (empty($contexts)) {
             $this->info('No contexts found');
@@ -38,12 +38,12 @@ class GetURLs extends BaseCmd
             $siteUrl = $context->getOption('site_url', '');
 
             // Get the site start URL
-            $siteStartId = $context->getOption('site_start', 0);
+            $siteStartId = $context->getOption('site_start', null);
             $siteStartUrl = '';
 
             if ($siteStartId) {
                 /** @var \MODX\Revolution\modResource $resource */
-                $resource = $this->modx->getObject('modResource', $siteStartId);
+                $resource = $this->modx->getObject(\MODX\Revolution\modResource::class, $siteStartId);
                 if ($resource) {
                     $siteStartUrl = $this->modx->makeUrl($siteStartId, $key, '', 'full');
                 }
