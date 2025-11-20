@@ -13,7 +13,7 @@ class Xdom extends \modX
      *
      * @return bool|string
      */
-    public function outputArray(array $array, $count = false)
+    public function outputArray($array, $count = false)
     {
         if (!is_array($array)) {
             return false;
