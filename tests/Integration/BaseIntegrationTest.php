@@ -89,6 +89,9 @@ abstract class BaseIntegrationTest extends TestCase
             );
         }
         $this->tablePrefix = $_ENV['MODX_TEST_DB_PREFIX'] ?? 'modx_';
+
+        // Ensure the database is reachable before running integration suites
+        $this->assertDatabaseReady();
         
         // Cache table names once
         $this->categoriesTable = $this->getTableName('categories');
@@ -121,6 +124,25 @@ abstract class BaseIntegrationTest extends TestCase
     protected function getTableName(string $tableName): string
     {
         return $this->tablePrefix . $tableName;
+    }
+
+    /**
+     * Confirm the configured database is reachable; skip integration tests if not.
+     */
+    protected function assertDatabaseReady(): void
+    {
+        // Allow an explicit DSN override for flexibility (e.g., sockets)
+        $dsn = $_ENV['MODX_TEST_DB_DSN']
+            ?? sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', $this->dbConfig['host'], $this->dbConfig['name']);
+
+        try {
+            $pdo = new \PDO($dsn, $this->dbConfig['user'], $this->dbConfig['pass'], [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            ]);
+            $pdo->query('SELECT 1');
+        } catch (\Throwable $e) {
+            $this->markTestSkipped('Integration database unavailable: ' . $e->getMessage());
+        }
     }
     
     /**
