@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
+use Dotenv\Dotenv;
 
 /**
  * @group integration
@@ -16,13 +17,64 @@ class IntegratedPackageUpgradeTest extends TestCase
 {
     protected function setUp(): void
     {
-        // Skip all tests in this class if MODX config is unavailable; avoids booting Application in MODX_CLI singleton.
-        if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
+        // Attempt to load integration MODX config; skip only if truly unavailable.
+        $this->loadIntegrationEnv();
+        $configPath = $this->resolveConfigPath();
+        $this->applyConfigEnv($configPath);
+
+        if (!getenv('MODX_CORE_PATH')) {
             $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
         }
 
         // Clear any existing commands before each test
         $this->clearRegisteredCommands();
+    }
+
+    private function loadIntegrationEnv(): void
+    {
+        $envPath = __DIR__ . '/../../../Integration/.env';
+        if (file_exists($envPath)) {
+            $dotenv = Dotenv::createImmutable(dirname($envPath));
+            $dotenv->load();
+        }
+    }
+
+    private function resolveConfigPath(): ?string
+    {
+        // Prefer explicit env override used by integration tests
+        $instancePath = $_ENV['MODX_TEST_INSTANCE_PATH'] ?? getenv('MODX_TEST_INSTANCE_PATH');
+        if ($instancePath && file_exists($instancePath . '/config.core.php')) {
+            /** @noinspection PhpIncludeInspection */
+            require_once $instancePath . '/config.core.php';
+            return defined('MODX_CORE_PATH') ? MODX_CORE_PATH : null;
+        }
+
+        // Fallback to current working directory config
+        if (file_exists(getcwd() . '/config.core.php')) {
+            /** @noinspection PhpIncludeInspection */
+            require_once getcwd() . '/config.core.php';
+            return defined('MODX_CORE_PATH') ? MODX_CORE_PATH : null;
+        }
+
+        return getenv('MODX_CORE_PATH') ?: null;
+    }
+
+    private function applyConfigEnv(?string $configPath): void
+    {
+        if ($configPath) {
+            putenv('MODX_CORE_PATH=' . $configPath);
+            $_ENV['MODX_CORE_PATH'] = $configPath;
+        }
+
+        $configKey = $_ENV['MODX_TEST_CONFIG_KEY'] ?? getenv('MODX_TEST_CONFIG_KEY');
+        if (!$configKey && defined('MODX_CONFIG_KEY')) {
+            $configKey = MODX_CONFIG_KEY;
+        }
+
+        if ($configKey) {
+            putenv('MODX_CONFIG_KEY=' . $configKey);
+            $_ENV['MODX_CONFIG_KEY'] = $configKey;
+        }
     }
 
     protected function tearDown(): void
