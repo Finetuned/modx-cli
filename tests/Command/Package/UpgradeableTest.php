@@ -48,6 +48,7 @@ class UpgradeableTest extends BaseTest
         $this->assertContains('name', $headers);
         $this->assertContains('version', $headers);
         $this->assertContains('release', $headers);
+        $this->assertContains('upgrade_signature', $headers);
         $this->assertContains('installed', $headers);
         $this->assertContains('provider', $headers);
     }
@@ -212,5 +213,140 @@ class UpgradeableTest extends BaseTest
         $this->assertIsArray($defaultProperties);
         $this->assertArrayHasKey('newest_only', $defaultProperties);
         $this->assertTrue($defaultProperties['newest_only']);
+    }
+    
+    public function testGetUpgradeSignatureForPackageReturnsNewestVersion()
+    {
+        // Test package data
+        $package = [
+            'signature' => 'testpackage-1.0.0-pl',
+            'name' => 'testpackage',
+            'version' => '1.0.0',
+            'release' => 'pl',
+        ];
+        
+        // Mock package object
+        $packageObject = $this->getMockBuilder('MODX\\Revolution\\Transport\\modTransportPackage')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $packageObject->method('get')
+            ->with('signature')
+            ->willReturn('testpackage-1.0.0-pl');
+        
+        // Mock provider
+        $provider = $this->getMockBuilder('MODX\\Revolution\\Transport\\modTransportProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $provider->method('latest')
+            ->willReturn([
+                [
+                    'signature' => 'testpackage-1.2.0-pl',
+                    'version' => '1.2.0',
+                    'release' => 'pl',
+                ],
+                [
+                    'signature' => 'testpackage-1.1.0-pl',
+                    'version' => '1.1.0',
+                    'release' => 'pl',
+                ],
+            ]);
+        
+        $packageObject->method('getOne')
+            ->with('Provider')
+            ->willReturn($provider);
+        
+        // Mock MODX getObject
+        $this->modx->method('getObject')
+            ->with('MODX\\Revolution\\Transport\\modTransportPackage', ['signature' => 'testpackage-1.0.0-pl'])
+            ->willReturn($packageObject);
+        
+        // Call the protected method using reflection
+        $method = new \ReflectionMethod($this->command, 'getUpgradeSignatureForPackage');
+        $method->setAccessible(true);
+        $result = $method->invoke($this->command, $package);
+        
+        // Should return the newest version (1.2.0-pl)
+        $this->assertEquals('testpackage-1.2.0-pl', $result);
+    }
+    
+    public function testGetUpgradeSignatureForPackageReturnsEmptyWhenNoUpgrades()
+    {
+        // Test package data
+        $package = [
+            'signature' => 'testpackage-2.0.0-pl',
+            'name' => 'testpackage',
+            'version' => '2.0.0',
+            'release' => 'pl',
+        ];
+        
+        // Mock package object
+        $packageObject = $this->getMockBuilder('MODX\\Revolution\\Transport\\modTransportPackage')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $packageObject->method('get')
+            ->with('signature')
+            ->willReturn('testpackage-2.0.0-pl');
+        
+        // Mock provider - returns older version
+        $provider = $this->getMockBuilder('MODX\\Revolution\\Transport\\modTransportProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $provider->method('latest')
+            ->willReturn([
+                [
+                    'signature' => 'testpackage-1.0.0-pl',
+                    'version' => '1.0.0',
+                    'release' => 'pl',
+                ],
+            ]);
+        
+        $packageObject->method('getOne')
+            ->with('Provider')
+            ->willReturn($provider);
+        
+        // Mock MODX getObject
+        $this->modx->method('getObject')
+            ->with('MODX\\Revolution\\Transport\\modTransportPackage', ['signature' => 'testpackage-2.0.0-pl'])
+            ->willReturn($packageObject);
+        
+        // Call the protected method using reflection
+        $method = new \ReflectionMethod($this->command, 'getUpgradeSignatureForPackage');
+        $method->setAccessible(true);
+        $result = $method->invoke($this->command, $package);
+        
+        // Should return empty string when no newer versions available
+        $this->assertEquals('', $result);
+    }
+    
+    public function testGetUpgradeSignatureForPackageHandlesProviderError()
+    {
+        // Test package data
+        $package = [
+            'signature' => 'testpackage-1.0.0-pl',
+            'name' => 'testpackage',
+            'version' => '1.0.0',
+            'release' => 'pl',
+        ];
+        
+        // Mock package object that returns null provider
+        $packageObject = $this->getMockBuilder('MODX\\Revolution\\Transport\\modTransportPackage')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $packageObject->method('getOne')
+            ->with('Provider')
+            ->willReturn(null);
+        
+        // Mock MODX getObject
+        $this->modx->method('getObject')
+            ->with('MODX\\Revolution\\Transport\\modTransportPackage', ['signature' => 'testpackage-1.0.0-pl'])
+            ->willReturn($packageObject);
+        
+        // Call the protected method using reflection
+        $method = new \ReflectionMethod($this->command, 'getUpgradeSignatureForPackage');
+        $method->setAccessible(true);
+        $result = $method->invoke($this->command, $package);
+        
+        // Should return empty string when provider not found
+        $this->assertEquals('', $result);
     }
 }
