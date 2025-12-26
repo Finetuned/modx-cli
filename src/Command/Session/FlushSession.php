@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class FlushSession extends ProcessorCmd
 {
-    protected $processor = 'Security\Flush';
+    protected $processor = 'Security\\Session\\Flush';
 
     protected $name = 'session:flush';
     protected $description = 'Flush all sessions in MODX';
