@@ -28,7 +28,7 @@ class FlushSessionTest extends BaseTest
     public function testConfigureHasCorrectProcessor()
     {
         $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('Security\Session\Flush', $processor);
+        $this->assertEquals('Security\\Flush', $processor);
     }
 
     public function testConfigureHasCorrectName()
@@ -65,7 +65,7 @@ class FlushSessionTest extends BaseTest
         
         $this->modx->expects($this->once())
             ->method('runProcessor')
-            ->with('Security\Session\Flush')
+            ->with('Security\\Flush')
             ->willReturn($processorResponse);
         
         // Execute the command with --force to skip confirmation
