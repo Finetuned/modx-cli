@@ -25,12 +25,6 @@ class RemoveTest extends BaseTest
         $this->commandTester = new CommandTester($this->command);
     }
 
-    public function testConfigureHasCorrectProcessor()
-    {
-        $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('Security\Session\Remove', $processor);
-    }
-
     public function testConfigureHasCorrectName()
     {
         $this->assertEquals('session:remove', $this->command->getName());
@@ -65,7 +59,7 @@ class RemoveTest extends BaseTest
         // Mock getObject to return null (session not found)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with(\MODX\Revolution\modSession::class, '999')
+            ->with(\MODX\Revolution\modActiveUser::class, ['internalKey' => '999'])
             ->willReturn(null);
         
         // Execute the command with --force to skip confirmation
@@ -81,49 +75,21 @@ class RemoveTest extends BaseTest
 
     public function testExecuteWithSuccessfulResponse()
     {
-        // Mock session object
-        $mockSession = $this->getMockBuilder('MODX\\Revolution\\modSession')
+        // Mock modActiveUser object
+        $mockActiveUser = $this->getMockBuilder('MODX\\\\Revolution\\\\modActiveUser')
             ->disableOriginalConstructor()
             ->getMock();
-        $mockSession->method('get')
-            ->with('user')
-            ->willReturn(1);
-        
-        // Mock user object
-        $mockUser = $this->getMockBuilder('MODX\\Revolution\\modUser')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mockUser->method('get')
+        $mockActiveUser->method('get')
             ->with('username')
             ->willReturn('testuser');
+        $mockActiveUser->method('remove')
+            ->willReturn(true);
         
-        // Mock getObject calls - first for session, then for user
-        $this->modx->expects($this->exactly(2))
-            ->method('getObject')
-            ->willReturnCallback(function($class, $id) use ($mockSession, $mockUser) {
-                if ($class === \MODX\Revolution\modSession::class) {
-                    return $mockSession;
-                }
-                if ($class === \MODX\Revolution\modUser::class) {
-                    return $mockUser;
-                }
-                return null;
-            });
-        
-        // Mock the runProcessor method to return a successful response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
-        
+        // Mock getObject call
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->with('Security\Session\Remove')
-            ->willReturn($processorResponse);
+            ->method('getObject')
+            ->with(\MODX\Revolution\modActiveUser::class, ['internalKey' => '1'])
+            ->willReturn($mockActiveUser);
         
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute([
@@ -139,34 +105,21 @@ class RemoveTest extends BaseTest
 
     public function testExecuteWithFailedResponse()
     {
-        // Mock session object
-        $mockSession = $this->getMockBuilder('MODX\Revolution\modSession')
+        // Mock modActiveUser object that fails to remove
+        $mockActiveUser = $this->getMockBuilder('MODX\Revolution\modActiveUser')
             ->disableOriginalConstructor()
             ->getMock();
-        $mockSession->method('get')
-            ->with('user')
-            ->willReturn(null);
+        $mockActiveUser->method('get')
+            ->with('username')
+            ->willReturn('testuser');
+        $mockActiveUser->method('remove')
+            ->willReturn(false);
         
         // Mock getObject call
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with(\MODX\Revolution\modSession::class, '1')
-            ->willReturn($mockSession);
-        
-        // Mock the runProcessor method to return a failed response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => false,
-                'message' => 'Error removing session'
-            ]));
-        $processorResponse->method('isError')->willReturn(true);
-        
-        $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->willReturn($processorResponse);
+            ->with(\MODX\Revolution\modActiveUser::class, ['internalKey' => '1'])
+            ->willReturn($mockActiveUser);
         
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute([
@@ -177,38 +130,26 @@ class RemoveTest extends BaseTest
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to remove session', $output);
-        $this->assertStringContainsString('Error removing session', $output);
         $this->assertEquals(1, $this->commandTester->getStatusCode());
     }
 
     public function testExecuteWithJsonOption()
     {
-        // Mock session object
-        $mockSession = $this->getMockBuilder('MODX\Revolution\modSession')
+        // Mock modActiveUser object
+        $mockActiveUser = $this->getMockBuilder('MODX\Revolution\modActiveUser')
             ->disableOriginalConstructor()
             ->getMock();
-        $mockSession->method('get')
-            ->with('user')
-            ->willReturn(null);
+        $mockActiveUser->method('get')
+            ->with('username')
+            ->willReturn('testuser');
+        $mockActiveUser->method('remove')
+            ->willReturn(true);
         
         // Mock getObject call
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->willReturn($mockSession);
-        
-        // Mock the runProcessor method to return a successful response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
-        
-        $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->willReturn($processorResponse);
+            ->with(\MODX\Revolution\modActiveUser::class, ['internalKey' => '1'])
+            ->willReturn($mockActiveUser);
         
         // Execute the command with --force and --json
         $this->commandTester->execute([
@@ -222,5 +163,6 @@ class RemoveTest extends BaseTest
         $decoded = json_decode($output, true);
         $this->assertIsArray($decoded);
         $this->assertTrue($decoded['success']);
+        $this->assertEquals('Session removed successfully', $decoded['message']);
     }
 }
