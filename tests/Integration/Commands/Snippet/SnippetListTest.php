@@ -23,9 +23,10 @@ class SnippetListTest extends BaseIntegrationTest
             '--snippet=<?php return "Test"; ?>'
         ]);
         
-        // List snippets
+        // List snippets with --limit=0 to show all snippets
         $process = $this->executeCommandSuccessfully([
-            'snippet:list'
+            'snippet:list',
+            '--limit=0'
         ]);
         
         $output = $process->getOutput();
@@ -82,10 +83,11 @@ class SnippetListTest extends BaseIntegrationTest
             '--category=' . $categoryId
         ]);
         
-        // List snippets with category filter
+        // List snippets with category filter and --limit=0 to show all
         $process = $this->executeCommandSuccessfully([
             'snippet:list',
-            '--category=' . $categoryId
+            '--category=' . $categoryId,
+            '--limit=0'
         ]);
         
         $output = $process->getOutput();
