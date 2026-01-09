@@ -71,6 +71,28 @@ class ReadTest extends BaseTest
         $this->assertEquals('bob', $decoded['lock1']['user']);
     }
 
+    public function testExecuteWithJsonOption()
+    {
+        [$registry, $locks] = $this->makeRegistryMock();
+        $locks->method('read')->with(['lock1'])->willReturn([
+            'lock1' => [
+                'user' => 'bob',
+                'message' => 'Working',
+                'timestamp' => 1700000000
+            ]
+        ]);
+
+        $tester = $this->makeCommandTester($registry);
+        $tester->execute([
+            'key' => 'lock1',
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertNotNull($decoded);
+        $this->assertEquals('bob', $decoded['lock1']['user']);
+    }
+
     private function makeRegistryMock(): array
     {
         $locks = $this->getMockBuilder(\stdClass::class)

@@ -237,4 +237,41 @@ class ExtrasTest extends BaseTest
         $this->assertStringContainsString('alpha', $output);
         $this->assertStringContainsString('zebra', $output);
     }
+
+    public function testExecuteWithExtrasJsonOutput()
+    {
+        $namespace = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
+        $namespace->method('get')->willReturnMap([
+            ['name', 'demoextra'],
+            ['path', '/path/to/demoextra'],
+        ]);
+
+        $this->modx->method('getCollection')
+            ->willReturnCallback(function($class) use ($namespace) {
+                if ($class === \MODX\Revolution\modNamespace::class) {
+                    return [$namespace];
+                }
+                return []; // transport package fallback
+            });
+
+        $processorResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processorResponse->method('isError')->willReturn(false);
+        $processorResponse->method('getResponse')->willReturn(json_encode(['results' => []]));
+
+        $this->modx->method('runProcessor')->willReturn($processorResponse);
+        $this->modx->method('getObject')->willReturn(null);
+
+        $this->commandTester->execute(['--json' => true]);
+
+        $decoded = json_decode($this->commandTester->getDisplay(), true);
+        $this->assertEquals(1, $decoded['total']);
+        $this->assertEquals('demoextra', $decoded['results'][0]['name']);
+        $this->assertEquals('/path/to/demoextra', $decoded['results'][0]['path']);
+        $this->assertEquals('Unknown', $decoded['results'][0]['version']);
+        $this->assertEquals('No', $decoded['results'][0]['installed']);
+    }
 }
