@@ -38,7 +38,7 @@ class CreateTest extends BaseTest
 
     public function testConfigureHasCorrectDescription()
     {
-        $this->assertEquals('Create a context permission', $this->command->getDescription());
+        $this->assertEquals('Create a context access permission', $this->command->getDescription());
     }
 
     public function testExecuteWithSuccessfulResponse()

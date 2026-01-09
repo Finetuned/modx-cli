@@ -39,7 +39,7 @@ class RemoveTest extends BaseTest
 
     public function testConfigureHasCorrectDescription()
     {
-        $this->assertEquals('Remove a context permission', $this->command->getDescription());
+        $this->assertEquals('Remove a context access permission', $this->command->getDescription());
     }
 
     public function testExecuteWithSuccessfulResponse()

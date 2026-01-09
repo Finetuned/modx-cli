@@ -38,7 +38,7 @@ class GetListTest extends BaseTest
 
     public function testConfigureHasCorrectDescription()
     {
-        $this->assertEquals('List context permissions for a context', $this->command->getDescription());
+        $this->assertEquals('List context access permissions for a context', $this->command->getDescription());
     }
 
     public function testConfigureHasCorrectHeaders()

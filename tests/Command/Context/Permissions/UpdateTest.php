@@ -38,7 +38,7 @@ class UpdateTest extends BaseTest
 
     public function testConfigureHasCorrectDescription()
     {
-        $this->assertEquals('Update a context permission', $this->command->getDescription());
+        $this->assertEquals('Update a context access permission', $this->command->getDescription());
     }
 
     public function testExecuteWithSuccessfulResponse()

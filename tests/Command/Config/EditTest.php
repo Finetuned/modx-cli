@@ -1,13 +1,15 @@
-<?php namespace MODX\CLI\Tests\Command\Config;
+<?php
 
-use MODX\CLI\Command\Config\Add;
+namespace MODX\CLI\Tests\Command\Config;
+
+use MODX\CLI\Command\Config\Edit;
 use MODX\CLI\Tests\Configuration\BaseTest;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class AddTest extends BaseTest
+class EditTest extends BaseTest
 {
     protected $command;
     protected $commandTester;
@@ -16,86 +18,60 @@ class AddTest extends BaseTest
 
     protected function setUp(): void
     {
-        $this->instances = new FakeConfigStore();
+        $this->instances = new FakeConfigStore([
+            'site' => ['base_path' => '/old/path/'],
+        ]);
+
         $this->app = $this->getMockBuilder(\MODX\CLI\Application::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getCwd', 'getHelperSet', 'getDefinition'])
             ->getMock();
         $this->app->instances = $this->instances;
-        $this->app->method('getCwd')->willReturn('/tmp/');
         $helperSet = new HelperSet([new QuestionHelper()]);
         $this->app->method('getHelperSet')->willReturn($helperSet);
         $this->app->method('getDefinition')->willReturn(new InputDefinition());
 
-        // Create the command
-        $this->command = new Add();
+        $this->command = new Edit();
         $this->command->setApplication($this->app);
         $this->command->setHelperSet($helperSet);
-        
-        // Create a command tester
+
         $this->commandTester = new CommandTester($this->command);
     }
 
     public function testConfigureHasCorrectName()
     {
-        $this->assertEquals('config:add', $this->command->getName());
+        $this->assertEquals('config:edit', $this->command->getName());
     }
 
     public function testConfigureHasCorrectDescription()
     {
-        $this->assertEquals('Add a MODX instance to the configuration', $this->command->getDescription());
+        $this->assertEquals('Edit a MODX instance in the configuration', $this->command->getDescription());
     }
 
-    public function testConfigureHasCorrectHelp()
-    {
-        $this->assertStringContainsString('adds a MODX instance to the configuration', $this->command->getHelp());
-    }
-
-    public function testConfigureHasNameArgument()
+    public function testConfigureHasArgumentAndOptions()
     {
         $definition = $this->command->getDefinition();
         $this->assertTrue($definition->hasArgument('name'));
         $this->assertTrue($definition->getArgument('name')->isRequired());
-    }
-
-    public function testConfigureHasBasePathOption()
-    {
-        $definition = $this->command->getDefinition();
         $this->assertTrue($definition->hasOption('base_path'));
         $this->assertTrue($definition->getOption('base_path')->isValueRequired());
-    }
-
-    public function testConfigureHasDefaultOption()
-    {
-        $definition = $this->command->getDefinition();
         $this->assertTrue($definition->hasOption('default'));
         $this->assertFalse($definition->getOption('default')->acceptValue());
     }
 
-    public function testExecuteAddsInstance()
+    public function testExecuteWithMissingInstance()
     {
-        $dir = sys_get_temp_dir() . '/modx-cli-add-test';
-        @mkdir($dir, 0777, true);
-        @file_put_contents($dir . '/config.core.php', 'test');
-
         $this->commandTester->execute([
-            'name' => 'site',
-            '--base_path' => $dir
+            'name' => 'missing'
         ]);
 
-        $instance = $this->instances->get('site');
-        $this->assertEquals($dir . '/', $instance['base_path']);
-
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Instance 'site' added", $output);
-
-        @unlink($dir . '/config.core.php');
-        @rmdir($dir);
+        $this->assertStringContainsString("Instance 'missing' does not exist", $output);
+        $this->assertEquals(1, $this->commandTester->getStatusCode());
     }
 
-    public function testExecuteAddsDefaultInstance()
+    public function testExecuteUpdatesBasePathAndDefault()
     {
-        $dir = sys_get_temp_dir() . '/modx-cli-add-default-test';
+        $dir = sys_get_temp_dir() . '/modx-cli-edit-test';
         @mkdir($dir, 0777, true);
         @file_put_contents($dir . '/config.core.php', 'test');
 
@@ -105,22 +81,23 @@ class AddTest extends BaseTest
             '--default' => true
         ]);
 
+        $updated = $this->instances->get('site');
+        $this->assertEquals($dir . '/', $updated['base_path']);
         $this->assertEquals('site', $this->instances->get('__default__')['class']);
+
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Instance 'site' added and set as default", $output);
+        $this->assertStringContainsString("Instance 'site' updated and set as default", $output);
 
         @unlink($dir . '/config.core.php');
         @rmdir($dir);
     }
 
-    public function testExecuteWithExistingInstanceAborts()
+    public function testExecuteWithMissingConfigCoreAborts()
     {
-        $this->instances->set('site', ['base_path' => '/old/path/']);
-
         $this->commandTester->setInputs(['no']);
         $this->commandTester->execute([
             'name' => 'site',
-            '--base_path' => '/new/path/'
+            '--base_path' => sys_get_temp_dir() . '/modx-cli-missing-config'
         ]);
 
         $output = $this->commandTester->getDisplay();
