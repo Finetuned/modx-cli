@@ -11,11 +11,20 @@ class FlushSessionTest extends BaseTest
     protected $command;
     protected $commandTester;
     protected $modx;
+    protected $services;
 
     protected function setUp(): void
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
+
+        $this->services = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['has', 'add'])
+            ->getMock();
+        $this->services->method('has')
+            ->with('session_handler')
+            ->willReturn(true);
+        $this->modx->services = $this->services;
         
         // Create the command
         $this->command = new FlushSession();
