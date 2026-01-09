@@ -59,7 +59,7 @@ class RemoveTest extends BaseTest
         // Mock getObject to return null (session not found)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with(\MODX\Revolution\modActiveUser::class, ['internalKey' => '999'])
+            ->with('MODX\\Revolution\\modActiveUser', ['internalKey' => '999'])
             ->willReturn(null);
         
         // Execute the command with --force to skip confirmation
@@ -76,8 +76,8 @@ class RemoveTest extends BaseTest
     public function testExecuteWithSuccessfulResponse()
     {
         // Mock modActiveUser object
-        $mockActiveUser = $this->getMockBuilder('MODX\\\\Revolution\\\\modActiveUser')
-            ->disableOriginalConstructor()
+        $mockActiveUser = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get', 'remove'])
             ->getMock();
         $mockActiveUser->method('get')
             ->with('username')
@@ -88,7 +88,7 @@ class RemoveTest extends BaseTest
         // Mock getObject call
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with(\MODX\Revolution\modActiveUser::class, ['internalKey' => '1'])
+            ->with('MODX\\Revolution\\modActiveUser', ['internalKey' => '1'])
             ->willReturn($mockActiveUser);
         
         // Execute the command with --force to skip confirmation
@@ -106,8 +106,8 @@ class RemoveTest extends BaseTest
     public function testExecuteWithFailedResponse()
     {
         // Mock modActiveUser object that fails to remove
-        $mockActiveUser = $this->getMockBuilder('MODX\Revolution\modActiveUser')
-            ->disableOriginalConstructor()
+        $mockActiveUser = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get', 'remove'])
             ->getMock();
         $mockActiveUser->method('get')
             ->with('username')
@@ -118,7 +118,7 @@ class RemoveTest extends BaseTest
         // Mock getObject call
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with(\MODX\Revolution\modActiveUser::class, ['internalKey' => '1'])
+            ->with('MODX\\Revolution\\modActiveUser', ['internalKey' => '1'])
             ->willReturn($mockActiveUser);
         
         // Execute the command with --force to skip confirmation
@@ -136,8 +136,8 @@ class RemoveTest extends BaseTest
     public function testExecuteWithJsonOption()
     {
         // Mock modActiveUser object
-        $mockActiveUser = $this->getMockBuilder('MODX\Revolution\modActiveUser')
-            ->disableOriginalConstructor()
+        $mockActiveUser = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get', 'remove'])
             ->getMock();
         $mockActiveUser->method('get')
             ->with('username')
@@ -148,7 +148,7 @@ class RemoveTest extends BaseTest
         // Mock getObject call
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with(\MODX\Revolution\modActiveUser::class, ['internalKey' => '1'])
+            ->with('MODX\\Revolution\\modActiveUser', ['internalKey' => '1'])
             ->willReturn($mockActiveUser);
         
         // Execute the command with --force and --json
