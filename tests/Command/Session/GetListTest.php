@@ -37,30 +37,25 @@ class GetListTest extends BaseTest
 
     public function testExecuteWithSuccessfulResponse()
     {
-        // Mock the runProcessor method to return a successful response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
+        $activeUser = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get'])
             ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true,
-                'total' => 1,
-                'results' => [
-                    [
-                        'id' => 1,
-                        'username' => 'admin',
-                        'ip' => '127.0.0.1',
-                        'access' => '1698768000',
-                        'last_hit' => '1698768000'
-                    ]
-                ]
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
+        $activeUser->method('get')->willReturnMap([
+            ['internalKey', '1'],
+            ['username', 'admin'],
+            ['ip', '127.0.0.1'],
+            ['lasthit', '1698768000'],
+        ]);
 
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->with('Security\\Session\\GetList')
-            ->willReturn($processorResponse);
+            ->method('getCount')
+            ->with('MODX\\Revolution\\modActiveUser', [])
+            ->willReturn(1);
+
+        $this->modx->expects($this->once())
+            ->method('getCollection')
+            ->with('MODX\\Revolution\\modActiveUser', [], $this->anything())
+            ->willReturn([$activeUser]);
         
         // Execute the command
         $this->commandTester->execute([]);
@@ -74,22 +69,15 @@ class GetListTest extends BaseTest
 
     public function testExecuteWithEmptyResults()
     {
-        // Mock the runProcessor method to return an empty response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true,
-                'total' => 0,
-                'results' => []
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
+        $this->modx->expects($this->once())
+            ->method('getCount')
+            ->with('MODX\\Revolution\\modActiveUser', [])
+            ->willReturn(0);
 
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->with('Security\\Session\\GetList')
-            ->willReturn($processorResponse);
+            ->method('getCollection')
+            ->with('MODX\\Revolution\\modActiveUser', [], $this->anything())
+            ->willReturn([]);
         
         // Execute the command
         $this->commandTester->execute([]);
@@ -100,29 +88,25 @@ class GetListTest extends BaseTest
 
     public function testExecuteWithJsonOption()
     {
-        // Mock the runProcessor method to return a successful response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
+        $activeUser = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get'])
             ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true,
-                'total' => 1,
-                'results' => [
-                    [
-                        'id' => 1,
-                        'username' => 'admin',
-                        'ip' => '127.0.0.1',
-                        'access' => '1698768000',
-                        'last_hit' => '1698768000'
-                    ]
-                ]
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
+        $activeUser->method('get')->willReturnMap([
+            ['internalKey', '1'],
+            ['username', 'admin'],
+            ['ip', '127.0.0.1'],
+            ['lasthit', '1698768000'],
+        ]);
 
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->willReturn($processorResponse);
+            ->method('getCount')
+            ->with('MODX\\Revolution\\modActiveUser', [])
+            ->willReturn(1);
+
+        $this->modx->expects($this->once())
+            ->method('getCollection')
+            ->with('MODX\\Revolution\\modActiveUser', [], $this->anything())
+            ->willReturn([$activeUser]);
         
         // Execute the command with --json option
         $this->commandTester->execute(['--json' => true]);
