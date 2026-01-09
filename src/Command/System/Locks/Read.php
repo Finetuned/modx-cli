@@ -45,6 +45,9 @@ class Read extends BaseCmd
     {
         $key = $this->argument('key');
         $format = $this->option('format');
+        if ($this->option('json')) {
+            $format = 'json';
+        }
 
         // Get the registry
         $registry = $this->modx->getService('registry', 'registry.modRegistry');
