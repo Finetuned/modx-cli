@@ -43,8 +43,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "MODX\\CLI\\Tests\\": "tests/",
-            "MODX\\Revolution\\": "vendor/modx/revolution/core/src/Revolution/"
+            "MODX\\CLI\\Tests\\": "tests/"
         }
     },
     "extra": {
