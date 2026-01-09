@@ -17,11 +17,19 @@ class Extras extends BaseCmd
 
     protected function process()
     {
+        $json = (bool) $this->option('json');
         // Get all namespaces
         $namespaces = $this->modx->getCollection(\MODX\Revolution\modNamespace::class);
 
         if (empty($namespaces)) {
-            $this->info('No namespaces found');
+            if ($json) {
+                $this->output->writeln(json_encode([
+                    'total' => 0,
+                    'results' => [],
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info('No namespaces found');
+            }
             return 0;
         }
 
@@ -51,7 +59,14 @@ class Extras extends BaseCmd
         }
 
         if (empty($extras)) {
-            $this->info('No extras found');
+            if ($json) {
+                $this->output->writeln(json_encode([
+                    'total' => 0,
+                    'results' => [],
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info('No extras found');
+            }
             return 0;
         }
 
@@ -60,19 +75,26 @@ class Extras extends BaseCmd
             return strcmp($a['name'], $b['name']);
         });
 
-        $table = new Table($this->output);
-        $table->setHeaders(array('Name', 'Path', 'Version', 'Installed'));
+        if ($json) {
+            $this->output->writeln(json_encode([
+                'total' => count($extras),
+                'results' => $extras,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $table = new Table($this->output);
+            $table->setHeaders(array('Name', 'Path', 'Version', 'Installed'));
 
-        foreach ($extras as $extra) {
-            $table->addRow(array(
-                $extra['name'],
-                $extra['path'],
-                $extra['version'],
-                $extra['installed'],
-            ));
+            foreach ($extras as $extra) {
+                $table->addRow(array(
+                    $extra['name'],
+                    $extra['path'],
+                    $extra['version'],
+                    $extra['installed'],
+                ));
+            }
+
+            $table->render();
         }
-
-        $table->render();
 
         return 0;
     }
