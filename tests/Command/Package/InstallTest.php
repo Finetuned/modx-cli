@@ -106,12 +106,14 @@ class InstallTest extends BaseTest
         // Execute the command
         $this->commandTester->execute([
             'signature' => 'nonexistent-1.0.0-pl',
-            '--force' => true
+            '--force' => true,
+            '--no-download' => true
         ]);
         
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Package with signature \'nonexistent-1.0.0-pl\' not found', $output);
+        $this->assertStringContainsString('Auto-download is disabled', $output);
     }
 
     public function testExecuteWithAlreadyInstalledPackage()
