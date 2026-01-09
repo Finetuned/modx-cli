@@ -92,6 +92,29 @@ class EditTest extends BaseTest
         @rmdir($dir);
     }
 
+    public function testExecuteUpdatesBasePathWithJsonOutput()
+    {
+        $dir = sys_get_temp_dir() . '/modx-cli-edit-json-test';
+        @mkdir($dir, 0777, true);
+        @file_put_contents($dir . '/config.core.php', 'test');
+
+        $this->commandTester->execute([
+            'name' => 'site',
+            '--base_path' => $dir,
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($this->commandTester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Instance 'site' updated", $decoded['message']);
+        $this->assertEquals('site', $decoded['instance']['name']);
+        $this->assertEquals($dir . '/', $decoded['instance']['base_path']);
+        $this->assertFalse($decoded['instance']['is_default']);
+
+        @unlink($dir . '/config.core.php');
+        @rmdir($dir);
+    }
+
     public function testExecuteWithMissingConfigCoreAborts()
     {
         $this->commandTester->setInputs(['no']);

@@ -19,7 +19,16 @@ class RmDefault extends BaseCmd
         // Check if there is a default instance
         $default = $instances->get('__default__');
         if (!$default) {
-            $this->info('No default instance set');
+            $message = 'No default instance set';
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => true,
+                    'message' => $message,
+                    'removed' => false,
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info($message);
+            }
             return 0;
         }
 
@@ -31,9 +40,22 @@ class RmDefault extends BaseCmd
         $instances->save();
 
         if ($defaultName) {
-            $this->info("Default instance '{$defaultName}' removed");
+            $message = "Default instance '{$defaultName}' removed";
         } else {
-            $this->info('Default instance removed');
+            $message = 'Default instance removed';
+        }
+
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'message' => $message,
+                'removed' => true,
+                'default' => [
+                    'name' => $defaultName,
+                ],
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info($message);
         }
 
         return 0;

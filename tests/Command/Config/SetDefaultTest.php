@@ -60,4 +60,22 @@ class SetDefaultTest extends BaseTest
         $output = $tester->getDisplay();
         $this->assertStringContainsString("Instance 'site' set as default", $output);
     }
+
+    public function testExecuteSetsDefaultInstanceWithJsonOutput()
+    {
+        $instances = new FakeConfigStore([
+            'site' => ['base_path' => '/path/site/'],
+        ]);
+        $tester = $this->makeCommandTester($instances);
+
+        $tester->execute([
+            'name' => 'site',
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Instance 'site' set as default", $decoded['message']);
+        $this->assertEquals('site', $decoded['default']['name']);
+    }
 }

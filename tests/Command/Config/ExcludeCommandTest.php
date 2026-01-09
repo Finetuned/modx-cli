@@ -53,4 +53,21 @@ class ExcludeCommandTest extends BaseTest
         $output = $tester->getDisplay();
         $this->assertStringContainsString("Command 'Some\\Command\\Class' excluded", $output);
     }
+
+    public function testExecuteAddsExcludedCommandWithJsonOutput()
+    {
+        [$tester, $excluded] = $this->makeCommandTester(new FakeExcludedCommands([]));
+
+        $tester->execute([
+            'class' => 'Some\\Command\\Class',
+            '--json' => true
+        ]);
+
+        $this->assertTrue($excluded->get('Some\\Command\\Class'));
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Command 'Some\\Command\\Class' excluded", $decoded['message']);
+        $this->assertEquals('Some\\Command\\Class', $decoded['command']);
+        $this->assertTrue($decoded['excluded']);
+    }
 }

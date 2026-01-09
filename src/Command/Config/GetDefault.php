@@ -19,7 +19,14 @@ class GetDefault extends BaseCmd
         // Check if there is a default instance
         $default = $instances->get('__default__');
         if (!$default) {
-            $this->info('No default instance set');
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => 'No default instance set',
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info('No default instance set');
+            }
             return 0;
         }
 
@@ -27,22 +34,46 @@ class GetDefault extends BaseCmd
         $defaultName = isset($default['class']) ? $default['class'] : null;
 
         if (!$defaultName) {
-            $this->info('Default instance is set but has no name');
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => 'Default instance is set but has no name',
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info('Default instance is set but has no name');
+            }
             return 0;
         }
 
         // Get the default instance configuration
         $defaultConfig = $instances->get($defaultName);
         if (!$defaultConfig) {
-            $this->info("Default instance '{$defaultName}' does not exist");
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => "Default instance '{$defaultName}' does not exist",
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info("Default instance '{$defaultName}' does not exist");
+            }
             return 0;
         }
 
         // Display the default instance
-        $this->info("Default instance: {$defaultName}");
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'default' => [
+                    'name' => $defaultName,
+                    'base_path' => isset($defaultConfig['base_path']) ? $defaultConfig['base_path'] : null,
+                ],
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info("Default instance: {$defaultName}");
 
-        if (isset($defaultConfig['base_path'])) {
-            $this->info("Base path: {$defaultConfig['base_path']}");
+            if (isset($defaultConfig['base_path'])) {
+                $this->info("Base path: {$defaultConfig['base_path']}");
+            }
         }
 
         return 0;

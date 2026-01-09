@@ -28,7 +28,7 @@ class Add extends BaseCmd
 
     protected function getOptions()
     {
-        return array(
+        return array_merge(parent::getOptions(), array(
             array(
                 'base_path',
                 null,
@@ -41,7 +41,7 @@ class Add extends BaseCmd
                 InputOption::VALUE_NONE,
                 'Set this instance as the default'
             ),
-        );
+        ));
     }
 
     protected function process()
@@ -64,7 +64,14 @@ class Add extends BaseCmd
         $instances = $this->getApplication()->instances;
         if ($instances->get($name)) {
             if (!$this->confirm("Instance '{$name}' already exists. Do you want to overwrite it?")) {
-                $this->info('Operation aborted');
+                if ($this->option('json')) {
+                    $this->output->writeln(json_encode([
+                        'success' => false,
+                        'message' => 'Operation aborted',
+                    ], JSON_PRETTY_PRINT));
+                } else {
+                    $this->info('Operation aborted');
+                }
                 return 0;
             }
         }
@@ -72,7 +79,14 @@ class Add extends BaseCmd
         // Check if the MODX instance exists at the given path
         if (!file_exists($basePath . 'config.core.php')) {
             if (!$this->confirm("No MODX instance found at '{$basePath}'. Do you want to continue?")) {
-                $this->info('Operation aborted');
+                if ($this->option('json')) {
+                    $this->output->writeln(json_encode([
+                        'success' => false,
+                        'message' => 'Operation aborted',
+                    ], JSON_PRETTY_PRINT));
+                } else {
+                    $this->info('Operation aborted');
+                }
                 return 0;
             }
         }
@@ -89,9 +103,23 @@ class Add extends BaseCmd
                 'class' => $name,
             ));
             $instances->save();
-            $this->info("Instance '{$name}' added and set as default");
+            $message = "Instance '{$name}' added and set as default";
         } else {
-            $this->info("Instance '{$name}' added");
+            $message = "Instance '{$name}' added";
+        }
+
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'message' => $message,
+                'instance' => [
+                    'name' => $name,
+                    'base_path' => $basePath,
+                    'is_default' => (bool) $default,
+                ],
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info($message);
         }
 
         return 0;

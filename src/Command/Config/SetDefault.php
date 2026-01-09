@@ -31,7 +31,14 @@ class SetDefault extends BaseCmd
 
         // Check if the instance exists
         if (!$instances->get($name)) {
-            $this->error("Instance '{$name}' does not exist");
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => "Instance '{$name}' does not exist",
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->error("Instance '{$name}' does not exist");
+            }
             return 1;
         }
 
@@ -41,7 +48,18 @@ class SetDefault extends BaseCmd
         ));
         $instances->save();
 
-        $this->info("Instance '{$name}' set as default");
+        $message = "Instance '{$name}' set as default";
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'message' => $message,
+                'default' => [
+                    'name' => $name,
+                ],
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info($message);
+        }
 
         return 0;
     }

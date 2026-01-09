@@ -39,14 +39,28 @@ class Rename extends BaseCmd
         // Check if the old instance exists
         $instance = $instances->get($oldName);
         if (!$instance) {
-            $this->error("Instance '{$oldName}' does not exist");
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => "Instance '{$oldName}' does not exist",
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->error("Instance '{$oldName}' does not exist");
+            }
             return 1;
         }
 
         // Check if the new instance already exists
         if ($instances->get($newName)) {
             if (!$this->confirm("Instance '{$newName}' already exists. Do you want to overwrite it?")) {
-                $this->info('Operation aborted');
+                if ($this->option('json')) {
+                    $this->output->writeln(json_encode([
+                        'success' => false,
+                        'message' => 'Operation aborted',
+                    ], JSON_PRETTY_PRINT));
+                } else {
+                    $this->info('Operation aborted');
+                }
                 return 0;
             }
         }
@@ -71,9 +85,23 @@ class Rename extends BaseCmd
         $instances->save();
 
         if ($isDefault) {
-            $this->info("Instance '{$oldName}' renamed to '{$newName}' and set as default");
+            $message = "Instance '{$oldName}' renamed to '{$newName}' and set as default";
         } else {
-            $this->info("Instance '{$oldName}' renamed to '{$newName}'");
+            $message = "Instance '{$oldName}' renamed to '{$newName}'";
+        }
+
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'message' => $message,
+                'instance' => [
+                    'old_name' => $oldName,
+                    'new_name' => $newName,
+                    'is_default' => $isDefault,
+                ],
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info($message);
         }
 
         return 0;

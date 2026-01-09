@@ -65,4 +65,19 @@ class WipeExcludeCommandTest extends BaseTest
         $output = $tester->getDisplay();
         $this->assertStringContainsString('All excluded commands wiped', $output);
     }
+
+    public function testExecuteWipesExcludedCommandsWithJsonOutput()
+    {
+        [$tester, $excluded] = $this->makeCommandTester(new FakeExcludedCommands([]));
+        $tester->execute([
+            '--json' => true
+        ]);
+
+        $this->assertEmpty($excluded->getAll());
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals('No commands are excluded', $decoded['message']);
+        $this->assertFalse($decoded['wiped']);
+        $this->assertEquals(0, $decoded['total']);
+    }
 }

@@ -52,4 +52,22 @@ class RmExcludeCommandTest extends BaseTest
         $output = $tester->getDisplay();
         $this->assertStringContainsString("Command 'Some\\Command\\Class' removed from excluded commands", $output);
     }
+
+    public function testExecuteRemovesExcludedCommandWithJsonOutput()
+    {
+        [$tester, $excluded] = $this->makeCommandTester(new FakeExcludedCommands([
+            'Some\\Command\\Class',
+        ]));
+
+        $tester->execute([
+            'class' => 'Some\\Command\\Class',
+            '--json' => true
+        ]);
+
+        $this->assertNull($excluded->get('Some\\Command\\Class'));
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Command 'Some\\Command\\Class' removed from excluded commands", $decoded['message']);
+        $this->assertTrue($decoded['removed']);
+    }
 }

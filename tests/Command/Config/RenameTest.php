@@ -85,6 +85,22 @@ class RenameTest extends BaseTest
         $this->assertStringContainsString("Instance 'old' renamed to 'renamed' and set as default", $output);
     }
 
+    public function testExecuteRenamesInstanceWithJsonOutput()
+    {
+        $this->commandTester->execute([
+            'old_name' => 'old',
+            'new_name' => 'renamed',
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($this->commandTester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Instance 'old' renamed to 'renamed' and set as default", $decoded['message']);
+        $this->assertEquals('old', $decoded['instance']['old_name']);
+        $this->assertEquals('renamed', $decoded['instance']['new_name']);
+        $this->assertTrue($decoded['instance']['is_default']);
+    }
+
     public function testExecuteWithExistingNewNameAborts()
     {
         $this->commandTester->setInputs(['no']);

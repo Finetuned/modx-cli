@@ -92,6 +92,29 @@ class AddTest extends BaseTest
         @rmdir($dir);
     }
 
+    public function testExecuteAddsInstanceWithJsonOutput()
+    {
+        $dir = sys_get_temp_dir() . '/modx-cli-add-json-test';
+        @mkdir($dir, 0777, true);
+        @file_put_contents($dir . '/config.core.php', 'test');
+
+        $this->commandTester->execute([
+            'name' => 'site',
+            '--base_path' => $dir,
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($this->commandTester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Instance 'site' added", $decoded['message']);
+        $this->assertEquals('site', $decoded['instance']['name']);
+        $this->assertEquals($dir . '/', $decoded['instance']['base_path']);
+        $this->assertFalse($decoded['instance']['is_default']);
+
+        @unlink($dir . '/config.core.php');
+        @rmdir($dir);
+    }
+
     public function testExecuteAddsDefaultInstance()
     {
         $dir = sys_get_temp_dir() . '/modx-cli-add-default-test';

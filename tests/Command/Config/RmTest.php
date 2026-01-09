@@ -79,4 +79,19 @@ class RmTest extends BaseTest
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString("Instance 'site' removed", $output);
     }
+
+    public function testExecuteRemovesInstanceWithJsonOutput()
+    {
+        $this->instances->set('__default__', ['class' => 'other']);
+        $this->commandTester->execute([
+            'name' => 'site',
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($this->commandTester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Instance 'site' removed", $decoded['message']);
+        $this->assertEquals('site', $decoded['instance']['name']);
+        $this->assertFalse($decoded['instance']['was_default']);
+    }
 }

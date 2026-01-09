@@ -18,6 +18,14 @@ class GetExcludeCommand extends BaseCmd
         $excludedCommands = $this->getApplication()->excludedCommands;
         $excluded = $excludedCommands->getAll();
 
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'total' => count($excluded),
+                'results' => array_values($excluded),
+            ], JSON_PRETTY_PRINT));
+            return 0;
+        }
+
         if (empty($excluded)) {
             $this->info('No commands are excluded');
             return 0;

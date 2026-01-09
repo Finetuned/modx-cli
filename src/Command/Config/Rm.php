@@ -31,7 +31,14 @@ class Rm extends BaseCmd
 
         // Check if the instance exists
         if (!$instances->get($name)) {
-            $this->error("Instance '{$name}' does not exist");
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => "Instance '{$name}' does not exist",
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->error("Instance '{$name}' does not exist");
+            }
             return 1;
         }
 
@@ -39,7 +46,14 @@ class Rm extends BaseCmd
         $default = $instances->get('__default__');
         if ($default && isset($default['class']) && $default['class'] === $name) {
             if (!$this->confirm("Instance '{$name}' is the default instance. Do you want to remove it?")) {
-                $this->info('Operation aborted');
+                if ($this->option('json')) {
+                    $this->output->writeln(json_encode([
+                        'success' => false,
+                        'message' => 'Operation aborted',
+                    ], JSON_PRETTY_PRINT));
+                } else {
+                    $this->info('Operation aborted');
+                }
                 return 0;
             }
 
@@ -51,7 +65,19 @@ class Rm extends BaseCmd
         $instances->remove($name);
         $instances->save();
 
-        $this->info("Instance '{$name}' removed");
+        $message = "Instance '{$name}' removed";
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'message' => $message,
+                'instance' => [
+                    'name' => $name,
+                    'was_default' => (bool) ($default && isset($default['class']) && $default['class'] === $name),
+                ],
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info($message);
+        }
 
         return 0;
     }

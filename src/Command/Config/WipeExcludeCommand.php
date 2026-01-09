@@ -18,12 +18,31 @@ class WipeExcludeCommand extends BaseCmd
         $excluded = $excludedCommands->getAll();
 
         if (empty($excluded)) {
-            $this->info('No commands are excluded');
+            $message = 'No commands are excluded';
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => true,
+                    'message' => $message,
+                    'wiped' => false,
+                    'total' => 0,
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info($message);
+            }
             return 0;
         }
 
         if (!$this->confirm('Are you sure you want to wipe all excluded commands?')) {
-            $this->info('Operation aborted');
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => 'Operation aborted',
+                    'wiped' => false,
+                    'total' => count($excluded),
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info('Operation aborted');
+            }
             return 0;
         }
 
@@ -33,7 +52,17 @@ class WipeExcludeCommand extends BaseCmd
         }
         $excludedCommands->save();
 
-        $this->info('All excluded commands wiped');
+        $message = 'All excluded commands wiped';
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'message' => $message,
+                'wiped' => true,
+                'total' => count($excluded),
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info($message);
+        }
 
         return 0;
     }

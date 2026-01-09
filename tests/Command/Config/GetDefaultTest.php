@@ -55,6 +55,23 @@ class GetDefaultTest extends BaseTest
         $this->assertStringContainsString('Base path: /path/site/', $output);
     }
 
+    public function testExecuteWithDefaultInstanceJsonOutput()
+    {
+        [$commandTester] = $this->makeCommandTester(new FakeConfigStore([
+            '__default__' => ['class' => 'site'],
+            'site' => ['base_path' => '/path/site/'],
+        ]));
+
+        $commandTester->execute([
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($commandTester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals('site', $decoded['default']['name']);
+        $this->assertEquals('/path/site/', $decoded['default']['base_path']);
+    }
+
     private function makeCommandTester(FakeConfigStore $instances): array
     {
         $app = $this->getMockBuilder(\MODX\CLI\Application::class)
