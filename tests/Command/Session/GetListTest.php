@@ -37,33 +37,31 @@ class GetListTest extends BaseTest
 
     public function testExecuteWithSuccessfulResponse()
     {
-        $activeUser = $this->getMockBuilder(\stdClass::class)
+        $session = $this->getMockBuilder(\stdClass::class)
             ->addMethods(['get'])
             ->getMock();
-        $activeUser->method('get')->willReturnMap([
-            ['internalKey', '1'],
-            ['username', 'admin'],
-            ['ip', '127.0.0.1'],
-            ['lasthit', '1698768000'],
+        $session->method('get')->willReturnMap([
+            ['id', 'abc123'],
+            ['access', '1698768000'],
+            ['data', 'serialized'],
         ]);
 
         $this->modx->expects($this->once())
             ->method('getCount')
-            ->with('MODX\\Revolution\\modActiveUser', [])
+            ->with('MODX\\Revolution\\modSession', [])
             ->willReturn(1);
 
         $this->modx->expects($this->once())
             ->method('getCollection')
-            ->with('MODX\\Revolution\\modActiveUser', [], $this->anything())
-            ->willReturn([$activeUser]);
+            ->with('MODX\\Revolution\\modSession', [], $this->anything())
+            ->willReturn([$session]);
         
         // Execute the command
         $this->commandTester->execute([]);
         
         // Verify the output
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('admin', $output);
-        $this->assertStringContainsString('127.0.0.1', $output);
+        $this->assertStringContainsString('abc123', $output);
         $this->assertStringContainsString('2023-10-31 16:00:00', $output);
     }
 
@@ -71,12 +69,12 @@ class GetListTest extends BaseTest
     {
         $this->modx->expects($this->once())
             ->method('getCount')
-            ->with('MODX\\Revolution\\modActiveUser', [])
+            ->with('MODX\\Revolution\\modSession', [])
             ->willReturn(0);
 
         $this->modx->expects($this->once())
             ->method('getCollection')
-            ->with('MODX\\Revolution\\modActiveUser', [], $this->anything())
+            ->with('MODX\\Revolution\\modSession', [], $this->anything())
             ->willReturn([]);
         
         // Execute the command
@@ -88,25 +86,24 @@ class GetListTest extends BaseTest
 
     public function testExecuteWithJsonOption()
     {
-        $activeUser = $this->getMockBuilder(\stdClass::class)
+        $session = $this->getMockBuilder(\stdClass::class)
             ->addMethods(['get'])
             ->getMock();
-        $activeUser->method('get')->willReturnMap([
-            ['internalKey', '1'],
-            ['username', 'admin'],
-            ['ip', '127.0.0.1'],
-            ['lasthit', '1698768000'],
+        $session->method('get')->willReturnMap([
+            ['id', 'abc123'],
+            ['access', '1698768000'],
+            ['data', 'serialized'],
         ]);
 
         $this->modx->expects($this->once())
             ->method('getCount')
-            ->with('MODX\\Revolution\\modActiveUser', [])
+            ->with('MODX\\Revolution\\modSession', [])
             ->willReturn(1);
 
         $this->modx->expects($this->once())
             ->method('getCollection')
-            ->with('MODX\\Revolution\\modActiveUser', [], $this->anything())
-            ->willReturn([$activeUser]);
+            ->with('MODX\\Revolution\\modSession', [], $this->anything())
+            ->willReturn([$session]);
         
         // Execute the command with --json option
         $this->commandTester->execute(['--json' => true]);
@@ -117,7 +114,7 @@ class GetListTest extends BaseTest
         $this->assertIsArray($data);
         $this->assertEquals(1, $data['total']);
         $this->assertCount(1, $data['results']);
-        $this->assertEquals('admin', $data['results'][0]['username']);
+        $this->assertEquals('abc123', $data['results'][0]['id']);
     }
 
     public function testParseValueFormatsTimestamps()
@@ -131,14 +128,10 @@ class GetListTest extends BaseTest
         $timestamp = '1698768000';
         $result = $method->invoke($this->command, $timestamp, 'access');
         $this->assertEquals('2023-10-31 16:00:00', $result);
-        
-        // Test timestamp formatting for 'last_hit' column
-        $result = $method->invoke($this->command, $timestamp, 'last_hit');
-        $this->assertEquals('2023-10-31 16:00:00', $result);
-        
+
         // Test non-timestamp column
-        $result = $method->invoke($this->command, 'admin', 'username');
-        $this->assertEquals('admin', $result);
+        $result = $method->invoke($this->command, 'serialized', 'data');
+        $this->assertEquals('serialized', $result);
     }
 
     public function testParseValueHandlesEmptyTimestamps()
@@ -152,8 +145,12 @@ class GetListTest extends BaseTest
         $result = $method->invoke($this->command, '', 'access');
         $this->assertEquals('', $result);
         
-        // Test null timestamp for 'last_hit' column
-        $result = $method->invoke($this->command, null, 'last_hit');
+        // Test string timestamp for 'access' column
+        $result = $method->invoke($this->command, '2026-01-09 15:10:00', 'access');
+        $this->assertEquals('2026-01-09 15:10:00', $result);
+
+        // Test non-timestamp column with null
+        $result = $method->invoke($this->command, null, 'data');
         $this->assertNull($result);
     }
 }

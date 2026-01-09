@@ -43,31 +43,22 @@ class Remove extends BaseCmd
     {
         $id = $this->argument('id');
 
-        // Get the active user session to display information
-        $activeUser = $this->modx->getObject('MODX\\Revolution\\modActiveUser', array('internalKey' => $id));
-        if (!$activeUser) {
+        $session = $this->modx->getObject('MODX\\Revolution\\modSession', array('id' => $id));
+        if (!$session) {
             $this->error("Session with ID {$id} not found");
             return 1;
         }
 
-        $username = $activeUser->get('username');
-
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
-            $message = "Are you sure you want to remove session '{$id}'";
-            if ($username) {
-                $message .= " for user '{$username}'";
-            }
-            $message .= "?";
-
+            $message = "Are you sure you want to remove session '{$id}'?";
             if (!$this->confirm($message)) {
                 $this->info('Operation aborted');
                 return 0;
             }
         }
 
-        // Remove the active user entry
-        if ($activeUser->remove()) {
+        if ($session->remove()) {
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => true,

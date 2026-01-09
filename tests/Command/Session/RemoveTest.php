@@ -59,7 +59,7 @@ class RemoveTest extends BaseTest
         // Mock getObject to return null (session not found)
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('MODX\\Revolution\\modActiveUser', ['internalKey' => '999'])
+            ->with('MODX\\Revolution\\modSession', ['id' => '999'])
             ->willReturn(null);
         
         // Execute the command with --force to skip confirmation
@@ -75,21 +75,18 @@ class RemoveTest extends BaseTest
 
     public function testExecuteWithSuccessfulResponse()
     {
-        // Mock modActiveUser object
-        $mockActiveUser = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get', 'remove'])
+        // Mock session object
+        $mockSession = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['remove'])
             ->getMock();
-        $mockActiveUser->method('get')
-            ->with('username')
-            ->willReturn('testuser');
-        $mockActiveUser->method('remove')
+        $mockSession->method('remove')
             ->willReturn(true);
         
         // Mock getObject call
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('MODX\\Revolution\\modActiveUser', ['internalKey' => '1'])
-            ->willReturn($mockActiveUser);
+            ->with('MODX\\Revolution\\modSession', ['id' => '1'])
+            ->willReturn($mockSession);
         
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute([
@@ -105,21 +102,18 @@ class RemoveTest extends BaseTest
 
     public function testExecuteWithFailedResponse()
     {
-        // Mock modActiveUser object that fails to remove
-        $mockActiveUser = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get', 'remove'])
+        // Mock session object that fails to remove
+        $mockSession = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['remove'])
             ->getMock();
-        $mockActiveUser->method('get')
-            ->with('username')
-            ->willReturn('testuser');
-        $mockActiveUser->method('remove')
+        $mockSession->method('remove')
             ->willReturn(false);
         
         // Mock getObject call
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('MODX\\Revolution\\modActiveUser', ['internalKey' => '1'])
-            ->willReturn($mockActiveUser);
+            ->with('MODX\\Revolution\\modSession', ['id' => '1'])
+            ->willReturn($mockSession);
         
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute([
@@ -135,21 +129,18 @@ class RemoveTest extends BaseTest
 
     public function testExecuteWithJsonOption()
     {
-        // Mock modActiveUser object
-        $mockActiveUser = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get', 'remove'])
+        // Mock session object
+        $mockSession = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['remove'])
             ->getMock();
-        $mockActiveUser->method('get')
-            ->with('username')
-            ->willReturn('testuser');
-        $mockActiveUser->method('remove')
+        $mockSession->method('remove')
             ->willReturn(true);
         
         // Mock getObject call
         $this->modx->expects($this->once())
             ->method('getObject')
-            ->with('MODX\\Revolution\\modActiveUser', ['internalKey' => '1'])
-            ->willReturn($mockActiveUser);
+            ->with('MODX\\Revolution\\modSession', ['id' => '1'])
+            ->willReturn($mockSession);
         
         // Execute the command with --force and --json
         $this->commandTester->execute([
