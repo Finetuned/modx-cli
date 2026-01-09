@@ -76,7 +76,7 @@ class CreateTest extends BaseTest
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Context permission created successfully', $output);
+        $this->assertStringContainsString('Context access permission created successfully', $output);
     }
 
     public function testExecuteWithFailedResponse()
@@ -103,7 +103,7 @@ class CreateTest extends BaseTest
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Failed to create context permission', $output);
+        $this->assertStringContainsString('Failed to create context access permission', $output);
         $this->assertStringContainsString('Error creating access permission', $output);
     }
 }

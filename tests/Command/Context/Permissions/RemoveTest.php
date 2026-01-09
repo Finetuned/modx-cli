@@ -81,7 +81,7 @@ class RemoveTest extends BaseTest
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Context permission removed successfully', $output);
+        $this->assertStringContainsString('Context access permission removed successfully', $output);
     }
 
     public function testExecuteWithFailedResponse()
@@ -119,7 +119,7 @@ class RemoveTest extends BaseTest
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Failed to remove context permission', $output);
+        $this->assertStringContainsString('Failed to remove context access permission', $output);
         $this->assertStringContainsString('Error removing access permission', $output);
     }
 
