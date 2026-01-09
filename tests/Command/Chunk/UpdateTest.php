@@ -169,4 +169,56 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Failed to update chunk', $output);
         $this->assertStringContainsString('Error updating chunk', $output);
     }
+
+    public function testExecuteWithLockStaticOptions()
+    {
+        // Mock existing chunk object
+        $existingChunk = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
+        $existingChunk->method('get')->willReturnMap([
+            ['name', 'ExistingChunk'],
+            ['description', 'Existing description'],
+            ['category', 1],
+            ['snippet', '<p>Existing content</p>']
+        ]);
+
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with(\MODX\Revolution\modChunk::class, '123', $this->anything())
+            ->willReturn($existingChunk);
+
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'object' => ['id' => 123]
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+
+        $this->modx->expects($this->once())
+            ->method('runProcessor')
+            ->with(
+                'Element\Chunk\Update',
+                $this->callback(function($properties) {
+                    return isset($properties['locked']) && $properties['locked'] === 1 &&
+                           isset($properties['static']) && $properties['static'] === 0 &&
+                           isset($properties['static_file']) && $properties['static_file'] === 'core/chunks/test.tpl';
+                }),
+                $this->anything()
+            )
+            ->willReturn($processorResponse);
+
+        $this->commandTester->execute([
+            'id' => '123',
+            '--locked' => 'true',
+            '--static' => 'false',
+            '--static_file' => 'core/chunks/test.tpl'
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Chunk updated successfully', $output);
+    }
 }

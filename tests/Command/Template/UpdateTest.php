@@ -169,4 +169,58 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Failed to update template', $output);
         $this->assertStringContainsString('Error updating template', $output);
     }
+
+    public function testExecuteWithLockStaticOptions()
+    {
+        // Mock existing template object
+        $existingTemplate = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
+        $existingTemplate->method('get')->willReturnMap([
+            ['templatename', 'ExistingTemplate'],
+            ['description', 'Existing description'],
+            ['category', 1],
+            ['content', '<html><body>[[*content]]</body></html>']
+        ]);
+
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with(\MODX\Revolution\modTemplate::class, '123', $this->anything())
+            ->willReturn($existingTemplate);
+
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'object' => ['id' => 123]
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+
+        $this->modx->expects($this->once())
+            ->method('runProcessor')
+            ->with(
+                'Element\Template\Update',
+                $this->callback(function($properties) {
+                    return isset($properties['locked']) && $properties['locked'] === 1 &&
+                           isset($properties['static']) && $properties['static'] === 0 &&
+                           isset($properties['static_file']) && $properties['static_file'] === 'core/templates/test.tpl' &&
+                           isset($properties['icon']) && $properties['icon'] === 'icon-template';
+                }),
+                $this->anything()
+            )
+            ->willReturn($processorResponse);
+
+        $this->commandTester->execute([
+            'id' => '123',
+            '--locked' => 'true',
+            '--static' => 'false',
+            '--static_file' => 'core/templates/test.tpl',
+            '--icon' => 'icon-template'
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Template updated successfully', $output);
+    }
 }

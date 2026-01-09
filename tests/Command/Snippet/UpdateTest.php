@@ -169,4 +169,58 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Failed to update snippet', $output);
         $this->assertStringContainsString('Error updating snippet', $output);
     }
+
+    public function testExecuteWithStaticOptionsAndProperties()
+    {
+        // Mock existing snippet object
+        $existingSnippet = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
+        $existingSnippet->method('get')->willReturnMap([
+            ['name', 'ExistingSnippet'],
+            ['description', 'Existing description'],
+            ['category', 1],
+            ['snippet', '<?php return "Hello World!";']
+        ]);
+
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with(\MODX\Revolution\modSnippet::class, '123', $this->anything())
+            ->willReturn($existingSnippet);
+
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'object' => ['id' => 123]
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+
+        $this->modx->expects($this->once())
+            ->method('runProcessor')
+            ->with(
+                'Element\Snippet\Update',
+                $this->callback(function($properties) {
+                    return isset($properties['locked']) && $properties['locked'] === 1 &&
+                           isset($properties['static']) && $properties['static'] === 1 &&
+                           isset($properties['static_file']) && $properties['static_file'] === 'core/snippets/test.php' &&
+                           isset($properties['properties']) && $properties['properties'] === ['foo=bar'];
+                }),
+                $this->anything()
+            )
+            ->willReturn($processorResponse);
+
+        $this->commandTester->execute([
+            'id' => '123',
+            '--locked' => 'true',
+            '--static' => 'true',
+            '--static_file' => 'core/snippets/test.php',
+            '--properties' => ['foo=bar']
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Snippet updated successfully', $output);
+    }
 }

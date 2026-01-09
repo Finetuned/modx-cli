@@ -257,6 +257,72 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Resource updated successfully', $output);
     }
 
+    public function testExecuteWithAdditionalOptions()
+    {
+        // Mock existing resource object
+        $existingResource = $this->getMockBuilder('stdClass')
+            ->addMethods(['get'])
+            ->getMock();
+        $existingResource->method('get')->willReturnMap([
+            ['pagetitle', 'Existing Page'],
+            ['parent', 0],
+            ['template', 1],
+            ['published', 1],
+            ['class_key', 'modDocument'],
+            ['context_key', 'web'],
+            ['content_type', 1],
+            ['alias', 'existing-page'],
+            ['content', 'Existing content'],
+            ['hidemenu', 0],
+            ['searchable', 1],
+            ['cacheable', 1]
+        ]);
+
+        // Mock getObject to return existing resource
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
+            ->willReturn($existingResource);
+
+        // Mock the runProcessor method to return a successful response
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'object' => ['id' => 123]
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+
+        $this->modx->expects($this->once())
+            ->method('runProcessor')
+            ->with(
+                'Resource\Update',
+                $this->callback(function($properties) {
+                    return isset($properties['parent']) && $properties['parent'] === 10 &&
+                           isset($properties['template']) && $properties['template'] === 2 &&
+                           isset($properties['content']) && $properties['content'] === 'Updated content' &&
+                           isset($properties['context_key']) && $properties['context_key'] === 'web';
+                }),
+                $this->anything()
+            )
+            ->willReturn($processorResponse);
+
+        // Execute the command with additional options
+        $this->commandTester->execute([
+            'id' => '123',
+            '--parent' => '10',
+            '--template' => '2',
+            '--content' => 'Updated content',
+            '--context_key' => 'web'
+        ]);
+
+        // Verify the output
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Resource updated successfully', $output);
+    }
+
     public function testExecuteWithFailedResponse()
     {
         // Mock existing resource object

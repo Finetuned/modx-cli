@@ -175,4 +175,62 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Failed to update template variable', $output);
         $this->assertStringContainsString('Error updating template variable', $output);
     }
+
+    public function testExecuteWithAdditionalOptions()
+    {
+        // Mock existing TV object
+        $existingTV = $this->createMock('MODX\Revolution\modTemplateVar');
+        $existingTV->method('get')->willReturnMap([
+            ['name', 'ExistingTV'],
+            ['caption', 'Existing Caption'],
+            ['description', 'Existing description'],
+            ['category', 1],
+            ['type', 'text'],
+            ['default_text', 'Default value']
+        ]);
+
+        $this->modx->expects($this->once())
+            ->method('getObject')
+            ->with(\MODX\Revolution\modTemplateVar::class, '123', $this->anything())
+            ->willReturn($existingTV);
+
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'object' => ['id' => 123]
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+
+        $this->modx->expects($this->once())
+            ->method('runProcessor')
+            ->with(
+                'Element\Tv\Update',
+                $this->callback(function($properties) {
+                    return isset($properties['elements']) && $properties['elements'] === 'one==1||two==2' &&
+                           isset($properties['rank']) && $properties['rank'] === 5 &&
+                           isset($properties['display']) && $properties['display'] === 'default' &&
+                           isset($properties['locked']) && $properties['locked'] === 1 &&
+                           isset($properties['static']) && $properties['static'] === 0 &&
+                           isset($properties['static_file']) && $properties['static_file'] === 'core/tvs/test.tpl';
+                }),
+                $this->anything()
+            )
+            ->willReturn($processorResponse);
+
+        $this->commandTester->execute([
+            'id' => '123',
+            '--elements' => 'one==1||two==2',
+            '--rank' => '5',
+            '--display' => 'default',
+            '--locked' => 'true',
+            '--static' => 'false',
+            '--static_file' => 'core/tvs/test.tpl'
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Template variable updated successfully', $output);
+    }
 }
