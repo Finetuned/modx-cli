@@ -61,7 +61,9 @@ class CreateTest extends BaseTest
             ->with(
                 'Element\Category\Create',
                 $this->callback(function($properties) {
-                    return isset($properties['category']) && $properties['category'] === 'TestCategory';
+                    return isset($properties['category']) && $properties['category'] === 'TestCategory' &&
+                           isset($properties['parent']) && $properties['parent'] === '1' &&
+                           isset($properties['rank']) && $properties['rank'] === '5';
                 }),
                 $this->anything()
             )

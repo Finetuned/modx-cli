@@ -59,7 +59,10 @@ class CreateTest extends BaseTest
             ->with(
                 'Element\Snippet\Create',
                 $this->callback(function($properties) {
-                    return isset($properties['name']) && $properties['name'] === 'TestSnippet';
+                    return isset($properties['name']) && $properties['name'] === 'TestSnippet' &&
+                           isset($properties['description']) && $properties['description'] === 'Test description' &&
+                           isset($properties['category']) && $properties['category'] === '1' &&
+                           isset($properties['snippet']) && $properties['snippet'] === '<?php return "Hello World!";';
                 }),
                 $this->anything()
             )

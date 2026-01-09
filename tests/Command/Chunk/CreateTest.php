@@ -59,7 +59,10 @@ class CreateTest extends BaseTest
             ->with(
                 'Element\Chunk\Create',
                 $this->callback(function($properties) {
-                    return isset($properties['name']) && $properties['name'] === 'TestChunk';
+                    return isset($properties['name']) && $properties['name'] === 'TestChunk' &&
+                           isset($properties['description']) && $properties['description'] === 'Test description' &&
+                           isset($properties['category']) && $properties['category'] === '1' &&
+                           isset($properties['snippet']) && $properties['snippet'] === '<p>Test content</p>';
                 }),
                 $this->anything()
             )

@@ -59,7 +59,13 @@ class CreateTest extends BaseTest
             ->with(
                 'Element\Tv\Create',
                 $this->callback(function($properties) {
-                    return isset($properties['name']) && $properties['name'] === 'TestTV';
+                    return isset($properties['name']) && $properties['name'] === 'TestTV' &&
+                           isset($properties['caption']) && $properties['caption'] === 'Test Caption' &&
+                           isset($properties['description']) && $properties['description'] === 'Test description' &&
+                           isset($properties['category']) && $properties['category'] === '1' &&
+                           isset($properties['type']) && $properties['type'] === 'text' &&
+                           isset($properties['default_text']) && $properties['default_text'] === 'Default value' &&
+                           isset($properties['templates']) && $properties['templates'] === '1,2,3';
                 }),
                 $this->anything()
             )

@@ -59,7 +59,10 @@ class CreateTest extends BaseTest
             ->with(
                 'Element\Template\Create',
                 $this->callback(function($properties) {
-                    return isset($properties['templatename']) && $properties['templatename'] === 'TestTemplate';
+                    return isset($properties['templatename']) && $properties['templatename'] === 'TestTemplate' &&
+                           isset($properties['description']) && $properties['description'] === 'Test description' &&
+                           isset($properties['category']) && $properties['category'] === '1' &&
+                           isset($properties['content']) && $properties['content'] === '<html><body>[[*content]]</body></html>';
                 }),
                 $this->anything()
             )
