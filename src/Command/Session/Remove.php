@@ -2,18 +2,17 @@
 
 namespace MODX\CLI\Command\Session;
 
-use MODX\CLI\Command\ProcessorCmd;
+use MODX\CLI\Command\BaseCmd;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
  * A command to remove a session in MODX
  */
-class Remove extends ProcessorCmd
+class Remove extends BaseCmd
 {
-    protected $processor = 'Security\Session\Remove';
-    protected $required = array('id');
-
+    const MODX = true;
+    
     protected $name = 'session:remove';
     protected $description = 'Remove a session in MODX';
 
@@ -23,7 +22,7 @@ class Remove extends ProcessorCmd
             array(
                 'id',
                 InputArgument::REQUIRED,
-                'The ID of the session to remove'
+                'The ID (internalKey) of the session to remove'
             ),
         );
     }
@@ -40,56 +39,43 @@ class Remove extends ProcessorCmd
         ));
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    protected function process()
     {
         $id = $this->argument('id');
 
-        // Get the session to display information
-        $session = $this->modx->getObject(\MODX\Revolution\modSession::class, $id);
+        $session = $this->modx->getObject('MODX\\Revolution\\modSession', array('id' => $id));
         if (!$session) {
             $this->error("Session with ID {$id} not found");
-            return false;
-        }
-
-        // Get the user information
-        $username = '';
-        $userId = $session->get('user');
-        if ($userId) {
-            $user = $this->modx->getObject(\MODX\Revolution\modUser::class, $userId);
-            if ($user) {
-                $username = $user->get('username');
-            }
+            return 1;
         }
 
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
-            $message = "Are you sure you want to remove session '{$id}'";
-            if ($username) {
-                $message .= " for user '{$username}'";
-            }
-            $message .= "?";
-
+            $message = "Are you sure you want to remove session '{$id}'?";
             if (!$this->confirm($message)) {
                 $this->info('Operation aborted');
-                return false;
+                return 0;
             }
         }
-    }
 
-    protected function processResponse(array $response = array())
-    {
-        if ($this->option('json')) {
-            return parent::processResponse($response);
-        }
-
-        if (isset($response['success']) && $response['success']) {
-            $this->info('Session removed successfully');
+        if ($session->remove()) {
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => true,
+                    'message' => 'Session removed successfully'
+                ]));
+            } else {
+                $this->info('Session removed successfully');
+            }
             return 0;
         } else {
-            $this->error('Failed to remove session');
-
-            if (isset($response['message'])) {
-                $this->error($response['message']);
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => 'Failed to remove session'
+                ]));
+            } else {
+                $this->error('Failed to remove session');
             }
             return 1;
         }

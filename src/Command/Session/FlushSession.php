@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class FlushSession extends ProcessorCmd
 {
-    protected $processor = 'Security\Flush';
+    protected $processor = 'Security\\Flush';
 
     protected $name = 'session:flush';
     protected $description = 'Flush all sessions in MODX';
@@ -36,11 +36,24 @@ class FlushSession extends ProcessorCmd
                 return false;
             }
         }
+
+        if (!$this->ensureSessionHandler()) {
+            $this->error('Session handler not available');
+            return false;
+        }
     }
 
     protected function processResponse(array $response = array())
     {
         if ($this->option('json')) {
+            if (!isset($response['message']) || $response['message'] === '') {
+                if (isset($response['success']) && $response['success']) {
+                    $response['message'] = 'Sessions flushed successfully';
+                } else {
+                    $response['message'] = 'Failed to flush sessions';
+                }
+            }
+
             return parent::processResponse($response);
         }
 
@@ -55,5 +68,36 @@ class FlushSession extends ProcessorCmd
             }
             return 1;
         }
+    }
+
+    private function ensureSessionHandler(): bool
+    {
+        if (!isset($this->modx->services) || !$this->modx->services) {
+            return false;
+        }
+
+        if ($this->modx->services->has('session_handler')) {
+            return true;
+        }
+
+        $handlerClass = $this->modx->getOption(
+            'session_handler_class',
+            null,
+            'MODX\\Revolution\\modSessionHandler'
+        );
+
+        if (!is_string($handlerClass) || !class_exists($handlerClass)) {
+            return false;
+        }
+
+        $handler = new $handlerClass($this->modx);
+        if (!$handler instanceof \SessionHandlerInterface) {
+            return false;
+        }
+
+        $this->modx->services->add('session_handler', $handler);
+        session_set_save_handler($handler);
+
+        return true;
     }
 }

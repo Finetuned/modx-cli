@@ -12,7 +12,8 @@
          failOnWarning="true"
          verbose="true"
          backupGlobals="false"
-         backupStaticAttributes="false">
+         backupStaticAttributes="false"
+         processIsolation="true">
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>

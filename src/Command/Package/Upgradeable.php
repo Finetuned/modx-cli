@@ -9,9 +9,9 @@ use MODX\CLI\Command\ListProcessor;
  */
 class Upgradeable extends ListProcessor
 {
-    protected $processor = 'Workspace\Packages\GetList';
+    protected $processor = 'Workspace\\Packages\\GetList';
     protected $headers = array(
-        'signature', 'name', 'version', 'release', 'installed', 'provider'
+        'signature', 'name', 'version', 'release', 'upgrade_signature', 'installed', 'provider'
     );
 
     protected $name = 'package:upgradeable';
@@ -29,6 +29,10 @@ class Upgradeable extends ListProcessor
         if ($column === 'provider') {
             return $this->renderObject('transport.modTransportProvider', $value, 'name');
         }
+        
+        if ($column === 'upgrade_signature') {
+            return $value ?: 'N/A';
+        }
 
         return parent::parseValue($value, $column);
     }
@@ -38,10 +42,13 @@ class Upgradeable extends ListProcessor
         $total = $results['total'];
         $results = $results['results'];
 
-        // Filter out packages that are not upgradeable
+        // Filter out packages that are not upgradeable and add upgrade signatures
         $upgradeable = array();
         foreach ($results as $package) {
             if (isset($package['updateable']) && $package['updateable']) {
+                // Fetch upgrade signature from provider
+                $upgradeSignature = $this->getUpgradeSignatureForPackage($package);
+                $package['upgrade_signature'] = $upgradeSignature;
                 $upgradeable[] = $package;
             }
         }
@@ -51,10 +58,114 @@ class Upgradeable extends ListProcessor
             return 0;
         }
 
+        // Handle JSON output option
+        if ($this->option('json')) {
+            $output = [
+                'total' => count($upgradeable),
+                'results' => $upgradeable
+            ];
+            $this->output->writeln(json_encode($output, JSON_PRETTY_PRINT));
+            return 0;
+        }
+
         $this->renderBody($upgradeable);
         if ($this->showPagination) {
             $this->renderPagination($upgradeable, count($upgradeable));
         }
         return 0;
+    }
+    
+    /**
+     * Get the upgrade signature for a package by querying the provider
+     * 
+     * @param array $package Package data from processor
+     * @return string Upgrade signature or empty string if unavailable
+     */
+    protected function getUpgradeSignatureForPackage($package)
+    {
+        $currentSignature = $package['signature'] ?? '';
+        $currentVersion = $package['version'] . '-' . $package['release'];
+        
+        if (empty($currentSignature)) {
+            return '';
+        }
+        
+        try {
+            // Get package object from MODX
+            $packageObject = $this->modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', array(
+                'signature' => $currentSignature
+            ));
+            
+            if (!$packageObject) {
+                return '';
+            }
+            
+            // Get provider object
+            /** @var \MODX\Revolution\Transport\modTransportProvider $provider */
+            $provider = $packageObject->getOne('Provider');
+            if (!$provider) {
+                return '';
+            }
+            
+            // Get latest updates from provider
+            $updates = $provider->latest($packageObject->get('signature'));
+            
+            // If updates is a string or empty, no updates available
+            if (is_string($updates) || empty($updates)) {
+                return '';
+            }
+            
+            // Extract package name from signature for matching
+            $signatureParts = explode('-', $currentSignature);
+            if (count($signatureParts) < 3) {
+                return '';
+            }
+            $currentPackageName = $signatureParts[0];
+            
+            // Find newer versions
+            $newerVersions = array();
+            foreach ($updates as $update) {
+                $updateSignature = $update['signature'] ?? '';
+                if (empty($updateSignature)) {
+                    continue;
+                }
+                
+                // Parse update signature
+                $updateParts = explode('-', $updateSignature);
+                if (count($updateParts) < 3) {
+                    continue;
+                }
+                
+                $updateName = $updateParts[0];
+                $updateVersion = $updateParts[1];
+                $updateRelease = $updateParts[2];
+                $updateVersionString = $updateVersion . '-' . $updateRelease;
+                
+                // Only include versions newer than current and matching package name
+                if (strcasecmp($updateName, $currentPackageName) === 0 && 
+                    version_compare($updateVersionString, $currentVersion, '>')) {
+                    $newerVersions[] = array(
+                        'signature' => $updateSignature,
+                        'version_string' => $updateVersionString
+                    );
+                }
+            }
+            
+            // Sort versions (newest first)
+            usort($newerVersions, function($a, $b) {
+                return version_compare($b['version_string'], $a['version_string']);
+            });
+            
+            // Return the newest upgrade signature
+            if (!empty($newerVersions)) {
+                return $newerVersions[0]['signature'];
+            }
+            
+            return '';
+            
+        } catch (\Exception $e) {
+            // Silently fail and return empty string
+            return '';
+        }
     }
 }

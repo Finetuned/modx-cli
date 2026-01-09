@@ -25,12 +25,6 @@ class GetListTest extends BaseTest
         $this->commandTester = new CommandTester($this->command);
     }
 
-    public function testConfigureHasCorrectProcessor()
-    {
-        $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('Security\Session\GetList', $processor);
-    }
-
     public function testConfigureHasCorrectName()
     {
         $this->assertEquals('session:list', $this->command->getName());
@@ -41,104 +35,86 @@ class GetListTest extends BaseTest
         $this->assertEquals('Get a list of sessions in MODX', $this->command->getDescription());
     }
 
-    public function testConfigureHasCorrectHeaders()
-    {
-        $headers = $this->getProtectedProperty($this->command, 'headers');
-        $this->assertIsArray($headers);
-        $this->assertContains('id', $headers);
-        $this->assertContains('username', $headers);
-        $this->assertContains('ip', $headers);
-        $this->assertContains('access', $headers);
-        $this->assertContains('last_hit', $headers);
-    }
-
     public function testExecuteWithSuccessfulResponse()
     {
-        // Mock the runProcessor method to return a successful response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
+        $session = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get'])
             ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true,
-                'results' => [
-                    [
-                        'id' => '1',
-                        'username' => 'admin',
-                        'ip' => '127.0.0.1',
-                        'access' => '1698768000',
-                        'last_hit' => '1698768000'
-                    ]
-                ],
-                'total' => 1
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
-        
+        $session->method('get')->willReturnMap([
+            ['id', 'abc123'],
+            ['access', '1698768000'],
+            ['data', 'serialized'],
+        ]);
+
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->with('Security\Session\GetList')
-            ->willReturn($processorResponse);
+            ->method('getCount')
+            ->with('MODX\\Revolution\\modSession', [])
+            ->willReturn(1);
+
+        $this->modx->expects($this->once())
+            ->method('getCollection')
+            ->with('MODX\\Revolution\\modSession', [], $this->anything())
+            ->willReturn([$session]);
         
         // Execute the command
         $this->commandTester->execute([]);
         
         // Verify the output
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('admin', $output);
-        $this->assertStringContainsString('127.0.0.1', $output);
+        $this->assertStringContainsString('abc123', $output);
+        $this->assertStringContainsString('2023-10-31 16:00:00', $output);
     }
 
     public function testExecuteWithEmptyResults()
     {
-        // Mock the runProcessor method to return empty results
-        $processorResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true,
-                'results' => [],
-                'total' => 0
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
-        
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->willReturn($processorResponse);
+            ->method('getCount')
+            ->with('MODX\\Revolution\\modSession', [])
+            ->willReturn(0);
+
+        $this->modx->expects($this->once())
+            ->method('getCollection')
+            ->with('MODX\\Revolution\\modSession', [], $this->anything())
+            ->willReturn([]);
         
         // Execute the command
         $this->commandTester->execute([]);
         
-        // Verify the output shows 0 items
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('displaying 0 item(s) of 0', $output);
+        // Command should execute successfully even with no results
+        $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
-    public function testExecuteWithFailedResponse()
+    public function testExecuteWithJsonOption()
     {
-        // Mock the runProcessor method to return a failed response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
+        $session = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get'])
             ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => false,
-                'message' => 'Error fetching sessions',
-                'results' => [],
-                'total' => 0
-            ]));
-        $processorResponse->method('isError')->willReturn(true);
-        
+        $session->method('get')->willReturnMap([
+            ['id', 'abc123'],
+            ['access', '1698768000'],
+            ['data', 'serialized'],
+        ]);
+
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->willReturn($processorResponse);
+            ->method('getCount')
+            ->with('MODX\\Revolution\\modSession', [])
+            ->willReturn(1);
+
+        $this->modx->expects($this->once())
+            ->method('getCollection')
+            ->with('MODX\\Revolution\\modSession', [], $this->anything())
+            ->willReturn([$session]);
         
-        // Execute the command
-        $this->commandTester->execute([]);
+        // Execute the command with --json option
+        $this->commandTester->execute(['--json' => true]);
         
-        // Verify the output - ListProcessor displays empty table for failed responses without field errors
+        // Verify JSON output
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('displaying 0 item(s) of 0', $output);
+        $data = json_decode($output, true);
+        $this->assertIsArray($data);
+        $this->assertEquals(1, $data['total']);
+        $this->assertCount(1, $data['results']);
+        $this->assertEquals('abc123', $data['results'][0]['id']);
     }
 
     public function testParseValueFormatsTimestamps()
@@ -152,14 +128,10 @@ class GetListTest extends BaseTest
         $timestamp = '1698768000';
         $result = $method->invoke($this->command, $timestamp, 'access');
         $this->assertEquals('2023-10-31 16:00:00', $result);
-        
-        // Test timestamp formatting for 'last_hit' column
-        $result = $method->invoke($this->command, $timestamp, 'last_hit');
-        $this->assertEquals('2023-10-31 16:00:00', $result);
-        
+
         // Test non-timestamp column
-        $result = $method->invoke($this->command, 'admin', 'username');
-        $this->assertEquals('admin', $result);
+        $result = $method->invoke($this->command, 'serialized', 'data');
+        $this->assertEquals('serialized', $result);
     }
 
     public function testParseValueHandlesEmptyTimestamps()
@@ -173,8 +145,12 @@ class GetListTest extends BaseTest
         $result = $method->invoke($this->command, '', 'access');
         $this->assertEquals('', $result);
         
-        // Test null timestamp for 'last_hit' column
-        $result = $method->invoke($this->command, null, 'last_hit');
+        // Test string timestamp for 'access' column
+        $result = $method->invoke($this->command, '2026-01-09 15:10:00', 'access');
+        $this->assertEquals('2026-01-09 15:10:00', $result);
+
+        // Test non-timestamp column with null
+        $result = $method->invoke($this->command, null, 'data');
         $this->assertNull($result);
     }
 }

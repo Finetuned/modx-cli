@@ -9,9 +9,8 @@ use MODX\CLI\Command\ListProcessor;
  */
 class GetList extends ListProcessor
 {
-    protected $processor = 'Security\Session\GetList';
     protected $headers = array(
-        'id', 'username', 'ip', 'access', 'last_hit'
+        'id', 'access', 'data'
     );
 
     protected $name = 'session:list';
@@ -19,12 +18,53 @@ class GetList extends ListProcessor
 
     protected function parseValue($value, $column)
     {
-        if ($column === 'access' || $column === 'last_hit') {
+        if ($column === 'access') {
             if (!empty($value)) {
-                return date('Y-m-d H:i:s', $value);
+                if (is_numeric($value)) {
+                    return date('Y-m-d H:i:s', (int) $value);
+                }
+
+                $timestamp = strtotime((string) $value);
+                if ($timestamp !== false) {
+                    return date('Y-m-d H:i:s', $timestamp);
+                }
             }
         }
 
         return parent::parseValue($value, $column);
+    }
+
+    protected function process()
+    {
+        $criteria = array();
+        $options = array();
+
+        $limit = $this->option('limit');
+        if ($limit !== null) {
+            $options['limit'] = (int) $limit;
+        }
+
+        $start = $this->option('start');
+        if ($start !== null) {
+            $options['offset'] = (int) $start;
+        }
+
+        $total = (int) $this->modx->getCount('MODX\\Revolution\\modSession', $criteria);
+        $collection = $this->modx->getCollection('MODX\\Revolution\\modSession', $criteria, $options);
+
+        $results = array();
+        foreach ($collection as $session) {
+            $results[] = array(
+                'id' => $session->get('id'),
+                'access' => $session->get('access'),
+                'data' => $session->get('data'),
+            );
+        }
+
+        return $this->processResponse(array(
+            'total' => $total,
+            'results' => $results,
+            'success' => true,
+        ));
     }
 }
