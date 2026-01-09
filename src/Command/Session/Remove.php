@@ -3,7 +3,6 @@
 namespace MODX\CLI\Command\Session;
 
 use MODX\CLI\Command\BaseCmd;
-use MODX\Revolution\modActiveUser;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -45,7 +44,7 @@ class Remove extends BaseCmd
         $id = $this->argument('id');
 
         // Get the active user session to display information
-        $activeUser = $this->modx->getObject(modActiveUser::class, array('internalKey' => $id));
+        $activeUser = $this->modx->getObject('MODX\\Revolution\\modActiveUser', array('internalKey' => $id));
         if (!$activeUser) {
             $this->error("Session with ID {$id} not found");
             return 1;
