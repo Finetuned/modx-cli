@@ -19,7 +19,6 @@ class AddTest extends BaseTest
         $this->instances = new FakeConfigStore();
         $this->app = $this->getMockBuilder(\MODX\CLI\Application::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getCwd', 'getHelperSet', 'getDefinition'])
             ->getMock();
         $this->app->instances = $this->instances;
         $this->app->method('getCwd')->willReturn('/tmp/');
