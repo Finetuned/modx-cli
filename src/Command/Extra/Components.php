@@ -19,12 +19,20 @@ class Components extends BaseCmd
     {
         // Get all components
         $components = array();
+        $json = (bool) $this->option('json');
 
         // Get all namespaces
         $namespaces = $this->modx->getCollection(\MODX\Revolution\modNamespace::class);
 
         if (empty($namespaces)) {
-            $this->info('No namespaces found');
+            if ($json) {
+                $this->output->writeln(json_encode([
+                    'total' => 0,
+                    'results' => [],
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info('No namespaces found');
+            }
             return 0;
         }
 
@@ -51,7 +59,14 @@ class Components extends BaseCmd
         }
 
         if (empty($components)) {
-            $this->info('No components found');
+            if ($json) {
+                $this->output->writeln(json_encode([
+                    'total' => 0,
+                    'results' => [],
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info('No components found');
+            }
             return 0;
         }
 
@@ -60,18 +75,24 @@ class Components extends BaseCmd
             return strcmp($a['name'], $b['name']);
         });
 
-        $table = new Table($this->output);
-        $table->setHeaders(array('Name', 'Path', 'Controller'));
+        if ($json) {
+            $this->output->writeln(json_encode([
+                'total' => count($components),
+                'results' => $components,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $table = new Table($this->output);
+            $table->setHeaders(array('Name', 'Path', 'Controller'));
 
-        foreach ($components as $component) {
-            $table->addRow(array(
-                $component['name'],
-                $component['path'],
-                $component['controller'],
-            ));
+            foreach ($components as $component) {
+                $table->addRow(array(
+                    $component['name'],
+                    $component['path'],
+                    $component['controller'],
+                ));
+            }
+            $table->render();
         }
-
-        $table->render();
 
         return 0;
     }

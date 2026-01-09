@@ -30,6 +30,7 @@ class ListColumns extends BaseCmd
     protected function process()
     {
         $tableName = $this->argument('table');
+        $json = (bool) $this->option('json');
 
         // Get the database connection
         $dbname = $this->modx->getOption('dbname');
@@ -46,25 +47,43 @@ class ListColumns extends BaseCmd
         $columns = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         if (empty($columns)) {
-            $this->error("Table '{$tableName}' not found or has no columns");
+            $message = "Table '{$tableName}' not found or has no columns";
+            if ($json) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => $message,
+                    'table' => $tableName,
+                    'columns' => [],
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->error($message);
+            }
             return 1;
         }
 
-        $table = new Table($this->output);
-        $table->setHeaders(array('Column', 'Type', 'Nullable', 'Default', 'Key', 'Extra'));
+        if ($json) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'table' => $tableName,
+                'columns' => $columns,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $table = new Table($this->output);
+            $table->setHeaders(array('Column', 'Type', 'Nullable', 'Default', 'Key', 'Extra'));
 
-        foreach ($columns as $column) {
-            $table->addRow(array(
-                $column['COLUMN_NAME'],
-                $column['COLUMN_TYPE'],
-                $column['IS_NULLABLE'],
-                $column['COLUMN_DEFAULT'],
-                $column['COLUMN_KEY'],
-                $column['EXTRA'],
-            ));
+            foreach ($columns as $column) {
+                $table->addRow(array(
+                    $column['COLUMN_NAME'],
+                    $column['COLUMN_TYPE'],
+                    $column['IS_NULLABLE'],
+                    $column['COLUMN_DEFAULT'],
+                    $column['COLUMN_KEY'],
+                    $column['EXTRA'],
+                ));
+            }
+
+            $table->render();
         }
-
-        $table->render();
 
         return 0;
     }

@@ -15,6 +15,8 @@ class AddComponent extends BaseCmd
 
     protected $name = 'extra:add-component';
     protected $description = 'Add a component to MODX';
+    protected $jsonOutput = false;
+    protected $actions = array();
 
     protected function getArguments()
     {
@@ -53,14 +55,21 @@ class AddComponent extends BaseCmd
 
     protected function process()
     {
+        $this->jsonOutput = (bool) $this->option('json');
+        $this->actions = array();
         $namespace = $this->argument('namespace');
+        $namespaceExists = false;
 
         // Check if the namespace already exists
         $ns = $this->modx->getObject(\MODX\Revolution\modNamespace::class, $namespace);
         if ($ns) {
+            $namespaceExists = true;
             if (!$this->option('force')) {
                 if (!$this->confirm("Namespace '{$namespace}' already exists. Do you want to update it?")) {
-                    $this->info('Operation aborted');
+                    $this->outputResult(false, 'Operation aborted', array(
+                        'namespace' => $namespace,
+                        'updated' => true,
+                    ));
                     return 0;
                 }
             }
@@ -97,7 +106,7 @@ class AddComponent extends BaseCmd
 
         // Save the namespace
         if ($ns->save()) {
-            $this->info("Namespace '{$namespace}' saved successfully");
+            $this->emitInfo("Namespace '{$namespace}' saved successfully");
 
             // Create the component directories
             $basePath = $this->modx->getOption('base_path');
@@ -119,9 +128,9 @@ class AddComponent extends BaseCmd
             foreach ($directories as $directory) {
                 if (!file_exists($directory)) {
                     if (mkdir($directory, 0755, true)) {
-                        $this->info("Created directory: {$directory}");
+                        $this->emitInfo("Created directory: {$directory}");
                     } else {
-                        $this->error("Failed to create directory: {$directory}");
+                        $this->emitError("Failed to create directory: {$directory}");
                     }
                 }
             }
@@ -153,9 +162,9 @@ class {$namespace}IndexManagerController extends modExtraManagerController {
 EOT;
 
                 if (file_put_contents($controllerPath, $content)) {
-                    $this->info("Created controller: {$controllerPath}");
+                    $this->emitInfo("Created controller: {$controllerPath}");
                 } else {
-                    $this->error("Failed to create controller: {$controllerPath}");
+                    $this->emitError("Failed to create controller: {$controllerPath}");
                 }
             }
 
@@ -175,9 +184,9 @@ EOT;
 EOT;
 
                 if (file_put_contents($templatePath, $content)) {
-                    $this->info("Created template: {$templatePath}");
+                    $this->emitInfo("Created template: {$templatePath}");
                 } else {
-                    $this->error("Failed to create template: {$templatePath}");
+                    $this->emitError("Failed to create template: {$templatePath}");
                 }
             }
 
@@ -191,9 +200,9 @@ EOT;
 EOT;
 
                 if (file_put_contents($cssPath, $content)) {
-                    $this->info("Created CSS file: {$cssPath}");
+                    $this->emitInfo("Created CSS file: {$cssPath}");
                 } else {
-                    $this->error("Failed to create CSS file: {$cssPath}");
+                    $this->emitError("Failed to create CSS file: {$cssPath}");
                 }
             }
 
@@ -205,9 +214,9 @@ EOT;
 EOT;
 
                 if (file_put_contents($jsPath, $content)) {
-                    $this->info("Created JS file: {$jsPath}");
+                    $this->emitInfo("Created JS file: {$jsPath}");
                 } else {
-                    $this->error("Failed to create JS file: {$jsPath}");
+                    $this->emitError("Failed to create JS file: {$jsPath}");
                 }
             }
 
@@ -232,17 +241,64 @@ EOT;
                 ));
 
                 if ($menu->save()) {
-                    $this->info("Created menu for {$namespace}");
+                    $this->emitInfo("Created menu for {$namespace}");
                 } else {
-                    $this->error("Failed to create menu for {$namespace}");
+                    $this->emitError("Failed to create menu for {$namespace}");
                 }
             }
 
-            $this->info("Component '{$namespace}' created successfully");
+            $this->outputResult(true, "Component '{$namespace}' created successfully", array(
+                'namespace' => $namespace,
+                'path' => $path,
+                'assets_path' => $assetsPath,
+                'updated' => $namespaceExists,
+            ));
         } else {
-            $this->error("Failed to save namespace '{$namespace}'");
+            $this->outputResult(false, "Failed to save namespace '{$namespace}'", array(
+                'namespace' => $namespace,
+                'path' => $path,
+                'assets_path' => $assetsPath,
+                'updated' => $namespaceExists,
+            ));
         }
 
         return 0;
+    }
+
+    protected function emitInfo($message)
+    {
+        if ($this->jsonOutput) {
+            $this->actions[] = array('success' => true, 'message' => $message);
+            return;
+        }
+
+        $this->info($message);
+    }
+
+    protected function emitError($message)
+    {
+        if ($this->jsonOutput) {
+            $this->actions[] = array('success' => false, 'message' => $message);
+            return;
+        }
+
+        $this->error($message);
+    }
+
+    protected function outputResult($success, $message, array $payload = array())
+    {
+        if ($this->jsonOutput) {
+            $this->output->writeln(json_encode(array_merge(array(
+                'success' => (bool) $success,
+                'message' => $message,
+                'actions' => $this->actions,
+            ), $payload), JSON_PRETTY_PRINT));
+        } else {
+            if ($success) {
+                $this->info($message);
+            } else {
+                $this->error($message);
+            }
+        }
     }
 }

@@ -100,6 +100,63 @@ class AddComponentTest extends BaseTest
         $this->removeDirectory($basePath);
     }
 
+    public function testExecuteCreatesComponentWithJsonOutput()
+    {
+        $basePath = sys_get_temp_dir() . '/modx-cli-extra-add-json/';
+        @mkdir($basePath, 0777, true);
+
+        $namespaceData = [];
+        $namespace = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['set', 'get', 'save'])
+            ->getMock();
+        $namespace->method('set')
+            ->willReturnCallback(function($key, $value) use (&$namespaceData) {
+                $namespaceData[$key] = $value;
+            });
+        $namespace->method('get')
+            ->willReturnCallback(function($key) use (&$namespaceData) {
+                return $namespaceData[$key] ?? null;
+            });
+        $namespace->method('save')->willReturn(true);
+
+        $menu = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['fromArray', 'save'])
+            ->getMock();
+        $menu->method('save')->willReturn(true);
+
+        $this->modx->method('getObject')
+            ->willReturn(null);
+        $this->modx->method('newObject')
+            ->willReturnCallback(function($class) use ($namespace, $menu) {
+                if ($class === \MODX\Revolution\modNamespace::class) {
+                    return $namespace;
+                }
+                if ($class === \MODX\Revolution\modMenu::class) {
+                    return $menu;
+                }
+                return null;
+            });
+        $this->modx->method('getOption')
+            ->with('base_path')
+            ->willReturn($basePath);
+
+        $this->commandTester->execute([
+            'namespace' => 'demo',
+            '--force' => true,
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($this->commandTester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Component 'demo' created successfully", $decoded['message']);
+        $this->assertEquals('demo', $decoded['namespace']);
+        $this->assertEquals('components/demo/', $decoded['path']);
+        $this->assertEquals('assets/components/demo/', $decoded['assets_path']);
+        $this->assertFalse($decoded['updated']);
+
+        $this->removeDirectory($basePath);
+    }
+
     public function testExecuteWithExistingNamespaceAborts()
     {
         $existing = $this->getMockBuilder(\stdClass::class)

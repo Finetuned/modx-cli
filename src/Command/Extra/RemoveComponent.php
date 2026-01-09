@@ -15,6 +15,8 @@ class RemoveComponent extends BaseCmd
 
     protected $name = 'extra:remove-component';
     protected $description = 'Remove a component from MODX';
+    protected $jsonOutput = false;
+    protected $actions = array();
 
     protected function getArguments()
     {
@@ -47,12 +49,16 @@ class RemoveComponent extends BaseCmd
 
     protected function process()
     {
+        $this->jsonOutput = (bool) $this->option('json');
+        $this->actions = array();
         $namespace = $this->argument('namespace');
 
         // Check if the namespace exists
         $ns = $this->modx->getObject(\MODX\Revolution\modNamespace::class, $namespace);
         if (!$ns) {
-            $this->error("Namespace '{$namespace}' does not exist");
+            $this->outputResult(false, "Namespace '{$namespace}' does not exist", array(
+                'namespace' => $namespace,
+            ));
             return 1;
         }
 
@@ -63,7 +69,10 @@ class RemoveComponent extends BaseCmd
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove component '{$namespace}'?")) {
-                $this->info('Operation aborted');
+                $this->outputResult(false, 'Operation aborted', array(
+                    'namespace' => $namespace,
+                    'removed' => false,
+                ));
                 return 0;
             }
         }
@@ -76,15 +85,15 @@ class RemoveComponent extends BaseCmd
 
         if ($menu) {
             if ($menu->remove()) {
-                $this->info("Removed menu for {$namespace}");
+                $this->emitInfo("Removed menu for {$namespace}");
             } else {
-                $this->error("Failed to remove menu for {$namespace}");
+                $this->emitError("Failed to remove menu for {$namespace}");
             }
         }
 
         // Remove the namespace
         if ($ns->remove()) {
-            $this->info("Namespace '{$namespace}' removed successfully");
+            $this->emitInfo("Namespace '{$namespace}' removed successfully");
 
             // Remove files if requested
             if ($this->option('files')) {
@@ -93,25 +102,33 @@ class RemoveComponent extends BaseCmd
                 // Remove core files
                 if ($path && file_exists($basePath . $path)) {
                     if ($this->removeDirectory($basePath . $path)) {
-                        $this->info("Removed directory: {$basePath}{$path}");
+                        $this->emitInfo("Removed directory: {$basePath}{$path}");
                     } else {
-                        $this->error("Failed to remove directory: {$basePath}{$path}");
+                        $this->emitError("Failed to remove directory: {$basePath}{$path}");
                     }
                 }
 
                 // Remove assets files
                 if ($assetsPath && file_exists($basePath . $assetsPath)) {
                     if ($this->removeDirectory($basePath . $assetsPath)) {
-                        $this->info("Removed directory: {$basePath}{$assetsPath}");
+                        $this->emitInfo("Removed directory: {$basePath}{$assetsPath}");
                     } else {
-                        $this->error("Failed to remove directory: {$basePath}{$assetsPath}");
+                        $this->emitError("Failed to remove directory: {$basePath}{$assetsPath}");
                     }
                 }
             }
 
-            $this->info("Component '{$namespace}' removed successfully");
+            $this->outputResult(true, "Component '{$namespace}' removed successfully", array(
+                'namespace' => $namespace,
+                'removed' => true,
+                'files' => (bool) $this->option('files'),
+            ));
         } else {
-            $this->error("Failed to remove namespace '{$namespace}'");
+            $this->outputResult(false, "Failed to remove namespace '{$namespace}'", array(
+                'namespace' => $namespace,
+                'removed' => false,
+                'files' => (bool) $this->option('files'),
+            ));
         }
 
         return 0;
@@ -145,5 +162,42 @@ class RemoveComponent extends BaseCmd
         }
 
         return rmdir($dir);
+    }
+
+    protected function emitInfo($message)
+    {
+        if ($this->jsonOutput) {
+            $this->actions[] = array('success' => true, 'message' => $message);
+            return;
+        }
+
+        $this->info($message);
+    }
+
+    protected function emitError($message)
+    {
+        if ($this->jsonOutput) {
+            $this->actions[] = array('success' => false, 'message' => $message);
+            return;
+        }
+
+        $this->error($message);
+    }
+
+    protected function outputResult($success, $message, array $payload = array())
+    {
+        if ($this->jsonOutput) {
+            $this->output->writeln(json_encode(array_merge(array(
+                'success' => (bool) $success,
+                'message' => $message,
+                'actions' => $this->actions,
+            ), $payload), JSON_PRETTY_PRINT));
+        } else {
+            if ($success) {
+                $this->info($message);
+            } else {
+                $this->error($message);
+            }
+        }
     }
 }

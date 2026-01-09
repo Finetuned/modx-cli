@@ -223,4 +223,45 @@ class ListColumnsTest extends BaseTest
         
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
+
+    public function testExecuteWithValidTableJsonOutput()
+    {
+        $this->modx->expects($this->once())
+            ->method('getOption')
+            ->with('dbname')
+            ->willReturn('test_db');
+
+        $stmt = $this->createMock('\PDOStatement');
+        $stmt->expects($this->once())
+            ->method('execute');
+        $stmt->expects($this->once())
+            ->method('fetchAll')
+            ->with(\PDO::FETCH_ASSOC)
+            ->willReturn([
+                [
+                    'COLUMN_NAME' => 'id',
+                    'COLUMN_TYPE' => 'int(11)',
+                    'IS_NULLABLE' => 'NO',
+                    'COLUMN_DEFAULT' => null,
+                    'COLUMN_KEY' => 'PRI',
+                    'EXTRA' => 'auto_increment'
+                ]
+            ]);
+
+        $this->modx->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmt);
+
+        $this->commandTester->execute([
+            'table' => 'test_table',
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($this->commandTester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals('test_table', $decoded['table']);
+        $this->assertCount(1, $decoded['columns']);
+        $this->assertEquals('id', $decoded['columns'][0]['COLUMN_NAME']);
+        $this->assertEquals(0, $this->commandTester->getStatusCode());
+    }
 }

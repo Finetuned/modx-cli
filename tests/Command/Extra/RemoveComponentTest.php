@@ -59,6 +59,24 @@ class RemoveComponentTest extends BaseTest
         $this->assertEquals(1, $this->commandTester->getStatusCode());
     }
 
+    public function testExecuteWithMissingNamespaceJsonOutput()
+    {
+        $this->modx->method('getObject')
+            ->with(\MODX\Revolution\modNamespace::class, 'demo')
+            ->willReturn(null);
+
+        $this->commandTester->execute([
+            'namespace' => 'demo',
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($this->commandTester->getDisplay(), true);
+        $this->assertFalse($decoded['success']);
+        $this->assertEquals("Namespace 'demo' does not exist", $decoded['message']);
+        $this->assertEquals('demo', $decoded['namespace']);
+        $this->assertEquals(1, $this->commandTester->getStatusCode());
+    }
+
     public function testExecuteRemovesComponentAndFiles()
     {
         $basePath = sys_get_temp_dir() . '/modx-cli-extra-remove/';
