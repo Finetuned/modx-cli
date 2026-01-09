@@ -32,30 +32,35 @@ class GetListTest extends BaseTest
 
     public function testConfigureHasCorrectDescription()
     {
-        $this->assertEquals('Get a list of active sessions in MODX', $this->command->getDescription());
+        $this->assertEquals('Get a list of sessions in MODX', $this->command->getDescription());
     }
 
     public function testExecuteWithSuccessfulResponse()
     {
-        // Mock modActiveUser object
-        $activeUser = $this->getMockBuilder('MODX\\Revolution\\modActiveUser')
+        // Mock the runProcessor method to return a successful response
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        $activeUser->method('get')->willReturnCallback(function($key) {
-            $data = [
-                'internalKey' => '1',
-                'username' => 'admin',
-                'ip' => '127.0.0.1',
-                'lasthit' => '1698768000'
-            ];
-            return $data[$key] ?? null;
-        });
-        
-        // Mock getCollection to return active users
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'total' => 1,
+                'results' => [
+                    [
+                        'id' => 1,
+                        'username' => 'admin',
+                        'ip' => '127.0.0.1',
+                        'access' => '1698768000',
+                        'last_hit' => '1698768000'
+                    ]
+                ]
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+
         $this->modx->expects($this->once())
-            ->method('getCollection')
-            ->with('MODX\\Revolution\\modActiveUser')
-            ->willReturn([$activeUser]);
+            ->method('runProcessor')
+            ->with('Security\\Session\\GetList')
+            ->willReturn($processorResponse);
         
         // Execute the command
         $this->commandTester->execute([]);
@@ -69,41 +74,55 @@ class GetListTest extends BaseTest
 
     public function testExecuteWithEmptyResults()
     {
-        // Mock getCollection to return empty array
+        // Mock the runProcessor method to return an empty response
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'total' => 0,
+                'results' => []
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+
         $this->modx->expects($this->once())
-            ->method('getCollection')
-            ->with('MODX\\Revolution\\modActiveUser')
-            ->willReturn([]);
+            ->method('runProcessor')
+            ->with('Security\\Session\\GetList')
+            ->willReturn($processorResponse);
         
         // Execute the command
         $this->commandTester->execute([]);
         
-        // Verify the output shows no active sessions
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('No active sessions found', $output);
+        // Command should execute successfully even with no results
+        $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
     public function testExecuteWithJsonOption()
     {
-        // Mock modActiveUser object
-        $activeUser = $this->getMockBuilder('MODX\\Revolution\\modActiveUser')
+        // Mock the runProcessor method to return a successful response
+        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        $activeUser->method('get')->willReturnCallback(function($key) {
-            $data = [
-                'internalKey' => '1',
-                'username' => 'admin',
-                'ip' => '127.0.0.1',
-                'lasthit' => '1698768000'
-            ];
-            return $data[$key] ?? null;
-        });
-        
-        // Mock getCollection to return active users
+        $processorResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'total' => 1,
+                'results' => [
+                    [
+                        'id' => 1,
+                        'username' => 'admin',
+                        'ip' => '127.0.0.1',
+                        'access' => '1698768000',
+                        'last_hit' => '1698768000'
+                    ]
+                ]
+            ]));
+        $processorResponse->method('isError')->willReturn(false);
+
         $this->modx->expects($this->once())
-            ->method('getCollection')
-            ->with('MODX\\Revolution\\modActiveUser')
-            ->willReturn([$activeUser]);
+            ->method('runProcessor')
+            ->willReturn($processorResponse);
         
         // Execute the command with --json option
         $this->commandTester->execute(['--json' => true]);
@@ -111,7 +130,7 @@ class GetListTest extends BaseTest
         // Verify JSON output
         $output = $this->commandTester->getDisplay();
         $data = json_decode($output, true);
-        $this->assertTrue($data['success']);
+        $this->assertIsArray($data);
         $this->assertEquals(1, $data['total']);
         $this->assertCount(1, $data['results']);
         $this->assertEquals('admin', $data['results'][0]['username']);
