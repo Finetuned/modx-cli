@@ -28,7 +28,7 @@ class GetTest extends BaseTest
     public function testConfigureHasCorrectProcessorPath()
     {
         $processor = $this->getProtectedProperty($this->command, 'processor');
-        $this->assertEquals('Source\Get', $processor);
+        $this->assertNull($processor);
     }
 
     public function testConfigureHasCorrectName()
@@ -43,32 +43,21 @@ class GetTest extends BaseTest
 
     public function testExecuteWithSuccessfulResponse()
     {
-        // Mock the runProcessor method to return a successful response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
+        $source = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['toArray'])
             ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true,
-                'object' => [
-                    'id' => 1,
-                    'name' => 'Filesystem',
-                    'description' => 'Default filesystem source',
-                    'class_key' => 'MODX\\Revolution\\Sources\\modFileMediaSource'
-                ]
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
-        
+        $source->method('toArray')
+            ->willReturn([
+                'id' => 1,
+                'name' => 'Filesystem',
+                'description' => 'Default filesystem source',
+                'class_key' => 'MODX\\Revolution\\Sources\\modFileMediaSource'
+            ]);
+
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->with(
-                'Source\Get',
-                $this->callback(function($properties) {
-                    return isset($properties['id']) && $properties['id'] === '1';
-                }),
-                $this->anything()
-            )
-            ->willReturn($processorResponse);
+            ->method('getObject')
+            ->with('MODX\\Revolution\\Sources\\modMediaSource', ['id' => '1'])
+            ->willReturn($source);
         
         // Execute the command
         $this->commandTester->execute([
@@ -83,20 +72,10 @@ class GetTest extends BaseTest
 
     public function testExecuteWithFailedResponse()
     {
-        // Mock the runProcessor method to return a failed response
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => false,
-                'message' => 'Media source not found'
-            ]));
-        $processorResponse->method('isError')->willReturn(true);
-        
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->willReturn($processorResponse);
+            ->method('getObject')
+            ->with('MODX\\Revolution\\Sources\\modMediaSource', ['id' => '999'])
+            ->willReturn(null);
         
         // Execute the command
         $this->commandTester->execute([
@@ -105,25 +84,21 @@ class GetTest extends BaseTest
         
         // Verify the output
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Failed to get media source', $output);
-        $this->assertStringContainsString('Media source not found', $output);
+        $this->assertStringContainsString('Media source with ID 999 not found', $output);
     }
 
     public function testExecuteWithJsonOption()
     {
-        $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
-            ->disableOriginalConstructor()
+        $source = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['toArray'])
             ->getMock();
-        $processorResponse->method('getResponse')
-            ->willReturn(json_encode([
-                'success' => true,
-                'object' => ['id' => 1, 'name' => 'Filesystem']
-            ]));
-        $processorResponse->method('isError')->willReturn(false);
-        
+        $source->method('toArray')
+            ->willReturn(['id' => 1, 'name' => 'Filesystem']);
+
         $this->modx->expects($this->once())
-            ->method('runProcessor')
-            ->willReturn($processorResponse);
+            ->method('getObject')
+            ->with('MODX\\Revolution\\Sources\\modMediaSource', ['id' => '1'])
+            ->willReturn($source);
         
         $this->commandTester->execute([
             'id' => '1',
