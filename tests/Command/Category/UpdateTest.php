@@ -60,7 +60,9 @@ class UpdateTest extends BaseTest
                 'Element\Category\Update',
                 $this->callback(function($properties) {
                     return isset($properties['id']) && $properties['id'] === '123' &&
-                           isset($properties['category']) && $properties['category'] === 'Updated Category';
+                           isset($properties['category']) && $properties['category'] === 'Updated Category' &&
+                           isset($properties['parent']) && $properties['parent'] === '1' &&
+                           isset($properties['rank']) && $properties['rank'] === '5';
                 }),
                 $this->anything()
             )

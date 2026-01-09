@@ -123,6 +123,41 @@ class UpdateTest extends BaseTest
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
+    public function testExecuteWithAreaOption()
+    {
+        $updateResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $updateResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'object' => ['key' => 'site_name']
+            ]));
+        $updateResponse->method('isError')->willReturn(false);
+
+        $this->modx->expects($this->once())
+            ->method('runProcessor')
+            ->with(
+                'Context\\Setting\\Update',
+                $this->callback(function($properties) {
+                    return isset($properties['area']) && $properties['area'] === 'site' &&
+                           isset($properties['value']) && $properties['value'] === 'Updated Value';
+                }),
+                $this->anything()
+            )
+            ->willReturn($updateResponse);
+
+        $this->commandTester->execute([
+            'context' => 'web',
+            'key' => 'site_name',
+            '--value' => 'Updated Value',
+            '--area' => 'site'
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Context setting updated successfully', $output);
+    }
+
     public function testExecuteWithNonExistentSetting()
     {
         // Mock Get processor returning not found

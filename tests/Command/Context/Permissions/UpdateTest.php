@@ -75,9 +75,9 @@ class UpdateTest extends BaseTest
                         && isset($properties['target'])
                         && $properties['target'] === 'web'
                         && isset($properties['principal'])
-                        && $properties['principal'] === 2
+                        && (string) $properties['principal'] === '5'
                         && isset($properties['policy'])
-                        && $properties['policy'] === 1
+                        && (string) $properties['policy'] === '3'
                         && isset($properties['authority'])
                         && $properties['authority'] === 1234;
                 }),
@@ -88,11 +88,13 @@ class UpdateTest extends BaseTest
         $this->commandTester->execute([
             'context' => 'web',
             'id' => '10',
+            '--usergroup' => '5',
+            '--policy' => '3',
             '--authority' => '1234'
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Context permission updated successfully', $output);
+        $this->assertStringContainsString('Context access permission updated successfully', $output);
     }
 
     public function testExecuteWithNonExistentEntry()

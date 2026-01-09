@@ -69,6 +69,41 @@ class UpdateTest extends BaseTest
         $this->assertStringContainsString('Context updated successfully', $output);
     }
 
+    public function testExecuteWithNameAndDescription()
+    {
+        $updateResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $updateResponse->method('getResponse')
+            ->willReturn(json_encode([
+                'success' => true,
+                'object' => ['key' => 'web']
+            ]));
+        $updateResponse->method('isError')->willReturn(false);
+
+        $this->modx->expects($this->once())
+            ->method('runProcessor')
+            ->with(
+                'Context\\Update',
+                $this->callback(function($properties) {
+                    return isset($properties['key']) && $properties['key'] === 'web' &&
+                           isset($properties['name']) && $properties['name'] === 'Website' &&
+                           isset($properties['description']) && $properties['description'] === 'Updated description';
+                }),
+                $this->anything()
+            )
+            ->willReturn($updateResponse);
+
+        $this->commandTester->execute([
+            'key' => 'web',
+            '--name' => 'Website',
+            '--description' => 'Updated description'
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Context updated successfully', $output);
+    }
+
     public function testExecuteWithFailedResponse()
     {
         // Mock failed Update processor
