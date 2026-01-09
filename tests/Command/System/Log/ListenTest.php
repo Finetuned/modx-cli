@@ -4,6 +4,8 @@ namespace MODX\CLI\Tests\Command\System\Log;
 
 use MODX\CLI\Command\System\Log\Listen;
 use MODX\CLI\Tests\Configuration\BaseTest;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ListenTest extends BaseTest
@@ -32,7 +34,7 @@ class ListenTest extends BaseTest
 
     public function testGetLastLogIdReturnsZeroWhenNoLogs()
     {
-        $query = new \stdClass();
+        $query = $this->makeQueryMock();
         $this->modx->method('newQuery')
             ->with(\MODX\Revolution\modManagerLog::class)
             ->willReturn($query);
@@ -48,7 +50,7 @@ class ListenTest extends BaseTest
 
     public function testDisplayLastLogEntriesWithNoLogs()
     {
-        $query = new \stdClass();
+        $query = $this->makeQueryMock();
         $this->modx->method('newQuery')
             ->with(\MODX\Revolution\modManagerLog::class)
             ->willReturn($query);
@@ -56,11 +58,56 @@ class ListenTest extends BaseTest
             ->with(\MODX\Revolution\modManagerLog::class, $query)
             ->willReturn([]);
 
+        $output = $this->setCommandIO([]);
+
         $method = new \ReflectionMethod($this->command, 'displayLastLogEntries');
         $method->setAccessible(true);
         $method->invoke($this->command, 5);
 
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('No log entries found', $output);
+        $this->assertStringContainsString('No log entries found', $output->fetch());
+    }
+
+    public function testDisplayLastLogEntriesWithNoLogsJsonOutput()
+    {
+        $query = $this->makeQueryMock();
+        $this->modx->method('newQuery')
+            ->with(\MODX\Revolution\modManagerLog::class)
+            ->willReturn($query);
+        $this->modx->method('getCollection')
+            ->with(\MODX\Revolution\modManagerLog::class, $query)
+            ->willReturn([]);
+
+        $output = $this->setCommandIO(['--json' => true]);
+
+        $method = new \ReflectionMethod($this->command, 'displayLastLogEntries');
+        $method->setAccessible(true);
+        $method->invoke($this->command, 5);
+
+        $decoded = json_decode($output->fetch(), true);
+        $this->assertEquals(0, $decoded['total']);
+        $this->assertEquals([], $decoded['results']);
+    }
+
+    private function setCommandIO(array $inputOptions): BufferedOutput
+    {
+        $input = new ArrayInput($inputOptions, $this->command->getDefinition());
+        $output = new BufferedOutput();
+
+        $inputProperty = new \ReflectionProperty($this->command, 'input');
+        $inputProperty->setAccessible(true);
+        $inputProperty->setValue($this->command, $input);
+
+        $outputProperty = new \ReflectionProperty($this->command, 'output');
+        $outputProperty->setAccessible(true);
+        $outputProperty->setValue($this->command, $output);
+
+        return $output;
+    }
+
+    private function makeQueryMock(): \stdClass
+    {
+        return $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['sortby', 'limit'])
+            ->getMock();
     }
 }

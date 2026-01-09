@@ -33,7 +33,7 @@ class Listen extends BaseCmd
 
     protected function getOptions()
     {
-        return array(
+        return array_merge(parent::getOptions(), array(
             array(
                 'interval',
                 'i',
@@ -48,13 +48,14 @@ class Listen extends BaseCmd
                 'Number of log entries to display initially',
                 10
             ),
-        );
+        ));
     }
 
     protected function process()
     {
         $this->interval = (int) $this->option('interval');
         $limit = (int) $this->option('limit');
+        $json = $this->isJsonOutput();
 
         // Get the last log ID
         $this->lastLogId = $this->getLastLogId();
@@ -63,7 +64,9 @@ class Listen extends BaseCmd
         $this->displayLastLogEntries($limit);
 
         // Listen for new log entries
-        $this->info('Listening for new log entries (Ctrl+C to stop)...');
+        if (!$json) {
+            $this->info('Listening for new log entries (Ctrl+C to stop)...');
+        }
         while ($this->running) {
             $this->checkForNewLogEntries();
             sleep($this->interval);
@@ -96,6 +99,7 @@ class Listen extends BaseCmd
      */
     protected function displayLastLogEntries($limit)
     {
+        $json = $this->isJsonOutput();
         $c = $this->modx->newQuery(\MODX\Revolution\modManagerLog::class);
         $c->sortby('id', 'DESC');
         $c->limit($limit);
@@ -103,16 +107,23 @@ class Listen extends BaseCmd
         $logs = $this->modx->getCollection(\MODX\Revolution\modManagerLog::class, $c);
 
         if (!$logs || count($logs) === 0) {
-            $this->info('No log entries found');
+            if ($json) {
+                $this->output->writeln(json_encode([
+                    'total' => 0,
+                    'results' => [],
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info('No log entries found');
+            }
             return;
         }
 
-        $formatter = new ColoredLog();
         $entries = array();
 
         /** @var \MODX\Revolution\modManagerLog $log */
         foreach ($logs as $log) {
             $entries[] = array(
+                'id' => $log->get('id'),
                 'level' => $log->get('level'),
                 'message' => $log->get('message'),
                 'timestamp' => strtotime($log->get('occurred')),
@@ -126,7 +137,15 @@ class Listen extends BaseCmd
             return $a['timestamp'] - $b['timestamp'];
         });
 
-        $this->output->write($formatter->formatMultiple($entries));
+        if ($json) {
+            $this->output->writeln(json_encode([
+                'total' => count($entries),
+                'results' => $entries,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $formatter = new ColoredLog();
+            $this->output->write($formatter->formatMultiple($entries));
+        }
     }
 
     /**
@@ -134,6 +153,7 @@ class Listen extends BaseCmd
      */
     protected function checkForNewLogEntries()
     {
+        $json = $this->isJsonOutput();
         $c = $this->modx->newQuery(\MODX\Revolution\modManagerLog::class);
         $c->where(array(
             'id:>' => $this->lastLogId,
@@ -146,7 +166,6 @@ class Listen extends BaseCmd
             return;
         }
 
-        $formatter = new ColoredLog();
         $entries = array();
 
         /** @var \MODX\Revolution\modManagerLog $log */
@@ -160,6 +179,19 @@ class Listen extends BaseCmd
             $this->lastLogId = max($this->lastLogId, $log->get('id'));
         }
 
-        $this->output->write($formatter->formatMultiple($entries));
+        if ($json) {
+            $this->output->writeln(json_encode([
+                'total' => count($entries),
+                'results' => $entries,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $formatter = new ColoredLog();
+            $this->output->write($formatter->formatMultiple($entries));
+        }
+    }
+
+    protected function isJsonOutput(): bool
+    {
+        return $this->input ? (bool) $this->option('json') : false;
     }
 }

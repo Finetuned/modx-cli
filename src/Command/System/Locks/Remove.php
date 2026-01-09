@@ -52,26 +52,54 @@ class Remove extends BaseCmd
         $locks = $registry->locks->read(array($key));
 
         if (empty($locks)) {
-            $this->error("Lock with key '{$key}' not found");
+            $message = "Lock with key '{$key}' not found";
+            if ($this->option('json')) {
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => $message,
+                    'lock' => [
+                        'key' => $key,
+                    ],
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->error($message);
+            }
             return 1;
         }
 
         $lockData = $locks[$key];
+        $lockInfo = [
+            'key' => $key,
+            'user' => isset($lockData['user']) ? $lockData['user'] : 'Unknown',
+            'message' => isset($lockData['message']) ? $lockData['message'] : '',
+            'timestamp' => isset($lockData['timestamp']) ? $lockData['timestamp'] : null,
+        ];
+        $lockInfo['occurred'] = $lockInfo['timestamp']
+            ? date('Y-m-d H:i:s', $lockInfo['timestamp'])
+            : null;
 
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
-            $user = isset($lockData['user']) ? $lockData['user'] : 'Unknown';
-            $message = isset($lockData['message']) ? $lockData['message'] : '';
-            $timestamp = isset($lockData['timestamp']) ? date('Y-m-d H:i:s', $lockData['timestamp']) : '';
-
-            $this->info("Lock information:");
-            $this->info("Key: {$key}");
-            $this->info("User: {$user}");
-            $this->info("Message: {$message}");
-            $this->info("Timestamp: {$timestamp}");
+            if (!$this->option('json')) {
+                $this->info('Lock information:');
+                $this->info("Key: {$lockInfo['key']}");
+                $this->info("User: {$lockInfo['user']}");
+                $this->info("Message: {$lockInfo['message']}");
+                $this->info("Timestamp: {$lockInfo['occurred']}");
+            }
 
             if (!$this->confirm("Are you sure you want to remove this lock?")) {
-                $this->info('Operation aborted');
+                $message = 'Operation aborted';
+                if ($this->option('json')) {
+                    $this->output->writeln(json_encode([
+                        'success' => false,
+                        'message' => $message,
+                        'removed' => false,
+                        'lock' => $lockInfo,
+                    ], JSON_PRETTY_PRINT));
+                } else {
+                    $this->info($message);
+                }
                 return 0;
             }
         }
@@ -80,7 +108,17 @@ class Remove extends BaseCmd
         $registry->locks->subscribe(array($key));
         $registry->locks->remove();
 
-        $this->info("Lock with key '{$key}' removed successfully");
+        $message = "Lock with key '{$key}' removed successfully";
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'message' => $message,
+                'removed' => true,
+                'lock' => $lockInfo,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info($message);
+        }
 
         return 0;
     }

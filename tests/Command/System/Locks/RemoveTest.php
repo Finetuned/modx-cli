@@ -39,6 +39,24 @@ class RemoveTest extends BaseTest
         $this->assertEquals(1, $tester->getStatusCode());
     }
 
+    public function testExecuteWithMissingLockJsonOutput()
+    {
+        [$registry, $locks] = $this->makeRegistryMock();
+        $locks->method('read')->with(['missing'])->willReturn([]);
+
+        $tester = $this->makeCommandTester($registry);
+        $tester->execute([
+            'key' => 'missing',
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertFalse($decoded['success']);
+        $this->assertEquals("Lock with key 'missing' not found", $decoded['message']);
+        $this->assertEquals('missing', $decoded['lock']['key']);
+        $this->assertEquals(1, $tester->getStatusCode());
+    }
+
     public function testExecuteWithForceRemovesLock()
     {
         [$registry, $locks] = $this->makeRegistryMock();
@@ -63,6 +81,36 @@ class RemoveTest extends BaseTest
 
         $output = $tester->getDisplay();
         $this->assertStringContainsString("Lock with key 'lock1' removed successfully", $output);
+    }
+
+    public function testExecuteWithForceRemovesLockJsonOutput()
+    {
+        [$registry, $locks] = $this->makeRegistryMock();
+        $locks->method('read')->with(['lock1'])->willReturn([
+            'lock1' => [
+                'user' => 'bob',
+                'message' => 'Working',
+                'timestamp' => 1700000000
+            ]
+        ]);
+        $locks->expects($this->once())
+            ->method('subscribe')
+            ->with(['lock1']);
+        $locks->expects($this->once())
+            ->method('remove');
+
+        $tester = $this->makeCommandTester($registry);
+        $tester->execute([
+            'key' => 'lock1',
+            '--force' => true,
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals("Lock with key 'lock1' removed successfully", $decoded['message']);
+        $this->assertTrue($decoded['removed']);
+        $this->assertEquals('lock1', $decoded['lock']['key']);
     }
 
     public function testExecuteWithoutForceAborts()
