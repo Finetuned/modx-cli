@@ -15,6 +15,7 @@ abstract class Download extends BaseCmd
 
     protected function process()
     {
+        $json = (bool) $this->option('json');
         // Validate version (is it an existing version ?)
 
         $storage = $this->argument('path');
@@ -28,7 +29,18 @@ abstract class Download extends BaseCmd
         $destination = $storage . $this->buildFileName();
         // Check if already stored
         if (file_exists($destination)) {
-            $this->info("Version already downloaded and available in {$storage}");
+            $message = "Version already downloaded and available in {$storage}";
+            if ($json) {
+                $this->output->writeln(json_encode([
+                    'success' => true,
+                    'message' => $message,
+                    'url' => null,
+                    'destination' => $destination,
+                    'already_downloaded' => true,
+                ], JSON_PRETTY_PRINT));
+            } else {
+                $this->info($message);
+            }
             return 0;
         }
 
@@ -36,13 +48,27 @@ abstract class Download extends BaseCmd
         $url = $this->buildURL();
 
         if (substr($destination, -10) === 'latest.zip') {
-            $this->comment('Beware, file name will be latest... think about renaming it after download to appropriate version');
+            if (!$json) {
+                $this->comment('Beware, file name will be latest... think about renaming it after download to appropriate version');
+            }
         }
 
         // Download to storage
-        $this->comment("Downloading {$url} to {$destination}");
+        if (!$json) {
+            $this->comment("Downloading {$url} to {$destination}");
+        }
         $this->download($url, $destination);
-        $this->comment("Done");
+        if ($json) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'message' => 'Download complete',
+                'url' => $url,
+                'destination' => $destination,
+                'already_downloaded' => false,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->comment('Done');
+        }
         return 0;
     }
 
@@ -135,7 +161,7 @@ abstract class Download extends BaseCmd
      */
     protected function getOptions()
     {
-        return array(
+        return array_merge(parent::getOptions(), array(
             array(
                 'advanced',
                 'a',
@@ -148,6 +174,6 @@ abstract class Download extends BaseCmd
                 InputOption::VALUE_NONE,
                 'Whether or not you want the SDK version'
             ),
-        );
+        ));
     }
 }

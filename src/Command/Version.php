@@ -13,13 +13,27 @@ class Version extends BaseCmd
     protected function process()
     {
         $app = $this->getApplication();
-        $this->info('MODX CLI version ' . $app->getVersion());
+        $cliVersion = $app ? $app->getVersion() : null;
+        $modxVersion = null;
 
         // Try to get MODX version if available
         $modx = $this->getMODX();
         if ($modx) {
             $version = $modx->getVersionData();
-            $this->info('MODX version ' . $version['full_version']);
+            $modxVersion = $version['full_version'];
+        }
+
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => true,
+                'cli_version' => $cliVersion,
+                'modx_version' => $modxVersion,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->info('MODX CLI version ' . $cliVersion);
+            if ($modxVersion) {
+                $this->info('MODX version ' . $modxVersion);
+            }
         }
 
         return 0;

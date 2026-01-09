@@ -20,10 +20,16 @@ class Crawl extends BaseCmd
 
     protected $curl;
     protected $start;
+    protected $jsonOutput = false;
+    protected $crawlResults = array();
+    protected $crawlErrors = array();
 
     protected function process()
     {
         $from = $this->argument('from');
+        $this->jsonOutput = (bool) $this->option('json');
+        $this->crawlResults = array();
+        $this->crawlErrors = array();
 
         try {
             $c = $this->getCriteria($from);
@@ -31,15 +37,19 @@ class Crawl extends BaseCmd
             $total = $this->modx->getCount(modResource::class, $c);
             if ($total > 0) {
                 if (!$this->prepareCurl()) {
-                    $this->error('Failed to initialize cURL');
+                    $this->outputResult(false, 'Failed to initialize cURL');
                     return 1;
                 }
             } else {
-                $this->comment('No resources to crawl found with criteria');
+                $this->outputResult(true, 'No resources to crawl found with criteria', [
+                    'total' => 0,
+                ]);
                 return 0;
             }
 
-            $this->comment("\n<info>{$total}</info> 'root' resources found");
+            if (!$this->jsonOutput) {
+                $this->comment("\n<info>{$total}</info> 'root' resources found");
+            }
 
             $collection = $this->modx->getCollection(modResource::class, $c);
             $context = '';
@@ -48,7 +58,9 @@ class Crawl extends BaseCmd
                 $contextKey = (string) $resource->get('context_key');
                 $resourceId = (int) $resource->get('id');
                 if ($context !== $contextKey) {
-                    $this->comment("\nProcessing context {$contextKey}");
+                    if (!$this->jsonOutput) {
+                        $this->comment("\nProcessing context {$contextKey}");
+                    }
                     $this->modx->switchContext($contextKey);
                     $context = $contextKey;
                     //$this->modx->context->setOption('session_enabled', false);
@@ -72,11 +84,23 @@ class Crawl extends BaseCmd
             if ($this->curl) {
                 curl_close($this->curl);
             }
-            $this->line("\n" . sprintf("Executed in <info>%2.4f</info> seconds", (microtime(true) - $this->start)));
+            $duration = microtime(true) - $this->start;
+            if ($this->jsonOutput) {
+                $this->outputResult(true, 'Crawl completed', [
+                    'total' => $total,
+                    'results' => $this->crawlResults,
+                    'errors' => $this->crawlErrors,
+                    'duration' => $duration,
+                ]);
+            } else {
+                $this->line("\n" . sprintf("Executed in <info>%2.4f</info> seconds", $duration));
+            }
 
             return 0;
         } catch (\Exception $e) {
-            $this->error('Crawl failed: ' . $e->getMessage());
+            $this->outputResult(false, 'Crawl failed: ' . $e->getMessage(), [
+                'errors' => $this->crawlErrors,
+            ]);
             if ($this->curl) {
                 curl_close($this->curl);
             }
@@ -133,10 +157,28 @@ class Crawl extends BaseCmd
         if ($status > 400) {
             $status = "<error>{$status}</error>";
         }
-        $this->line("Requested <info>{$url}</info> (<comment>{$id}</comment>) - {$status}");
+        if ($this->jsonOutput) {
+            $entry = [
+                'id' => $id,
+                'url' => $url,
+                'status' => curl_getinfo($this->curl, CURLINFO_HTTP_CODE),
+            ];
+        } else {
+            $this->line("Requested <info>{$url}</info> (<comment>{$id}</comment>) - {$status}");
+        }
 
         if (curl_errno($this->curl)) {
-            $this->error('cURL error: ' . curl_errno($this->curl) . ' - ' . curl_error($this->curl));
+            $error = 'cURL error: ' . curl_errno($this->curl) . ' - ' . curl_error($this->curl);
+            if ($this->jsonOutput) {
+                $entry['error'] = $error;
+                $this->crawlErrors[] = $error;
+            } else {
+                $this->error($error);
+            }
+        }
+
+        if ($this->jsonOutput) {
+            $this->crawlResults[] = $entry;
         }
     }
 
@@ -150,13 +192,13 @@ class Crawl extends BaseCmd
         $this->start = microtime(true);
         
         if (!function_exists('curl_init')) {
-            $this->error('cURL extension is not available');
+            $this->outputResult(false, 'cURL extension is not available');
             return false;
         }
         
         $ch = curl_init();
         if ($ch === false) {
-            $this->error('Failed to initialize cURL');
+            $this->outputResult(false, 'Failed to initialize cURL');
             return false;
         }
         
@@ -179,13 +221,29 @@ class Crawl extends BaseCmd
         ));
 
         if (!$result) {
-            $this->error('Failed to set cURL options');
+            $this->outputResult(false, 'Failed to set cURL options');
             curl_close($ch);
             return false;
         }
 
         $this->curl = $ch;
         return true;
+    }
+
+    protected function outputResult($success, $message, array $payload = array())
+    {
+        if ($this->jsonOutput) {
+            $this->output->writeln(json_encode(array_merge(array(
+                'success' => (bool) $success,
+                'message' => $message,
+            ), $payload), JSON_PRETTY_PRINT));
+        } else {
+            if ($success) {
+                $this->comment($message);
+            } else {
+                $this->error($message);
+            }
+        }
     }
 
     protected function getArguments()

@@ -74,4 +74,37 @@ class CrawlTest extends BaseTest
 
         $this->assertSame($query, $result);
     }
+
+    public function testExecuteWithNoResourcesJsonOutput()
+    {
+        $command = new Crawl();
+        $modx = $this->createMock('MODX\Revolution\modX');
+
+        $query = $this->getMockBuilder('xPDO\\Om\\xPDOQuery')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $query->method('select');
+        $query->method('where');
+        $query->method('sortby');
+
+        $modx->method('newQuery')
+            ->with(modResource::class)
+            ->willReturn($query);
+        $modx->method('getCount')
+            ->with(modResource::class, $query)
+            ->willReturn(0);
+
+        $command->modx = $modx;
+
+        $tester = new \Symfony\Component\Console\Tester\CommandTester($command);
+        $tester->execute([
+            'from' => 'web',
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals('No resources to crawl found with criteria', $decoded['message']);
+        $this->assertEquals(0, $decoded['total']);
+    }
 }

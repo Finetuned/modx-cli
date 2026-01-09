@@ -26,6 +26,19 @@ class InstallTest extends BaseTest
         $this->assertEquals(1, $tester->getStatusCode());
     }
 
+    public function testExecuteOutputsDisabledMessageJson()
+    {
+        $command = new Install();
+        $command->setApplication($this->makeAppMock());
+        $tester = new CommandTester($command);
+        $tester->execute(['--json' => true]);
+
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertFalse($decoded['success']);
+        $this->assertStringContainsString('install command is disabled', $decoded['message']);
+        $this->assertEquals(1, $tester->getStatusCode());
+    }
+
     private function makeAppMock()
     {
         $app = $this->getMockBuilder(\MODX\CLI\Application::class)

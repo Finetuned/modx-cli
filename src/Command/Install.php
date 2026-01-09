@@ -17,7 +17,15 @@ class Install extends BaseCmd
      */
     protected function process()
     {
-        $this->error('The install command is disabled: requires melting/modx-installer which is not bundled here.');
+        $message = 'The install command is disabled: requires melting/modx-installer which is not bundled here.';
+        if ($this->option('json')) {
+            $this->output->writeln(json_encode([
+                'success' => false,
+                'message' => $message,
+            ], JSON_PRETTY_PRINT));
+        } else {
+            $this->error($message);
+        }
         return 1;
     }
 

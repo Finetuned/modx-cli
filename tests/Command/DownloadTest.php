@@ -6,6 +6,7 @@ use MODX\CLI\Command\Download;
 use MODX\CLI\Tests\Configuration\BaseTest;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class DownloadTest extends BaseTest
 {
@@ -76,6 +77,32 @@ class DownloadTest extends BaseTest
         $this->assertEquals('http://modx.com/download/direct/modx-3.0.0.zip', $method->invoke($command));
     }
 
+    public function testExecuteOutputsJson()
+    {
+        $command = new TestDownload();
+        $tester = new CommandTester($command);
+
+        $dir = sys_get_temp_dir() . '/modx-cli-download-json/';
+        @mkdir($dir, 0777, true);
+
+        $tester->execute([
+            'version' => '3.0.0',
+            'path' => $dir,
+            '--json' => true
+        ]);
+
+        $decoded = json_decode($tester->getDisplay(), true);
+        $this->assertTrue($decoded['success']);
+        $this->assertEquals('Download complete', $decoded['message']);
+        $this->assertEquals('http://modx.com/download/direct/modx-3.0.0.zip', $decoded['url']);
+        $this->assertEquals($dir . 'modx-3.0.0.zip', $decoded['destination']);
+        $this->assertFalse($decoded['already_downloaded']);
+        $this->assertFileExists($dir . 'modx-3.0.0.zip');
+
+        @unlink($dir . 'modx-3.0.0.zip');
+        @rmdir($dir);
+    }
+
     private function setCommandInput(Download $command, array $params): void
     {
         $input = new ArrayInput($params, $command->getDefinition());
@@ -96,4 +123,9 @@ class TestDownload extends Download
 {
     protected $name = 'download:test';
     protected $description = 'Download test command';
+
+    protected function download($url, $target)
+    {
+        file_put_contents($target, 'test');
+    }
 }
