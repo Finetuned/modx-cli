@@ -46,6 +46,14 @@ class FlushSession extends ProcessorCmd
     protected function processResponse(array $response = array())
     {
         if ($this->option('json')) {
+            if (!isset($response['message']) || $response['message'] === '') {
+                if (isset($response['success']) && $response['success']) {
+                    $response['message'] = 'Sessions flushed successfully';
+                } else {
+                    $response['message'] = 'Failed to flush sessions';
+                }
+            }
+
             return parent::processResponse($response);
         }
 
