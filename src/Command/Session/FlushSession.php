@@ -36,6 +36,11 @@ class FlushSession extends ProcessorCmd
                 return false;
             }
         }
+
+        if (!$this->ensureSessionHandler()) {
+            $this->error('Session handler not available');
+            return false;
+        }
     }
 
     protected function processResponse(array $response = array())
@@ -55,5 +60,36 @@ class FlushSession extends ProcessorCmd
             }
             return 1;
         }
+    }
+
+    private function ensureSessionHandler(): bool
+    {
+        if (!isset($this->modx->services) || !$this->modx->services) {
+            return false;
+        }
+
+        if ($this->modx->services->has('session_handler')) {
+            return true;
+        }
+
+        $handlerClass = $this->modx->getOption(
+            'session_handler_class',
+            null,
+            'MODX\\Revolution\\modSessionHandler'
+        );
+
+        if (!is_string($handlerClass) || !class_exists($handlerClass)) {
+            return false;
+        }
+
+        $handler = new $handlerClass($this->modx);
+        if (!$handler instanceof \SessionHandlerInterface) {
+            return false;
+        }
+
+        $this->modx->services->add('session_handler', $handler);
+        session_set_save_handler($handler);
+
+        return true;
     }
 }
