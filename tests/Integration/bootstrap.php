@@ -17,6 +17,11 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 if (file_exists(__DIR__ . '/.env')) {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
     $dotenv->load();
+    foreach ($_ENV as $key => $value) {
+        if (getenv($key) === false) {
+            putenv($key . '=' . $value);
+        }
+    }
 }
 
 // DO NOT stub modX - integration tests require real MODX class
