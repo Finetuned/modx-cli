@@ -19,6 +19,14 @@ class MODX_CLITest extends TestCase
         $property->setAccessible(true);
         $property->setValue(null, null);
     }
+
+    protected function tearDown(): void
+    {
+        $reflection = new \ReflectionClass(MODX_CLI::class);
+        $property = $reflection->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+    }
     
     public function testAddCommand()
     {
