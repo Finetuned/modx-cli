@@ -31,4 +31,15 @@
         </testsuite>
     </testsuites>
 
+    <coverage cacheDirectory="var/cache/.phpunit.coverage.cache"
+              processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <report>
+            <html outputDirectory="var/coverage/html"/>
+            <text outputFile="var/coverage/coverage.txt"/>
+            <clover outputFile="var/coverage/clover.xml"/>
+        </report>
+    </coverage>
 </phpunit>
