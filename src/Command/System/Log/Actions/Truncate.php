@@ -37,7 +37,7 @@ class Truncate extends ProcessorCmd
     protected function beforeRun(array &$properties = array(), array &$options = array())
     {
         // Add the age to the properties
-        $age = $this->option('age');
+        $age = (int) $this->option('age');
         if ($age > 0) {
             $properties['age'] = $age;
         }
