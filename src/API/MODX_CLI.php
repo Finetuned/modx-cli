@@ -112,7 +112,11 @@ class MODX_CLI
      */
     public static function get_commands()
     {
-        return self::getInstance()->commandRegistry->getAll();
+        $instance = self::getInstance();
+        if (!$instance->commandRegistry) {
+            $instance->commandRegistry = new CommandRegistry();
+        }
+        return $instance->commandRegistry->getAll();
     }
 
     /**
