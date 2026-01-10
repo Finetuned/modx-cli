@@ -34,8 +34,7 @@ class GetListTest extends BaseIntegrationTest
         ]);
         
         $this->assertIsArray($data);
-        $this->assertArrayHasKey('success', $data);
-        $this->assertTrue($data['success']);
+        $this->assertArrayHasKey('total', $data);
         $this->assertArrayHasKey('results', $data);
         $this->assertIsArray($data['results']);
     }
@@ -45,7 +44,7 @@ class GetListTest extends BaseIntegrationTest
      */
     public function testContextListShowsCreatedContexts()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         // Create test context
         $this->queryDatabase(
@@ -93,7 +92,7 @@ class GetListTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test contexts
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest-%']);
         
         parent::tearDown();
     }

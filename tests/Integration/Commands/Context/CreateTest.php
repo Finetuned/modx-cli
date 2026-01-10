@@ -14,7 +14,7 @@ class CreateTest extends BaseIntegrationTest
      */
     public function testContextCreateExecutesSuccessfully()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         $process = $this->executeCommandSuccessfully([
             'context:create',
@@ -28,7 +28,7 @@ class CreateTest extends BaseIntegrationTest
         $this->assertStringContainsString('Context key:', $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -36,7 +36,7 @@ class CreateTest extends BaseIntegrationTest
      */
     public function testContextCreateReturnsValidJson()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         $data = $this->executeCommandJson([
             'context:create',
@@ -54,7 +54,7 @@ class CreateTest extends BaseIntegrationTest
         }
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -62,9 +62,9 @@ class CreateTest extends BaseIntegrationTest
      */
     public function testContextCreationPersistsToDatabase()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
-        $beforeCount = $this->countTableRows($this->getTableName('context'), 'key = ?', [$contextKey]);
+        $beforeCount = $this->countTableRows($this->getTableName('context'), '`key` = ?', [$contextKey]);
         $this->assertEquals(0, $beforeCount);
         
         $this->executeCommandSuccessfully([
@@ -74,18 +74,18 @@ class CreateTest extends BaseIntegrationTest
             '--description=Test Description'
         ]);
         
-        $afterCount = $this->countTableRows($this->getTableName('context'), 'key = ?', [$contextKey]);
+        $afterCount = $this->countTableRows($this->getTableName('context'), '`key` = ?', [$contextKey]);
         $this->assertEquals(1, $afterCount);
         
         // Verify context data
-        $rows = $this->queryDatabase('SELECT * FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $rows = $this->queryDatabase('SELECT * FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
         $this->assertCount(1, $rows);
         $this->assertEquals($contextKey, $rows[0]['key']);
         $this->assertEquals('Test Context', $rows[0]['name']);
         $this->assertEquals('Test Description', $rows[0]['description']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -93,7 +93,7 @@ class CreateTest extends BaseIntegrationTest
      */
     public function testContextCreationWithMinimalParameters()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         $this->executeCommandSuccessfully([
             'context:create',
@@ -101,12 +101,12 @@ class CreateTest extends BaseIntegrationTest
         ]);
         
         // Verify context exists
-        $rows = $this->queryDatabase('SELECT * FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $rows = $this->queryDatabase('SELECT * FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
         $this->assertCount(1, $rows);
         $this->assertEquals($contextKey, $rows[0]['key']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -114,7 +114,7 @@ class CreateTest extends BaseIntegrationTest
      */
     public function testContextCreationWithDuplicateKey()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         // Create first context
         $this->executeCommandSuccessfully([
@@ -133,7 +133,7 @@ class CreateTest extends BaseIntegrationTest
         $this->assertNotEmpty($output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -141,7 +141,7 @@ class CreateTest extends BaseIntegrationTest
      */
     public function testContextCreationWithRank()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         $this->executeCommandSuccessfully([
             'context:create',
@@ -150,11 +150,11 @@ class CreateTest extends BaseIntegrationTest
         ]);
         
         // Verify rank is set correctly
-        $rows = $this->queryDatabase('SELECT rank FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $rows = $this->queryDatabase('SELECT rank FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
         $this->assertEquals(5, $rows[0]['rank']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -163,7 +163,7 @@ class CreateTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test contexts
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` LIKE ?', ['integtest-%']);
         
         parent::tearDown();
     }

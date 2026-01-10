@@ -16,6 +16,11 @@ class GetTest extends BaseIntegrationTest
     {
         $contextKey = 'web'; // Use default web context
         $settingKey = 'site_name';
+
+        $this->queryDatabase(
+            'INSERT INTO ' . $this->getTableName('context_setting') . ' (context_key, `key`, value, xtype, namespace, area, editedon) VALUES (?, ?, ?, ?, ?, ?, NOW())',
+            [$contextKey, $settingKey, 'Integration Site', 'textfield', 'core', '']
+        );
         
         $process = $this->executeCommandSuccessfully([
             'context:setting:get',
@@ -25,6 +30,7 @@ class GetTest extends BaseIntegrationTest
         
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key = ? AND `key` = ?', [$contextKey, $settingKey]);
     }
 
     /**
@@ -34,6 +40,11 @@ class GetTest extends BaseIntegrationTest
     {
         $contextKey = 'web';
         $settingKey = 'site_name';
+
+        $this->queryDatabase(
+            'INSERT INTO ' . $this->getTableName('context_setting') . ' (context_key, `key`, value, xtype, namespace, area, editedon) VALUES (?, ?, ?, ?, ?, ?, NOW())',
+            [$contextKey, $settingKey, 'Integration Site', 'textfield', 'core', '']
+        );
         
         $data = $this->executeCommandJson([
             'context:setting:get',
@@ -43,6 +54,7 @@ class GetTest extends BaseIntegrationTest
         
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key = ? AND `key` = ?', [$contextKey, $settingKey]);
     }
 
     /**
@@ -50,7 +62,7 @@ class GetTest extends BaseIntegrationTest
      */
     public function testContextSettingGetWithCustomSetting()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         $settingKey = 'test_setting';
         
         // Create test context
@@ -100,8 +112,8 @@ class GetTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test context settings
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key LIKE ?', ['integtest_%']);
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key LIKE ?', ['integtest-%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest-%']);
         
         parent::tearDown();
     }
