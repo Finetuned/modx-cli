@@ -29,7 +29,7 @@ class FindTest extends BaseTest
         $method->setAccessible(true);
         $properties = [];
         $options = [];
-        $result = $method->invoke($command, $properties, $options);
+        $result = $method->invokeArgs($command, [&$properties, &$options]);
 
         $this->assertFalse($result);
         $this->assertStringContainsString('does not support that search function', $output->fetch());
@@ -47,7 +47,7 @@ class FindTest extends BaseTest
         $method->setAccessible(true);
         $properties = [];
         $options = [];
-        $result = $method->invoke($command, $properties, $options);
+        $result = $method->invokeArgs($command, [&$properties, &$options]);
 
         $this->assertNotFalse($result);
     }
