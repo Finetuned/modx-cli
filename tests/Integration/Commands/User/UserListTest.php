@@ -151,6 +151,7 @@ class UserListTest extends BaseIntegrationTest
 
     protected function insertRow(string $table, array $row): int
     {
+        $pdo = $this->getTestDatabase();
         $fields = array_keys($row);
         $placeholders = array_fill(0, count($fields), '?');
         $fieldsSql = implode(', ', array_map(function ($field) {
@@ -164,10 +165,10 @@ class UserListTest extends BaseIntegrationTest
             implode(', ', $placeholders)
         );
 
-        $this->queryDatabase($sql, array_values($row));
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array_values($row));
 
-        $rows = $this->queryDatabase('SELECT LAST_INSERT_ID() AS id');
-        return (int) $rows[0]['id'];
+        return (int) $pdo->lastInsertId();
     }
 
     protected function tearDown(): void
