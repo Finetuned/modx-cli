@@ -63,6 +63,27 @@ class GetListTest extends BaseIntegrationTest
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('media_sources') . ' WHERE name = ?', [$sourceName]);
     }
 
+    public function testSourceListHonorsPagination()
+    {
+        $sourceName = 'integtest_' . uniqid();
+        $this->executeCommandSuccessfully([
+            'source:create',
+            $sourceName
+        ]);
+
+        $data = $this->executeCommandJson([
+            'source:list',
+            '--limit=1',
+            '--start=0'
+        ]);
+
+        $this->assertArrayHasKey('results', $data);
+        $this->assertIsArray($data['results']);
+        $this->assertLessThanOrEqual(1, count($data['results']));
+
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('media_sources') . ' WHERE name = ?', [$sourceName]);
+    }
+
     protected function tearDown(): void
     {
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('media_sources') . ' WHERE name LIKE ?', ['integtest_%']);
