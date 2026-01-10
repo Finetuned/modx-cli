@@ -57,14 +57,42 @@ class UserListTest extends BaseIntegrationTest
         $this->deleteUser($userId);
     }
 
-    protected function createUser(string $username, string $email): int
+    public function testUserListFiltersByActiveAndBlocked()
+    {
+        $username = 'integration_user_' . uniqid();
+        $userId = $this->createUser($username, 'integration+' . uniqid() . '@example.com', 0, 1);
+
+        $data = $this->executeCommandJson([
+            'user:list',
+            '--active=0',
+            '--blocked=1',
+            '--limit=0'
+        ]);
+
+        $this->assertArrayHasKey('results', $data);
+        $this->assertIsArray($data['results']);
+
+        $found = false;
+        foreach ($data['results'] as $row) {
+            if (isset($row['username']) && $row['username'] === $username) {
+                $found = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($found, 'Filtered user not found in list results.');
+
+        $this->deleteUser($userId);
+    }
+
+    protected function createUser(string $username, string $email, int $active = 1, int $blocked = 0): int
     {
         $userRow = $this->buildInsertRow($this->usersTable, [
             'username' => $username,
             'password' => 'integration-test',
             'class_key' => 'modUser',
-            'active' => 1,
-            'blocked' => 0,
+            'active' => $active,
+            'blocked' => $blocked,
             'createdon' => time()
         ]);
 
