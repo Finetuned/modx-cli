@@ -154,6 +154,51 @@ class TemplateUpdateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test template:update with additional options
+     */
+    public function testTemplateUpdateWithAdditionalOptions()
+    {
+        $templateName = 'IntegrationTestTemplate_' . uniqid();
+        $updatedName = 'IntegrationTestTemplateUpdated_' . uniqid();
+        $description = 'Updated integration description';
+        $staticFile = 'core/components/test/templates/updated.tpl';
+        $icon = 'icon-updated';
+
+        $this->executeCommandSuccessfully([
+            'template:create',
+            $templateName
+        ]);
+
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
+        $templateId = $rows[0]['id'];
+
+        $this->executeCommandSuccessfully([
+            'template:update',
+            $templateId,
+            '--templatename=' . $updatedName,
+            '--description=' . $description,
+            '--locked=1',
+            '--static=1',
+            '--static_file=' . $staticFile,
+            '--icon=' . $icon
+        ]);
+
+        $updatedRows = $this->queryDatabase(
+            'SELECT templatename, description, locked, static, static_file, icon FROM ' . $this->templatesTable . ' WHERE id = ?',
+            [$templateId]
+        );
+
+        $this->assertEquals($updatedName, $updatedRows[0]['templatename']);
+        $this->assertEquals($description, $updatedRows[0]['description']);
+        $this->assertEquals(1, (int) $updatedRows[0]['locked']);
+        $this->assertEquals(1, (int) $updatedRows[0]['static']);
+        $this->assertEquals($staticFile, $updatedRows[0]['static_file']);
+        $this->assertEquals($icon, $updatedRows[0]['icon']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
+    }
+
+    /**
      * Test error handling for non-existent template
      */
     public function testTemplateUpdateWithInvalidId()

@@ -135,6 +135,40 @@ class TemplateCreateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test template creation with locked/static options and icon
+     */
+    public function testTemplateCreationWithAdditionalOptions()
+    {
+        $templateName = 'IntegrationTestTemplate_' . uniqid();
+        $description = 'Integration template with options';
+        $staticFile = 'core/components/test/templates/example.tpl';
+        $icon = 'icon-test';
+
+        $this->executeCommandSuccessfully([
+            'template:create',
+            $templateName,
+            '--description=' . $description,
+            '--locked=1',
+            '--static=1',
+            '--static_file=' . $staticFile,
+            '--icon=' . $icon
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT description, locked, static, static_file, icon FROM ' . $this->templatesTable . ' WHERE templatename = ?',
+            [$templateName]
+        );
+
+        $this->assertEquals($description, $rows[0]['description']);
+        $this->assertEquals(1, (int) $rows[0]['locked']);
+        $this->assertEquals(1, (int) $rows[0]['static']);
+        $this->assertEquals($staticFile, $rows[0]['static_file']);
+        $this->assertEquals($icon, $rows[0]['icon']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
+    }
+
+    /**
      * Test error handling for duplicate template name
      */
     public function testTemplateCreationWithDuplicateName()
