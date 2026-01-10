@@ -14,11 +14,11 @@ class RemoveTest extends BaseIntegrationTest
      */
     public function testContextRemoveExecutesSuccessfully()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
@@ -32,7 +32,7 @@ class RemoveTest extends BaseIntegrationTest
         $this->assertStringContainsString('removed successfully', $output);
         
         // Verify removal
-        $count = $this->countTableRows($this->getTableName('context'), 'key = ?', [$contextKey]);
+        $count = $this->countTableRows($this->getTableName('context'), '`key` = ?', [$contextKey]);
         $this->assertEquals(0, $count);
     }
 
@@ -41,11 +41,11 @@ class RemoveTest extends BaseIntegrationTest
      */
     public function testContextRemoveReturnsValidJson()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
@@ -65,15 +65,15 @@ class RemoveTest extends BaseIntegrationTest
      */
     public function testContextRemovalDeletesFromDatabase()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
-        $beforeCount = $this->countTableRows($this->getTableName('context'), 'key = ?', [$contextKey]);
+        $beforeCount = $this->countTableRows($this->getTableName('context'), '`key` = ?', [$contextKey]);
         $this->assertEquals(1, $beforeCount);
         
         $this->executeCommandSuccessfully([
@@ -82,7 +82,7 @@ class RemoveTest extends BaseIntegrationTest
             '--force'
         ]);
         
-        $afterCount = $this->countTableRows($this->getTableName('context'), 'key = ?', [$contextKey]);
+        $afterCount = $this->countTableRows($this->getTableName('context'), '`key` = ?', [$contextKey]);
         $this->assertEquals(0, $afterCount);
     }
 
@@ -107,7 +107,7 @@ class RemoveTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test contexts
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` LIKE ?', ['integtest-%']);
         
         parent::tearDown();
     }

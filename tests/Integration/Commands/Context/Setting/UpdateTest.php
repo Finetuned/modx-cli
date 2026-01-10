@@ -14,12 +14,12 @@ class UpdateTest extends BaseIntegrationTest
      */
     public function testContextSettingUpdateExecutesSuccessfully()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         $settingKey = 'test_setting';
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
@@ -41,7 +41,7 @@ class UpdateTest extends BaseIntegrationTest
         
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key = ?', [$contextKey]);
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -49,12 +49,12 @@ class UpdateTest extends BaseIntegrationTest
      */
     public function testContextSettingUpdateReturnsValidJson()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         $settingKey = 'test_setting';
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
@@ -77,7 +77,7 @@ class UpdateTest extends BaseIntegrationTest
         
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key = ?', [$contextKey]);
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -85,12 +85,12 @@ class UpdateTest extends BaseIntegrationTest
      */
     public function testContextSettingUpdatePersistsToDatabase()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         $settingKey = 'test_setting';
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
@@ -116,7 +116,7 @@ class UpdateTest extends BaseIntegrationTest
         
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key = ?', [$contextKey]);
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -141,8 +141,8 @@ class UpdateTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test context settings
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key LIKE ?', ['integtest_%']);
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key LIKE ?', ['integtest-%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` LIKE ?', ['integtest-%']);
         
         parent::tearDown();
     }

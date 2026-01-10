@@ -48,7 +48,7 @@ class GetListTest extends BaseIntegrationTest
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
@@ -68,7 +68,7 @@ class GetListTest extends BaseIntegrationTest
         $this->assertTrue($found, 'Created context should appear in list');
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -92,7 +92,7 @@ class GetListTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test contexts
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest-%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` LIKE ?', ['integtest-%']);
         
         parent::tearDown();
     }

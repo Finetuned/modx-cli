@@ -14,11 +14,11 @@ class GetTest extends BaseIntegrationTest
      */
     public function testContextGetExecutesSuccessfully()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
@@ -32,7 +32,7 @@ class GetTest extends BaseIntegrationTest
         $this->assertStringContainsString('Test Context', $output);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -40,11 +40,11 @@ class GetTest extends BaseIntegrationTest
      */
     public function testContextGetReturnsValidJson()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         // Create test context
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
         
@@ -63,7 +63,7 @@ class GetTest extends BaseIntegrationTest
         }
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -85,11 +85,11 @@ class GetTest extends BaseIntegrationTest
      */
     public function testContextGetRetrievesCorrectData()
     {
-        $contextKey = 'integtest_' . uniqid();
+        $contextKey = 'integtest-' . uniqid();
         
         // Create test context with specific values
         $this->queryDatabase(
-            'INSERT INTO ' . $this->getTableName('context') . ' (key, name, description, rank) VALUES (?, ?, ?, ?)',
+            'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Specific Name', 'Specific Description', 5]
         );
         
@@ -104,7 +104,7 @@ class GetTest extends BaseIntegrationTest
         $this->assertEquals(5, $data['object']['rank']);
         
         // Cleanup
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key = ?', [$contextKey]);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
     }
 
     /**
@@ -113,7 +113,7 @@ class GetTest extends BaseIntegrationTest
     protected function tearDown(): void
     {
         // Remove any leftover test contexts
-        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE key LIKE ?', ['integtest_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` LIKE ?', ['integtest-%']);
         
         parent::tearDown();
     }
