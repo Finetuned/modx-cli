@@ -17,6 +17,11 @@ class CustomPackageUpgradeTest extends TestCase
         if (getenv('MODX_INTEGRATION_TESTS')) {
             $this->markTestSkipped('Skipping unit test in integration mode to avoid modX class conflicts');
         }
+
+        $reflection = new \ReflectionClass(MODX_CLI::class);
+        $property = $reflection->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
         
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
@@ -57,7 +62,7 @@ class CustomPackageUpgradeTest extends TestCase
 
     public function testCustomCommandsAreRegistered()
     {
-        $commands = MODX_CLI::get_commands();
+        $commands = MODX_CLI::get_commands() ?? [];
         $commandNames = [];
         
         foreach ($commands as $command) {
