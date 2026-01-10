@@ -112,7 +112,7 @@ class CreateTest extends BaseIntegrationTest
     public function testSourceCreationWithSourceProperties()
     {
         $sourceName = 'integtest_' . uniqid();
-        $properties = '{"testKey":"testValue"}';
+        $properties = 'testKey=testValue';
 
         $this->executeCommandSuccessfully([
             'source:create',
@@ -124,7 +124,13 @@ class CreateTest extends BaseIntegrationTest
             'SELECT properties FROM ' . $this->getTableName('media_sources') . ' WHERE name = ?',
             [$sourceName]
         );
-        $this->assertStringContainsString('testKey', (string) $rows[0]['properties']);
+        $stored = $rows[0]['properties'] ?? '';
+        $decoded = json_decode((string) $stored, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $decoded = @unserialize((string) $stored);
+        }
+        $this->assertIsArray($decoded);
+        $this->assertArrayHasKey('testKey', $decoded);
 
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('media_sources') . ' WHERE name = ?', [$sourceName]);
