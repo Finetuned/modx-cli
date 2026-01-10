@@ -157,6 +157,44 @@ class SnippetUpdateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test snippet:update with additional options
+     */
+    public function testSnippetUpdateWithAdditionalOptions()
+    {
+        $snippetName = 'IntegrationTestSnippet_' . uniqid();
+        $updatedName = 'IntegrationTestSnippetUpdated_' . uniqid();
+        $staticFile = 'core/components/test/snippets/updated.php';
+
+        $this->executeCommandSuccessfully([
+            'snippet:create',
+            $snippetName
+        ]);
+
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
+        $snippetId = $rows[0]['id'];
+
+        $this->executeCommandSuccessfully([
+            'snippet:update',
+            $snippetId,
+            '--name=' . $updatedName,
+            '--locked=1',
+            '--static=1',
+            '--static_file=' . $staticFile
+        ]);
+
+        $updatedRows = $this->queryDatabase(
+            'SELECT name, locked, static, static_file FROM ' . $this->snippetsTable . ' WHERE id = ?',
+            [$snippetId]
+        );
+        $this->assertEquals($updatedName, $updatedRows[0]['name']);
+        $this->assertEquals(1, (int) $updatedRows[0]['locked']);
+        $this->assertEquals(1, (int) $updatedRows[0]['static']);
+        $this->assertEquals($staticFile, $updatedRows[0]['static_file']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE id = ?', [$snippetId]);
+    }
+
+    /**
      * Test error handling for non-existent snippet
      */
     public function testSnippetUpdateWithInvalidId()

@@ -162,6 +162,33 @@ class SnippetCreateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test snippet creation with locked/static options
+     */
+    public function testSnippetCreationWithAdditionalOptions()
+    {
+        $snippetName = 'IntegrationTestSnippet_' . uniqid();
+        $staticFile = 'core/components/test/snippets/example.php';
+
+        $this->executeCommandSuccessfully([
+            'snippet:create',
+            $snippetName,
+            '--locked=1',
+            '--static=1',
+            '--static_file=' . $staticFile
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT locked, static, static_file FROM ' . $this->snippetsTable . ' WHERE name = ?',
+            [$snippetName]
+        );
+        $this->assertEquals(1, (int) $rows[0]['locked']);
+        $this->assertEquals(1, (int) $rows[0]['static']);
+        $this->assertEquals($staticFile, $rows[0]['static_file']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
+    }
+
+    /**
      * Clean up test data
      */
     protected function tearDown(): void
