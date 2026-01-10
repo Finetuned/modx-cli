@@ -157,6 +157,7 @@ class Crawl extends BaseCmd
         if ($status > 400) {
             $status = "<error>{$status}</error>";
         }
+        $entry = null;
         if ($this->jsonOutput) {
             $entry = [
                 'id' => $id,
@@ -177,7 +178,7 @@ class Crawl extends BaseCmd
             }
         }
 
-        if ($this->jsonOutput) {
+        if ($this->jsonOutput && $entry !== null) {
             $this->crawlResults[] = $entry;
         }
     }
