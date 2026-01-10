@@ -156,7 +156,7 @@ abstract class ProcessorCmd extends BaseCmd
      * Fetch an existing MODX object by ID and class
      *
      * @param string $class The MODX object class name
-     * @param int $id The object ID
+     * @param int|string $id The object ID or unique key
      * @return \xPDO\Om\xPDOObject|null
      */
     protected function getExistingObject($class, $id)
@@ -174,7 +174,7 @@ abstract class ProcessorCmd extends BaseCmd
      *
      * @param array $properties The properties array to populate
      * @param string $class The MODX object class name
-     * @param int $id The object ID
+     * @param int|string $id The object ID or unique key
      * @param array $fieldMap Optional mapping of property names to object field names
      * @return bool True if object was found and properties populated, false otherwise
      */
