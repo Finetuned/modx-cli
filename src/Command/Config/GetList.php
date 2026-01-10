@@ -30,9 +30,7 @@ class GetList extends BaseCmd
     protected function process()
     {
         $app = $this->getApplication();
-        $instances = ($app && isset($app->instances))
-            ? $app->instances
-            : new Instance([], false);
+        $instances = $app ? $app->instances : new Instance([], false);
         $all = $instances->getAll();
 
         // Remove the default instance from the list
