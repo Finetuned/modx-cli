@@ -75,7 +75,7 @@ class InstanceTest extends TestCase
         // @TODO
     }
 
-    public function getData()
+    public static function getData()
     {
         return array(
             array(

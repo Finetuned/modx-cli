@@ -38,7 +38,7 @@ class BaseTest extends TestCase
         $this->assertNull($mock->get($key), 'It is possible to remove an item');
     }
 
-    public function getData()
+    public static function getData()
     {
         return array(
             array('key', 'value'),

@@ -226,7 +226,7 @@ class ComponentTest extends TestCase
         $this->assertFalse($config->save(), 'Failing to save system setting should not trigger a cache refresh');
     }
 
-    public function getData()
+    public static function getData()
     {
         return array(
             array(

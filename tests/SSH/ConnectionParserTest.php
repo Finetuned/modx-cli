@@ -199,7 +199,7 @@ class ConnectionParserTest extends TestCase
         }
     }
 
-    public function connectionStringProvider()
+    public static function connectionStringProvider()
     {
         return [
             // [connectionString, user, host, port, path]
