@@ -71,6 +71,51 @@ class ResourceUpdateTest extends BaseIntegrationTest
         $this->assertStringContainsString('not found', $output);
     }
 
+    public function testResourceUpdateWithAdditionalOptions()
+    {
+        $pageTitle = 'IntegrationTestResource_' . uniqid();
+        $resourceId = $this->createResource($pageTitle);
+
+        $parentTitle = 'IntegrationTestResourceParent_' . uniqid();
+        $parentId = $this->createResource($parentTitle);
+
+        $templateName = 'IntegrationTestTemplate_' . uniqid();
+        $this->executeCommandSuccessfully([
+            'template:create',
+            $templateName,
+            '--content=<html><body>[[*content]]</body></html>'
+        ]);
+
+        $templateRows = $this->queryDatabase(
+            'SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?',
+            [$templateName]
+        );
+        $templateId = $templateRows[0]['id'];
+
+        $alias = 'integration-test-' . uniqid();
+
+        $this->executeCommandSuccessfully([
+            'resource:update',
+            $resourceId,
+            '--alias=' . $alias,
+            '--parent=' . $parentId,
+            '--template=' . $templateId,
+            '--context_key=web'
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT alias, parent, template, context_key FROM ' . $this->resourcesTable . ' WHERE id = ?',
+            [$resourceId]
+        );
+        $this->assertEquals($alias, $rows[0]['alias']);
+        $this->assertEquals($parentId, (int) $rows[0]['parent']);
+        $this->assertEquals($templateId, (int) $rows[0]['template']);
+        $this->assertEquals('web', $rows[0]['context_key']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->resourcesTable . ' WHERE id IN (?, ?)', [$resourceId, $parentId]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
+    }
+
     protected function createResource(string $pageTitle): int
     {
         $this->executeCommandSuccessfully([

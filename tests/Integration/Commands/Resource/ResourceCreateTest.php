@@ -83,9 +83,68 @@ class ResourceCreateTest extends BaseIntegrationTest
         $this->queryDatabase('DELETE FROM ' . $this->resourcesTable . ' WHERE pagetitle = ?', [$pageTitle]);
     }
 
+    public function testResourceCreationWithParentTemplateAndContext()
+    {
+        $parentTitle = 'IntegrationTestResourceParent_' . uniqid();
+        $childTitle = 'IntegrationTestResource_' . uniqid();
+        $templateName = 'IntegrationTestTemplate_' . uniqid();
+
+        $parentId = $this->createResourceWithContent($parentTitle, 'Parent content');
+
+        $this->executeCommandSuccessfully([
+            'template:create',
+            $templateName,
+            '--content=<html><body>[[*content]]</body></html>'
+        ]);
+
+        $templateRows = $this->queryDatabase(
+            'SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?',
+            [$templateName]
+        );
+        $templateId = $templateRows[0]['id'];
+
+        $this->executeCommandSuccessfully([
+            'resource:create',
+            $childTitle,
+            '--parent=' . $parentId,
+            '--template=' . $templateId,
+            '--context_key=web',
+            '--content=Child content'
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT parent, template, context_key FROM ' . $this->resourcesTable . ' WHERE pagetitle = ?',
+            [$childTitle]
+        );
+        $this->assertEquals($parentId, (int) $rows[0]['parent']);
+        $this->assertEquals($templateId, (int) $rows[0]['template']);
+        $this->assertEquals('web', $rows[0]['context_key']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->resourcesTable . ' WHERE pagetitle IN (?, ?)', [$parentTitle, $childTitle]);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
+    }
+
+    protected function createResourceWithContent(string $pageTitle, string $content): int
+    {
+        $this->executeCommandSuccessfully([
+            'resource:create',
+            $pageTitle,
+            '--content=' . $content
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT id FROM ' . $this->resourcesTable . ' WHERE pagetitle = ?',
+            [$pageTitle]
+        );
+
+        return (int) $rows[0]['id'];
+    }
+
     protected function tearDown(): void
     {
         $this->queryDatabase('DELETE FROM ' . $this->resourcesTable . ' WHERE pagetitle LIKE ?', ['IntegrationTestResource_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->resourcesTable . ' WHERE pagetitle LIKE ?', ['IntegrationTestResourceParent_%']);
+        $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE templatename LIKE ?', ['IntegrationTestTemplate_%']);
         parent::tearDown();
     }
 }
