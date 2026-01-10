@@ -33,7 +33,8 @@ class UpdateTest extends BaseIntegrationTest
             'context:setting:update',
             $contextKey,
             $settingKey,
-            '--value=updated_value'
+            '--value=updated_value',
+            '--properties=namespace=core'
         ]);
         
         $output = $process->getOutput();
@@ -68,7 +69,8 @@ class UpdateTest extends BaseIntegrationTest
             'context:setting:update',
             $contextKey,
             $settingKey,
-            '--value=updated_value'
+            '--value=updated_value',
+            '--properties=namespace=core'
         ]);
         
         $this->assertIsArray($data);
@@ -104,7 +106,8 @@ class UpdateTest extends BaseIntegrationTest
             'context:setting:update',
             $contextKey,
             $settingKey,
-            '--value=new_value'
+            '--value=new_value',
+            '--properties=namespace=core'
         ]);
         
         // Verify update
@@ -128,11 +131,11 @@ class UpdateTest extends BaseIntegrationTest
             'context:setting:update',
             'web',
             'nonexistent_setting_' . uniqid(),
-            '--value=test'
+            '--value=test',
+            '--properties=namespace=core'
         ]);
         
-        $output = $process->getOutput();
-        $this->assertNotEmpty($output);
+        $this->assertNotEquals(0, $process->getExitCode());
     }
 
     /**
