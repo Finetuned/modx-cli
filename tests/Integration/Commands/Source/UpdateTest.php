@@ -96,6 +96,40 @@ class UpdateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test source update with source properties
+     */
+    public function testSourceUpdateWithSourceProperties()
+    {
+        $sourceName = 'integtest_' . uniqid();
+
+        $this->queryDatabase(
+            'INSERT INTO ' . $this->getTableName('media_sources') . ' (name, description, class_key) VALUES (?, ?, ?)',
+            [$sourceName, 'Original Description', 'MODX\\Revolution\\Sources\\modFileMediaSource']
+        );
+
+        $sourceId = $this->queryDatabase(
+            'SELECT id FROM ' . $this->getTableName('media_sources') . ' WHERE name = ?',
+            [$sourceName]
+        )[0]['id'];
+
+        $properties = '{"updatedKey":"updatedValue"}';
+
+        $this->executeCommandSuccessfully([
+            'source:update',
+            $sourceId,
+            '--source-properties=' . $properties
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT properties FROM ' . $this->getTableName('media_sources') . ' WHERE id = ?',
+            [$sourceId]
+        );
+        $this->assertStringContainsString('updatedKey', (string) $rows[0]['properties']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('media_sources') . ' WHERE id = ?', [$sourceId]);
+    }
+
+    /**
      * Test partial update (only one field)
      */
     public function testSourcePartialUpdate()

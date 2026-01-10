@@ -107,6 +107,30 @@ class CreateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test source creation with source properties
+     */
+    public function testSourceCreationWithSourceProperties()
+    {
+        $sourceName = 'integtest_' . uniqid();
+        $properties = '{"testKey":"testValue"}';
+
+        $this->executeCommandSuccessfully([
+            'source:create',
+            $sourceName,
+            '--source-properties=' . $properties
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT properties FROM ' . $this->getTableName('media_sources') . ' WHERE name = ?',
+            [$sourceName]
+        );
+        $this->assertStringContainsString('testKey', (string) $rows[0]['properties']);
+
+        // Cleanup
+        $this->queryDatabase('DELETE FROM ' . $this->getTableName('media_sources') . ' WHERE name = ?', [$sourceName]);
+    }
+
+    /**
      * Test error handling for duplicate source name
      */
     public function testSourceCreationWithDuplicateName()
