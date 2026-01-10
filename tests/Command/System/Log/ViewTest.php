@@ -98,7 +98,7 @@ class ViewTest extends BaseTest
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('No log entries found', $output);
+        $this->assertStringContainsString('displaying 0 item(s)', $output);
     }
 
     public function testExecuteWithColoredFormat()
