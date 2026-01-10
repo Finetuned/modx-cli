@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0-beta] - 2026-01-12
+
+### Added
+- Beta release readiness milestone (unit and integration suites green with `MODX_INTEGRATION_TESTS=1`).
+- Comprehensive parameter and integration coverage across command groups (Task 14 + Task 15 completion).
+- Total test count: 2978 tests (unit + integration).
+
+### Fixed
+- ResetPassword unit tests now mock Profile access consistently.
+- MODX_CLI registry lazy-init to avoid null registry crashes in Application integration tests.
+- Integration user list helper now uses a single PDO connection for insert IDs.
+
 ## [0.6.0-alpha] - 2025-11-21
 
 ### Added
