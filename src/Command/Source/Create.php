@@ -70,8 +70,45 @@ class Create extends ProcessorCmd
 
         // Handle source-properties separately (maps to 'properties' in MODX)
         if ($this->option('source-properties') !== null) {
-            $properties['properties'] = $this->option('source-properties');
+            $raw = $this->option('source-properties');
+            $decoded = null;
+
+            if (is_string($raw) && $raw !== '') {
+                $decoded = json_decode($raw, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $decoded = null;
+                }
+            }
+
+            if (is_array($decoded)) {
+                $properties['properties'] = $decoded;
+            } elseif (is_string($raw) && $raw !== '') {
+                if ($this->modx && $this->modx->parser) {
+                    $properties['properties'] = $this->modx->parser->parsePropertyString($raw);
+                } else {
+                    $properties['properties'] = $this->parsePropertyString($raw);
+                }
+            } else {
+                $properties['properties'] = $raw;
+            }
         }
+    }
+
+    protected function parsePropertyString(string $raw): array
+    {
+        $pairs = preg_split('/[;&]/', $raw, -1, PREG_SPLIT_NO_EMPTY);
+        $properties = [];
+
+        foreach ($pairs as $pair) {
+            $parts = explode('=', $pair, 2);
+            $key = trim($parts[0]);
+            $value = isset($parts[1]) ? trim($parts[1]) : '';
+            if ($key !== '') {
+                $properties[$key] = $value;
+            }
+        }
+
+        return $properties;
     }
 
     protected function processResponse(array $response = array())
