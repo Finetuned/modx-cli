@@ -117,6 +117,26 @@ class CategoryCreateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test category creation with rank
+     */
+    public function testCategoryCreationWithRank()
+    {
+        $categoryName = 'IntegrationTestCategory_' . uniqid();
+        $rank = 7;
+
+        $this->executeCommandSuccessfully([
+            'category:create',
+            $categoryName,
+            '--rank=' . $rank
+        ]);
+
+        $rows = $this->queryDatabase('SELECT rank FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
+        $this->assertEquals($rank, (int) $rows[0]['rank']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
+    }
+
+    /**
      * Test error handling for duplicate category name
      */
     public function testCategoryCreationWithDuplicateName()
