@@ -113,6 +113,37 @@ class ChunkCreateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test chunk creation with description, locked, and static file options
+     */
+    public function testChunkCreationWithAdditionalOptions()
+    {
+        $chunkName = 'IntegrationTestChunk_' . uniqid();
+        $description = 'Integration test description';
+        $staticFile = 'core/components/test/chunks/example.tpl';
+
+        $this->executeCommandSuccessfully([
+            'chunk:create',
+            $chunkName,
+            '--description=' . $description,
+            '--locked=1',
+            '--static=1',
+            '--static_file=' . $staticFile
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT description, locked, static, static_file FROM ' . $this->chunksTable . ' WHERE name = ?',
+            [$chunkName]
+        );
+
+        $this->assertEquals($description, $rows[0]['description']);
+        $this->assertEquals(1, (int) $rows[0]['locked']);
+        $this->assertEquals(1, (int) $rows[0]['static']);
+        $this->assertEquals($staticFile, $rows[0]['static_file']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
+    }
+
+    /**
      * Test error handling for duplicate chunk name
      */
     public function testChunkCreationWithDuplicateName()

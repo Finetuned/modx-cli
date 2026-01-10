@@ -121,6 +121,48 @@ class ChunkUpdateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test chunk:update with additional options
+     */
+    public function testChunkUpdateWithAdditionalOptions()
+    {
+        $chunkName = 'IntegrationTestChunk_' . uniqid();
+        $updatedName = 'IntegrationTestChunkUpdated_' . uniqid();
+        $description = 'Updated integration description';
+        $staticFile = 'core/components/test/chunks/updated.tpl';
+
+        $this->executeCommandSuccessfully([
+            'chunk:create',
+            $chunkName
+        ]);
+
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
+        $chunkId = $rows[0]['id'];
+
+        $this->executeCommandSuccessfully([
+            'chunk:update',
+            $chunkId,
+            '--name=' . $updatedName,
+            '--description=' . $description,
+            '--locked=1',
+            '--static=1',
+            '--static_file=' . $staticFile
+        ]);
+
+        $updatedRows = $this->queryDatabase(
+            'SELECT name, description, locked, static, static_file FROM ' . $this->chunksTable . ' WHERE id = ?',
+            [$chunkId]
+        );
+
+        $this->assertEquals($updatedName, $updatedRows[0]['name']);
+        $this->assertEquals($description, $updatedRows[0]['description']);
+        $this->assertEquals(1, (int) $updatedRows[0]['locked']);
+        $this->assertEquals(1, (int) $updatedRows[0]['static']);
+        $this->assertEquals($staticFile, $updatedRows[0]['static_file']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE id = ?', [$chunkId]);
+    }
+
+    /**
      * Test error handling for non-existent chunk
      */
     public function testChunkUpdateWithInvalidId()
