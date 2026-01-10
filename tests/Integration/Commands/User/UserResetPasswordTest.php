@@ -76,7 +76,8 @@ class UserResetPasswordTest extends BaseIntegrationTest
             'createdon' => time()
         ]);
 
-        $userId = $this->insertRow($this->usersTable, $userRow);
+        $this->insertRow($this->usersTable, $userRow);
+        $userId = $this->fetchUserId($username);
 
         $profileRow = $this->buildInsertRow($this->userAttributesTable, [
             'internalKey' => $userId,
@@ -146,7 +147,19 @@ class UserResetPasswordTest extends BaseIntegrationTest
 
         $this->queryDatabase($sql, array_values($row));
 
-        $rows = $this->queryDatabase('SELECT LAST_INSERT_ID() AS id');
+        return 0;
+    }
+
+    protected function fetchUserId(string $username): int
+    {
+        $rows = $this->queryDatabase(
+            'SELECT id FROM ' . $this->usersTable . ' WHERE username = ? ORDER BY id DESC LIMIT 1',
+            [$username]
+        );
+        if (empty($rows)) {
+            return 0;
+        }
+
         return (int) $rows[0]['id'];
     }
 
