@@ -62,6 +62,12 @@ class ResetPassword extends ProcessorCmd
         }
 
         $username = $user->get('username');
+        $properties['username'] = $username;
+
+        $profile = $user->getOne('Profile');
+        if ($profile) {
+            $properties['email'] = $profile->get('email');
+        }
 
         // Generate a password if requested
         if ($this->option('generate')) {
