@@ -44,11 +44,12 @@ class ResetPasswordTest extends BaseTest
     {
         // Mock user object
         $user = $this->getMockBuilder('stdClass')
-            ->addMethods(['get'])
+            ->addMethods(['get', 'getOne'])
             ->getMock();
         $user->method('get')->willReturnMap([
             ['username', 'testuser']
         ]);
+        $user->method('getOne')->with('Profile')->willReturn(null);
         
         // Mock getObject to return user
         $this->modx->expects($this->once())
@@ -119,11 +120,12 @@ class ResetPasswordTest extends BaseTest
     {
         // Mock user object
         $user = $this->getMockBuilder('stdClass')
-            ->addMethods(['get'])
+            ->addMethods(['get', 'getOne'])
             ->getMock();
         $user->method('get')->willReturnMap([
             ['username', 'testuser']
         ]);
+        $user->method('getOne')->with('Profile')->willReturn(null);
         
         // Mock getObject to return user
         $this->modx->expects($this->once())
@@ -162,11 +164,12 @@ class ResetPasswordTest extends BaseTest
     {
         // Mock user object
         $user = $this->getMockBuilder('stdClass')
-            ->addMethods(['get'])
+            ->addMethods(['get', 'getOne'])
             ->getMock();
         $user->method('get')->willReturnMap([
             ['username', 'testuser']
         ]);
+        $user->method('getOne')->with('Profile')->willReturn(null);
         
         // Mock getObject to return user
         $this->modx->expects($this->once())
