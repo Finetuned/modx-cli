@@ -158,6 +158,56 @@ class TVUpdateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test tv:update with additional options
+     */
+    public function testTVUpdateWithAdditionalOptions()
+    {
+        $tvName = 'IntegrationTestTV_' . uniqid();
+        $updatedName = 'IntegrationTestTVUpdated_' . uniqid();
+        $description = 'Updated TV description';
+        $elements = 'Choice 1||Choice 2';
+        $staticFile = 'core/components/test/tvs/updated.tpl';
+
+        $this->executeCommandSuccessfully([
+            'tv:create',
+            $tvName,
+            '--type=listbox'
+        ]);
+
+        $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
+        $tvId = $rows[0]['id'];
+
+        $this->executeCommandSuccessfully([
+            'tv:update',
+            $tvId,
+            '--name=' . $updatedName,
+            '--description=' . $description,
+            '--elements=' . $elements,
+            '--rank=5',
+            '--display=default',
+            '--locked=1',
+            '--static=1',
+            '--static_file=' . $staticFile
+        ]);
+
+        $updatedRows = $this->queryDatabase(
+            'SELECT name, description, elements, rank, display, locked, static, static_file FROM ' . $this->tvsTable . ' WHERE id = ?',
+            [$tvId]
+        );
+
+        $this->assertEquals($updatedName, $updatedRows[0]['name']);
+        $this->assertEquals($description, $updatedRows[0]['description']);
+        $this->assertEquals($elements, $updatedRows[0]['elements']);
+        $this->assertEquals(5, (int) $updatedRows[0]['rank']);
+        $this->assertEquals('default', $updatedRows[0]['display']);
+        $this->assertEquals(1, (int) $updatedRows[0]['locked']);
+        $this->assertEquals(1, (int) $updatedRows[0]['static']);
+        $this->assertEquals($staticFile, $updatedRows[0]['static_file']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
+    }
+
+    /**
      * Test error handling for non-existent TV
      */
     public function testTVUpdateWithInvalidId()

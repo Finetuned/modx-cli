@@ -166,6 +166,45 @@ class TVCreateTest extends BaseIntegrationTest
     }
 
     /**
+     * Test TV creation with additional options
+     */
+    public function testTVCreationWithAdditionalOptions()
+    {
+        $tvName = 'IntegrationTestTV_' . uniqid();
+        $description = 'Integration TV description';
+        $elements = 'Option A||Option B';
+        $staticFile = 'core/components/test/tvs/example.tpl';
+
+        $this->executeCommandSuccessfully([
+            'tv:create',
+            $tvName,
+            '--type=listbox',
+            '--description=' . $description,
+            '--elements=' . $elements,
+            '--rank=10',
+            '--display=default',
+            '--locked=1',
+            '--static=1',
+            '--static_file=' . $staticFile
+        ]);
+
+        $rows = $this->queryDatabase(
+            'SELECT description, elements, rank, display, locked, static, static_file FROM ' . $this->tvsTable . ' WHERE name = ?',
+            [$tvName]
+        );
+
+        $this->assertEquals($description, $rows[0]['description']);
+        $this->assertEquals($elements, $rows[0]['elements']);
+        $this->assertEquals(10, (int) $rows[0]['rank']);
+        $this->assertEquals('default', $rows[0]['display']);
+        $this->assertEquals(1, (int) $rows[0]['locked']);
+        $this->assertEquals(1, (int) $rows[0]['static']);
+        $this->assertEquals($staticFile, $rows[0]['static_file']);
+
+        $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
+    }
+
+    /**
      * Test error handling for duplicate TV name
      */
     public function testTVCreationWithDuplicateName()
