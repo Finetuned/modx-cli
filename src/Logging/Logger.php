@@ -393,9 +393,7 @@ class Logger extends AbstractLogger
         }
 
         // Rename current log file
-        if (file_exists($this->logFile)) {
-            rename($this->logFile, $this->logFile . '.1');
-        }
+        rename($this->logFile, $this->logFile . '.1');
 
         // Re-open new log file
         $this->fileHandle = fopen($this->logFile, 'a');
