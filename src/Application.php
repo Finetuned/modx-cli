@@ -363,9 +363,9 @@ class Application extends BaseApp
             }
 
             require_once $config;
-            if (!defined('MODX_CORE_PATH')) {
-                return false;
-            }
+        }
+        if (!defined('MODX_CORE_PATH')) {
+            return false;
         }
         $loader = MODX_CORE_PATH . 'vendor/autoload.php';
         if (file_exists($loader)) {
