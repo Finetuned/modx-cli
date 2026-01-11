@@ -55,6 +55,7 @@ modx [command] [options]
 When a MODX instance is configured and set as default, many commands become available, including:
 
 - `version` - Display the CLI version
+- `self-update` - Update MODX CLI when installed as a Phar
 - `system:info` - Get general system information
 - `system:clearcache` - Clear the MODX cache
 - `resource:list` - Get a list of resources
@@ -361,6 +362,7 @@ For more information, see [SSH and Aliases Documentation](docs/ssh-and-aliases.m
 
 ### User Guides
 - [Update Commands](docs/update-commands.md) - Detailed guide to the enhanced update functionality
+- [Self-Update](docs/self-update-guide.md) - Update the Phar install or use Composer for Packagist installs
 - [List Commands](docs/list-commands.md) - Pagination and filtering for list commands
 - [SSH and Aliases](docs/ssh-and-aliases.md) - Remote command execution and aliases
 - [Internal API](docs/internal-api.md) - Programmatic usage and extending the CLI
@@ -407,6 +409,15 @@ composer cs:check
 
 # Automatically fix code style issues
 composer cs:fix
+```
+
+### Git Hooks
+
+Set up the local git hooks to keep `VERSION` in sync when pushing tags:
+
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-push scripts/release.sh
 ```
 
 ### Running Tests

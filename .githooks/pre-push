@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+release_script="${root_dir}/scripts/release.sh"
+
+if [[ ! -x "$release_script" ]]; then
+  echo "Release script not executable: ${release_script}" >&2
+  exit 1
+fi
+
+run_release_for_tag() {
+  local ref_name="$1"
+  local tag="${ref_name#refs/tags/}"
+  if [[ -n "$tag" ]]; then
+    "${release_script}" "$tag"
+  fi
+}
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [[ "$local_ref" == refs/tags/* ]]; then
+    run_release_for_tag "$local_ref"
+  fi
+done
