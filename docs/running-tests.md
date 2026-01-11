@@ -4,16 +4,16 @@
 
 The project has three test suites configured in `phpunit.xml.dist`:
 
-1. **default** - Unit tests only (695 tests)
+1. **default** - Unit tests only
    - Excludes integration tests
    - Fast execution
    - No external dependencies required
 
-2. **integration** - Integration tests only (159 tests)
+2. **integration** - Integration tests only
    - Requires MODX installation or mocked environment
    - Most tests are skipped unless `MODX_INTEGRATION_TESTS=1` is set
    
-3. **all** - Complete test suite (854 tests)
+3. **all** - Complete test suite
    - Includes both unit and integration tests
    - Recommended for comprehensive testing
 
@@ -29,6 +29,11 @@ The project has three test suites configured in `phpunit.xml.dist`:
 ### Run Integration Tests Only
 ```bash
 ./vendor/bin/phpunit --testsuite integration
+```
+
+### Run Integration Tests via Dedicated Config
+```bash
+MODX_INTEGRATION_TESTS=1 ./vendor/bin/phpunit -c phpunit.integration.xml
 ```
 
 ### Run All Tests (Unit + Integration)
@@ -64,9 +69,7 @@ This generates:
 
 ## Test Count Reference
 
-- **Unit Tests**: 695 tests
-- **Integration Tests**: 159 tests (137 skipped without MODX_INTEGRATION_TESTS=1)
-- **Total Tests**: 854 tests
+Test counts change as coverage expands. Use the PHPUnit output (or `--list-tests`) for current totals.
 
 ## Troubleshooting
 
