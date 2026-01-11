@@ -85,6 +85,8 @@ protected function process()
 - **Unbuffered** (default): Output appears immediately
 - **Buffered**: Output stored in memory, displayed on flush
 
+Note: Streaming output is intended for human-readable console output. Avoid mixing streaming with `--json` responses so machine parsing remains reliable.
+
 ## StreamingOutput Class
 
 ### Creating an Instance
