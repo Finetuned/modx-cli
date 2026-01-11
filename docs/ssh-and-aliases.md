@@ -70,6 +70,13 @@ Aliases are defined with an `@` prefix:
   ssh: user@dev-server.com:/path/to/modx
 ```
 
+You can also define local aliases that point to a specific MODX base path:
+
+```yaml
+@local:
+  base_path: /var/www/modx
+```
+
 ### Using Aliases
 
 To use an alias, simply prefix the command with the alias name:
@@ -79,6 +86,11 @@ modx @prod system:info
 ```
 
 This will run the `system:info` command on the production server.
+
+Local aliases work the same way:
+```bash
+modx @local resource:list
+```
 
 ### Alias Groups
 
