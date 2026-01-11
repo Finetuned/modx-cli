@@ -57,6 +57,8 @@ Aliases are defined in YAML configuration files:
 - Global aliases: `~/.modx/config.yml`
 - Project-specific aliases: `modx-cli.yml` in the project directory
 
+Project-specific aliases override global aliases with the same name.
+
 ### Defining Aliases
 
 Aliases are defined with an `@` prefix:
