@@ -10,6 +10,8 @@ Three major architectural improvements have been implemented:
 2. **Centralized Field Mappings** - Configurable field mappings for MODX objects
 3. **Command Metadata Registry** - Enhanced command discovery and organization
 
+Note: This document reflects completed enhancements. For parity validation and documentation workflows, see the Task 16/17 memory bank notes.
+
 ---
 
 ## 1. Centralized Error Messages

@@ -4,6 +4,8 @@
 
 This document summarizes the major enhancements implemented in the MODX CLI long-term development phase (Q2-Q3 2025). These features represent significant architectural improvements and new capabilities.
 
+Note: This is a historical summary. For current roadmap and ongoing work, see `docs/medium-term-enhancements.md` and the memory bank tasks.
+
 ## Implemented Features
 
 ### 1. PHP 8.0+ Upgrade ✅
