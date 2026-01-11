@@ -1,0 +1,2022 @@
+[
+  {
+    "category": ".",
+    "file": "src/Command/Crawl.php",
+    "name": "crawl",
+    "description": "Crawl resources to prime their caches",
+    "arguments": [
+      {
+        "name": "from",
+        "required": "REQUIRED",
+        "description": "The context key or resource ID to crawl from. Use \"all\" to process all web contexts."
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": ".",
+    "file": "src/Command/Download.php",
+    "name": "download",
+    "description": "Download a MODX Revolution release",
+    "arguments": [
+      {
+        "name": "version",
+        "required": "OPTIONAL",
+        "description": "The version you want to download"
+      },
+      {
+        "name": "path",
+        "required": "OPTIONAL",
+        "description": "The path to download the file to"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": ".",
+    "file": "src/Command/Find.php",
+    "name": "find",
+    "description": "Search within this MODX instance using the \"uberbar\" search",
+    "arguments": [
+      {
+        "name": "query",
+        "required": "REQUIRED",
+        "description": "The request to perform the search against"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": ".",
+    "file": "src/Command/Install.php",
+    "name": "install",
+    "description": "Install MODX here",
+    "arguments": [
+      {
+        "name": "source",
+        "required": "OPTIONAL",
+        "description": "Path to MODX source (unused while command is disabled)"
+      },
+      {
+        "name": "config",
+        "required": "OPTIONAL",
+        "description": "Path to configuration file (unused while command is disabled)"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": ".",
+    "file": "src/Command/RunSequence.php",
+    "name": "run-sequence",
+    "description": "Run a sequence of commands with various execution options",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": ".",
+    "file": "src/Command/Version.php",
+    "name": "version",
+    "description": "Display the CLI version",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Category",
+    "file": "src/Command/Category/Create.php",
+    "name": "category:create",
+    "description": "Create a MODX category",
+    "arguments": [
+      {
+        "name": "category",
+        "required": "REQUIRED",
+        "description": "The name of the category"
+      }
+    ],
+    "options": [
+      {
+        "name": "parent",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The parent ID of the category",
+        "default": "0"
+      },
+      {
+        "name": "rank",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The rank of the category",
+        "default": "0"
+      }
+    ]
+  },
+  {
+    "category": "Category",
+    "file": "src/Command/Category/Get.php",
+    "name": "category:get",
+    "description": "Get a MODX category",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the category to get"
+      }
+    ],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, json)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "Category",
+    "file": "src/Command/Category/GetList.php",
+    "name": "category:list",
+    "description": "Get a list of categories in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Category",
+    "file": "src/Command/Category/Remove.php",
+    "name": "category:remove",
+    "description": "Remove a MODX category",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the category to remove"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Category",
+    "file": "src/Command/Category/Update.php",
+    "name": "category:update",
+    "description": "Update a MODX category",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the category to update"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Chunk",
+    "file": "src/Command/Chunk/Create.php",
+    "name": "chunk:create",
+    "description": "Create a MODX chunk",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the chunk"
+      }
+    ],
+    "options": [
+      {
+        "name": "description",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The description of the chunk",
+        "default": "''"
+      },
+      {
+        "name": "category",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The category ID of the chunk",
+        "default": "0"
+      },
+      {
+        "name": "snippet",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The content of the chunk",
+        "default": "''"
+      },
+      {
+        "name": "locked",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the chunk is locked (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "static",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the chunk is static (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "static_file",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The static file path for the chunk",
+        "default": "''"
+      }
+    ]
+  },
+  {
+    "category": "Chunk",
+    "file": "src/Command/Chunk/Get.php",
+    "name": "chunk:get",
+    "description": "Get a MODX chunk",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the chunk to get"
+      }
+    ],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, json)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "Chunk",
+    "file": "src/Command/Chunk/GetList.php",
+    "name": "chunk:list",
+    "description": "Get a list of chunks in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Chunk",
+    "file": "src/Command/Chunk/Remove.php",
+    "name": "chunk:remove",
+    "description": "Remove a MODX chunk",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the chunk to remove"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Chunk",
+    "file": "src/Command/Chunk/Update.php",
+    "name": "chunk:update",
+    "description": "Update a MODX chunk",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the chunk to update"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/Add.php",
+    "name": "config:add",
+    "description": "Add a MODX instance to the configuration",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the instance"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/Edit.php",
+    "name": "config:edit",
+    "description": "Edit a MODX instance in the configuration",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the instance to edit"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/ExcludeCommand.php",
+    "name": "config:exclude-command",
+    "description": "Exclude a command from the available commands",
+    "arguments": [
+      {
+        "name": "class",
+        "required": "REQUIRED",
+        "description": "The command class to exclude"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/GetDefault.php",
+    "name": "config:get-default",
+    "description": "Get the default MODX instance",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/GetExcludeCommand.php",
+    "name": "config:get-exclude-command",
+    "description": "Get the list of excluded commands",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/GetList.php",
+    "name": "config:list",
+    "description": "List MODX instances in the configuration",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/Rename.php",
+    "name": "config:rename",
+    "description": "Rename a MODX instance in the configuration",
+    "arguments": [
+      {
+        "name": "old_name",
+        "required": "REQUIRED",
+        "description": "The current name of the instance"
+      },
+      {
+        "name": "new_name",
+        "required": "REQUIRED",
+        "description": "The new name of the instance"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/Rm.php",
+    "name": "config:rm",
+    "description": "Remove a MODX instance from the configuration",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the instance to remove"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/RmDefault.php",
+    "name": "config:rm-default",
+    "description": "Remove the default MODX instance",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/RmExcludeCommand.php",
+    "name": "config:rm-exclude-command",
+    "description": "Remove a command from the excluded commands",
+    "arguments": [
+      {
+        "name": "class",
+        "required": "REQUIRED",
+        "description": "The command class to remove from the excluded commands"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/SetDefault.php",
+    "name": "config:set-default",
+    "description": "Set a MODX instance as the default",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the instance to set as default"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Config",
+    "file": "src/Command/Config/WipeExcludeCommand.php",
+    "name": "config:wipe-exclude-command",
+    "description": "Wipe all excluded commands",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Create.php",
+    "name": "context:create",
+    "description": "Create a MODX context",
+    "arguments": [
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The context key (unique identifier)"
+      }
+    ],
+    "options": [
+      {
+        "name": "name",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The name of the context",
+        "default": "''"
+      },
+      {
+        "name": "description",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The description of the context",
+        "default": "''"
+      },
+      {
+        "name": "rank",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The rank/order of the context",
+        "default": "0"
+      }
+    ]
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Get.php",
+    "name": "context:get",
+    "description": "Get a MODX context by key",
+    "arguments": [
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The context key"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/GetURLs.php",
+    "name": "context:geturls",
+    "description": "Get a list of context URLs in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/GetList.php",
+    "name": "context:list",
+    "description": "Get a list of contexts in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Permissions/GetList.php",
+    "name": "context:permissions",
+    "description": "List context access permissions for a context",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Permissions/Create.php",
+    "name": "context:permissions:create",
+    "description": "Create a context access permission",
+    "arguments": [
+      {
+        "name": "context",
+        "required": "REQUIRED",
+        "description": "The context key"
+      },
+      {
+        "name": "usergroup",
+        "required": "REQUIRED",
+        "description": "The user group ID"
+      },
+      {
+        "name": "policy",
+        "required": "REQUIRED",
+        "description": "The access policy ID"
+      }
+    ],
+    "options": [
+      {
+        "name": "authority",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The authority level",
+        "default": "0"
+      }
+    ]
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Permissions/Remove.php",
+    "name": "context:permissions:remove",
+    "description": "Remove a context access permission",
+    "arguments": [
+      {
+        "name": "context",
+        "required": "REQUIRED",
+        "description": "The context key"
+      },
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The access control entry ID"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Permissions/Update.php",
+    "name": "context:permissions:update",
+    "description": "Update a context access permission",
+    "arguments": [
+      {
+        "name": "context",
+        "required": "REQUIRED",
+        "description": "The context key"
+      },
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The access control entry ID"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Remove.php",
+    "name": "context:remove",
+    "description": "Remove a MODX context",
+    "arguments": [
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The context key"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Setting/Create.php",
+    "name": "context:setting:create",
+    "description": "Create a context setting",
+    "arguments": [
+      {
+        "name": "context",
+        "required": "REQUIRED",
+        "description": "The context key"
+      },
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The setting key"
+      }
+    ],
+    "options": [
+      {
+        "name": "namespace",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The setting namespace",
+        "default": "'core'"
+      },
+      {
+        "name": "xtype",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The setting xtype",
+        "default": "'textfield'"
+      }
+    ]
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Setting/Get.php",
+    "name": "context:setting:get",
+    "description": "Get a context setting",
+    "arguments": [
+      {
+        "name": "context",
+        "required": "REQUIRED",
+        "description": "The context key"
+      },
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The setting key"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Setting/GetList.php",
+    "name": "context:setting:list",
+    "description": "Get a list of context settings in MODX",
+    "arguments": [
+      {
+        "name": "context_key",
+        "required": "REQUIRED",
+        "description": "The context key"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Setting/Remove.php",
+    "name": "context:setting:remove",
+    "description": "Remove a context setting",
+    "arguments": [
+      {
+        "name": "context",
+        "required": "REQUIRED",
+        "description": "The context key"
+      },
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The setting key"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Setting/Update.php",
+    "name": "context:setting:update",
+    "description": "Update a context setting",
+    "arguments": [
+      {
+        "name": "context",
+        "required": "REQUIRED",
+        "description": "The context key"
+      },
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The setting key"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Context",
+    "file": "src/Command/Context/Update.php",
+    "name": "context:update",
+    "description": "Update a MODX context",
+    "arguments": [
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The context key"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Extra",
+    "file": "src/Command/Extra/AddComponent.php",
+    "name": "extra:add-component",
+    "description": "Add a component to MODX",
+    "arguments": [
+      {
+        "name": "namespace",
+        "required": "REQUIRED",
+        "description": "The namespace of the component"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Extra",
+    "file": "src/Command/Extra/Components.php",
+    "name": "extra:components",
+    "description": "Get a list of components in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Extra",
+    "file": "src/Command/Extra/Extras.php",
+    "name": "extra:list",
+    "description": "Get a list of extras in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Extra",
+    "file": "src/Command/Extra/RemoveComponent.php",
+    "name": "extra:remove-component",
+    "description": "Remove a component from MODX",
+    "arguments": [
+      {
+        "name": "namespace",
+        "required": "REQUIRED",
+        "description": "The namespace of the component"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Menu",
+    "file": "src/Command/Menu/GetList.php",
+    "name": "menu:list",
+    "description": "Get a list of menus in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Misc",
+    "file": "src/Command/Misc/ListColumns.php",
+    "name": "misc:list-columns",
+    "description": "List columns in a database table in MODX",
+    "arguments": [
+      {
+        "name": "table",
+        "required": "REQUIRED",
+        "description": "The name of the table"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Ns",
+    "file": "src/Command/Ns/Create.php",
+    "name": "ns:create",
+    "description": "Create a namespace in MODX",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the namespace"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Ns",
+    "file": "src/Command/Ns/GetList.php",
+    "name": "ns:list",
+    "description": "Get a list of namespaces in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Ns",
+    "file": "src/Command/Ns/Remove.php",
+    "name": "ns:remove",
+    "description": "Remove a namespace in MODX",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the namespace to remove"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Ns",
+    "file": "src/Command/Ns/Update.php",
+    "name": "ns:update",
+    "description": "Update a namespace in MODX",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the namespace to update"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/Download.php",
+    "name": "package:download",
+    "description": "Download a package from the provider to MODX",
+    "arguments": [
+      {
+        "name": "signature",
+        "required": "REQUIRED",
+        "description": "The signature of the package to download"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/Install.php",
+    "name": "package:install",
+    "description": "Install a package in MODX",
+    "arguments": [
+      {
+        "name": "signature",
+        "required": "REQUIRED",
+        "description": "The signature of the package to install"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/GetList.php",
+    "name": "package:list",
+    "description": "Get a list of packages in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/Provider/Add.php",
+    "name": "package:provider:add",
+    "description": "Add a package provider in MODX",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the provider"
+      },
+      {
+        "name": "service_url",
+        "required": "REQUIRED",
+        "description": "The service URL of the provider"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/Provider/CategoriesList.php",
+    "name": "package:provider:categories",
+    "description": "Get a list of categories from a provider in MODX",
+    "arguments": [
+      {
+        "name": "provider",
+        "required": "REQUIRED",
+        "description": "The ID of the provider"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/Provider/Info.php",
+    "name": "package:provider:info",
+    "description": "Get information about a package provider in MODX",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the provider"
+      }
+    ],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, json)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/Provider/GetList.php",
+    "name": "package:provider:list",
+    "description": "Get a list of package providers in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/Provider/PackagesList.php",
+    "name": "package:provider:packages",
+    "description": "Get a list of packages from a provider in MODX",
+    "arguments": [
+      {
+        "name": "provider",
+        "required": "REQUIRED",
+        "description": "The ID of the provider"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Package",
+    "file": "src/Command/Package/Upgradeable.php",
+    "name": "package:upgradeable",
+    "description": "Get a list of upgradeable packages in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Plugin",
+    "file": "src/Command/Plugin/DisabledPlugin.php",
+    "name": "plugin:disabled",
+    "description": "Get a list of disabled plugins in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Plugin",
+    "file": "src/Command/Plugin/GetList.php",
+    "name": "plugin:list",
+    "description": "Get a list of plugins in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Registry",
+    "file": "src/Command/Registry/Message/GetList.php",
+    "name": "registry:message:list",
+    "description": "Get a list of registry messages in MODX",
+    "arguments": [
+      {
+        "name": "topic",
+        "required": "REQUIRED",
+        "description": "The topic of the messages"
+      }
+    ],
+    "options": [
+      {
+        "name": "register",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The register to use",
+        "default": "'db'"
+      }
+    ]
+  },
+  {
+    "category": "Registry",
+    "file": "src/Command/Registry/Queue/GetList.php",
+    "name": "registry:queue:list",
+    "description": "Get a list of registry queues in MODX",
+    "arguments": [],
+    "options": [
+      {
+        "name": "register",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The register to use",
+        "default": "'db'"
+      }
+    ]
+  },
+  {
+    "category": "Registry",
+    "file": "src/Command/Registry/Read.php",
+    "name": "registry:read",
+    "description": "Read messages from a MODX registry register",
+    "arguments": [
+      {
+        "name": "topic",
+        "required": "REQUIRED",
+        "description": "The topic to read from"
+      }
+    ],
+    "options": [
+      {
+        "name": "register",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Registry name to use",
+        "default": "'db'"
+      },
+      {
+        "name": "format",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (json, html_log, raw)",
+        "default": "'json'"
+      },
+      {
+        "name": "poll_limit",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Number of poll cycles",
+        "default": "1"
+      },
+      {
+        "name": "poll_interval",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Interval between polls",
+        "default": "1"
+      },
+      {
+        "name": "time_limit",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Time limit for polling",
+        "default": "10"
+      },
+      {
+        "name": "message_limit",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Maximum messages to read",
+        "default": "200"
+      }
+    ]
+  },
+  {
+    "category": "Registry",
+    "file": "src/Command/Registry/Send.php",
+    "name": "registry:send",
+    "description": "Send a message to a MODX registry register",
+    "arguments": [
+      {
+        "name": "topic",
+        "required": "REQUIRED",
+        "description": "The topic to send to"
+      },
+      {
+        "name": "message",
+        "required": "REQUIRED",
+        "description": "The message to send"
+      }
+    ],
+    "options": [
+      {
+        "name": "register",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Registry name to use",
+        "default": "'db'"
+      },
+      {
+        "name": "message_format",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Message format (string, json)",
+        "default": "'string'"
+      },
+      {
+        "name": "delay",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Delay in seconds",
+        "default": "0"
+      },
+      {
+        "name": "ttl",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Time-to-live in seconds",
+        "default": "0"
+      }
+    ]
+  },
+  {
+    "category": "Registry",
+    "file": "src/Command/Registry/Topic/GetList.php",
+    "name": "registry:topic:list",
+    "description": "Get a list of registry topics in MODX",
+    "arguments": [],
+    "options": [
+      {
+        "name": "register",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The register to use",
+        "default": "'db'"
+      }
+    ]
+  },
+  {
+    "category": "Resource",
+    "file": "src/Command/Resource/Create.php",
+    "name": "resource:create",
+    "description": "Create a MODX resource",
+    "arguments": [
+      {
+        "name": "pagetitle",
+        "required": "REQUIRED",
+        "description": "The page title of the resource"
+      }
+    ],
+    "options": [
+      {
+        "name": "parent",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The parent ID of the resource",
+        "default": "0"
+      },
+      {
+        "name": "template",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The template ID of the resource",
+        "default": "0"
+      },
+      {
+        "name": "published",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the resource is published (1 or 0)",
+        "default": "1"
+      },
+      {
+        "name": "hidemenu",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the resource is hidden from the menu (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "content",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The content of the resource",
+        "default": "''"
+      },
+      {
+        "name": "alias",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The alias of the resource",
+        "default": "''"
+      },
+      {
+        "name": "context_key",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The context key of the resource",
+        "default": "'web'"
+      }
+    ]
+  },
+  {
+    "category": "Resource",
+    "file": "src/Command/Resource/Delete.php",
+    "name": "resource:delete",
+    "description": "Delete a MODX resource (move to trash)",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the resource to delete"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Resource",
+    "file": "src/Command/Resource/Erase.php",
+    "name": "resource:erase",
+    "description": "Erase a MODX resource (permanently delete from trash)",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the resource to erase"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Resource",
+    "file": "src/Command/Resource/Get.php",
+    "name": "resource:get",
+    "description": "Get a MODX resource",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the resource to get"
+      }
+    ],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, json)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "Resource",
+    "file": "src/Command/Resource/GetList.php",
+    "name": "resource:list",
+    "description": "Get a list of resources",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Resource",
+    "file": "src/Command/Resource/Update.php",
+    "name": "resource:update",
+    "description": "Update a MODX resource",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the resource to update"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Security",
+    "file": "src/Command/Security/Access/FlushPermissions.php",
+    "name": "security:access:flush",
+    "description": "Flush permissions in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Security",
+    "file": "src/Command/Security/RoleGroup/AddPolicy.php",
+    "name": "security:rolegroup:addpolicy",
+    "description": "Add a policy template to a role group",
+    "arguments": [
+      {
+        "name": "group",
+        "required": "REQUIRED",
+        "description": "The role group name or ID"
+      },
+      {
+        "name": "policy",
+        "required": "REQUIRED",
+        "description": "The policy template name or ID"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Security",
+    "file": "src/Command/Security/RoleGroup/RemovePolicy.php",
+    "name": "security:rolegroup:removepolicy",
+    "description": "Remove a policy template from a role group",
+    "arguments": [
+      {
+        "name": "group",
+        "required": "REQUIRED",
+        "description": "The role group name or ID"
+      },
+      {
+        "name": "policy",
+        "required": "REQUIRED",
+        "description": "The policy template name or ID"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Session",
+    "file": "src/Command/Session/FlushSession.php",
+    "name": "session:flush",
+    "description": "Flush all sessions in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Session",
+    "file": "src/Command/Session/GetList.php",
+    "name": "session:list",
+    "description": "Get a list of sessions in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Session",
+    "file": "src/Command/Session/Remove.php",
+    "name": "session:remove",
+    "description": "Remove a session in MODX",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID (internalKey) of the session to remove"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Snippet",
+    "file": "src/Command/Snippet/Create.php",
+    "name": "snippet:create",
+    "description": "Create a MODX snippet",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the snippet"
+      }
+    ],
+    "options": [
+      {
+        "name": "description",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The description of the snippet",
+        "default": "''"
+      },
+      {
+        "name": "category",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The category ID of the snippet",
+        "default": "0"
+      },
+      {
+        "name": "snippet",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The PHP code of the snippet",
+        "default": "''"
+      },
+      {
+        "name": "locked",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the snippet is locked (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "static",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the snippet is static (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "static_file",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The static file path for the snippet",
+        "default": "''"
+      }
+    ]
+  },
+  {
+    "category": "Snippet",
+    "file": "src/Command/Snippet/Get.php",
+    "name": "snippet:get",
+    "description": "Get a MODX snippet",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the snippet to get"
+      }
+    ],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, json)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "Snippet",
+    "file": "src/Command/Snippet/GetList.php",
+    "name": "snippet:list",
+    "description": "Get a list of snippets in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Snippet",
+    "file": "src/Command/Snippet/Remove.php",
+    "name": "snippet:remove",
+    "description": "Remove a MODX snippet",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the snippet to remove"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Snippet",
+    "file": "src/Command/Snippet/Update.php",
+    "name": "snippet:update",
+    "description": "Update a MODX snippet",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the snippet to update"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Source",
+    "file": "src/Command/Source/Create.php",
+    "name": "source:create",
+    "description": "Create a MODX media source",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the media source"
+      }
+    ],
+    "options": [
+      {
+        "name": "description",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The description of the media source",
+        "default": "''"
+      },
+      {
+        "name": "class_key",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The class key of the media source",
+        "default": "'MODX\\\\Revolution\\\\Sources\\\\modFileMediaSource'"
+      },
+      {
+        "name": "source-properties",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The properties of the media source (JSON format)",
+        "default": "''"
+      }
+    ]
+  },
+  {
+    "category": "Source",
+    "file": "src/Command/Source/Get.php",
+    "name": "source:get",
+    "description": "Get a MODX media source by ID",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The source ID"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Source",
+    "file": "src/Command/Source/GetList.php",
+    "name": "source:list",
+    "description": "Get a list of media sources in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Source",
+    "file": "src/Command/Source/Remove.php",
+    "name": "source:remove",
+    "description": "Remove a MODX media source",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The source ID"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Source",
+    "file": "src/Command/Source/Update.php",
+    "name": "source:update",
+    "description": "Update a MODX media source",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The source ID"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/ClearCache.php",
+    "name": "system:clearcache",
+    "description": "Clear the MODX cache",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Events/Create.php",
+    "name": "system:event:create",
+    "description": "Create a system event in MODX",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the event"
+      }
+    ],
+    "options": [
+      {
+        "name": "service",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The service of the event",
+        "default": "1"
+      },
+      {
+        "name": "groupname",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The group name of the event",
+        "default": "''"
+      }
+    ]
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Events/Delete.php",
+    "name": "system:event:delete",
+    "description": "Delete a system event in MODX",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the event"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Info.php",
+    "name": "system:info",
+    "description": "Get general system information",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Locks/Read.php",
+    "name": "system:locks:read",
+    "description": "Read a lock in MODX",
+    "arguments": [
+      {
+        "name": "key",
+        "required": "OPTIONAL",
+        "description": "The key of the lock"
+      }
+    ],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, json)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Locks/Remove.php",
+    "name": "system:locks:remove",
+    "description": "Remove a lock in MODX",
+    "arguments": [
+      {
+        "name": "key",
+        "required": "REQUIRED",
+        "description": "The key of the lock"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Log/Actions/GetList.php",
+    "name": "system:log:actions:list",
+    "description": "Get a list of action logs in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Log/Actions/Truncate.php",
+    "name": "system:log:actions:truncate",
+    "description": "Truncate action logs in MODX",
+    "arguments": [],
+    "options": [
+      {
+        "name": "age",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Truncate logs older than this many days",
+        "default": "0"
+      }
+    ]
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Log/Clear.php",
+    "name": "system:log:clear",
+    "description": "Clear the MODX system log",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Log/Listen.php",
+    "name": "system:log:listen",
+    "description": "Listen to the MODX system log",
+    "arguments": [],
+    "options": [
+      {
+        "name": "interval",
+        "shortcut": "i",
+        "type": "VALUE_REQUIRED",
+        "description": "Interval in seconds between checks",
+        "default": "1"
+      },
+      {
+        "name": "limit",
+        "shortcut": "l",
+        "type": "VALUE_REQUIRED",
+        "description": "Number of log entries to display initially",
+        "default": "10"
+      }
+    ]
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Log/View.php",
+    "name": "system:log:view",
+    "description": "View the MODX system log",
+    "arguments": [],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, colored)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/RefreshURIs.php",
+    "name": "system:refreshuris",
+    "description": "Refresh URIs in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Setting/GetList.php",
+    "name": "system:setting:list",
+    "description": "Get a list of system settings in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "System",
+    "file": "src/Command/System/Snippet/GetList.php",
+    "name": "system:snippet:list",
+    "description": "Get a list of snippets in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "TV",
+    "file": "src/Command/TV/Create.php",
+    "name": "tv:create",
+    "description": "Create a MODX template variable",
+    "arguments": [
+      {
+        "name": "name",
+        "required": "REQUIRED",
+        "description": "The name of the template variable"
+      }
+    ],
+    "options": [
+      {
+        "name": "caption",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The caption of the template variable",
+        "default": "''"
+      },
+      {
+        "name": "description",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The description of the template variable",
+        "default": "''"
+      },
+      {
+        "name": "category",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The category ID of the template variable",
+        "default": "0"
+      },
+      {
+        "name": "type",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The input type of the template variable (text, textarea, richtext, etc.)",
+        "default": "'text'"
+      },
+      {
+        "name": "default_text",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The default value of the template variable",
+        "default": "''"
+      },
+      {
+        "name": "elements",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The possible values for the template variable (for select, radio, etc.)",
+        "default": "''"
+      },
+      {
+        "name": "rank",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The rank of the template variable",
+        "default": "0"
+      },
+      {
+        "name": "display",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The display type of the template variable",
+        "default": "'default'"
+      },
+      {
+        "name": "templates",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Comma-separated list of template IDs to associate with the template variable",
+        "default": "''"
+      },
+      {
+        "name": "locked",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the template variable is locked (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "static",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the template variable is static (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "static_file",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The static file path for the template variable",
+        "default": "''"
+      }
+    ]
+  },
+  {
+    "category": "TV",
+    "file": "src/Command/TV/Get.php",
+    "name": "tv:get",
+    "description": "Get a MODX template variable",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the template variable to get"
+      }
+    ],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, json)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "TV",
+    "file": "src/Command/TV/GetList.php",
+    "name": "tv:list",
+    "description": "Get a list of template variables in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "TV",
+    "file": "src/Command/TV/Remove.php",
+    "name": "tv:remove",
+    "description": "Remove a MODX template variable",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the template variable to remove"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "TV",
+    "file": "src/Command/TV/Update.php",
+    "name": "tv:update",
+    "description": "Update a MODX template variable",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the template variable to update"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Template",
+    "file": "src/Command/Template/Create.php",
+    "name": "template:create",
+    "description": "Create a MODX template",
+    "arguments": [
+      {
+        "name": "templatename",
+        "required": "REQUIRED",
+        "description": "The name of the template"
+      }
+    ],
+    "options": [
+      {
+        "name": "description",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The description of the template",
+        "default": "''"
+      },
+      {
+        "name": "category",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The category ID of the template",
+        "default": "0"
+      },
+      {
+        "name": "content",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The HTML content of the template",
+        "default": "''"
+      },
+      {
+        "name": "locked",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the template is locked (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "static",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Whether the template is static (1 or 0)",
+        "default": "0"
+      },
+      {
+        "name": "static_file",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The static file path for the template",
+        "default": "''"
+      },
+      {
+        "name": "icon",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The icon for the template",
+        "default": "''"
+      }
+    ]
+  },
+  {
+    "category": "Template",
+    "file": "src/Command/Template/Get.php",
+    "name": "template:get",
+    "description": "Get a MODX template",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the template to get"
+      }
+    ],
+    "options": [
+      {
+        "name": "format",
+        "shortcut": "f",
+        "type": "VALUE_REQUIRED",
+        "description": "Output format (table, json)",
+        "default": "'table'"
+      }
+    ]
+  },
+  {
+    "category": "Template",
+    "file": "src/Command/Template/GetList.php",
+    "name": "template:list",
+    "description": "Get a list of templates in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "Template",
+    "file": "src/Command/Template/Remove.php",
+    "name": "template:remove",
+    "description": "Remove a MODX template",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the template to remove"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "Template",
+    "file": "src/Command/Template/Update.php",
+    "name": "template:update",
+    "description": "Update a MODX template",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the template to update"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/GetList.php",
+    "name": "user:list",
+    "description": "Get a list of users in MODX",
+    "arguments": [],
+    "options": []
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/ResetPassword.php",
+    "name": "user:resetpassword",
+    "description": "Reset a user\\",
+    "arguments": [
+      {
+        "name": "id",
+        "required": "REQUIRED",
+        "description": "The ID of the user"
+      }
+    ],
+    "options": []
+  }
+]
