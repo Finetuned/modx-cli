@@ -3,6 +3,7 @@
 namespace MODX\CLI\Output;
 
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Streaming Output Trait
@@ -115,9 +116,9 @@ trait StreamingOutputTrait
     /**
      * Create an output section
      *
-     * @return SectionOutput
+     * @return OutputInterface
      */
-    protected function createSection(): SectionOutput
+    protected function createSection(): OutputInterface
     {
         return $this->getStreamingOutput()->section();
     }
