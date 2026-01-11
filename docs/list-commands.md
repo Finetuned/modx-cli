@@ -12,6 +12,7 @@ All list commands support the following pagination options:
 
 - `--limit` (or `-l`) - Number of items to return (default: 10)
 - `--start` - Starting index for pagination (default: 0)
+- `--limit=0` - Return all items (use with care for large datasets)
 
 Note: The `--start` option does not have a shortcut to avoid conflicts with the global `--ssh` option.
 
@@ -23,10 +24,17 @@ Note: The `--start` option does not have a shortcut to avoid conflicts with the 
 - `snippet:list` - List MODX snippets
 - `tv:list` - List MODX template variables
 - `category:list` - List MODX categories
+- `context:list` - List MODX contexts
+- `source:list` - List media sources
 - `user:list` - List MODX users
 - `package:list` - List installed packages
 - `ns:list` - List MODX namespaces
 - `session:list` - List active sessions
+- `menu:list` - List manager menus
+- `registry:message:list` - List registry messages for a topic
+- `registry:queue:list` - List registry queues
+- `registry:topic:list` - List registry topics
+- `system:log:actions:list` - List manager action logs
 - And many more...
 
 ## Basic Usage
@@ -36,6 +44,13 @@ Note: The `--start` option does not have a shortcut to avoid conflicts with the 
 Get the first 10 items (default behavior):
 ```bash
 modx resource:list
+```
+
+### Show All Results
+
+Return all items in a single request:
+```bash
+modx resource:list --limit=0
 ```
 
 ### Custom Page Size
