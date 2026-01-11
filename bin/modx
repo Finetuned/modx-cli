@@ -39,6 +39,66 @@ if (function_exists('ini_set')) {
     unset($memoryInBytes, $memoryLimit);
 }
 
+$argv = $_SERVER['argv'] ?? [];
+if (!empty($argv)) {
+    $commandIndex = array_search('self-update', $argv, true);
+    if ($commandIndex === false) {
+        $commandIndex = array_search('update', $argv, true);
+    }
+    if ($commandIndex !== false) {
+        $wantsJson = in_array('--json', $argv, true);
+        foreach ($argv as $index => $value) {
+            if ($value === '--version' || strpos($value, '--version=') === 0) {
+                if ($wantsJson) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => '--version is a global option and is not valid for self-update. Use --target-version or --to.',
+                    ], JSON_PRETTY_PRINT) . PHP_EOL;
+                } else {
+                    fwrite(STDERR, "Error: --version is a global option and is not valid for self-update. Use --target-version or --to.\n");
+                }
+                exit(1);
+            }
+            if ($value === '--latest-version' || strpos($value, '--latest-version=') === 0) {
+                if ($wantsJson) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => '--latest-version is not a valid option for self-update. Use --target-version or --to.',
+                    ], JSON_PRETTY_PRINT) . PHP_EOL;
+                } else {
+                    fwrite(STDERR, "Error: --latest-version is not a valid option for self-update. Use --target-version or --to.\n");
+                }
+                exit(1);
+            }
+            if ($value === '-v') {
+                $next = $argv[$index + 1] ?? '';
+                if ($next !== '' && $next[0] !== '-') {
+                    if ($wantsJson) {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => '-v does not accept a value for self-update. Use --target-version or --to.',
+                        ], JSON_PRETTY_PRINT) . PHP_EOL;
+                    } else {
+                        fwrite(STDERR, "Error: -v does not accept a value for self-update. Use --target-version or --to.\n");
+                    }
+                    exit(1);
+                }
+            }
+            if (strpos($value, '-v=') === 0) {
+                if ($wantsJson) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => '-v does not accept a value for self-update. Use --target-version or --to.',
+                    ], JSON_PRETTY_PRINT) . PHP_EOL;
+                } else {
+                    fwrite(STDERR, "Error: -v does not accept a value for self-update. Use --target-version or --to.\n");
+                }
+                exit(1);
+            }
+        }
+    }
+}
+
 // run the command application
 $application = new Application();
 $application->run();
