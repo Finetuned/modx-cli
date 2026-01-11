@@ -1,0 +1,6 @@
+{
+  "https://api.github.com/repos/Finetuned/modx-cli/releases?per_page=100": {
+    "status": 200,
+    "body": "[{\"tag_name\":\"v0.7.0\",\"prerelease\":false,\"assets\":[{\"name\":\"modx-cli.phar\",\"browser_download_url\":\"https://example.com/modx-cli.phar\",\"size\":1234}]},{\"tag_name\":\"v0.7.0-beta\",\"prerelease\":true,\"assets\":[{\"name\":\"modx-cli.phar\",\"browser_download_url\":\"https://example.com/modx-cli-beta.phar\",\"size\":1200}]}]"
+  }
+}
