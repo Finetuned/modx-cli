@@ -7,7 +7,7 @@ This document contains issue templates for major initiatives identified in the c
 ## Issue #1: Add PHP Type Declarations Throughout Codebase
 
 **Labels**: `enhancement`, `code-quality`, `good-first-issue`
-**Milestone**: Q1 2025
+**Milestone**: 2025
 **Assignee**: TBD
 
 ### Description
@@ -84,7 +84,7 @@ public function getMODX(): ?\MODX\Revolution\modX
 ## Issue #2: Add Static Analysis with PHPStan
 
 **Labels**: `enhancement`, `code-quality`, `tooling`
-**Milestone**: Q1 2025
+**Milestone**: 2025
 **Assignee**: TBD
 
 ### Description
@@ -146,7 +146,7 @@ PHPStan configured and running at level 5-6, integrated into CI/CD pipeline.
 ## Issue #3: Centralize Field Mappings Configuration
 
 **Labels**: `enhancement`, `refactoring`, `maintainability`
-**Milestone**: Q1 2025
+**Milestone**: 2025
 **Assignee**: TBD
 
 ### Description
