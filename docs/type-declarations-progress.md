@@ -1,6 +1,6 @@
 # Type Declarations Progress
 
-This document tracks the progress of adding PHP type declarations throughout the codebase.
+This document tracks the progress of adding PHP type declarations throughout the codebase. For current priorities, see `docs/todo-priority-list.md` and the Task memory bank.
 
 ## Goals
 
