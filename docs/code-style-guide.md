@@ -188,10 +188,17 @@ src/
 
 ```
 tests/
-├── Unit/             # Unit tests
+├── Command/          # Command unit tests
 ├── Integration/      # Integration tests
+├── API/              # Internal API unit tests
+├── Configuration/    # Config unit tests
+├── Formatter/        # Formatter unit tests
+├── SSH/              # SSH unit tests
+├── Mock/             # Test doubles
 └── Fixtures/         # Test fixtures and data
 ```
+
+Integration tests run from `tests/Integration/` using `tests/Integration/bootstrap.php`.
 
 ### Test Naming
 
