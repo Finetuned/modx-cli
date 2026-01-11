@@ -332,12 +332,15 @@ Define aliases in `~/.modx/config.yml` or `modx-cli.yml` in your project directo
   ssh: user@production-server.com:/path/to/modx
 @staging:
   ssh: user@staging-server.com:/path/to/modx
+@local:
+  base_path: /var/www/modx
 ```
 
 Use aliases to run commands:
 
 ```bash
 modx @prod system:info
+modx @local resource:list
 ```
 
 Define alias groups to run commands on multiple servers:
