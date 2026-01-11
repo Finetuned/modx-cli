@@ -10,11 +10,17 @@ All update commands in MODX CLI have been enhanced to support partial updates. T
 
 The following update commands have been improved:
 
+- `category:update` - Update MODX categories
 - `chunk:update` - Update MODX chunks
-- `template:update` - Update MODX templates  
-- `snippet:update` - Update MODX snippets
-- `tv:update` - Update MODX template variables
+- `context:update` - Update MODX contexts
+- `context:setting:update` - Update context settings
+- `context:permissions:update` - Update context permissions
+- `ns:update` - Update MODX namespaces
 - `resource:update` - Update MODX resources
+- `snippet:update` - Update MODX snippets
+- `source:update` - Update media sources
+- `template:update` - Update MODX templates  
+- `tv:update` - Update MODX template variables
 
 ## How It Works
 
@@ -127,6 +133,20 @@ modx resource:update 123 --parent=5 --template=2
 Update alias (this was previously failing with null classKey error):
 ```bash
 modx resource:update 6 --alias="about-us"
+```
+
+### Context Updates
+
+Update context description:
+```bash
+modx context:update web --description="Public site context"
+```
+
+### Media Source Updates
+
+Update source name:
+```bash
+modx source:update 2 --name="Uploads Source"
 ```
 
 #### Resource-Specific Enhancements
