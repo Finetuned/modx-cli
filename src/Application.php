@@ -80,7 +80,7 @@ class Application extends BaseApp
         // Initialize plugin manager
         $this->pluginManager = new PluginManager($this, $this->logger);
 
-        parent::__construct('MODX CLI', '1.0.0');
+        parent::__construct('MODX CLI', $this->resolveVersion());
 
         // Load plugins after parent construction
         $this->pluginManager->loadPlugins();
@@ -110,6 +110,33 @@ class Application extends BaseApp
         );
 
         return $def;
+    }
+
+    /**
+     * Resolve CLI version from the VERSION file.
+     */
+    private function resolveVersion(): string
+    {
+        $pharPath = \Phar::running(false);
+        if ($pharPath) {
+            $path = 'phar://' . $pharPath . '/VERSION';
+            if (is_file($path)) {
+                $version = trim((string) file_get_contents($path));
+                if ($version !== '') {
+                    return $version;
+                }
+            }
+        }
+
+        $rootPath = dirname(__DIR__) . '/VERSION';
+        if (is_file($rootPath)) {
+            $version = trim((string) file_get_contents($rootPath));
+            if ($version !== '') {
+                return $version;
+            }
+        }
+
+        return '0.0.0';
     }
 
     /**

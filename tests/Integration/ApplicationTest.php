@@ -47,7 +47,10 @@ class ApplicationTest extends TestCase
         $app = new Application();
         $this->assertInstanceOf(Application::class, $app);
         $this->assertEquals('MODX CLI', $app->getName());
-        $this->assertEquals('1.0.0', $app->getVersion());
+        $versionPath = dirname(__DIR__, 2) . '/VERSION';
+        $expectedVersion = is_file($versionPath) ? trim((string) file_get_contents($versionPath)) : '';
+        $this->assertNotSame('', $expectedVersion, 'VERSION file should provide CLI version');
+        $this->assertEquals($expectedVersion, $app->getVersion());
     }
 
     public function testConfigurationInitialization()

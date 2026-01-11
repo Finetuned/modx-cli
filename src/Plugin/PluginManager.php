@@ -238,7 +238,7 @@ class PluginManager
         }
 
         // Check CLI version (you may want to define a constant for CLI version)
-        $cliVersion = '1.0.0'; // This should come from Application or a constant
+        $cliVersion = $this->app->getVersion() ?: '0.0.0';
         if (version_compare($cliVersion, $plugin->getMinCliVersion(), '<')) {
             $this->logger->warning('Plugin {name} requires CLI {required}, current: {current}', [
                 'name' => $plugin->getName(),
