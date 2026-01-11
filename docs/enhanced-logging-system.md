@@ -14,6 +14,10 @@ The MODX CLI Enhanced Logging System provides comprehensive logging capabilities
 - Easy integration via LoggerAwareTrait
 - Automatic configuration from CLI options
 
+**CLI Options:**
+- `--log-level` sets the minimum level recorded (independent of console verbosity)
+- `--log-file` writes logs to a file with automatic rotation
+
 ## Architecture
 
 ### Components
@@ -83,6 +87,9 @@ modx command -v          # verbose
 modx command -vv         # very verbose
 modx command -vvv        # debug
 modx command --quiet     # no output
+
+# Log debug to file while silencing console output
+modx command --log-level=debug --log-file=debug.log --quiet
 ```
 
 ### In Commands
