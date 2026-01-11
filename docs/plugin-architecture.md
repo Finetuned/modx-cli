@@ -95,7 +95,7 @@ plugins/
 
 ### Installing a Plugin
 
-1. **Project-local plugins**: Place in `.modx-cli/plugins/` directory
+1. **Project-local plugins**: Place in `.modx-cli/plugins/` directory (from your project root)
 2. **Global plugins**: Place in CLI installation `plugins/` directory
 3. **Composer packages**: Install as dependencies and register the plugin path
 
@@ -247,7 +247,7 @@ class Plugin extends AbstractPlugin
 
 ### User Configuration
 
-Users can configure plugins via `.modx-cli/plugins.yaml`:
+Users can configure plugins via `.modx-cli/plugins.yaml` (project-local):
 
 ```yaml
 example-plugin:
@@ -615,11 +615,11 @@ Create a README.md in your plugin directory:
 
 ## Installation
 
-Place in `.modx-cli/plugins/example-plugin/`
+Place in `.modx-cli/plugins/example-plugin/` (project root)
 
 ## Configuration
 
-Edit `.modx-cli/plugins.yaml`:
+Edit `.modx-cli/plugins.yaml` (project root):
 
 \`\`\`yaml
 example-plugin:
