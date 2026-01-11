@@ -1,6 +1,10 @@
 # TODO Priority List
 
-This document tracks all TODO/FIXME items found in the codebase, organized by priority.
+This document tracks TODO/FIXME items found in the codebase, organized by priority.
+
+## Maintenance
+
+Update this list when new TODOs are introduced or removed. Convert P0–P2 items into GitHub issues as part of release planning.
 
 ## Priority Levels
 
