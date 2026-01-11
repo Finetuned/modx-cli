@@ -72,6 +72,11 @@ package:upgradeable
 package:list-remote
 package:install FormIt
 
+# Configuration and environment
+config:list
+system:info
+system:clearcache
+
 # Template Variables
 tv:create --name=testTV --type=text --caption="Test TV"
 tv:update --name=testTV --description="Updated description" 1
@@ -90,6 +95,10 @@ template:create --name="TestTemplate" --content="<html>[[*content]]</html>"
 # Chunks and Snippets
 chunk:list
 snippet:list
+
+# Aliases and multi-instance
+@local resource:list
+--site=mysite system:info
 ```
 
 ## Debug Information Display
