@@ -94,6 +94,10 @@ MODX_CLI::run_command($command, $args = [], $options = [])
 
 **Return Value**: Returns the command result if `$return` is `true`
 
+**Notes**:
+- Pass `parse => true` to split a full command string (including options) into arguments.
+- Use `return => true` to access `stdout`, `stderr`, and `return_code`.
+
 ### MODX_CLI::register_hook()
 
 Registers a hook with MODX CLI.
@@ -279,6 +283,15 @@ MODX_CLI::run_command('resource:create', [
     'parent' => 0,
     'published' => true
 ]);
+
+// Run a command string with options and parse it
+$result = MODX_CLI::run_command('resource:list --limit=5 --json', [], [
+    'parse' => true,
+    'return' => true
+]);
+if ($result->return_code === 0) {
+    $data = json_decode($result->stdout, true);
+}
 ```
 
 ### Using the Run-Sequence Command
