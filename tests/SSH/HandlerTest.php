@@ -45,22 +45,22 @@ class HandlerTest extends TestCase
 
     public function testExecuteCreatesConnectionParser()
     {
-        $this->markTestSkipped('Handler execution requires real SSH connection');
+        $this->markTestSkipped('Skipped: Handler execution requires real SSH connection. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testExecuteCreatesCommandProxy()
     {
-        $this->markTestSkipped('Handler execution requires real SSH connection');
+        $this->markTestSkipped('Skipped: Handler execution requires real SSH connection. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testExecuteDelegatesToProxyExecute()
     {
-        $this->markTestSkipped('Handler execution requires real SSH connection');
+        $this->markTestSkipped('Skipped: Handler execution requires real SSH connection. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testExecuteReturnsProxyExitCode()
     {
-        $this->markTestSkipped('Handler execution requires real SSH connection');
+        $this->markTestSkipped('Skipped: Handler execution requires real SSH connection. See tests/Integration/README.md#skipped-tests.');
     }
 
     // ============================================
@@ -69,11 +69,11 @@ class HandlerTest extends TestCase
 
     public function testEndToEndFlowWithMockedComponents()
     {
-        $this->markTestSkipped('Integration test requires mocking ConnectionParser and CommandProxy');
+        $this->markTestSkipped('Skipped: Integration test requires mocking ConnectionParser and CommandProxy. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testCorrectParameterPassing()
     {
-        $this->markTestSkipped('Parameter passing test requires mocking');
+        $this->markTestSkipped('Skipped: Parameter passing test requires mocking. See tests/Integration/README.md#skipped-tests.');
     }
 }

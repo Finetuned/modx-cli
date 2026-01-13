@@ -15,7 +15,7 @@ class CustomPackageUpgradeTest extends TestCase
     {
         // Skip if running in integration mode where real modX is already loaded
         if (getenv('MODX_INTEGRATION_TESTS')) {
-            $this->markTestSkipped('Skipping unit test in integration mode to avoid modX class conflicts');
+            $this->markTestSkipped('Skipped: unit test in integration mode to avoid modX class conflicts. See tests/Integration/README.md#skipped-tests.');
         }
 
         $reflection = new \ReflectionClass(MODX_CLI::class);

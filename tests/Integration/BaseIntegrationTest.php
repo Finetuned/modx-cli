@@ -68,7 +68,7 @@ abstract class BaseIntegrationTest extends TestCase
         // Skip tests if integration testing is not enabled
         if (!$this->integrationTestsEnabled) {
             $this->markTestSkipped(
-                'Integration tests are disabled. Set MODX_INTEGRATION_TESTS=1 to enable.'
+                'Skipped: Integration tests are disabled. Set MODX_INTEGRATION_TESTS=1 to enable. See tests/Integration/README.md#skipped-tests.'
             );
         }
 
@@ -85,7 +85,7 @@ abstract class BaseIntegrationTest extends TestCase
         // Verify test environment exists
         if (!file_exists($this->modxPath)) {
             $this->markTestSkipped(
-                "Test MODX instance not found at {$this->modxPath}. Add an environment variables file at tests/integration/.env."
+                "Skipped: Test MODX instance not found at {$this->modxPath}. Add an environment variables file at tests/integration/.env. See tests/Integration/README.md#skipped-tests."
             );
         }
         $this->tablePrefix = $_ENV['MODX_TEST_DB_PREFIX'] ?? 'modx_';
@@ -141,7 +141,7 @@ abstract class BaseIntegrationTest extends TestCase
             ]);
             $pdo->query('SELECT 1');
         } catch (\Throwable $e) {
-            $this->markTestSkipped('Integration database unavailable: ' . $e->getMessage());
+            $this->markTestSkipped('Skipped: Integration database unavailable: ' . $e->getMessage() . '. See tests/Integration/README.md#skipped-tests.');
         }
     }
     

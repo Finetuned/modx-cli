@@ -11,7 +11,7 @@ class CLIIntegrationTest extends TestCase
     protected function setUp(): void
     {
         if (!getenv('MODX_INTEGRATION_TESTS')) {
-            $this->markTestSkipped('Integration tests are disabled. Set MODX_INTEGRATION_TESTS=1 to enable.');
+            $this->markTestSkipped('Skipped: Integration tests are disabled. Set MODX_INTEGRATION_TESTS=1 to enable. See tests/Integration/README.md#skipped-tests.');
         }
         $this->cliPath = __DIR__ . '/../../../../';
     }

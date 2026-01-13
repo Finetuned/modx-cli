@@ -223,7 +223,7 @@ class ConnectionParserTest extends TestCase
     {
         // This test requires mocking the file system or using a temporary SSH config
         // Skip for now as it requires file system access
-        $this->markTestSkipped('SSH config alias detection requires file system mocking');
+        $this->markTestSkipped('Skipped: SSH config alias detection requires file system mocking. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testIsAliasReturnsFalseForRegularHostname()

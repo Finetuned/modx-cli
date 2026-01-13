@@ -22,7 +22,7 @@ class IntegratedPackageUpgradeTest extends TestCase
         // Only run when explicitly enabled via env; do NOT load .env to avoid toggling unit runs.
         // Also skip if a global modX already exists to avoid class redeclaration.
         if (!getenv('MODX_INTEGRATION_TESTS') || class_exists('modX')) {
-            $this->markTestSkipped('Integration tests are disabled. Set MODX_INTEGRATION_TESTS=1 to enable.');
+            $this->markTestSkipped('Skipped: Integration tests are disabled. Set MODX_INTEGRATION_TESTS=1 to enable. See tests/Integration/README.md#skipped-tests.');
         }
 
         // Attempt to load integration MODX config; skip only if truly unavailable.
@@ -31,7 +31,7 @@ class IntegratedPackageUpgradeTest extends TestCase
         $this->applyConfigEnv($configPath);
 
         if (!getenv('MODX_CORE_PATH')) {
-            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            $this->markTestSkipped('Skipped: MODX configuration not available - integration test requires MODX installation. See tests/Integration/README.md#skipped-tests.');
         }
 
         // Clear any existing commands before each test
@@ -135,7 +135,7 @@ class IntegratedPackageUpgradeTest extends TestCase
         // This is an integration test that requires loading actual command functions
         // which instantiate Application objects that need MODX config
         if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
-            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            $this->markTestSkipped('Skipped: MODX configuration not available - integration test requires MODX installation. See tests/Integration/README.md#skipped-tests.');
             return;
         }
         
@@ -160,7 +160,7 @@ class IntegratedPackageUpgradeTest extends TestCase
     public function testIntegratedCommandsCanBeRetrieved()
     {
         if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
-            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            $this->markTestSkipped('Skipped: MODX configuration not available - integration test requires MODX installation. See tests/Integration/README.md#skipped-tests.');
             return;
         }
         
@@ -187,7 +187,7 @@ class IntegratedPackageUpgradeTest extends TestCase
     public function testIntegratedCommandsExecuteWithoutArgumentConflict()
     {
         if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
-            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            $this->markTestSkipped('Skipped: MODX configuration not available - integration test requires MODX installation. See tests/Integration/README.md#skipped-tests.');
             return;
         }
         
@@ -270,7 +270,7 @@ class IntegratedPackageUpgradeTest extends TestCase
     public function testCommandNamesFollowExistingPackageNamespace()
     {
         if (!file_exists(getcwd() . '/config.core.php') && !getenv('MODX_CORE_PATH')) {
-            $this->markTestSkipped('MODX configuration not available - integration test requires MODX installation');
+            $this->markTestSkipped('Skipped: MODX configuration not available - integration test requires MODX installation. See tests/Integration/README.md#skipped-tests.');
             return;
         }
         

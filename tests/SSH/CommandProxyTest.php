@@ -19,32 +19,32 @@ class CommandProxyTest extends TestCase
     public function testBuildSSHCommandBasicStructure()
     {
         // Skip - requires mocking Symfony Process and ConnectionParser
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testBuildSSHCommandWithCustomPort()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testBuildSSHCommandWithPath()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testArgumentEscaping()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testMultipleArguments()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testSpecialCharactersInArguments()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     // ============================================
@@ -53,22 +53,22 @@ class CommandProxyTest extends TestCase
 
     public function testProcessTimeoutSet()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testTTYModeEnabled()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testStdoutStderrStreaming()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testExitCodeReturned()
     {
-        $this->markTestSkipped('CommandProxy requires Symfony Process which cannot be easily tested without real SSH');
+        $this->markTestSkipped('Skipped: CommandProxy requires Symfony Process which cannot be easily tested without real SSH. See tests/Integration/README.md#skipped-tests.');
     }
 
     // ============================================

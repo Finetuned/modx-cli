@@ -35,7 +35,7 @@ class TreeBuilderTest extends TestCase
     {
         // Skip this test - TreeBuilder has a limitation where custom parent field with value 0
         // causes issues since $indexed[0] doesn't exist when items are indexed by their pk value
-        $this->markTestSkipped('TreeBuilder has limitations with custom fields and parent=0');
+        $this->markTestSkipped('Skipped: TreeBuilder has limitations with custom fields and parent=0. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testTreeConstructionWithEmptyArray()

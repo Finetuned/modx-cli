@@ -256,7 +256,7 @@ class CommandRegistrarTest extends TestCase
     {
         // Skip this test - unRegister requires IO to be set, which is tightly coupled to Composer
         // The functionality is tested in integration tests
-        $this->markTestSkipped('unRegister requires Composer IO which cannot be easily mocked');
+        $this->markTestSkipped('Skipped: unRegister requires Composer IO which cannot be easily mocked. See tests/Integration/README.md#skipped-tests.');
     }
 
     public function testUnRegisterWithoutDeprecatedFile()

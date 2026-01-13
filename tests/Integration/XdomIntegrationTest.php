@@ -34,19 +34,19 @@ class XdomIntegrationTest extends BaseIntegrationTest
         // Load MODX configuration
         $configPath = $this->modxPath . '/config.core.php';
         if (!file_exists($configPath)) {
-            $this->markTestSkipped("MODX config.core.php not found at {$configPath}");
+            $this->markTestSkipped("Skipped: MODX config.core.php not found at {$configPath}. See tests/Integration/README.md#skipped-tests.");
         }
         
         require_once $configPath;
         
         if (!defined('MODX_CORE_PATH')) {
-            $this->markTestSkipped('MODX_CORE_PATH not defined after loading config.core.php');
+            $this->markTestSkipped('Skipped: MODX_CORE_PATH not defined after loading config.core.php. See tests/Integration/README.md#skipped-tests.');
         }
         
         // Load MODX class
         $modxClassPath = MODX_CORE_PATH . 'model/modx/modx.class.php';
         if (!file_exists($modxClassPath)) {
-            $this->markTestSkipped("MODX class not found at {$modxClassPath}");
+            $this->markTestSkipped("Skipped: MODX class not found at {$modxClassPath}. See tests/Integration/README.md#skipped-tests.");
         }
         
         require_once $modxClassPath;
