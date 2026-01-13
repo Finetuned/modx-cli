@@ -49,6 +49,8 @@ class CommandRegistrarTest extends TestCase
         if ($this->testDeprecatedFile && file_exists($this->testDeprecatedFile)) {
             unlink($this->testDeprecatedFile);
         }
+
+        TestRegistrar::setIO(null);
     }
 
     /**
@@ -254,9 +256,49 @@ class CommandRegistrarTest extends TestCase
 
     public function testUnRegisterWithDeprecatedFile()
     {
-        // Skip this test - unRegister requires IO to be set, which is tightly coupled to Composer
-        // The functionality is tested in integration tests
-        $this->markTestSkipped('Skipped: unRegister requires Composer IO which cannot be easily mocked. See tests/Integration/README.md#skipped-tests.');
+        $deprecatedClasses = [
+            'Test\\Command\\DeprecatedCommand',
+            'Test\\Command\\LegacyCommand',
+        ];
+        $this->testDeprecatedFile = $this->testCommandsDir . '/deprecated.php';
+        file_put_contents(
+            $this->testDeprecatedFile,
+            "<?php\nreturn " . var_export($deprecatedClasses, true) . ";\n"
+        );
+
+        // Create a mock configuration
+        $mockConfig = $this->getMockBuilder(Extension::class)
+            ->getMock();
+
+        $removedClasses = [];
+        $mockConfig->expects($this->exactly(2))
+            ->method('remove')
+            ->willReturnCallback(function ($class) use (&$removedClasses) {
+                $removedClasses[] = $class;
+            });
+
+        // Create mock IO
+        $mockIO = new class {
+            public $messages = [];
+
+            public function write($message)
+            {
+                $this->messages[] = $message;
+            }
+        };
+
+        // Create test registrar
+        $registrar = $this->getTestRegistrar();
+        $registrar::setIO($mockIO);
+
+        // Call unRegister
+        $reflection = new \ReflectionClass($registrar);
+        $method = $reflection->getMethod('unRegister');
+        $method->setAccessible(true);
+        $method->invoke(null, $mockConfig);
+
+        $this->assertSame($deprecatedClasses, $removedClasses);
+        $this->assertNotEmpty($mockIO->messages);
     }
 
     public function testUnRegisterWithoutDeprecatedFile()
@@ -266,8 +308,12 @@ class CommandRegistrarTest extends TestCase
             ->getMock();
         
         // Create mock IO
-        $mockIO = $this->getMockBuilder('Composer\\IO\\IOInterface')
-            ->getMock();
+        $mockIO = new class {
+            public function write($message)
+            {
+                // no-op
+            }
+        };
         
         // Should not call remove if no deprecated file exists
         $mockConfig->expects($this->never())
@@ -276,13 +322,10 @@ class CommandRegistrarTest extends TestCase
         // Create test registrar
         $registrar = $this->getTestRegistrar();
         
-        // Set static IO
-        $reflection = new \ReflectionClass($registrar);
-        $property = $reflection->getProperty('io');
-        $property->setAccessible(true);
-        $property->setValue(null, $mockIO);
+        $registrar::setIO($mockIO);
         
         // Call unRegister
+        $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('unRegister');
         $method->setAccessible(true);
         $method->invoke(null, $mockConfig);

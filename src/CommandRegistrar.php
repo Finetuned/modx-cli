@@ -29,29 +29,29 @@ abstract class CommandRegistrar
      */
     public static function run(Event $event)
     {
-        self::$io = $event->getIO();
+        self::setIO($event->getIO());
 
         /** @var Application $app */
         $app = new Application();
         $config = $app->extensions;
-        self::$io->write('Editing extra commands for <info>' . self::getNS() . '</info>...');
+        self::writeIO('Editing extra commands for <info>' . self::getNS() . '</info>...');
 
         // First, un-register "deprecated" commands, if any
         static::unRegister($config);
 
         // Iterate the Command folder, looking for command classes
-        self::$io->write("\n" . '  - looking for commands to register...');
+        self::writeIO("\n" . '  - looking for commands to register...');
         /** @var \Symfony\Component\Finder\SplFileInfo $file */
         foreach (static::listCommands() as $file) {
             $className = static::getCommandClass($file);
             if (!in_array($className, self::$unregistered)) {
                 $config->set($className);
-                self::$io->write("    Added   <info>{$className}</info>");
+                self::writeIO("    Added   <info>{$className}</info>");
             }
         }
         $config->save();
 
-        self::$io->write(' ');
+        self::writeIO(' ');
         self::$reflection = null;
     }
 
@@ -64,13 +64,31 @@ abstract class CommandRegistrar
     {
         $deprecated = static::getRootPath() . '/deprecated.php';
         if (file_exists($deprecated)) {
-            self::$io->write("\n" . '  - looking for commands to remove...');
+            self::writeIO("\n" . '  - looking for commands to remove...');
             $deprecated = include $deprecated;
             foreach ($deprecated as $class) {
                 self::$unregistered[] = $class;
                 $config->remove($class);
-                self::$io->write("    Removed <comment>{$class}</comment>");
+                self::writeIO("    Removed <comment>{$class}</comment>");
             }
+        }
+    }
+
+    /**
+     * Inject IO for testing or custom runners.
+     */
+    public static function setIO($io): void
+    {
+        self::$io = $io;
+    }
+
+    /**
+     * Write output only when IO is available.
+     */
+    protected static function writeIO($message): void
+    {
+        if (self::$io) {
+            self::$io->write($message);
         }
     }
 
