@@ -31,7 +31,10 @@ class SelfUpdateTest extends BaseIntegrationTest
         $expectedVersion = trim((string) file_get_contents($versionPath));
         $this->assertSame($expectedVersion, $data['current_version']);
         $this->assertSame('0.7.0', $data['latest_version']);
-        $this->assertTrue($data['update_available']);
+        $this->assertSame(
+            version_compare('0.7.0', $expectedVersion, '>'),
+            $data['update_available']
+        );
         $this->assertSame('https://example.com/modx-cli.phar', $data['download_url']);
         $this->assertSame(1234, $data['file_size']);
     }
@@ -47,10 +50,13 @@ class SelfUpdateTest extends BaseIntegrationTest
         $process->setTimeout(30);
         $process->setWorkingDirectory($this->modxPath);
 
-        $env = array_merge($_ENV, [
+        $env = array_merge($_SERVER, $_ENV, [
             'MODX_CONFIG_KEY' => 'config',
         ], $extraEnv);
 
+        if (method_exists($process, 'inheritEnvironmentVariables')) {
+            $process->inheritEnvironmentVariables(true);
+        }
         $process->setEnv($env);
         $process->run();
 
