@@ -205,7 +205,4 @@ Skip messages should point here for context.
 - Alias detection tests may be skipped when no temp SSH config fixture is provided.
 
 ### Known Limitations
-- TreeBuilder custom parent field handling with `parent=0` is a known limitation and the test is skipped until addressed.
-
-### Composer IO Coupling
-- `CommandRegistrar::unRegister` tests are skipped because Composer IO is tightly coupled and not yet mockable.
+- (none currently tracked for unit tests; see Task 19 for ongoing SSH/integration improvements)
