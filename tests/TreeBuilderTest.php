@@ -33,9 +33,19 @@ class TreeBuilderTest extends TestCase
 
     public function testTreeConstructionWithCustomFieldNames()
     {
-        // Skip this test - TreeBuilder has a limitation where custom parent field with value 0
-        // causes issues since $indexed[0] doesn't exist when items are indexed by their pk value
-        $this->markTestSkipped('Skipped: TreeBuilder has limitations with custom fields and parent=0. See tests/Integration/README.md#skipped-tests.');
+        $items = [
+            ['pk' => 1, 'owner' => 0, 'name' => 'Root'],
+            ['pk' => 2, 'owner' => 1, 'name' => 'Child'],
+        ];
+
+        $builder = new TreeBuilder($items, 'pk', 'owner', 'owned');
+        $tree = $builder->getTree();
+
+        $this->assertIsArray($tree);
+        $this->assertArrayHasKey(1, $tree, 'Tree should contain item with pk 1');
+        $this->assertEquals('Root', $tree[1]['name']);
+        $this->assertArrayHasKey('owned', $tree[1]);
+        $this->assertArrayHasKey(2, $tree[1]['owned']);
     }
 
     public function testTreeConstructionWithEmptyArray()

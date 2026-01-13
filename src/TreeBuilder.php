@@ -42,7 +42,7 @@ class TreeBuilder
         
         $root = array_shift($this->tree);
 
-        return isset($root['children']) ? $root['children'] : [];
+        return isset($root[$this->childrenField]) ? $root[$this->childrenField] : [];
     }
 
     /**
