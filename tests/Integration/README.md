@@ -103,6 +103,9 @@ MODX_TEST_DB_PREFIX=modx_
 
 See `tests/Integration/.env.example` for a template (if available).
 
+The `tests/Integration/setup.sh` script will load `.env` if present, export defaults for any missing values, and validate
+the MODX path and database connectivity.
+
 ## Bootstrap Differences
 
 ### Unit Bootstrap (`tests/bootstrap.php`)

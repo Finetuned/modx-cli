@@ -42,6 +42,25 @@ echo "Integration tests directory: $INTEGRATION_DIR"
 echo "Project root: $PROJECT_ROOT"
 echo ""
 
+# Load .env if present
+if [ -f "$INTEGRATION_DIR/.env" ]; then
+    echo "Loading integration environment from .env..."
+    set -a
+    # shellcheck disable=SC1091
+    . "$INTEGRATION_DIR/.env"
+    set +a
+    echo -e "${GREEN}✓ Loaded .env${NC}"
+    echo ""
+fi
+
+# Export required defaults if not set
+export MODX_INTEGRATION_TESTS="${MODX_INTEGRATION_TESTS:-1}"
+export MODX_TEST_INSTANCE_ALIAS="${MODX_TEST_INSTANCE_ALIAS:-test}"
+export MODX_TEST_DB_HOST="${MODX_TEST_DB_HOST:-localhost}"
+export MODX_TEST_DB_NAME="${MODX_TEST_DB_NAME:-modx_test}"
+export MODX_TEST_DB_USER="${MODX_TEST_DB_USER:-root}"
+export MODX_TEST_DB_PASS="${MODX_TEST_DB_PASS:-testpass}"
+
 # Start Docker environment
 echo "Starting Docker environment..."
 docker-compose up -d
@@ -68,6 +87,28 @@ if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
     echo -e "${RED}Error: MySQL failed to start${NC}"
     docker-compose logs mysql
     exit 1
+fi
+
+# Validate MODX instance path if provided
+if [ -n "$MODX_TEST_INSTANCE_PATH" ]; then
+    if [ ! -d "$MODX_TEST_INSTANCE_PATH" ]; then
+        echo -e "${YELLOW}Warning: MODX_TEST_INSTANCE_PATH does not exist: $MODX_TEST_INSTANCE_PATH${NC}"
+    elif [ ! -f "$MODX_TEST_INSTANCE_PATH/config.core.php" ]; then
+        echo -e "${YELLOW}Warning: config.core.php not found in $MODX_TEST_INSTANCE_PATH${NC}"
+    else
+        echo -e "${GREEN}✓ MODX instance path looks valid${NC}"
+    fi
+    echo ""
+fi
+
+# Validate DB connectivity
+if command -v mysqladmin &> /dev/null; then
+    if mysqladmin ping -h "$MODX_TEST_DB_HOST" -u "$MODX_TEST_DB_USER" -p"$MODX_TEST_DB_PASS" &> /dev/null; then
+        echo -e "${GREEN}✓ Database connection verified (${MODX_TEST_DB_HOST})${NC}"
+    else
+        echo -e "${YELLOW}Warning: Unable to verify database connection to ${MODX_TEST_DB_HOST}${NC}"
+    fi
+    echo ""
 fi
 
 echo ""
