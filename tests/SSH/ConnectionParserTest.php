@@ -221,9 +221,15 @@ class ConnectionParserTest extends TestCase
 
     public function testIsAliasDetectsSSHConfigAlias()
     {
-        // This test requires mocking the file system or using a temporary SSH config
-        // Skip for now as it requires file system access
-        $this->markTestSkipped('Skipped: SSH config alias detection requires file system mocking. See tests/Integration/README.md#skipped-tests.');
+        $tempConfig = tempnam(sys_get_temp_dir(), 'modx_ssh_config_');
+        $configContent = "Host myalias\n    HostName example.com\n";
+        file_put_contents($tempConfig, $configContent);
+
+        $parser = new ConnectionParser('myalias', $tempConfig);
+
+        $this->assertTrue($parser->isAlias());
+
+        unlink($tempConfig);
     }
 
     public function testIsAliasReturnsFalseForRegularHostname()

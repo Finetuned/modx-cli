@@ -37,13 +37,20 @@ class ConnectionParser
     protected $path;
 
     /**
+     * @var string|null Custom SSH config path
+     */
+    protected $sshConfigPath;
+
+    /**
      * ConnectionParser constructor.
      *
      * @param string $connectionString The SSH connection string to parse
+     * @param string|null $sshConfigPath Optional SSH config path override
      */
-    public function __construct($connectionString)
+    public function __construct($connectionString, $sshConfigPath = null)
     {
         $this->original = $connectionString;
+        $this->sshConfigPath = $sshConfigPath;
         $this->parse($connectionString);
     }
 
@@ -102,7 +109,7 @@ class ConnectionParser
      */
     protected function isSSHAlias($name)
     {
-        $sshConfigPath = $this->getHomeDir() . '/.ssh/config';
+        $sshConfigPath = $this->getSSHConfigPath();
 
         if (!file_exists($sshConfigPath)) {
             return false;
@@ -110,6 +117,24 @@ class ConnectionParser
 
         $config = file_get_contents($sshConfigPath);
         return preg_match('/^\s*Host\s+' . preg_quote($name, '/') . '\s*$/mi', $config) === 1;
+    }
+
+    /**
+     * Get the SSH config path.
+     *
+     * @return string
+     */
+    protected function getSSHConfigPath()
+    {
+        if ($this->sshConfigPath) {
+            return $this->sshConfigPath;
+        }
+
+        if (isset($_SERVER['MODX_SSH_CONFIG'])) {
+            return $_SERVER['MODX_SSH_CONFIG'];
+        }
+
+        return $this->getHomeDir() . '/.ssh/config';
     }
 
     /**

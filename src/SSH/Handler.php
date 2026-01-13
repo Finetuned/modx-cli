@@ -17,13 +17,20 @@ class Handler
     protected $connectionString;
 
     /**
+     * @var CommandExecutorInterface|null
+     */
+    protected $executor;
+
+    /**
      * Handler constructor.
      *
      * @param string $connectionString The SSH connection string
+     * @param CommandExecutorInterface|null $executor The command executor
      */
-    public function __construct($connectionString)
+    public function __construct($connectionString, CommandExecutorInterface $executor = null)
     {
         $this->connectionString = $connectionString;
+        $this->executor = $executor;
     }
 
     /**
@@ -36,7 +43,7 @@ class Handler
     public function execute($command, array $args = [])
     {
         $parser = new ConnectionParser($this->connectionString);
-        $proxy = new CommandProxy($parser, $command, $args);
+        $proxy = new CommandProxy($parser, $command, $args, $this->executor);
         return $proxy->execute();
     }
 }

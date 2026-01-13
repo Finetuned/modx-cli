@@ -2,8 +2,6 @@
 
 namespace MODX\CLI\SSH;
 
-use Symfony\Component\Process\Process;
-
 /**
  * Class CommandProxy
  *
@@ -29,17 +27,24 @@ class CommandProxy
     protected $args;
 
     /**
+     * @var CommandExecutorInterface
+     */
+    protected $executor;
+
+    /**
      * CommandProxy constructor.
      *
      * @param ConnectionParser $connection The SSH connection
      * @param string $command The command to execute
      * @param array $args The command arguments
+     * @param CommandExecutorInterface|null $executor The command executor
      */
-    public function __construct(ConnectionParser $connection, $command, array $args = [])
+    public function __construct(ConnectionParser $connection, $command, array $args = [], CommandExecutorInterface $executor = null)
     {
         $this->connection = $connection;
         $this->command = $command;
         $this->args = $args;
+        $this->executor = $executor ?: new SymfonyProcessExecutor();
     }
 
     /**
@@ -51,12 +56,8 @@ class CommandProxy
     {
         $sshCommand = $this->buildSSHCommand();
 
-        $process = Process::fromShellCommandline($sshCommand);
-        $process->setTimeout(3600); // 1 hour timeout
-        $process->setTty(true); // Use TTY for interactive commands
-
-        return $process->run(function ($type, $buffer) {
-            if (Process::ERR === $type) {
+        return $this->executor->run($sshCommand, 3600, true, function ($type, $buffer) {
+            if (\Symfony\Component\Process\Process::ERR === $type) {
                 fwrite(STDERR, $buffer);
             } else {
                 fwrite(STDOUT, $buffer);

@@ -201,8 +201,7 @@ Skip messages should point here for context.
 - They are also skipped when the MODX install path or database is unavailable.
 
 ### SSH Tests
-- SSH handler/proxy tests are skipped because they require a real SSH connection or a mockable transport layer.
-- Alias detection tests may be skipped when no temp SSH config fixture is provided.
+- Unit tests now use a mockable SSH executor; no real SSH connectivity is required.
 
 ### Known Limitations
 - (none currently tracked for unit tests; see Task 19 for ongoing SSH/integration improvements)

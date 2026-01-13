@@ -1,8 +1,7 @@
 <?php namespace MODX\CLI\Tests\SSH;
 
 use MODX\CLI\SSH\Handler;
-use MODX\CLI\SSH\ConnectionParser;
-use MODX\CLI\SSH\CommandProxy;
+use MODX\CLI\SSH\CommandExecutorInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -45,22 +44,42 @@ class HandlerTest extends TestCase
 
     public function testExecuteCreatesConnectionParser()
     {
-        $this->markTestSkipped('Skipped: Handler execution requires real SSH connection. See tests/Integration/README.md#skipped-tests.');
+        $executor = new HandlerStubExecutor();
+        $handler = new Handler('user@example.com', $executor);
+
+        $handler->execute('system:info');
+
+        $this->assertStringContainsString('user@example.com', $executor->command);
     }
 
     public function testExecuteCreatesCommandProxy()
     {
-        $this->markTestSkipped('Skipped: Handler execution requires real SSH connection. See tests/Integration/README.md#skipped-tests.');
+        $executor = new HandlerStubExecutor();
+        $handler = new Handler('user@example.com', $executor);
+
+        $handler->execute('system:info');
+
+        $this->assertStringContainsString('ssh', $executor->command);
     }
 
     public function testExecuteDelegatesToProxyExecute()
     {
-        $this->markTestSkipped('Skipped: Handler execution requires real SSH connection. See tests/Integration/README.md#skipped-tests.');
+        $executor = new HandlerStubExecutor();
+        $executor->returnCode = 7;
+        $handler = new Handler('user@example.com', $executor);
+
+        $result = $handler->execute('system:info');
+
+        $this->assertEquals(7, $result);
     }
 
     public function testExecuteReturnsProxyExitCode()
     {
-        $this->markTestSkipped('Skipped: Handler execution requires real SSH connection. See tests/Integration/README.md#skipped-tests.');
+        $executor = new HandlerStubExecutor();
+        $executor->returnCode = 13;
+        $handler = new Handler('user@example.com', $executor);
+
+        $this->assertEquals(13, $handler->execute('system:info'));
     }
 
     // ============================================
@@ -69,11 +88,41 @@ class HandlerTest extends TestCase
 
     public function testEndToEndFlowWithMockedComponents()
     {
-        $this->markTestSkipped('Skipped: Integration test requires mocking ConnectionParser and CommandProxy. See tests/Integration/README.md#skipped-tests.');
+        $executor = new HandlerStubExecutor();
+        $handler = new Handler('user@example.com:/var/www', $executor);
+
+        $handler->execute('system:info');
+
+        $this->assertStringContainsString('cd /var/www &&', $executor->command);
     }
 
     public function testCorrectParameterPassing()
     {
-        $this->markTestSkipped('Skipped: Parameter passing test requires mocking. See tests/Integration/README.md#skipped-tests.');
+        $executor = new HandlerStubExecutor();
+        $handler = new Handler('user@example.com', $executor);
+
+        $handler->execute('resource:list', ['--limit=10', '--start=20']);
+
+        $this->assertStringContainsString('--limit=10', $executor->command);
+        $this->assertStringContainsString('--start=20', $executor->command);
+    }
+}
+
+class HandlerStubExecutor implements CommandExecutorInterface
+{
+    public $command;
+    public $timeout;
+    public $tty;
+    public $outputCallback;
+    public $returnCode = 0;
+
+    public function run(string $command, int $timeout, bool $tty, ?callable $outputCallback = null): int
+    {
+        $this->command = $command;
+        $this->timeout = $timeout;
+        $this->tty = $tty;
+        $this->outputCallback = $outputCallback;
+
+        return $this->returnCode;
     }
 }
