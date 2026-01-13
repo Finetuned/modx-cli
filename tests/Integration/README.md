@@ -190,3 +190,22 @@ MODX_INTEGRATION_TESTS=1 ./vendor/bin/phpunit -c phpunit.integration.xml
 ```
 
 Consider running these as separate CI jobs for better isolation.
+
+## Skipped Tests
+
+Some tests are intentionally skipped due to environment constraints or known limitations.
+Skip messages should point here for context.
+
+### Integration Environment
+- Tests extending `BaseIntegrationTest` are skipped when `MODX_INTEGRATION_TESTS=1` is not set.
+- They are also skipped when the MODX install path or database is unavailable.
+
+### SSH Tests
+- SSH handler/proxy tests are skipped because they require a real SSH connection or a mockable transport layer.
+- Alias detection tests may be skipped when no temp SSH config fixture is provided.
+
+### Known Limitations
+- TreeBuilder custom parent field handling with `parent=0` is a known limitation and the test is skipped until addressed.
+
+### Composer IO Coupling
+- `CommandRegistrar::unRegister` tests are skipped because Composer IO is tightly coupled and not yet mockable.
