@@ -6,6 +6,10 @@ use MODX\CLI\API\MODX_CLI;
 use MODX\CLI\Tests\Configuration\BaseTest;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @runInSeparateProcess
+ * @preserveGlobalState disabled
+ */
 class CustomPackageUpgradeTest extends TestCase
 {
     protected $modx;
@@ -13,11 +17,6 @@ class CustomPackageUpgradeTest extends TestCase
 
     protected function setUp(): void
     {
-        // Skip if running in integration mode where real modX is already loaded
-        if (getenv('MODX_INTEGRATION_TESTS')) {
-            $this->markTestSkipped('Skipped: unit test in integration mode to avoid modX class conflicts. See tests/Integration/README.md#skipped-tests.');
-        }
-
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
         $property->setAccessible(true);
