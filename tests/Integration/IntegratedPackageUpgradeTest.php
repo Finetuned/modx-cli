@@ -19,14 +19,13 @@ class IntegratedPackageUpgradeTest extends TestCase
 {
     protected function setUp(): void
     {
-        // Only run when explicitly enabled via env; do NOT load .env to avoid toggling unit runs.
-        // Also skip if a global modX already exists to avoid class redeclaration.
-        if (!getenv('MODX_INTEGRATION_TESTS') || class_exists('modX')) {
+        $this->loadIntegrationEnv();
+        $enabled = getenv('MODX_INTEGRATION_TESTS');
+        if ($enabled === false || $enabled === '' || $enabled === '0') {
             $this->markTestSkipped('Skipped: Integration tests are disabled. Set MODX_INTEGRATION_TESTS=1 to enable. See tests/Integration/README.md#skipped-tests.');
         }
 
         // Attempt to load integration MODX config; skip only if truly unavailable.
-        $this->loadIntegrationEnv();
         $configPath = $this->resolveConfigPath();
         $this->applyConfigEnv($configPath);
 
@@ -96,7 +95,16 @@ class IntegratedPackageUpgradeTest extends TestCase
     private function clearRegisteredCommands()
     {
         // Remove any previously registered test commands
-        $commands = ['package:list-upgrades', 'package:list-remote', 'package:download', 'package:upgrade-all'];
+        $commands = [
+            'package:list-upgrades',
+            'package:list-remote',
+            'package:download',
+            'package:upgrade-all',
+            'package:upgrade:list',
+            'package:upgrade:list-remote',
+            'package:upgrade:download',
+            'package:upgrade:all',
+        ];
         foreach ($commands as $command) {
             MODX_CLI::remove_command($command);
         }

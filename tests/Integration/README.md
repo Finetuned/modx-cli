@@ -203,6 +203,9 @@ Skip messages should point here for context.
 - Tests extending `BaseIntegrationTest` are skipped when `MODX_INTEGRATION_TESTS=1` is not set.
 - They are also skipped when the MODX install path or database is unavailable.
 
+### Package Upgrade Unit Test
+- `tests/Command/Package/Upgrade/CustomPackageUpgradeTest.php` runs in a separate process to avoid modX class conflicts when `MODX_INTEGRATION_TESTS=1`.
+
 ### SSH Tests
 - Unit tests now use a mockable SSH executor; no real SSH connectivity is required.
 
