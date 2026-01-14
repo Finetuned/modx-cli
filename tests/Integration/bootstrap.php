@@ -24,5 +24,12 @@ if (file_exists(__DIR__ . '/.env')) {
     }
 }
 
+// Ensure integration tests are enabled when using the integration bootstrap
+if (getenv('MODX_INTEGRATION_TESTS') === false) {
+    putenv('MODX_INTEGRATION_TESTS=1');
+    $_ENV['MODX_INTEGRATION_TESTS'] = '1';
+    $_SERVER['MODX_INTEGRATION_TESTS'] = '1';
+}
+
 // DO NOT stub modX - integration tests require real MODX class
 // The modX class will be loaded by MODX CMS when tests initialize MODX instances
