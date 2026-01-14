@@ -27,7 +27,7 @@ class Handler
      * @param string $connectionString The SSH connection string
      * @param CommandExecutorInterface|null $executor The command executor
      */
-    public function __construct($connectionString, CommandExecutorInterface $executor = null)
+    public function __construct($connectionString, ?CommandExecutorInterface $executor = null)
     {
         $this->connectionString = $connectionString;
         $this->executor = $executor;

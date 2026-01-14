@@ -39,7 +39,7 @@ class CommandProxy
      * @param array $args The command arguments
      * @param CommandExecutorInterface|null $executor The command executor
      */
-    public function __construct(ConnectionParser $connection, $command, array $args = [], CommandExecutorInterface $executor = null)
+    public function __construct(ConnectionParser $connection, $command, array $args = [], ?CommandExecutorInterface $executor = null)
     {
         $this->connection = $connection;
         $this->command = $command;
