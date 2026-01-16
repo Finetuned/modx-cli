@@ -11,9 +11,11 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Terminal;
 use Symfony\Component\Finder\Finder;
 use MODX\CLI\SSH\Handler;
 use MODX\CLI\Alias\Resolver;
@@ -62,6 +64,11 @@ class Application extends BaseApp
      */
     protected $pluginManager;
 
+    /**
+     * @var bool
+     */
+    protected $logoPrinted = false;
+
     public function __construct()
     {
         $this->instances = new Configuration\Instance();
@@ -80,7 +87,8 @@ class Application extends BaseApp
         // Initialize plugin manager
         $this->pluginManager = new PluginManager($this, $this->logger);
 
-        parent::__construct('MODX CLI', $this->resolveVersion());
+        $version = $this->shouldExposeVersionInOutput() ? $this->resolveVersion() : '';
+        parent::__construct('MODX CLI', $version);
 
         // Load plugins after parent construction
         $this->pluginManager->loadPlugins();
@@ -137,6 +145,13 @@ class Application extends BaseApp
         }
 
         return '0.0.0';
+    }
+
+    private function shouldExposeVersionInOutput(): bool
+    {
+        $argv = $_SERVER['argv'] ?? [];
+
+        return in_array('--json', $argv, true);
     }
 
     /**
@@ -602,8 +617,128 @@ class Application extends BaseApp
             return $this->runInSSHMode($input, $output);
         }
 
+        $usePager = $this->shouldUsePager($input, $output);
+        $runOutput = $output;
+        if ($usePager) {
+            $runOutput = new BufferedOutput(
+                $output->getVerbosity(),
+                $output->isDecorated(),
+                $output->getFormatter()
+            );
+        }
+
+        if ($this->shouldDisplayLogo($input, $runOutput)) {
+            $runOutput->writeln($this->renderLogo($this->resolveVersion()));
+            $runOutput->writeln('');
+            $this->logoPrinted = true;
+        }
+
         // Normal execution
-        return parent::doRun($input, $output);
+        $exitCode = parent::doRun($input, $runOutput);
+
+        if ($usePager) {
+            $this->outputWithPagerIfNeeded($runOutput->fetch(), $output);
+        }
+
+        return $exitCode;
+    }
+
+    private function shouldDisplayLogo(InputInterface $input, OutputInterface $output): bool
+    {
+        if ($this->logoPrinted) {
+            return false;
+        }
+
+        if ($output->isQuiet()) {
+            return false;
+        }
+
+        if ($input->hasParameterOption(['--quiet', '-q', '--json', '--ssh'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function shouldUsePager(InputInterface $input, OutputInterface $output): bool
+    {
+        if (!$input->isInteractive()) {
+            return false;
+        }
+
+        if (!function_exists('posix_isatty') || !posix_isatty(STDOUT)) {
+            return false;
+        }
+
+        $command = $input->getFirstArgument();
+        if ($command === null || $command === 'list' || $command === 'help') {
+            return true;
+        }
+
+        return $input->hasParameterOption(['--help', '-h']);
+    }
+
+    private function outputWithPagerIfNeeded(string $content, OutputInterface $output): void
+    {
+        if ($content === '') {
+            return;
+        }
+
+        $terminal = new Terminal();
+        $height = $terminal->getHeight();
+        $lineCount = substr_count($content, "\n") + 1;
+
+        if ($height > 0 && $lineCount <= $height) {
+            $output->write($content);
+            return;
+        }
+
+        $pager = getenv('PAGER');
+        if ($pager === false || trim($pager) === '') {
+            $pager = 'less -R';
+        }
+
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => STDOUT,
+            2 => STDERR,
+        ];
+
+        $process = proc_open($pager, $descriptorSpec, $pipes);
+        if (!is_resource($process)) {
+            $output->write($content);
+            return;
+        }
+
+        fwrite($pipes[0], $content);
+        fclose($pipes[0]);
+
+        $exitCode = proc_close($process);
+        if ($exitCode !== 0) {
+            $output->write($content);
+        }
+    }
+
+    private function renderLogo(string $version): string
+    {
+        $versionLength = strlen($version);
+        $removeLeft = intdiv($versionLength, 2);
+        $removeRight = $versionLength - $removeLeft;
+
+        $leftSpaces = 19 - $removeLeft;
+        $rightSpaces = 20 - $removeRight;
+
+        $versionLine = '│' . str_repeat(' ', $leftSpaces) . 'v' . $version . str_repeat(' ', $rightSpaces) . '│';
+
+        return implode("\n", [
+            '┌────────────────────────────────────────┐',
+            '│                                        │',
+            '│               MODX CLI                 │',
+            $versionLine,
+            '│     github.com/Finetuned/modx-cli      │',
+            '│                                        │',
+            '└────────────────────────────────────────┘                                                     ',
+        ]);
     }
 
     /**
