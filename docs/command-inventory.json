@@ -2003,13 +2003,236 @@
     "name": "user:list",
     "description": "Get a list of users in MODX",
     "arguments": [],
+    "options": [
+      {
+        "name": "active",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Filter by active status (1 or 0)"
+      },
+      {
+        "name": "blocked",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Filter by blocked status (1 or 0)"
+      },
+      {
+        "name": "usergroup",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Filter by user group ID"
+      },
+      {
+        "name": "query",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Search query"
+      },
+      {
+        "name": "limit",
+        "shortcut": "l",
+        "type": "VALUE_REQUIRED",
+        "description": "Number of items to return",
+        "default": "10"
+      },
+      {
+        "name": "start",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Starting index for pagination",
+        "default": "0"
+      }
+    ]
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/Activate.php",
+    "name": "user:activate",
+    "description": "Activate a MODX user",
+    "arguments": [
+      {
+        "name": "identifier",
+        "required": "REQUIRED",
+        "description": "The user ID or username"
+      }
+    ],
     "options": []
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/Block.php",
+    "name": "user:block",
+    "description": "Block a MODX user",
+    "arguments": [
+      {
+        "name": "identifier",
+        "required": "REQUIRED",
+        "description": "The user ID or username"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/Create.php",
+    "name": "user:create",
+    "description": "Create a MODX user",
+    "arguments": [
+      {
+        "name": "username",
+        "required": "REQUIRED",
+        "description": "The username for the new user"
+      }
+    ],
+    "options": [
+      {
+        "name": "email",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The email address for the user (required)"
+      },
+      {
+        "name": "password",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The password for the user (will be generated if not provided)"
+      },
+      {
+        "name": "fullname",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The full name of the user",
+        "default": "''"
+      },
+      {
+        "name": "active",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Active status (1 or 0)",
+        "default": "1"
+      },
+      {
+        "name": "blocked",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Blocked status (1 or 0)",
+        "default": "0"
+      }
+    ]
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/Deactivate.php",
+    "name": "user:deactivate",
+    "description": "Deactivate a MODX user",
+    "arguments": [
+      {
+        "name": "identifier",
+        "required": "REQUIRED",
+        "description": "The user ID or username"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/Get.php",
+    "name": "user:get",
+    "description": "Get detailed information about a MODX user",
+    "arguments": [
+      {
+        "name": "identifier",
+        "required": "REQUIRED",
+        "description": "The user ID or username"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/Remove.php",
+    "name": "user:remove",
+    "description": "Remove a MODX user",
+    "arguments": [
+      {
+        "name": "identifier",
+        "required": "REQUIRED",
+        "description": "The user ID or username"
+      }
+    ],
+    "options": [
+      {
+        "name": "force",
+        "shortcut": "f",
+        "type": "VALUE_NONE",
+        "description": "Force removal without confirmation"
+      }
+    ]
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/Unblock.php",
+    "name": "user:unblock",
+    "description": "Unblock a MODX user",
+    "arguments": [
+      {
+        "name": "identifier",
+        "required": "REQUIRED",
+        "description": "The user ID or username"
+      }
+    ],
+    "options": []
+  },
+  {
+    "category": "User",
+    "file": "src/Command/User/Update.php",
+    "name": "user:update",
+    "description": "Update a MODX user",
+    "arguments": [
+      {
+        "name": "identifier",
+        "required": "REQUIRED",
+        "description": "The user ID or username"
+      }
+    ],
+    "options": [
+      {
+        "name": "username",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The new username"
+      },
+      {
+        "name": "email",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The new email address"
+      },
+      {
+        "name": "fullname",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The full name"
+      },
+      {
+        "name": "active",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Active status (1 or 0)"
+      },
+      {
+        "name": "blocked",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "Blocked status (1 or 0)"
+      }
+    ]
   },
   {
     "category": "User",
     "file": "src/Command/User/ResetPassword.php",
     "name": "user:resetpassword",
-    "description": "Reset a user\\",
+    "description": "Reset a user's password in MODX",
     "arguments": [
       {
         "name": "id",
@@ -2017,6 +2240,19 @@
         "description": "The ID of the user"
       }
     ],
-    "options": []
+    "options": [
+      {
+        "name": "password",
+        "shortcut": null,
+        "type": "VALUE_REQUIRED",
+        "description": "The new password"
+      },
+      {
+        "name": "generate",
+        "shortcut": "g",
+        "type": "VALUE_NONE",
+        "description": "Generate a random password"
+      }
+    ]
   }
 ]

@@ -903,11 +903,86 @@ Generated from source files in `src/Command/`.
 - **File**: `src/Command/User/GetList.php`
 - **Description**: Get a list of users in MODX
 - **Arguments**: none
+- **Options**:
+  - `--active` (VALUE_REQUIRED): Filter by active status (1 or 0)
+  - `--blocked` (VALUE_REQUIRED): Filter by blocked status (1 or 0)
+  - `--usergroup` (VALUE_REQUIRED): Filter by user group ID
+  - `--query` (VALUE_REQUIRED): Search query
+  - `--limit` -l (VALUE_REQUIRED) (default: 10): Number of items to return
+  - `--start` (VALUE_REQUIRED) (default: 0): Starting index for pagination
+
+### user:get
+- **File**: `src/Command/User/Get.php`
+- **Description**: Get detailed information about a MODX user
+- **Arguments**:
+  - `identifier` (required): The user ID or username
+- **Options**: none
+
+### user:create
+- **File**: `src/Command/User/Create.php`
+- **Description**: Create a MODX user
+- **Arguments**:
+  - `username` (required): The username for the new user
+- **Options**:
+  - `--email` (VALUE_REQUIRED): The email address for the user (required)
+  - `--password` (VALUE_REQUIRED): The password for the user (will be generated if not provided)
+  - `--fullname` (VALUE_REQUIRED) (default: ''): The full name of the user
+  - `--active` (VALUE_REQUIRED) (default: 1): Active status (1 or 0)
+  - `--blocked` (VALUE_REQUIRED) (default: 0): Blocked status (1 or 0)
+
+### user:update
+- **File**: `src/Command/User/Update.php`
+- **Description**: Update a MODX user
+- **Arguments**:
+  - `identifier` (required): The user ID or username
+- **Options**:
+  - `--username` (VALUE_REQUIRED): The new username
+  - `--email` (VALUE_REQUIRED): The new email address
+  - `--fullname` (VALUE_REQUIRED): The full name
+  - `--active` (VALUE_REQUIRED): Active status (1 or 0)
+  - `--blocked` (VALUE_REQUIRED): Blocked status (1 or 0)
+
+### user:remove
+- **File**: `src/Command/User/Remove.php`
+- **Description**: Remove a MODX user
+- **Arguments**:
+  - `identifier` (required): The user ID or username
+- **Options**:
+  - `--force` -f (VALUE_NONE): Force removal without confirmation
+
+### user:activate
+- **File**: `src/Command/User/Activate.php`
+- **Description**: Activate a MODX user
+- **Arguments**:
+  - `identifier` (required): The user ID or username
+- **Options**: none
+
+### user:deactivate
+- **File**: `src/Command/User/Deactivate.php`
+- **Description**: Deactivate a MODX user
+- **Arguments**:
+  - `identifier` (required): The user ID or username
+- **Options**: none
+
+### user:block
+- **File**: `src/Command/User/Block.php`
+- **Description**: Block a MODX user
+- **Arguments**:
+  - `identifier` (required): The user ID or username
+- **Options**: none
+
+### user:unblock
+- **File**: `src/Command/User/Unblock.php`
+- **Description**: Unblock a MODX user
+- **Arguments**:
+  - `identifier` (required): The user ID or username
 - **Options**: none
 
 ### user:resetpassword
 - **File**: `src/Command/User/ResetPassword.php`
-- **Description**: Reset a user\
+- **Description**: Reset a user's password in MODX
 - **Arguments**:
   - `id` (required): The ID of the user
-- **Options**: none
+- **Options**:
+  - `--password` (VALUE_REQUIRED): The new password
+  - `--generate` -g (VALUE_NONE): Generate a random password

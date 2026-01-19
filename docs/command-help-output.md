@@ -3538,6 +3538,241 @@ Options:
   -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 ```
 
+## user:get
+
+```
+Description:
+  Get detailed information about a MODX user
+
+Usage:
+  user:get [options] [--] <identifier>
+
+Arguments:
+  identifier                   The user ID or username
+
+Options:
+      --json                   Output results in JSON format
+      --ssh=SSH                Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]
+  -p, --properties=PROPERTIES  An array of properties to be sent to the processor, ie. --properties='key=value' --properties='another_key=value' (multiple values allowed)
+  -o, --options=OPTIONS        An array of options to be sent to the processor, ie. --options='processors_path=value' --options='location=value' (multiple values allowed)
+  -u, --unset=UNSET            An array of columns to hidden from results table, ie. --unset=id --unset=name (multiple values allowed)
+  -a, --add=ADD                An array of columns to add to results table, ie. --add=column -a'other_column' (multiple values allowed)
+  -h, --help                   Display help for the given command. When no command is given display help for the list command
+  -q, --quiet                  Do not output any message
+  -V, --version                Display this application version
+      --ansi|--no-ansi         Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction         Do not ask any interactive question
+  -s, --site[=SITE]            An instance name to execute the command to
+      --log-level=LOG-LEVEL    Set log level (debug, info, notice, warning, error, critical, alert, emergency)
+      --log-file=LOG-FILE      Write logs to specified file
+  -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
+
+## user:create
+
+```
+Description:
+  Create a MODX user
+
+Usage:
+  user:create [options] [--] <username>
+
+Arguments:
+  username                     The username for the new user
+
+Options:
+      --json                   Output results in JSON format
+      --ssh=SSH                Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]
+  -p, --properties=PROPERTIES  An array of properties to be sent to the processor, ie. --properties='key=value' --properties='another_key=value' (multiple values allowed)
+  -o, --options=OPTIONS        An array of options to be sent to the processor, ie. --options='processors_path=value' --options='location=value' (multiple values allowed)
+  -u, --unset=UNSET            An array of columns to hidden from results table, ie. --unset=id --unset=name (multiple values allowed)
+  -a, --add=ADD                An array of columns to add to results table, ie. --add=column -a'other_column' (multiple values allowed)
+      --email=EMAIL            The email address for the user (required)
+      --password=PASSWORD      The password for the user (will be generated if not provided)
+      --fullname=FULLNAME      The full name of the user [default: ""]
+      --active=ACTIVE          Active status (1 or 0) [default: 1]
+      --blocked=BLOCKED        Blocked status (1 or 0) [default: 0]
+  -h, --help                   Display help for the given command. When no command is given display help for the list command
+  -q, --quiet                  Do not output any message
+  -V, --version                Display this application version
+      --ansi|--no-ansi         Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction         Do not ask any interactive question
+  -s, --site[=SITE]            An instance name to execute the command to
+      --log-level=LOG-LEVEL    Set log level (debug, info, notice, warning, error, critical, alert, emergency)
+      --log-file=LOG-FILE      Write logs to specified file
+  -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
+
+## user:update
+
+```
+Description:
+  Update a MODX user
+
+Usage:
+  user:update [options] [--] <identifier>
+
+Arguments:
+  identifier                   The user ID or username
+
+Options:
+      --json                   Output results in JSON format
+      --ssh=SSH                Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]
+  -p, --properties=PROPERTIES  An array of properties to be sent to the processor, ie. --properties='key=value' --properties='another_key=value' (multiple values allowed)
+  -o, --options=OPTIONS        An array of options to be sent to the processor, ie. --options='processors_path=value' --options='location=value' (multiple values allowed)
+  -u, --unset=UNSET            An array of columns to hidden from results table, ie. --unset=id --unset=name (multiple values allowed)
+  -a, --add=ADD                An array of columns to add to results table, ie. --add=column -a'other_column' (multiple values allowed)
+      --username=USERNAME      The new username
+      --email=EMAIL            The new email address
+      --fullname=FULLNAME      The full name
+      --active=ACTIVE          Active status (1 or 0)
+      --blocked=BLOCKED        Blocked status (1 or 0)
+  -h, --help                   Display help for the given command. When no command is given display help for the list command
+  -q, --quiet                  Do not output any message
+  -V, --version                Display this application version
+      --ansi|--no-ansi         Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction         Do not ask any interactive question
+  -s, --site[=SITE]            An instance name to execute the command to
+      --log-level=LOG-LEVEL    Set log level (debug, info, notice, warning, error, critical, alert, emergency)
+      --log-file=LOG-FILE      Write logs to specified file
+  -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
+
+## user:remove
+
+```
+Description:
+  Remove a MODX user
+
+Usage:
+  user:remove [options] [--] <identifier>
+
+Arguments:
+  identifier                   The user ID or username
+
+Options:
+      --json                   Output results in JSON format
+      --ssh=SSH                Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]
+  -p, --properties=PROPERTIES  An array of properties to be sent to the processor, ie. --properties='key=value' --properties='another_key=value' (multiple values allowed)
+  -o, --options=OPTIONS        An array of options to be sent to the processor, ie. --options='processors_path=value' --options='location=value' (multiple values allowed)
+  -u, --unset=UNSET            An array of columns to hidden from results table, ie. --unset=id --unset=name (multiple values allowed)
+  -a, --add=ADD                An array of columns to add to results table, ie. --add=column -a'other_column' (multiple values allowed)
+  -f, --force                  Force removal without confirmation
+  -h, --help                   Display help for the given command. When no command is given display help for the list command
+  -q, --quiet                  Do not output any message
+  -V, --version                Display this application version
+      --ansi|--no-ansi         Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction         Do not ask any interactive question
+  -s, --site[=SITE]            An instance name to execute the command to
+      --log-level=LOG-LEVEL    Set log level (debug, info, notice, warning, error, critical, alert, emergency)
+      --log-file=LOG-FILE      Write logs to specified file
+  -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
+
+## user:activate
+
+```
+Description:
+  Activate a MODX user
+
+Usage:
+  user:activate [options] [--] <identifier>
+
+Arguments:
+  identifier                The user ID or username
+
+Options:
+      --json                Output results in JSON format
+      --ssh=SSH             Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]
+  -h, --help                Display help for the given command. When no command is given display help for the list command
+  -q, --quiet               Do not output any message
+  -V, --version             Display this application version
+      --ansi|--no-ansi      Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction      Do not ask any interactive question
+  -s, --site[=SITE]         An instance name to execute the command to
+      --log-level=LOG-LEVEL Set log level (debug, info, notice, warning, error, critical, alert, emergency)
+      --log-file=LOG-FILE   Write logs to specified file
+  -v|vv|vvv, --verbose      Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
+
+## user:deactivate
+
+```
+Description:
+  Deactivate a MODX user
+
+Usage:
+  user:deactivate [options] [--] <identifier>
+
+Arguments:
+  identifier                The user ID or username
+
+Options:
+      --json                Output results in JSON format
+      --ssh=SSH             Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]
+  -h, --help                Display help for the given command. When no command is given display help for the list command
+  -q, --quiet               Do not output any message
+  -V, --version             Display this application version
+      --ansi|--no-ansi      Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction      Do not ask any interactive question
+  -s, --site[=SITE]         An instance name to execute the command to
+      --log-level=LOG-LEVEL Set log level (debug, info, notice, warning, error, critical, alert, emergency)
+      --log-file=LOG-FILE   Write logs to specified file
+  -v|vv|vvv, --verbose      Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
+
+## user:block
+
+```
+Description:
+  Block a MODX user
+
+Usage:
+  user:block [options] [--] <identifier>
+
+Arguments:
+  identifier                The user ID or username
+
+Options:
+      --json                Output results in JSON format
+      --ssh=SSH             Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]
+  -h, --help                Display help for the given command. When no command is given display help for the list command
+  -q, --quiet               Do not output any message
+  -V, --version             Display this application version
+      --ansi|--no-ansi      Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction      Do not ask any interactive question
+  -s, --site[=SITE]         An instance name to execute the command to
+      --log-level=LOG-LEVEL Set log level (debug, info, notice, warning, error, critical, alert, emergency)
+      --log-file=LOG-FILE   Write logs to specified file
+  -v|vv|vvv, --verbose      Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
+
+## user:unblock
+
+```
+Description:
+  Unblock a MODX user
+
+Usage:
+  user:unblock [options] [--] <identifier>
+
+Arguments:
+  identifier                The user ID or username
+
+Options:
+      --json                Output results in JSON format
+      --ssh=SSH             Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]
+  -h, --help                Display help for the given command. When no command is given display help for the list command
+  -q, --quiet               Do not output any message
+  -V, --version             Display this application version
+      --ansi|--no-ansi      Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction      Do not ask any interactive question
+  -s, --site[=SITE]         An instance name to execute the command to
+      --log-level=LOG-LEVEL Set log level (debug, info, notice, warning, error, critical, alert, emergency)
+      --log-file=LOG-FILE   Write logs to specified file
+  -v|vv|vvv, --verbose      Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
+
 ## user:resetpassword
 
 ```
