@@ -151,7 +151,10 @@ class Application extends BaseApp
     {
         $argv = $_SERVER['argv'] ?? [];
 
-        return in_array('--json', $argv, true);
+        $hasJson = in_array('--json', $argv, true);
+        $hasVersionFlag = in_array('-V', $argv, true) || in_array('--version', $argv, true);
+
+        return $hasVersionFlag || !$hasJson;
     }
 
     /**
@@ -607,6 +610,14 @@ class Application extends BaseApp
 
         $command = $input->getFirstArgument();
 
+        if ($input->hasParameterOption(['-V', '--version']) && $input->hasParameterOption(['--json'])) {
+            $output->writeln(json_encode([
+                'success' => true,
+                'cli_version' => $this->resolveVersion(),
+            ], JSON_PRETTY_PRINT));
+            return 0;
+        }
+
         // Check for alias
         if ($command && strpos($command, '@') === 0) {
             return $this->runWithAlias($command, $input, $output);
@@ -653,11 +664,30 @@ class Application extends BaseApp
             return false;
         }
 
-        if ($input->hasParameterOption(['--quiet', '-q', '--json', '--ssh'])) {
+        if ($input->hasParameterOption(['--quiet', '-q', '--json', '--ssh', '-V', '--version'])) {
             return false;
         }
 
-        return true;
+        // // Skip logo for data retrieval commands (commands that output structured data)
+        // $command = $input->getFirstArgument();
+        // if ($command) {
+        //     $dataCommands = [':get', ':list', ':show', ':export', ':dump'];
+        //     foreach ($dataCommands as $suffix) {
+        //         if (strpos($command, $suffix) !== false) {
+        //             return false;
+        //         }
+        //     }
+        // }
+
+        // Only show logo for informational commands (not data retrieval commands)
+    $command = $input->getFirstArgument();
+    if ($command) {
+        $showLogoCommands = ['list', 'help', 'list-commands'];
+        return in_array($command, $showLogoCommands, true);
+    }
+
+    // Show logo when no command provided
+    return true;
     }
 
     private function shouldUsePager(InputInterface $input, OutputInterface $output): bool
