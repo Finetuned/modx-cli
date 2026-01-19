@@ -650,7 +650,7 @@ class Application extends BaseApp
         // Normal execution
         $exitCode = parent::doRun($input, $runOutput);
 
-        if ($usePager) {
+        if ($usePager && $runOutput instanceof BufferedOutput) {
             $this->outputWithPagerIfNeeded($runOutput->fetch(), $output);
         }
 
