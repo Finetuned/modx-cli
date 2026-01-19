@@ -14,6 +14,7 @@ class XdomUnitTest extends TestCase
         // Define a lightweight modX stub for unit runs
         if (!class_exists('modX')) {
             require_once __DIR__ . '/fixtures/XdomModxStub.php';
+            \MODX\CLI\Tests\Fixtures\XdomModxStub::registerAlias();
         }
 
         $this->xdom = new \MODX\CLI\Xdom();

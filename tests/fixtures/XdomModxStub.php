@@ -8,9 +8,11 @@ class XdomModxStub
     {
         return json_encode($data);
     }
-}
 
-// Register global alias for tests
-if (!class_exists('modX')) {
-    class_alias(__NAMESPACE__ . '\\XdomModxStub', 'modX');
+    public static function registerAlias(): void
+    {
+        if (!class_exists('modX')) {
+            class_alias(__NAMESPACE__ . '\\XdomModxStub', 'modX');
+        }
+    }
 }

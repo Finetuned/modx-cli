@@ -6,21 +6,6 @@ use PHPUnit\Framework\TestCase;
 use MODX\CLI\Configuration\Component;
 use MODX\Revolution\modSystemSetting;
 
-if (!defined('MODX_CORE_PATH')) {
-    // Use the CLI command to get the default MODX_CORE_PATH
-    $output = shell_exec('bin/modx config:get-default');
-
-    if (preg_match('/Base path:\s*(.+)/', $output, $matches)) {
-        $basePath = trim($matches[1]);
-        $output = $basePath . 'core/';
-    } else {
-        $output = "";
-    }
-
-    $defaultCorePath = trim($output) ?: '/absolute/path/to/modx/core/';
-    define('MODX_CORE_PATH', $defaultCorePath);
-}
-
 class ComponentTest extends TestCase
 {
     private string $originalHome = '';
@@ -28,6 +13,7 @@ class ComponentTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->ensureModxCorePathDefined();
         parent::setUp();
         $this->originalHome = (string) getenv('HOME');
         $this->tempHome = sys_get_temp_dir() . '/modx_cli_home';
@@ -61,6 +47,26 @@ class ComponentTest extends TestCase
         }
 
         parent::tearDown();
+    }
+
+    private function ensureModxCorePathDefined(): void
+    {
+        if (defined('MODX_CORE_PATH')) {
+            return;
+        }
+
+        // Use the CLI command to get the default MODX_CORE_PATH
+        $output = shell_exec('bin/modx config:get-default');
+
+        if (preg_match('/Base path:\s*(.+)/', (string) $output, $matches)) {
+            $basePath = trim($matches[1]);
+            $output = $basePath . 'core/';
+        } else {
+            $output = '';
+        }
+
+        $defaultCorePath = trim((string) $output) ?: '/absolute/path/to/modx/core/';
+        define('MODX_CORE_PATH', $defaultCorePath);
     }
 
     public function testGettingModxInstance()
