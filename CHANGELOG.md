@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0-beta] - 2026-01-19
+
+### Added
+- Completed user management command set and JSON output parity (Task 20).
+- Integration and unit test suite compliance updates (Task 21), including test helper splits and namespace fixes.
+
+### Fixed
+- Version command now exposes CLI version in JSON output for integration runs.
+- PHPCS/PHPStan cleanup across commands, configuration, and test helpers tied to Tasks 20/21.
+
 ## [0.7.2-beta] - 2026-01-14
 
 ### Fixed
