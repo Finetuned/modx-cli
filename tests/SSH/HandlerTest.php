@@ -109,22 +109,3 @@ class HandlerTest extends TestCase
         $this->assertStringContainsString('--start=20', $executor->command);
     }
 }
-
-class HandlerStubExecutor implements CommandExecutorInterface
-{
-    public $command;
-    public $timeout;
-    public $tty;
-    public $outputCallback;
-    public $returnCode = 0;
-
-    public function run(string $command, int $timeout, bool $tty, ?callable $outputCallback = null): int
-    {
-        $this->command = $command;
-        $this->timeout = $timeout;
-        $this->tty = $tty;
-        $this->outputCallback = $outputCallback;
-
-        return $this->returnCode;
-    }
-}

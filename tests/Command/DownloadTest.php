@@ -118,14 +118,3 @@ class DownloadTest extends BaseTest
         $outputProp->setValue($command, $output);
     }
 }
-
-class TestDownload extends Download
-{
-    protected $name = 'download:test';
-    protected $description = 'Download test command';
-
-    protected function download(string $url, string $target): void
-    {
-        file_put_contents($target, 'test');
-    }
-}

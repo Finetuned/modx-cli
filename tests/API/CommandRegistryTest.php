@@ -137,22 +137,3 @@ class CommandRegistryTest extends TestCase
         $this->registry->register('test:invalid', 'not-a-callable');
     }
 }
-
-/**
- * Test command class for testing the registry
- */
-class TestCommand extends Command
-{
-    protected static $defaultName = 'test:command';
-
-    protected function configure()
-    {
-        $this->setDescription('Test command');
-        $this->setHelp('This is a test command');
-    }
-
-    protected function execute(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output)
-    {
-        return 0;
-    }
-}
