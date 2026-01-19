@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 /**
  * Main API class for MODX CLI
  */
+// phpcs:disable PSR1.Methods.CamelCapsMethodName, Squiz.Classes.ValidClassName
 class MODX_CLI
 {
     /**
@@ -50,7 +51,7 @@ class MODX_CLI
     /**
      * Get the singleton instance
      *
-     * @return self The singleton instance
+     * @return self The singleton instance.
      */
     private static function getInstance()
     {
@@ -63,22 +64,22 @@ class MODX_CLI
     /**
      * Register a custom command with MODX CLI
      *
-     * @param string $name The name of the command (e.g., 'post:list' or 'site:empty')
-     * @param callable|object|string $callable The implementation of the command
-     * @param array $args {
-     *     Optional. An associative array of additional parameters for the command.
+     * @param string                 $name     The name of the command (e.g., 'post:list' or 'site:empty').
+     * @param callable|object|string $callable The implementation of the command.
+     * @param array                  $args     Additional parameters for the command.
+     *                              Optional. An associative array of additional parameters for the command.
      *
-     *     @type callable $before_invoke Callback to execute before the command
-     *     @type callable $after_invoke Callback to execute after the command
-     *     @type string $shortdesc Short description of the command
-     *     @type string $longdesc Long description of the command
-     *     @type array $synopsis Command arguments and options definition
-     *     @type string $when Hook to execute the command on
-     *     @type bool $is_deferred Whether command registration is deferred
+     *     @type callable $before_invoke Callback to execute before the command.
+     *     @type callable $after_invoke Callback to execute after the command.
+     *     @type string $shortdesc Short description of the command.
+     *     @type string $longdesc Long description of the command.
+     *     @type array $synopsis Command arguments and options definition.
+     *     @type string $when Hook to execute the command on.
+     *     @type bool $is_deferred Whether command registration is deferred.
      * }
-     * @return bool True on success, false if deferred
+     * @return boolean True on success, false if deferred.
      */
-    public static function add_command($name, $callable, $args = [])
+    public static function add_command(string $name, $callable, array $args = []): bool
     {
         return self::getInstance()->commandRegistry->register($name, $callable, $args);
     }
@@ -86,10 +87,10 @@ class MODX_CLI
     /**
      * Remove a command from MODX CLI
      *
-     * @param string $name The name of the command to remove
-     * @return bool True if command was removed, false if it didn't exist
+     * @param string $name The name of the command to remove.
+     * @return boolean True if command was removed, false if it didn't exist.
      */
-    public static function remove_command($name)
+    public static function remove_command(string $name): bool
     {
         return self::getInstance()->commandRegistry->unregister($name);
     }
@@ -97,10 +98,10 @@ class MODX_CLI
     /**
      * Get a command by name
      *
-     * @param string $name The name of the command
-     * @return \Symfony\Component\Console\Command\Command|null The command instance or null if not found
+     * @param string $name The name of the command.
+     * @return \Symfony\Component\Console\Command\Command|null The command instance or null if not found.
      */
-    public static function get_command($name)
+    public static function get_command(string $name)
     {
         return self::getInstance()->commandRegistry->get($name);
     }
@@ -108,7 +109,7 @@ class MODX_CLI
     /**
      * Get all registered commands
      *
-     * @return \Symfony\Component\Console\Command\Command[] Array of command instances
+     * @return \Symfony\Component\Console\Command\Command[] Array of command instances.
      */
     public static function get_commands()
     {
@@ -122,18 +123,17 @@ class MODX_CLI
     /**
      * Run a command registered with MODX CLI
      *
-     * @param string $command The command to execute
-     * @param array $args Command arguments
-     * @param array $options {
-     *     Optional. An associative array of options for command execution.
+     * @param string $command The command to execute.
+     * @param array  $args    Command arguments.
+     * @param array  $options Execution options for the command.
      *
-     *     @type bool $return Whether to return the command result
-     *     @type bool $exit_error Whether to exit on error
-     *     @type bool $parse Whether to parse the command string
+     *     @type bool $return Whether to return the command result.
+     *     @type bool $exit_error Whether to exit on error.
+     *     @type bool $parse Whether to parse the command string.
      * }
-     * @return mixed Command result if $return is true
+     * @return mixed Command result if $return is true.
      */
-    public static function run_command($command, $args = [], $options = [])
+    public static function run_command(string $command, array $args = [], array $options = [])
     {
         return self::getInstance()->commandRunner->run($command, $args, $options);
     }
@@ -141,11 +141,11 @@ class MODX_CLI
     /**
      * Register a hook with MODX CLI
      *
-     * @param string $hook The hook name
-     * @param callable $callback The callback to execute
-     * @return bool True on success
+     * @param string   $hook     The hook name.
+     * @param callable $callback The callback to execute.
+     * @return boolean True on success.
      */
-    public static function register_hook($hook, $callback)
+    public static function register_hook(string $hook, callable $callback): bool
     {
         return self::getInstance()->hookRegistry->register($hook, $callback);
     }
@@ -153,11 +153,11 @@ class MODX_CLI
     /**
      * Add a callback to an existing hook
      *
-     * @param string $hook The hook name
-     * @param callable $callback The callback to add
-     * @return bool True on success
+     * @param string   $hook     The hook name.
+     * @param callable $callback The callback to add.
+     * @return boolean True on success.
      */
-    public static function add_hook($hook, $callback)
+    public static function add_hook(string $hook, callable $callback): bool
     {
         return self::getInstance()->hookRegistry->register($hook, $callback);
     }
@@ -165,11 +165,11 @@ class MODX_CLI
     /**
      * Run a hook
      *
-     * @param string $hook The hook name
-     * @param array $args Arguments to pass to the hook
-     * @return array Array of results from the hook callbacks
+     * @param string $hook The hook name.
+     * @param array  $args Arguments to pass to the hook.
+     * @return array Array of results from the hook callbacks.
      */
-    public static function do_hook($hook, $args = [])
+    public static function do_hook(string $hook, array $args = []): array
     {
         return self::getInstance()->hookRegistry->run($hook, $args);
     }
@@ -177,11 +177,11 @@ class MODX_CLI
     /**
      * Set a callback to run before a command is executed
      *
-     * @param string $command The command name
-     * @param callable $callback The callback to execute
-     * @return bool True on success
+     * @param string   $command  The command name.
+     * @param callable $callback The callback to execute.
+     * @return boolean True on success.
      */
-    public static function before_invoke($command, $callback)
+    public static function before_invoke(string $command, callable $callback): bool
     {
         return self::getInstance()->hookRegistry->register("before_invoke:{$command}", $callback);
     }
@@ -189,11 +189,11 @@ class MODX_CLI
     /**
      * Set a callback to run after a command is executed
      *
-     * @param string $command The command name
-     * @param callable $callback The callback to execute
-     * @return bool True on success
+     * @param string   $command  The command name.
+     * @param callable $callback The callback to execute.
+     * @return boolean True on success.
      */
-    public static function after_invoke($command, $callback)
+    public static function after_invoke(string $command, callable $callback): bool
     {
         return self::getInstance()->hookRegistry->register("after_invoke:{$command}", $callback);
     }
@@ -201,10 +201,10 @@ class MODX_CLI
     /**
      * Write a message to the console
      *
-     * @param string $message The message to write
+     * @param string $message The message to write.
      * @return void
      */
-    public static function log($message)
+    public static function log(string $message): void
     {
         echo $message . PHP_EOL;
     }
@@ -212,10 +212,10 @@ class MODX_CLI
     /**
      * Write a success message to the console
      *
-     * @param string $message The message to write
+     * @param string $message The message to write.
      * @return void
      */
-    public static function success($message)
+    public static function success(string $message): void
     {
         echo "\033[32mSuccess: " . $message . "\033[0m" . PHP_EOL;
     }
@@ -223,10 +223,10 @@ class MODX_CLI
     /**
      * Write a warning message to the console
      *
-     * @param string $message The message to write
+     * @param string $message The message to write.
      * @return void
      */
-    public static function warning($message)
+    public static function warning(string $message): void
     {
         echo "\033[33mWarning: " . $message . "\033[0m" . PHP_EOL;
     }
@@ -234,10 +234,10 @@ class MODX_CLI
     /**
      * Write an error message to the console
      *
-     * @param string $message The message to write
+     * @param string $message The message to write.
      * @return void
      */
-    public static function error($message)
+    public static function error(string $message): void
     {
         echo "\033[31mError: " . $message . "\033[0m" . PHP_EOL;
     }
@@ -245,7 +245,7 @@ class MODX_CLI
     /**
      * Get the application instance
      *
-     * @return Application The application instance
+     * @return Application The application instance.
      */
     public static function get_application()
     {

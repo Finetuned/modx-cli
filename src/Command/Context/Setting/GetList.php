@@ -11,26 +11,38 @@ use Symfony\Component\Console\Input\InputArgument;
 class GetList extends ListProcessor
 {
     protected $processor = 'Context\Setting\GetList';
-    protected $required = array('context_key');
-    protected $headers = array(
+    protected $required = ['context_key'];
+    protected $headers = [
         'key', 'value', 'name', 'description'
-    );
+    ];
 
     protected $name = 'context:setting:list';
     protected $description = 'Get a list of context settings in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'context_key',
                 InputArgument::REQUIRED,
                 'The context key'
-            ),
-        );
+            ],
+        ];
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the context_key to the properties
         $properties['context_key'] = $this->argument('context_key');

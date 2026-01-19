@@ -15,35 +15,65 @@ class Add extends BaseCmd
     protected $description = 'Add a MODX instance to the configuration';
     protected $help = 'This command adds a MODX instance to the configuration, allowing you to run commands on it.';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the instance'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'base_path',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The base path of the MODX instance'
-            ),
-            array(
+            ],
+            [
                 'default',
                 null,
                 InputOption::VALUE_NONE,
                 'Set this instance as the default'
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $name = $this->argument('name');
@@ -92,16 +122,16 @@ class Add extends BaseCmd
         }
 
         // Add the instance to the configuration
-        $instances->set($name, array(
+        $instances->set($name, [
             'base_path' => $basePath,
-        ));
+        ]);
         $instances->save();
 
         // Set as default if requested
         if ($default) {
-            $instances->set('__default__', array(
+            $instances->set('__default__', [
                 'class' => $name,
-            ));
+            ]);
             $instances->save();
             $message = "Instance '{$name}' added and set as default";
         } else {

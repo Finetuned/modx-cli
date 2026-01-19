@@ -33,8 +33,8 @@ class MetadataRegistry
     /**
      * Register command metadata
      *
-     * @param string $commandName Command name
-     * @param array|CommandMetadata $metadata Metadata array or object
+     * @param string                $commandName Command name.
+     * @param array|CommandMetadata $metadata    Metadata array or object.
      * @return void
      */
     public static function register(string $commandName, $metadata): void
@@ -54,7 +54,7 @@ class MetadataRegistry
     /**
      * Get metadata for a command
      *
-     * @param string $commandName Command name
+     * @param string $commandName Command name.
      * @return CommandMetadata|null
      */
     public static function get(string $commandName): ?CommandMetadata
@@ -65,8 +65,8 @@ class MetadataRegistry
     /**
      * Check if command metadata exists
      *
-     * @param string $commandName Command name
-     * @return bool
+     * @param string $commandName Command name.
+     * @return boolean
      */
     public static function has(string $commandName): bool
     {
@@ -86,13 +86,13 @@ class MetadataRegistry
     /**
      * Get commands by category
      *
-     * @param string $category Category name
+     * @param string $category Category name.
      * @return array Array of CommandMetadata objects
      */
     public static function getByCategory(string $category): array
     {
         $commandNames = self::$categoryIndex[$category] ?? [];
-        return array_map(function($name) {
+        return array_map(function ($name) {
             return self::$metadata[$name];
         }, $commandNames);
     }
@@ -100,13 +100,13 @@ class MetadataRegistry
     /**
      * Get commands by tag
      *
-     * @param string $tag Tag name
+     * @param string $tag Tag name.
      * @return array Array of CommandMetadata objects
      */
     public static function getByTag(string $tag): array
     {
         $commandNames = self::$tagIndex[$tag] ?? [];
-        return array_map(function($name) {
+        return array_map(function ($name) {
             return self::$metadata[$name];
         }, $commandNames);
     }
@@ -134,7 +134,7 @@ class MetadataRegistry
     /**
      * Find command by alias
      *
-     * @param string $alias Command alias
+     * @param string $alias Command alias.
      * @return string|null Command name
      */
     public static function findByAlias(string $alias): ?string
@@ -145,7 +145,7 @@ class MetadataRegistry
     /**
      * Search commands by query
      *
-     * @param string $query Search query
+     * @param string $query Search query.
      * @return array Array of CommandMetadata objects
      */
     public static function search(string $query): array
@@ -194,8 +194,8 @@ class MetadataRegistry
     /**
      * Index command by category
      *
-     * @param string $commandName Command name
-     * @param CommandMetadata $metadata Metadata object
+     * @param string          $commandName Command name.
+     * @param CommandMetadata $metadata    Metadata object.
      * @return void
      */
     private static function indexByCategory(string $commandName, CommandMetadata $metadata): void
@@ -210,8 +210,8 @@ class MetadataRegistry
     /**
      * Index command by tags
      *
-     * @param string $commandName Command name
-     * @param CommandMetadata $metadata Metadata object
+     * @param string          $commandName Command name.
+     * @param CommandMetadata $metadata    Metadata object.
      * @return void
      */
     private static function indexByTags(string $commandName, CommandMetadata $metadata): void
@@ -227,8 +227,8 @@ class MetadataRegistry
     /**
      * Index command by aliases
      *
-     * @param string $commandName Command name
-     * @param CommandMetadata $metadata Metadata object
+     * @param string          $commandName Command name.
+     * @param CommandMetadata $metadata    Metadata object.
      * @return void
      */
     private static function indexByAliases(string $commandName, CommandMetadata $metadata): void
@@ -255,7 +255,7 @@ class MetadataRegistry
     /**
      * Load metadata from array
      *
-     * @param array $data Metadata array
+     * @param array $data Metadata array.
      * @return void
      */
     public static function load(array $data): void

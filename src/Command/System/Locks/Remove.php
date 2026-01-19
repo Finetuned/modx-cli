@@ -11,45 +11,60 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Remove extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'system:locks:remove';
     protected $description = 'Remove a lock in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'key',
                 InputArgument::REQUIRED,
                 'The key of the lock'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force removal without confirmation'
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $key = $this->argument('key');
 
         // Get the registry
         $registry = $this->modx->getService('registry', 'registry.modRegistry');
-        $registry->addRegister('locks', 'registry.modDbRegister', array('directory' => 'locks'));
+        $registry->addRegister('locks', 'registry.modDbRegister', ['directory' => 'locks']);
         $registry->locks->connect();
 
         // Check if the lock exists
-        $locks = $registry->locks->read(array($key));
+        $locks = $registry->locks->read([$key]);
 
         if (empty($locks)) {
             $message = "Lock with key '{$key}' not found";
@@ -105,7 +120,7 @@ class Remove extends BaseCmd
         }
 
         // Remove the lock
-        $registry->locks->subscribe(array($key));
+        $registry->locks->subscribe([$key]);
         $registry->locks->remove();
 
         $message = "Lock with key '{$key}' removed successfully";

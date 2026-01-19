@@ -16,11 +16,11 @@ class CreateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Create();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -109,7 +109,7 @@ class CreateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Context\\Setting\\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['fk'])
                         && $properties['fk'] === 'web'
                         && isset($properties['context_key'])

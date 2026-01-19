@@ -11,26 +11,38 @@ use Symfony\Component\Console\Input\InputOption;
 class GetList extends ListProcessor
 {
     protected $processor = 'Element\Chunk\GetList';
-    protected $headers = array(
+    protected $headers = [
         'id', 'name', 'description', 'category'
-    );
+    ];
 
     protected $name = 'chunk:list';
     protected $description = 'Get a list of chunks in MODX';
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'category',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by category ID'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the category filter
         if ($this->option('category') !== null) {
@@ -40,7 +52,14 @@ class GetList extends ListProcessor
         return parent::beforeRun($properties, $options);
     }
 
-    protected function parseValue($value, $column)
+    /**
+     * Format raw values for output.
+     *
+     * @param mixed  $value  The raw column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'category') {
             return $this->renderObject('modCategory', $value, 'category');

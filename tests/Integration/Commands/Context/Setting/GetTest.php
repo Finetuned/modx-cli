@@ -21,13 +21,13 @@ class GetTest extends BaseIntegrationTest
             'INSERT INTO ' . $this->getTableName('context_setting') . ' (context_key, `key`, value, xtype, namespace, area, editedon) VALUES (?, ?, ?, ?, ?, ?, NOW())',
             [$contextKey, $settingKey, 'Integration Site', 'textfield', 'core', '']
         );
-        
+
         $process = $this->executeCommandSuccessfully([
             'context:setting:get',
             $contextKey,
             $settingKey
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key = ? AND `key` = ?', [$contextKey, $settingKey]);
@@ -45,13 +45,13 @@ class GetTest extends BaseIntegrationTest
             'INSERT INTO ' . $this->getTableName('context_setting') . ' (context_key, `key`, value, xtype, namespace, area, editedon) VALUES (?, ?, ?, ?, ?, ?, NOW())',
             [$contextKey, $settingKey, 'Integration Site', 'textfield', 'core', '']
         );
-        
+
         $data = $this->executeCommandJson([
             'context:setting:get',
             $contextKey,
             $settingKey
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key = ? AND `key` = ?', [$contextKey, $settingKey]);
@@ -64,28 +64,28 @@ class GetTest extends BaseIntegrationTest
     {
         $contextKey = 'integtest-' . uniqid();
         $settingKey = 'test_setting';
-        
+
         // Create test context
         $this->queryDatabase(
             'INSERT INTO ' . $this->getTableName('context') . ' (`key`, name, description, rank) VALUES (?, ?, ?, ?)',
             [$contextKey, 'Test Context', 'Test Description', 0]
         );
-        
+
         // Create context setting
         $this->queryDatabase(
             'INSERT INTO ' . $this->getTableName('context_setting') . ' (context_key, `key`, value, xtype, namespace, area, editedon) VALUES (?, ?, ?, ?, ?, ?, NOW())',
             [$contextKey, $settingKey, 'test_value', 'textfield', 'core', '']
         );
-        
+
         $data = $this->executeCommandJson([
             'context:setting:get',
             $contextKey,
             $settingKey
         ]);
-        
+
         $this->assertTrue($data['success']);
         $this->assertEquals('test_value', $data['object']['value']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key = ?', [$contextKey]);
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` = ?', [$contextKey]);
@@ -101,7 +101,7 @@ class GetTest extends BaseIntegrationTest
             'web',
             'nonexistent_setting_' . uniqid()
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }
@@ -114,7 +114,7 @@ class GetTest extends BaseIntegrationTest
         // Remove any leftover test context settings
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context_setting') . ' WHERE context_key LIKE ?', ['integtest-%']);
         $this->queryDatabase('DELETE FROM ' . $this->getTableName('context') . ' WHERE `key` LIKE ?', ['integtest-%']);
-        
+
         parent::tearDown();
     }
 }

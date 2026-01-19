@@ -21,7 +21,7 @@ class Resolver
     /**
      * Resolver constructor.
      *
-     * @param YamlConfig $config The configuration
+     * @param YamlConfig $config The configuration.
      */
     public function __construct(YamlConfig $config)
     {
@@ -31,10 +31,10 @@ class Resolver
     /**
      * Check if a command is an alias
      *
-     * @param string $command The command to check
-     * @return bool True if the command is an alias, false otherwise
+     * @param string $command The command to check.
+     * @return boolean True if the command is an alias, false otherwise.
      */
-    public function isAlias($command)
+    public function isAlias(string $command): bool
     {
         return strpos($command, '@') === 0;
     }
@@ -42,11 +42,11 @@ class Resolver
     /**
      * Resolve an alias to its definition
      *
-     * @param string $alias The alias to resolve
-     * @return array The alias definition
-     * @throws \Exception If the alias is not found
+     * @param string $alias The alias to resolve.
+     * @return array The alias definition.
+     * @throws \Exception If the alias is not found.
      */
-    public function resolveAlias($alias)
+    public function resolveAlias(string $alias): array
     {
         // Remove @ prefix
         $aliasName = substr($alias, 1);
@@ -64,10 +64,10 @@ class Resolver
     /**
      * Check if an alias definition is a group
      *
-     * @param array $aliasDef The alias definition
-     * @return bool True if the alias is a group, false otherwise
+     * @param array $aliasDef The alias definition.
+     * @return boolean True if the alias is a group, false otherwise.
      */
-    public function isAliasGroup($aliasDef)
+    public function isAliasGroup(array $aliasDef): bool
     {
         return is_array($aliasDef) && !isset($aliasDef['ssh']);
     }
@@ -75,10 +75,10 @@ class Resolver
     /**
      * Get the members of an alias group
      *
-     * @param array $aliasDef The alias group definition
-     * @return array The members of the group
+     * @param array $aliasDef The alias group definition.
+     * @return array The members of the group.
      */
-    public function getAliasGroupMembers($aliasDef)
+    public function getAliasGroupMembers(array $aliasDef): array
     {
         return $aliasDef;
     }

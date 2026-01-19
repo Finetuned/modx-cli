@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 class ResetPassword extends ProcessorCmd
 {
     protected $processor = 'Security\User\Update';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'user:resetpassword';
     protected $description = 'Reset a user\'s password in MODX';
@@ -21,36 +21,53 @@ class ResetPassword extends ProcessorCmd
      */
     protected $password;
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the user'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'password',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The new password'
-            ),
-            array(
+            ],
+            [
                 'generate',
                 'g',
                 InputOption::VALUE_NONE,
                 'Generate a random password'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare processor properties before execution.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null False to abort execution, otherwise null.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $id = $this->argument('id');
 
@@ -85,9 +102,16 @@ class ResetPassword extends ProcessorCmd
 
         // Store the password for later display
         $this->password = $password;
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Process processor response.
+     *
+     * @param array $response The decoded processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
@@ -111,13 +135,12 @@ class ResetPassword extends ProcessorCmd
     }
 
     /**
-     * Generate a random password
+     * Generate a random password.
      *
-     * @param int $length
-     *
+     * @param integer $length The password length.
      * @return string
      */
-    protected function generatePassword($length = 12)
+    protected function generatePassword(int $length = 12)
     {
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';
         $password = '';

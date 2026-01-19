@@ -7,7 +7,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Test-Driven Development tests for package:list-remote command
- * 
+ *
  * These tests reproduce the current issue where package:list-remote returns
  * "No remote versions found" even when package:upgradeable shows updates.
  */
@@ -15,24 +15,24 @@ class PackageListRemoteTest extends TestCase
 {
     /** @var MockObject */
     private $mockModx;
-    
+
     /** @var MockObject */
     private $mockResponse;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Mock MODX instance
         $this->mockModx = $this->createMock(\MODX\Revolution\modX::class);
-        
+
         // Mock processor response
         $this->mockResponse = $this->createMock(\MODX\Revolution\Processors\ProcessorResponse::class);
     }
 
     /**
      * Test that reproduces the current issue and verifies the fix
-     * 
+     *
      * This test demonstrates that package:list-remote now finds versions
      * when upgradeable packages exist.
      */
@@ -62,23 +62,27 @@ class PackageListRemoteTest extends TestCase
         $mockPdoToolsPackage = $this->createMock(\MODX\Revolution\Transport\modTransportPackage::class);
         $mockMigxPackage = $this->createMock(\MODX\Revolution\Transport\modTransportPackage::class);
         $mockProvider = $this->createMock(\MODX\Revolution\Transport\modTransportProvider::class);
-        
+
         // Mock package object methods
         $mockPdoToolsPackage->method('get')->with('signature')->willReturn('pdotools-3.0.1-pl');
         $mockPdoToolsPackage->method('getOne')->with('Provider')->willReturn($mockProvider);
-        
+
         $mockMigxPackage->method('get')->with('signature')->willReturn('migx-2.13.0-pl');
         $mockMigxPackage->method('getOne')->with('Provider')->willReturn($mockProvider);
-        
+
         // Mock provider methods
-        $mockProvider->method('get')->willReturnCallback(function($key) {
-            if ($key === 'id') return 1;
-            if ($key === 'name') return 'modx.com';
+        $mockProvider->method('get')->willReturnCallback(function ($key) {
+            if ($key === 'id') {
+                return 1;
+            }
+            if ($key === 'name') {
+                return 'modx.com';
+            }
             return null;
         });
-        
+
         // Mock provider->latest() to return remote version data
-        $mockProvider->method('latest')->willReturnCallback(function($signature) {
+        $mockProvider->method('latest')->willReturnCallback(function ($signature) {
             if (str_contains($signature, 'pdotools')) {
                 return [
                     [
@@ -154,7 +158,7 @@ class PackageListRemoteTest extends TestCase
         $providerResponse2 = $this->createMock(\MODX\Revolution\Processors\ProcessorResponse::class);
 
         // Mock getObject to return package objects
-        $this->mockModx->method('getObject')->willReturnCallback(function($class, $criteria) use ($mockPdoToolsPackage, $mockMigxPackage) {
+        $this->mockModx->method('getObject')->willReturnCallback(function ($class, $criteria) use ($mockPdoToolsPackage, $mockMigxPackage) {
             if (is_array($criteria) && isset($criteria['signature'])) {
                 if ($criteria['signature'] === 'pdotools-3.0.1-pl') {
                     return $mockPdoToolsPackage;
@@ -183,14 +187,14 @@ class PackageListRemoteTest extends TestCase
         // Assert: Should find upgradeable packages
         $this->assertNotEmpty($result, 'Should find upgradeable packages');
         $this->assertCount(2, $result, 'Should find 2 upgradeable packages');
-        
+
         // Now test remote version lookup
         $remoteVersions = [];
         foreach ($result as $package) {
             $versions = getRemoteVersionsForPackage($this->mockModx, $package);
             $remoteVersions = array_merge($remoteVersions, $versions);
         }
-        
+
         // This assertion should now PASS with our fix
         $this->assertNotEmpty($remoteVersions, 'Should find remote versions for upgradeable packages');
         $this->assertCount(2, $remoteVersions, 'Should find remote versions for both packages');
@@ -243,18 +247,22 @@ class PackageListRemoteTest extends TestCase
         // Create mock package object and provider
         $mockPackage = $this->createMock(\MODX\Revolution\Transport\modTransportPackage::class);
         $mockProvider = $this->createMock(\MODX\Revolution\Transport\modTransportProvider::class);
-        
+
         // Mock package object methods
         $mockPackage->method('get')->with('signature')->willReturn('pdotools-3.0.1-pl');
         $mockPackage->method('getOne')->with('Provider')->willReturn($mockProvider);
-        
+
         // Mock provider methods
-        $mockProvider->method('get')->willReturnCallback(function($key) {
-            if ($key === 'id') return 1;
-            if ($key === 'name') return 'modx.com';
+        $mockProvider->method('get')->willReturnCallback(function ($key) {
+            if ($key === 'id') {
+                return 1;
+            }
+            if ($key === 'name') {
+                return 'modx.com';
+            }
             return null;
         });
-        
+
         // Mock provider->latest() to return remote version data
         $mockProvider->method('latest')->willReturn([
             [
@@ -267,7 +275,7 @@ class PackageListRemoteTest extends TestCase
                 'location' => '/path/to/pdotools'
             ]
         ]);
-        
+
         // Mock getObject to return package object
         $this->mockModx->method('getObject')->willReturn($mockPackage);
 
@@ -301,10 +309,10 @@ class PackageListRemoteTest extends TestCase
 
         // Act: Test version comparison logic
         require_once __DIR__ . '/../../../../custom-commands/package-upgrade-functions.php';
-        
+
         $currentVersion = $package['version'] . '-' . $package['release'];
         $newerVersions = [];
-        
+
         foreach ($providerVersions as $version) {
             $versionString = $version['version'] . '-' . $version['release'];
             if (isNewerVersion($versionString, $currentVersion)) {
@@ -335,21 +343,25 @@ class PackageListRemoteTest extends TestCase
         // Create mock package object and provider
         $mockPackage = $this->createMock(\MODX\Revolution\Transport\modTransportPackage::class);
         $mockProvider = $this->createMock(\MODX\Revolution\Transport\modTransportProvider::class);
-        
+
         // Mock package object methods
         $mockPackage->method('get')->with('signature')->willReturn('pdotools-3.0.1-pl');
         $mockPackage->method('getOne')->with('Provider')->willReturn($mockProvider);
-        
+
         // Mock provider methods
-        $mockProvider->method('get')->willReturnCallback(function($key) {
-            if ($key === 'id') return 1;
-            if ($key === 'name') return 'modx.com';
+        $mockProvider->method('get')->willReturnCallback(function ($key) {
+            if ($key === 'id') {
+                return 1;
+            }
+            if ($key === 'name') {
+                return 'modx.com';
+            }
             return null;
         });
-        
+
         // Mock provider->latest() to return error (string)
         $mockProvider->method('latest')->willReturn('Connection error');
-        
+
         // Mock getObject to return package object
         $this->mockModx->method('getObject')->willReturn($mockPackage);
 

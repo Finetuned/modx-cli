@@ -10,6 +10,11 @@ class Version extends BaseCmd
     protected $name = 'version';
     protected $description = 'Display the CLI version';
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $app = $this->getApplication();

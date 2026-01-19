@@ -12,44 +12,61 @@ use Symfony\Component\Console\Input\InputOption;
 class PackagesList extends ListProcessor
 {
     protected $processor = 'Workspace\Packages\Rest\GetList';
-    protected $required = array('provider');
-    protected $headers = array(
+    protected $required = ['provider'];
+    protected $headers = [
         'signature', 'name', 'version', 'release', 'installed'
-    );
+    ];
 
     protected $name = 'package:provider:packages';
     protected $description = 'Get a list of packages from a provider in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'provider',
                 InputArgument::REQUIRED,
                 'The ID of the provider'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'query',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Search query'
-            ),
-            array(
+            ],
+            [
                 'category',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by category'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add filters based on options
         if ($this->option('query') !== null) {
@@ -60,7 +77,14 @@ class PackagesList extends ListProcessor
         }
     }
 
-    protected function parseValue($value, $column)
+    /**
+     * Format raw values for output.
+     *
+     * @param mixed  $value  The raw column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'installed') {
             return $value ? 'Yes' : 'No';

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Snippet;
+<?php
+
+namespace MODX\CLI\Tests\Command\Snippet;
 
 use MODX\CLI\Command\Snippet\Get;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class GetTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Get();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -62,7 +64,7 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         // Mock the category object
         $category = $this->getMockBuilder('MODX\Revolution\modCategory')
             ->disableOriginalConstructor()
@@ -70,29 +72,29 @@ class GetTest extends BaseTest
         $category->method('get')
             ->with('category')
             ->willReturn('Test Category');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modCategory::class, 1, $this->anything())
             ->willReturn($category);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Snippet\Get',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === '123';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--format' => 'table'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('TestSnippet', $output);
@@ -120,17 +122,17 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--format' => 'json'
         ]);
-        
+
         // Verify the output is JSON
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -160,17 +162,17 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
             'id' => '123',
             '--json' => true
         ]);
-        
+
         // Verify the output is JSON
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -189,17 +191,17 @@ class GetTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
             'id' => '999',
             '--json' => true
         ]);
-        
+
         // Verify the output is JSON with error message
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -217,16 +219,16 @@ class GetTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Snippet not found', $output);

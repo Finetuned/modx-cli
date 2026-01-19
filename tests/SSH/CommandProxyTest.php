@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\SSH;
+<?php
+
+namespace MODX\CLI\Tests\SSH;
 
 use MODX\CLI\SSH\CommandProxy;
 use MODX\CLI\SSH\CommandExecutorInterface;
@@ -7,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test CommandProxy functionality
- * 
+ *
  * NOTE: These tests skip actual SSH execution since they require a real SSH connection.
  * The tests verify command building and structure without executing real SSH commands.
  */
@@ -137,7 +139,7 @@ class CommandProxyTest extends TestCase
     {
         $parser = new ConnectionParser('user@example.com');
         $proxy = new CommandProxy($parser, 'system:info', []);
-        
+
         $this->assertInstanceOf(CommandProxy::class, $proxy);
     }
 
@@ -145,7 +147,7 @@ class CommandProxyTest extends TestCase
     {
         $parser = new ConnectionParser('user@example.com');
         $proxy = new CommandProxy($parser, 'cache:clear', ['--partition' => 'web']);
-        
+
         $this->assertInstanceOf(CommandProxy::class, $proxy);
     }
 

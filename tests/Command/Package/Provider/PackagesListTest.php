@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Tests\Command\Package\Provider;
 
 use MODX\CLI\Command\Package\Provider\PackagesList;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -71,7 +73,7 @@ class PackagesListTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Workspace\\Packages\\Rest\\GetList',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['provider'] === '1'
                         && $properties['query'] === 'mypkg'
                         && $properties['category'] === 'utilities';

@@ -20,7 +20,7 @@ trait LoggerAwareTrait
     /**
      * Set logger instance
      *
-     * @param LoggerInterface $logger
+     * @param LoggerInterface $logger Logger instance.
      * @return void
      */
     public function setLogger(LoggerInterface $logger): void
@@ -45,8 +45,8 @@ trait LoggerAwareTrait
     /**
      * Log a debug message
      *
-     * @param string $message
-     * @param array $context
+     * @param string $message Log message.
+     * @param array  $context Context data.
      * @return void
      */
     protected function logDebug(string $message, array $context = []): void
@@ -57,8 +57,8 @@ trait LoggerAwareTrait
     /**
      * Log an info message
      *
-     * @param string $message
-     * @param array $context
+     * @param string $message Log message.
+     * @param array  $context Context data.
      * @return void
      */
     protected function logInfo(string $message, array $context = []): void
@@ -69,8 +69,8 @@ trait LoggerAwareTrait
     /**
      * Log a notice message
      *
-     * @param string $message
-     * @param array $context
+     * @param string $message Log message.
+     * @param array  $context Context data.
      * @return void
      */
     protected function logNotice(string $message, array $context = []): void
@@ -81,8 +81,8 @@ trait LoggerAwareTrait
     /**
      * Log a warning message
      *
-     * @param string $message
-     * @param array $context
+     * @param string $message Log message.
+     * @param array  $context Context data.
      * @return void
      */
     protected function logWarning(string $message, array $context = []): void
@@ -93,8 +93,8 @@ trait LoggerAwareTrait
     /**
      * Log an error message
      *
-     * @param string $message
-     * @param array $context
+     * @param string $message Log message.
+     * @param array  $context Context data.
      * @return void
      */
     protected function logError(string $message, array $context = []): void
@@ -105,8 +105,8 @@ trait LoggerAwareTrait
     /**
      * Log a critical message
      *
-     * @param string $message
-     * @param array $context
+     * @param string $message Log message.
+     * @param array  $context Context data.
      * @return void
      */
     protected function logCritical(string $message, array $context = []): void
@@ -117,8 +117,8 @@ trait LoggerAwareTrait
     /**
      * Log an alert message
      *
-     * @param string $message
-     * @param array $context
+     * @param string $message Log message.
+     * @param array  $context Context data.
      * @return void
      */
     protected function logAlert(string $message, array $context = []): void
@@ -129,8 +129,8 @@ trait LoggerAwareTrait
     /**
      * Log an emergency message
      *
-     * @param string $message
-     * @param array $context
+     * @param string $message Log message.
+     * @param array  $context Context data.
      * @return void
      */
     protected function logEmergency(string $message, array $context = []): void

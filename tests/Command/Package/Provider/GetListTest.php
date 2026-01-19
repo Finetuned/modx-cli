@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Tests\Command\Package\Provider;
 
 use MODX\CLI\Command\Package\Provider\GetList;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -101,7 +103,7 @@ class GetListTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Workspace\\Providers\\GetList',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['limit'] === 5 && $properties['start'] === 10;
                 }),
                 $this->anything()

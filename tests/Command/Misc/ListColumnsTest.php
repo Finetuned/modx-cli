@@ -16,11 +16,11 @@ class ListColumnsTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new ListColumns();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -49,12 +49,12 @@ class ListColumnsTest extends BaseTest
             ->method('getOption')
             ->with('dbname')
             ->willReturn('test_db');
-        
+
         // Mock prepare and statement
         $stmt = $this->createMock('\PDOStatement');
         $stmt->expects($this->once())
             ->method('execute');
-        
+
         $stmt->expects($this->once())
             ->method('fetchAll')
             ->with(\PDO::FETCH_ASSOC)
@@ -76,16 +76,16 @@ class ListColumnsTest extends BaseTest
                     'EXTRA' => ''
                 ]
             ]);
-        
+
         $this->modx->expects($this->once())
             ->method('prepare')
             ->willReturn($stmt);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'table' => 'test_table'
         ]);
-        
+
         // Verify the output contains table headers
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Column', $output);
@@ -94,7 +94,7 @@ class ListColumnsTest extends BaseTest
         $this->assertStringContainsString('Default', $output);
         $this->assertStringContainsString('Key', $output);
         $this->assertStringContainsString('Extra', $output);
-        
+
         // Verify column data is in output
         $this->assertStringContainsString('id', $output);
         $this->assertStringContainsString('int(11)', $output);
@@ -102,7 +102,7 @@ class ListColumnsTest extends BaseTest
         $this->assertStringContainsString('auto_increment', $output);
         $this->assertStringContainsString('name', $output);
         $this->assertStringContainsString('varchar(255)', $output);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -113,26 +113,26 @@ class ListColumnsTest extends BaseTest
             ->method('getOption')
             ->with('dbname')
             ->willReturn('test_db');
-        
+
         // Mock prepare and statement to return empty results
         $stmt = $this->createMock('\PDOStatement');
         $stmt->expects($this->once())
             ->method('execute');
-        
+
         $stmt->expects($this->once())
             ->method('fetchAll')
             ->with(\PDO::FETCH_ASSOC)
             ->willReturn([]);
-        
+
         $this->modx->expects($this->once())
             ->method('prepare')
             ->willReturn($stmt);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'table' => 'nonexistent_table'
         ]);
-        
+
         // Verify error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString("Table 'nonexistent_table' not found or has no columns", $output);
@@ -143,7 +143,7 @@ class ListColumnsTest extends BaseTest
     {
         // Mock getOption
         $this->modx->method('getOption')->willReturn('test_db');
-        
+
         // Mock statement with column having default value
         $stmt = $this->createMock('\PDOStatement');
         $stmt->method('execute');
@@ -157,19 +157,19 @@ class ListColumnsTest extends BaseTest
                 'EXTRA' => ''
             ]
         ]);
-        
+
         $this->modx->method('prepare')->willReturn($stmt);
-        
+
         // Execute the command
         $this->commandTester->execute(['table' => 'test_table']);
-        
+
         // Verify all properties are shown
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('status', $output);
         $this->assertStringContainsString('tinyint(1)', $output);
         $this->assertStringContainsString('NO', $output);
         $this->assertStringContainsString('1', $output);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -177,7 +177,7 @@ class ListColumnsTest extends BaseTest
     {
         // Mock getOption
         $this->modx->method('getOption')->willReturn('test_db');
-        
+
         // Mock statement with multiple columns
         $stmt = $this->createMock('\PDOStatement');
         $stmt->method('execute');
@@ -207,12 +207,12 @@ class ListColumnsTest extends BaseTest
                 'EXTRA' => ''
             ]
         ]);
-        
+
         $this->modx->method('prepare')->willReturn($stmt);
-        
+
         // Execute the command
         $this->commandTester->execute(['table' => 'users']);
-        
+
         // Verify all columns are shown
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('id', $output);
@@ -220,7 +220,7 @@ class ListColumnsTest extends BaseTest
         $this->assertStringContainsString('email', $output);
         $this->assertStringContainsString('CURRENT_TIMESTAMP', $output);
         $this->assertStringContainsString('UNI', $output);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 

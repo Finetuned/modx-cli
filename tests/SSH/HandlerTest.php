@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\SSH;
+<?php
+
+namespace MODX\CLI\Tests\SSH;
 
 use MODX\CLI\SSH\Handler;
 use MODX\CLI\SSH\CommandExecutorInterface;
@@ -6,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test SSH Handler functionality
- * 
+ *
  * NOTE: These tests verify the Handler's coordination role without actual SSH execution.
  * The Handler is a simple wrapper that delegates to ConnectionParser and CommandProxy.
  */
@@ -19,7 +21,7 @@ class HandlerTest extends TestCase
     public function testConstructorStoresConnectionString()
     {
         $handler = new Handler('user@example.com');
-        
+
         $this->assertInstanceOf(Handler::class, $handler);
     }
 
@@ -31,7 +33,7 @@ class HandlerTest extends TestCase
             'user@example.com:2222',
             'user@example.com:/var/www',
         ];
-        
+
         foreach ($formats as $format) {
             $handler = new Handler($format);
             $this->assertInstanceOf(Handler::class, $handler);

@@ -15,27 +15,27 @@ class SnippetGetTest extends BaseIntegrationTest
     public function testSnippetGetExecutesSuccessfully()
     {
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
-        
+
         // Create snippet first
         $this->executeCommandSuccessfully([
             'snippet:create',
             $snippetName,
             '--snippet=<?php return "Test"; ?>'
         ]);
-        
+
         // Get the snippet ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $snippetId = $rows[0]['id'];
-        
+
         // Get snippet
         $process = $this->executeCommandSuccessfully([
             'snippet:get',
             $snippetId
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString($snippetName, $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE id = ?', [$snippetId]);
     }
@@ -46,28 +46,28 @@ class SnippetGetTest extends BaseIntegrationTest
     public function testSnippetGetReturnsValidJson()
     {
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
-        
+
         // Create snippet
         $this->executeCommandSuccessfully([
             'snippet:create',
             $snippetName
         ]);
-        
+
         // Get snippet ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $snippetId = $rows[0]['id'];
-        
+
         // Get snippet with JSON
         $data = $this->executeCommandJson([
             'snippet:get',
             $snippetId
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('id', $data);
         $this->assertEquals($snippetId, $data['id']);
         $this->assertEquals($snippetName, $data['name']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE id = ?', [$snippetId]);
     }
@@ -81,7 +81,7 @@ class SnippetGetTest extends BaseIntegrationTest
             'snippet:get',
             '999999'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }

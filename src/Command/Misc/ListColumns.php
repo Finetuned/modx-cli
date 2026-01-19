@@ -11,22 +11,32 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class ListColumns extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'misc:list-columns';
     protected $description = 'List columns in a database table in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'table',
                 InputArgument::REQUIRED,
                 'The name of the table'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $tableName = $this->argument('table');
@@ -69,17 +79,17 @@ class ListColumns extends BaseCmd
             ], JSON_PRETTY_PRINT));
         } else {
             $table = new Table($this->output);
-            $table->setHeaders(array('Column', 'Type', 'Nullable', 'Default', 'Key', 'Extra'));
+            $table->setHeaders(['Column', 'Type', 'Nullable', 'Default', 'Key', 'Extra']);
 
             foreach ($columns as $column) {
-                $table->addRow(array(
+                $table->addRow([
                     $column['COLUMN_NAME'],
                     $column['COLUMN_TYPE'],
                     $column['IS_NULLABLE'],
                     $column['COLUMN_DEFAULT'],
                     $column['COLUMN_KEY'],
                     $column['EXTRA'],
-                ));
+                ]);
             }
 
             $table->render();

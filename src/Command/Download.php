@@ -13,6 +13,11 @@ abstract class Download extends BaseCmd
     protected $name = 'download';
     protected $description = 'Download a MODX Revolution release';
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $json = (bool) $this->option('json');
@@ -49,7 +54,9 @@ abstract class Download extends BaseCmd
 
         if (substr($destination, -10) === 'latest.zip') {
             if (!$json) {
-                $this->comment('Beware, file name will be latest... think about renaming it after download to appropriate version');
+                $this->comment(
+                    'Beware, file name will be latest... think about renaming it after download to appropriate version'
+                );
             }
         }
 
@@ -75,12 +82,12 @@ abstract class Download extends BaseCmd
     /**
      * Download the given file (archive) to the given destination
      *
-     * @param string $url
-     * @param string $target
+     * @param string $url    The url.
+     * @param string $target The target.
      *
      * @return void
      */
-    protected function download($url, $target)
+    protected function download(string $url, string $target): void
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -121,7 +128,7 @@ abstract class Download extends BaseCmd
     {
         $version = $this->argument('version');
         if ($version === 'latest') {
-            // TODO : find a way to retrieve the latest version number released (github tags ?)
+            // Note: find a way to retrieve the latest version number released (github tags?).
             return 'latest.zip';
         } else {
             $version = "modx-{$version}";
@@ -136,44 +143,48 @@ abstract class Download extends BaseCmd
     }
 
     /**
-     * @inheritDoc
+     * Get the console command arguments.
+     *
+     * @return array
      */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'version',
                 InputArgument::OPTIONAL,
                 'The version you want to download',
                 'latest'
-            ),
-            array(
+            ],
+            [
                 'path',
                 InputArgument::OPTIONAL,
                 'The path to download the file to',
                 getenv('HOME') . '/.modx/releases/'
-            ),
-        );
+            ],
+        ];
     }
 
     /**
-     * @inheritDoc
+     * Get the console command options.
+     *
+     * @return array
      */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'advanced',
                 'a',
                 InputOption::VALUE_NONE,
                 'Whether or not you want an advanced release'
-            ),
-            array(
+            ],
+            [
                 'sdk',
                 'k',
                 InputOption::VALUE_NONE,
                 'Whether or not you want the SDK version'
-            ),
-        ));
+            ],
+        ]);
     }
 }

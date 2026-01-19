@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests;
+<?php
+
+namespace MODX\CLI\Tests;
 
 use MODX\CLI\TreeBuilder;
 use PHPUnit\Framework\TestCase;
@@ -119,7 +121,7 @@ class TreeBuilderTest extends TestCase
         $this->assertIsArray($sortedTree);
         // After sorting by menuindex, root is accessible by its menuindex value (0)
         $this->assertArrayHasKey(0, $sortedTree);
-        
+
         $childrenKeys = array_keys($sortedTree[0]['children']);
         $this->assertEquals([1, 2, 3], $childrenKeys, 'Children should be sorted by menuindex ascending');
     }
@@ -140,7 +142,7 @@ class TreeBuilderTest extends TestCase
         $this->assertIsArray($sortedTree);
         // After sorting by menuindex, root is accessible by its menuindex value (0)
         $this->assertArrayHasKey(0, $sortedTree);
-        
+
         $childrenKeys = array_keys($sortedTree[0]['children']);
         $this->assertEquals([3, 2, 1], $childrenKeys, 'Children should be sorted by menuindex descending');
     }
@@ -161,7 +163,7 @@ class TreeBuilderTest extends TestCase
 
         // After sorting, root is accessible by its menuindex value (0)
         $this->assertArrayHasKey(0, $sortedTree);
-        
+
         // Check first level sorting
         $firstLevelKeys = array_keys($sortedTree[0]['children']);
         $this->assertEquals([1, 2], $firstLevelKeys, 'First level should be sorted');
@@ -183,7 +185,7 @@ class TreeBuilderTest extends TestCase
         $result = $builder->sortTree('order', 'ASC');
 
         $this->assertInstanceOf(TreeBuilder::class, $result, 'sortTree should return TreeBuilder instance for chaining');
-        
+
         $tree = $result->getTree();
         // After sorting by order, root is accessible by its order value (0)
         $this->assertArrayHasKey(0, $tree);
@@ -277,7 +279,7 @@ class TreeBuilderTest extends TestCase
         foreach ($tree as $item) {
             $this->assertArrayHasKey('children', $item);
             $this->assertIsArray($item['children']);
-            
+
             foreach ($item['children'] as $child) {
                 $this->assertArrayHasKey('children', $child);
                 $this->assertIsArray($child['children']);
@@ -321,7 +323,7 @@ class TreeBuilderTest extends TestCase
         // Create a larger tree with 100 items
         $items = [];
         $items[] = ['id' => 1, 'parent' => 0, 'name' => 'Root', 'menuindex' => 0];
-        
+
         for ($i = 2; $i <= 100; $i++) {
             $parent = ($i % 10 === 0) ? 1 : $i - 1;
             $items[] = ['id' => $i, 'parent' => $parent, 'name' => "Item $i", 'menuindex' => $i];
@@ -347,7 +349,7 @@ class TreeBuilderTest extends TestCase
         $tree = $builder->getTree();
 
         $this->assertIsArray($tree);
-        
+
         // Traverse to deepest level
         $current = $tree[1];
         for ($i = 2; $i <= 10; $i++) {

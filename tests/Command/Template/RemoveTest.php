@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Template;
+<?php
+
+namespace MODX\CLI\Tests\Command\Template;
 
 use MODX\CLI\Command\Template\Remove;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class RemoveTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Remove();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -50,12 +52,12 @@ class RemoveTest extends BaseTest
         $template->method('get')
             ->with('templatename')
             ->willReturn('Test Template');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modTemplate::class, '123', $this->anything())
             ->willReturn($template);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -65,24 +67,24 @@ class RemoveTest extends BaseTest
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Template\Remove',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === '123';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with force option
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template removed successfully', $output);
@@ -94,12 +96,12 @@ class RemoveTest extends BaseTest
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modTemplate::class, '999', $this->anything())
             ->willReturn(null);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template with ID 999 not found', $output);
@@ -114,12 +116,12 @@ class RemoveTest extends BaseTest
         $template->method('get')
             ->with('templatename')
             ->willReturn('Test Template');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modTemplate::class, '123', $this->anything())
             ->willReturn($template);
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -130,17 +132,17 @@ class RemoveTest extends BaseTest
                 'message' => 'Error removing template'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with force option
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to remove template', $output);

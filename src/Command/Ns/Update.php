@@ -12,47 +12,64 @@ use Symfony\Component\Console\Input\InputOption;
 class Update extends ProcessorCmd
 {
     protected $processor = 'Workspace\PackageNamespace\Update';
-    protected $required = array('name');
+    protected $required = ['name'];
 
     protected $name = 'ns:update';
     protected $description = 'Update a namespace in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the namespace to update'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'path',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The path of the namespace'
-            ),
-            array(
+            ],
+            [
                 'assets_path',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The assets path of the namespace'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the name argument to properties (it's the primary key)
         $properties['name'] = $this->argument('name');
-        
+
         // Add options to the properties
-        $optionKeys = array('path', 'assets_path');
+        $optionKeys = ['path', 'assets_path'];
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
@@ -61,7 +78,13 @@ class Update extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

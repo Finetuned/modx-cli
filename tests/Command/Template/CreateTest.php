@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Template;
+<?php
+
+namespace MODX\CLI\Tests\Command\Template;
 
 use MODX\CLI\Command\Template\Create;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class CreateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Create();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,12 +55,12 @@ class CreateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Template\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['templatename']) && $properties['templatename'] === 'TestTemplate' &&
                            isset($properties['description']) && $properties['description'] === 'Test description' &&
                            isset($properties['category']) && $properties['category'] === '1' &&
@@ -67,7 +69,7 @@ class CreateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'templatename' => 'TestTemplate',
@@ -75,7 +77,7 @@ class CreateTest extends BaseTest
             '--category' => '1',
             '--content' => '<html><body>[[*content]]</body></html>'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template created successfully', $output);
@@ -94,16 +96,16 @@ class CreateTest extends BaseTest
                 'message' => 'Error creating template'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'templatename' => 'TestTemplate'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to create template', $output);

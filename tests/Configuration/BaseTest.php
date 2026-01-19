@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Configuration;
+<?php
+
+namespace MODX\CLI\Tests\Configuration;
 
 use PHPUnit\Framework\TestCase;
 
@@ -40,10 +42,10 @@ class BaseTest extends TestCase
 
     public static function getData()
     {
-        return array(
-            array('key', 'value'),
-            array('array', array('a' => 'b', 'c' => 'd')),
-        );
+        return [
+            ['key', 'value'],
+            ['array', ['a' => 'b', 'c' => 'd']],
+        ];
     }
 
     /**

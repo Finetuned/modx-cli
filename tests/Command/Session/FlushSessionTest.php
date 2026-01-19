@@ -25,11 +25,11 @@ class FlushSessionTest extends BaseTest
             ->with('session_handler')
             ->willReturn(true);
         $this->modx->services = $this->services;
-        
+
         // Create the command
         $this->command = new FlushSession();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -54,7 +54,7 @@ class FlushSessionTest extends BaseTest
     {
         $definition = $this->command->getDefinition();
         $this->assertTrue($definition->hasOption('force'));
-        
+
         $option = $definition->getOption('force');
         $this->assertEquals('f', $option->getShortcut());
         $this->assertFalse($option->isValueRequired());
@@ -71,15 +71,15 @@ class FlushSessionTest extends BaseTest
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with('Security\\Flush')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute(['--force' => true]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Sessions flushed successfully', $output);
@@ -98,14 +98,14 @@ class FlushSessionTest extends BaseTest
                 'message' => 'Error flushing sessions'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute(['--force' => true]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to flush sessions', $output);
@@ -124,14 +124,14 @@ class FlushSessionTest extends BaseTest
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force and --json
         $this->commandTester->execute(['--force' => true, '--json' => true]);
-        
+
         // Verify the output is valid JSON
         $output = $this->commandTester->getDisplay();
         $decoded = json_decode($output, true);

@@ -13,9 +13,16 @@ use Symfony\Component\Console\Input\InputOption;
 class Info extends ProcessorCmd
 {
     protected $processor = 'Workspace\Providers\GetList';
-    protected $required = array('id');
+    protected $required = ['id'];
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Filter by provider ID
         $properties['id'] = $this->argument('id');
@@ -24,31 +31,47 @@ class Info extends ProcessorCmd
     protected $name = 'package:provider:info';
     protected $description = 'Get information about a package provider in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the provider'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (table, json)',
                 'table'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         // GetList returns 'results' array instead of 'object'
         if (!isset($response['results']) || empty($response['results'])) {
@@ -67,12 +90,12 @@ class Info extends ProcessorCmd
 
         // Default to table format
         $table = new Table($this->output);
-        $table->setHeaders(array('Property', 'Value'));
+        $table->setHeaders(['Property', 'Value']);
 
         // Add basic properties
-        $properties = array(
+        $properties = [
             'id', 'name', 'description', 'service_url', 'username', 'verified'
-        );
+        ];
 
         foreach ($properties as $property) {
             if (isset($provider[$property])) {
@@ -83,7 +106,7 @@ class Info extends ProcessorCmd
                     $value = $value ? 'Yes' : 'No';
                 }
 
-                $table->addRow(array($property, $value));
+                $table->addRow([$property, $value]);
             }
         }
 

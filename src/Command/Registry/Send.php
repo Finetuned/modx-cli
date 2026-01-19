@@ -16,77 +16,94 @@ class Send extends ProcessorCmd
     protected $name = 'registry:send';
     protected $description = 'Send a message to a MODX registry register';
 
-    protected $required = array('topic', 'message');
+    protected $required = ['topic', 'message'];
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'topic',
                 InputArgument::REQUIRED,
                 'The topic to send to'
-            ),
-            array(
+            ],
+            [
                 'message',
                 InputArgument::REQUIRED,
                 'The message to send'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'register',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Registry name to use',
                 'db'
-            ),
-            array(
+            ],
+            [
                 'register_class',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Custom registry class (optional)'
-            ),
-            array(
+            ],
+            [
                 'message_key',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Optional message key'
-            ),
-            array(
+            ],
+            [
                 'message_format',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Message format (string, json)',
                 'string'
-            ),
-            array(
+            ],
+            [
                 'delay',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Delay in seconds',
                 0
-            ),
-            array(
+            ],
+            [
                 'ttl',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Time-to-live in seconds',
                 0
-            ),
-            array(
+            ],
+            [
                 'kill',
                 null,
                 InputOption::VALUE_NONE,
                 'Kill the register after sending'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $properties['register'] = $this->option('register');
         $properties['message_format'] = $this->option('message_format');
@@ -103,7 +120,13 @@ class Send extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             $this->output->writeln(json_encode($response, JSON_PRETTY_PRINT));

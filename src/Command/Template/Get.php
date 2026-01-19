@@ -13,36 +13,52 @@ use Symfony\Component\Console\Input\InputOption;
 class Get extends ProcessorCmd
 {
     protected $processor = 'Element\Template\Get';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'template:get';
     protected $description = 'Get a MODX template';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the template to get'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (table, json)',
                 'table'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if (!isset($response['object'])) {
             if ($this->option('json') || $this->option('format') === 'json') {
@@ -66,12 +82,12 @@ class Get extends ProcessorCmd
 
         // Default to table format
         $table = new Table($this->output);
-        $table->setHeaders(array('Property', 'Value'));
+        $table->setHeaders(['Property', 'Value']);
 
         // Add basic properties
-        $properties = array(
+        $properties = [
             'id', 'templatename', 'description', 'category', 'locked', 'static', 'static_file', 'icon'
-        );
+        ];
 
         foreach ($properties as $property) {
             if (isset($template[$property])) {
@@ -90,7 +106,7 @@ class Get extends ProcessorCmd
                     }
                 }
 
-                $table->addRow(array($property, $value));
+                $table->addRow([$property, $value]);
             }
         }
 

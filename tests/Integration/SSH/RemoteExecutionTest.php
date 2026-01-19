@@ -9,7 +9,7 @@ use MODX\CLI\SSH\ConnectionParser;
 
 /**
  * Integration tests for remote SSH command execution
- * 
+ *
  * Note: These tests do not require a MODX instance or actual SSH connectivity.
  * They test SSH command building and component structure using reflection.
  */
@@ -22,14 +22,14 @@ class RemoteExecutionTest extends TestCase
     {
         $parser = new ConnectionParser('testuser@example.com:2222/var/www/html');
         $proxy = new CommandProxy($parser, 'system:info', ['--json']);
-        
+
         // Use reflection to access protected method for testing
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
         $method->setAccessible(true);
-        
+
         $sshCommand = $method->invoke($proxy);
-        
+
         $this->assertStringContainsString('ssh', $sshCommand);
         $this->assertStringContainsString('-p 2222', $sshCommand);
         $this->assertStringContainsString('testuser@example.com', $sshCommand);
@@ -44,13 +44,13 @@ class RemoteExecutionTest extends TestCase
     {
         $parser = new ConnectionParser('testuser@example.com/var/www/html');
         $proxy = new CommandProxy($parser, 'system:info', []);
-        
+
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
         $method->setAccessible(true);
-        
+
         $sshCommand = $method->invoke($proxy);
-        
+
         $this->assertStringNotContainsString('-p 22', $sshCommand);
         $this->assertStringNotContainsString('-p', $sshCommand);
         $this->assertStringContainsString('testuser@example.com', $sshCommand);
@@ -63,13 +63,13 @@ class RemoteExecutionTest extends TestCase
     {
         $parser = new ConnectionParser('testuser@example.com');
         $proxy = new CommandProxy($parser, 'system:info', []);
-        
+
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
         $method->setAccessible(true);
-        
+
         $sshCommand = $method->invoke($proxy);
-        
+
         $this->assertStringNotContainsString('cd ', $sshCommand);
         $this->assertStringContainsString('modx system:info', $sshCommand);
     }
@@ -81,13 +81,13 @@ class RemoteExecutionTest extends TestCase
     {
         $parser = new ConnectionParser('testuser@example.com');
         $proxy = new CommandProxy($parser, 'package:list', ['--limit=10', '--json']);
-        
+
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildRemoteCommand');
         $method->setAccessible(true);
-        
+
         $remoteCommand = $method->invoke($proxy);
-        
+
         $this->assertStringContainsString('modx package:list', $remoteCommand);
         $this->assertStringContainsString('--limit=10', $remoteCommand);
         $this->assertStringContainsString('--json', $remoteCommand);
@@ -100,13 +100,13 @@ class RemoteExecutionTest extends TestCase
     {
         $parser = new ConnectionParser('testuser@example.com');
         $proxy = new CommandProxy($parser, 'resource:create', ['--pagetitle=Test & Demo', '--content=<p>Hello</p>']);
-        
+
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildRemoteCommand');
         $method->setAccessible(true);
-        
+
         $remoteCommand = $method->invoke($proxy);
-        
+
         // Arguments should be properly escaped
         $this->assertStringContainsString('modx resource:create', $remoteCommand);
         // The exact escaping format may vary, but dangerous characters should be handled
@@ -119,11 +119,11 @@ class RemoteExecutionTest extends TestCase
     public function testHandlerDelegatesToCommandProxy()
     {
         $handler = new Handler('testuser@example.com/var/www/html');
-        
+
         // Create a mock to test that Handler creates correct components
         // This is primarily a structural test
         $this->assertInstanceOf(Handler::class, $handler);
-        
+
         // In a real scenario, this would execute over SSH
         // For integration testing, we're verifying the component structure
     }
@@ -135,13 +135,13 @@ class RemoteExecutionTest extends TestCase
     {
         $parser = new ConnectionParser('deploy@192.168.1.100:2222/opt/modx');
         $proxy = new CommandProxy($parser, 'cache:clear', []);
-        
+
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
         $method->setAccessible(true);
-        
+
         $sshCommand = $method->invoke($proxy);
-        
+
         $this->assertStringContainsString('deploy@192.168.1.100', $sshCommand);
         $this->assertStringContainsString('-p 2222', $sshCommand);
         $this->assertStringContainsString('cd /opt/modx', $sshCommand);
@@ -154,13 +154,13 @@ class RemoteExecutionTest extends TestCase
     {
         $parser = new ConnectionParser('developer@dev.example.com~/projects/modx');
         $proxy = new CommandProxy($parser, 'system:info', []);
-        
+
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
         $method->setAccessible(true);
-        
+
         $sshCommand = $method->invoke($proxy);
-        
+
         $this->assertStringContainsString('cd ~/projects/modx', $sshCommand);
     }
 }

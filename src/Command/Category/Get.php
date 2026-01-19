@@ -13,40 +13,57 @@ use Symfony\Component\Console\Input\InputOption;
 class Get extends ProcessorCmd
 {
     protected $processor = 'Element\Category\Get';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'category:get';
     protected $description = 'Get a MODX category';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the category to get'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (table, json)',
                 'table'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if (!isset($response['object'])) {
             if ($this->option('json') || $this->option('format') === 'json') {
-                $this->output->writeln(json_encode(['success' => false, 'message' => 'Category not found'], JSON_PRETTY_PRINT));
+                $payload = ['success' => false, 'message' => 'Category not found'];
+                $this->output->writeln(json_encode($payload, JSON_PRETTY_PRINT));
                 return 0;
             }
             $this->output->writeln('<error>Category not found</error>');
@@ -63,12 +80,12 @@ class Get extends ProcessorCmd
 
         // Default to table format
         $table = new Table($this->output);
-        $table->setHeaders(array('Property', 'Value'));
+        $table->setHeaders(['Property', 'Value']);
 
         // Add basic properties
-        $properties = array(
+        $properties = [
             'id', 'category', 'parent', 'rank'
-        );
+        ];
 
         foreach ($properties as $property) {
             if (isset($category[$property])) {
@@ -82,7 +99,7 @@ class Get extends ProcessorCmd
                     }
                 }
 
-                $table->addRow(array($property, $value));
+                $table->addRow([$property, $value]);
             }
         }
 

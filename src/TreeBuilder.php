@@ -7,20 +7,24 @@ namespace MODX\CLI;
  */
 class TreeBuilder
 {
-    protected $items = array();
+    protected $items = [];
     protected $parentField = 'parent';
     protected $pkField = 'id';
     protected $childrenField = 'children';
-    protected $tree = array();
+    protected $tree = [];
 
     /**
-     * @param array  $items - The "flat" array to sort
-     * @param string $pkField - The array index used as "primary key"
-     * @param string $parentField - The array index used to define the parent
-     * @param string $childrenField - The array index used to store the children of an item
+     * @param array  $items         The "flat" array to sort.
+     * @param string $pkField       The array index used as "primary key".
+     * @param string $parentField   The array index used to define the parent.
+     * @param string $childrenField The array index used to store the children of an item.
      */
-    public function __construct(array $items = array(), $pkField = 'id', $parentField = 'parent', $childrenField = 'children')
-    {
+    public function __construct(
+        array $items = [],
+        string $pkField = 'id',
+        string $parentField = 'parent',
+        string $childrenField = 'children'
+    ) {
         $this->items = $items;
         $this->pkField = $pkField;
         $this->parentField = $parentField;
@@ -39,7 +43,7 @@ class TreeBuilder
         if (empty($this->tree)) {
             return [];
         }
-        
+
         $root = array_shift($this->tree);
 
         return isset($root[$this->childrenField]) ? $root[$this->childrenField] : [];
@@ -50,17 +54,17 @@ class TreeBuilder
      *
      * @return $this
      */
-    public function buildTree()
+    public function buildTree(): self
     {
         if (empty($this->items)) {
-            $this->tree = array();
+            $this->tree = [];
             return $this;
         }
-        
-        $indexed = array();
+
+        $indexed = [];
         // First sort by some "PK"
         foreach ($this->items as $row) {
-            $row[$this->childrenField] = array();
+            $row[$this->childrenField] = [];
             $indexed[$row[$this->pkField]] = $row;
         }
 
@@ -68,25 +72,25 @@ class TreeBuilder
         $root = null;
         foreach ($indexed as $pk => $row) {
             $parentKey = $row[$this->parentField];
-            
+
             // Track root items (those with no parent or empty parent)
             if (!$row[$this->parentField] || empty($row[$this->parentField])) {
                 $root = $parentKey;
             }
-            
+
             // Initialize parent's children array if needed
             if (!isset($indexed[$parentKey])) {
-                $indexed[$parentKey] = array($this->childrenField => array());
+                $indexed[$parentKey] = [$this->childrenField => []];
             }
-            
+
             $indexed[$parentKey][$this->childrenField][$row[$this->pkField]] =& $indexed[$pk];
         }
 
         // Wrap in a fake "root" so we can sort items if needed
         if ($root !== null) {
-            $this->tree = array($root => $indexed[$root]);
+            $this->tree = [$root => $indexed[$root]];
         } else {
-            $this->tree = array();
+            $this->tree = [];
         }
 
         return $this;
@@ -95,12 +99,12 @@ class TreeBuilder
     /**
      * Convenient method to sort & retrieve the tree
      *
-     * @param $field $node
-     * @param string $dir
+     * @param string $field The field.
+     * @param string $dir   The direction (ASC or DESC).
      *
      * @return array
      */
-    public function getSortedTree($field = 'menuindex', $dir = 'ASC')
+    public function getSortedTree(string $field = 'menuindex', string $dir = 'ASC'): array
     {
         return $this->sortTree($field, $dir)->getTree();
     }
@@ -108,12 +112,12 @@ class TreeBuilder
     /**
      * Sort the tree
      *
-     * @param string $field
-     * @param string $dir
+     * @param string $field The field.
+     * @param string $dir   The direction (ASC or DESC).
      *
      * @return $this
      */
-    public function sortTree($field = 'menuindex', $dir = 'ASC')
+    public function sortTree(string $field = 'menuindex', string $dir = 'ASC'): self
     {
         foreach ($this->tree as &$item) {
             if (isset($item[$this->childrenField]) && !empty($item[$this->childrenField])) {
@@ -125,13 +129,13 @@ class TreeBuilder
     }
 
     /**
-     * @param array $item
-     * @param string $field
-     * @param string $dir
+     * @param array  $item  The item.
+     * @param string $field The field.
+     * @param string $dir   The direction (ASC or DESC).
      */
-    protected function sortChildren(array &$item, $field = 'menuindex', $dir = 'ASC')
+    protected function sortChildren(array &$item, string $field = 'menuindex', string $dir = 'ASC'): void
     {
-        $sortedChildren = array();
+        $sortedChildren = [];
         foreach ($item[$this->childrenField] as &$child) {
             // First sort child's children, if any
             if (isset($child[$this->childrenField]) && !empty($child[$this->childrenField])) {

@@ -72,5 +72,4 @@ class UserListTest extends UserTestBase
 
         $this->deleteUser($userId);
     }
-
 }

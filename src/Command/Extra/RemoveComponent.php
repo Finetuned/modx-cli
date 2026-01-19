@@ -11,54 +11,69 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class RemoveComponent extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'extra:remove-component';
     protected $description = 'Remove a component from MODX';
     protected $jsonOutput = false;
-    protected $actions = array();
+    protected $actions = [];
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'namespace',
                 InputArgument::REQUIRED,
                 'The namespace of the component'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force removal without confirmation'
-            ),
-            array(
+            ],
+            [
                 'files',
                 null,
                 InputOption::VALUE_NONE,
                 'Remove files as well'
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $this->jsonOutput = (bool) $this->option('json');
-        $this->actions = array();
+        $this->actions = [];
         $namespace = $this->argument('namespace');
 
         // Check if the namespace exists
         $ns = $this->modx->getObject(\MODX\Revolution\modNamespace::class, $namespace);
         if (!$ns) {
-            $this->outputResult(false, "Namespace '{$namespace}' does not exist", array(
+            $this->outputResult(false, "Namespace '{$namespace}' does not exist", [
                 'namespace' => $namespace,
-            ));
+            ]);
             return 1;
         }
 
@@ -69,19 +84,19 @@ class RemoveComponent extends BaseCmd
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to remove component '{$namespace}'?")) {
-                $this->outputResult(false, 'Operation aborted', array(
+                $this->outputResult(false, 'Operation aborted', [
                     'namespace' => $namespace,
                     'removed' => false,
-                ));
+                ]);
                 return 0;
             }
         }
 
         // Remove the menu
-        $menu = $this->modx->getObject(\MODX\Revolution\modMenu::class, array(
+        $menu = $this->modx->getObject(\MODX\Revolution\modMenu::class, [
             'namespace' => $namespace,
             'action' => 'index',
-        ));
+        ]);
 
         if ($menu) {
             if ($menu->remove()) {
@@ -118,30 +133,30 @@ class RemoveComponent extends BaseCmd
                 }
             }
 
-            $this->outputResult(true, "Component '{$namespace}' removed successfully", array(
+            $this->outputResult(true, "Component '{$namespace}' removed successfully", [
                 'namespace' => $namespace,
                 'removed' => true,
                 'files' => (bool) $this->option('files'),
-            ));
+            ]);
         } else {
-            $this->outputResult(false, "Failed to remove namespace '{$namespace}'", array(
+            $this->outputResult(false, "Failed to remove namespace '{$namespace}'", [
                 'namespace' => $namespace,
                 'removed' => false,
                 'files' => (bool) $this->option('files'),
-            ));
+            ]);
         }
 
         return 0;
     }
 
     /**
-     * Remove a directory and its contents
+     * Remove a directory and its contents.
      *
-     * @param string $dir
+     * @param string $dir The directory path.
      *
-     * @return bool
+     * @return boolean
      */
-    protected function removeDirectory($dir)
+    protected function removeDirectory(string $dir)
     {
         if (!file_exists($dir)) {
             return true;
@@ -164,34 +179,54 @@ class RemoveComponent extends BaseCmd
         return rmdir($dir);
     }
 
-    protected function emitInfo($message)
+    /**
+     * Emit an informational message or action.
+     *
+     * @param string $message The message to emit.
+     * @return void
+     */
+    protected function emitInfo(string $message): void
     {
         if ($this->jsonOutput) {
-            $this->actions[] = array('success' => true, 'message' => $message);
+            $this->actions[] = ['success' => true, 'message' => $message];
             return;
         }
 
         $this->info($message);
     }
 
-    protected function emitError($message)
+    /**
+     * Emit an error message or action.
+     *
+     * @param string $message The message to emit.
+     * @return void
+     */
+    protected function emitError(string $message): void
     {
         if ($this->jsonOutput) {
-            $this->actions[] = array('success' => false, 'message' => $message);
+            $this->actions[] = ['success' => false, 'message' => $message];
             return;
         }
 
         $this->error($message);
     }
 
-    protected function outputResult($success, $message, array $payload = array())
+    /**
+     * Output the final result payload.
+     *
+     * @param boolean $success Whether the operation succeeded.
+     * @param string  $message The message to display.
+     * @param array   $payload Additional payload data.
+     * @return void
+     */
+    protected function outputResult(bool $success, string $message, array $payload = []): void
     {
         if ($this->jsonOutput) {
-            $this->output->writeln(json_encode(array_merge(array(
+            $this->output->writeln(json_encode(array_merge([
                 'success' => (bool) $success,
                 'message' => $message,
                 'actions' => $this->actions,
-            ), $payload), JSON_PRETTY_PRINT));
+            ], $payload), JSON_PRETTY_PRINT));
         } else {
             if ($success) {
                 $this->info($message);

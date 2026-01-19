@@ -12,33 +12,45 @@ use Symfony\Component\Console\Input\InputOption;
 class View extends ListProcessor
 {
     protected $processor = 'System\Log\GetList';
-    protected $headers = array(
+    protected $headers = [
         'id', 'action', 'name', 'occurred'
-    );
+    ];
 
     protected $name = 'system:log:view';
     protected $description = 'View the MODX system log';
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'level',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by log level (ERROR, WARN, INFO, DEBUG)'
-            ),
-            array(
+            ],
+            [
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (table, colored)',
                 'table'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add filters based on options
         if ($this->option('level') !== null) {
@@ -46,7 +58,13 @@ class View extends ListProcessor
         }
     }
 
-    protected function processResponse(array $results = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $results The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $results = [])
     {
         $format = $this->option('format');
 
@@ -59,11 +77,12 @@ class View extends ListProcessor
     }
 
     /**
-     * Render the log entries with colors
+     * Render the log entries with colors.
      *
-     * @param array $logs
+     * @param array $logs The log entries.
+     * @return void
      */
-    protected function renderColored(array $logs = array())
+    protected function renderColored(array $logs = []): void
     {
         if (count($logs) === 0) {
             $this->info('No log entries found');
@@ -71,14 +90,14 @@ class View extends ListProcessor
         }
 
         $formatter = new ColoredLog();
-        $entries = array();
+        $entries = [];
 
         foreach ($logs as $log) {
-            $entries[] = array(
+            $entries[] = [
                 'level' => $log['action'],
                 'message' => $log['name'],
                 'timestamp' => strtotime($log['occurred']),
-            );
+            ];
         }
 
         // Sort by timestamp
@@ -89,7 +108,14 @@ class View extends ListProcessor
         $this->output->write($formatter->formatMultiple($entries));
     }
 
-    protected function parseValue($value, $column)
+    /**
+     * Format raw values for output.
+     *
+     * @param mixed  $value  The raw column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'action') {
             return strtoupper($value);

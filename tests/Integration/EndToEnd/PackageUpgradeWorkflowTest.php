@@ -18,7 +18,7 @@ class PackageUpgradeWorkflowTest extends BaseIntegrationTest
         $process = $this->executeCommandSuccessfully([
             'package:list'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }
@@ -31,7 +31,7 @@ class PackageUpgradeWorkflowTest extends BaseIntegrationTest
         $data = $this->executeCommandJson([
             'package:list'
         ]);
-        
+
         $this->assertIsArray($data);
     }
 
@@ -45,7 +45,7 @@ class PackageUpgradeWorkflowTest extends BaseIntegrationTest
     //         '--search=core',
     //         '--limit=0'
     //     ]);
-        
+
     //     $output = $process->getOutput();
     //     $this->assertNotEmpty($output);
     // }
@@ -61,15 +61,15 @@ class PackageUpgradeWorkflowTest extends BaseIntegrationTest
         $listProcess = $this->executeCommand([
             'package:list'
         ]);
-        
+
         $this->assertNotEmpty($listProcess->getOutput());
-        
+
         // Step 2: Check if we can query package info
         // Note: Actual installation would require:
         // - Active MODX instance
         // - Package provider credentials
         // - Network access to modx.com
-        
+
         $this->assertTrue(true, "Package workflow simulation completed");
     }
 
@@ -82,7 +82,7 @@ class PackageUpgradeWorkflowTest extends BaseIntegrationTest
             'package:install',
             'nonexistent-package-12345'
         ]);
-        
+
         // Should handle gracefully (either error message or skip)
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
@@ -97,7 +97,7 @@ class PackageUpgradeWorkflowTest extends BaseIntegrationTest
         $process = $this->executeCommand([
             'package:list'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }
@@ -112,14 +112,14 @@ class PackageUpgradeWorkflowTest extends BaseIntegrationTest
             'package:list'
         ]);
         $this->assertNotEmpty($listProcess->getOutput());
-        
+
         // Step 2: Search for specific package: search is not implemented yet
         // $searchProcess = $this->executeCommand([
         //     'package:list',
         //     '--search=modx'
         // ]);
         // $this->assertNotEmpty($searchProcess->getOutput());
-        
+
         // Workflow completes successfully
         $this->assertTrue(true, "Multi-step package discovery completed");
     }
@@ -134,7 +134,7 @@ class PackageUpgradeWorkflowTest extends BaseIntegrationTest
             'package:list',
             '--limit=5'
         ]);
-        
+
         $this->assertIsArray($data);
         // Validates JSON format for automation scripts
     }

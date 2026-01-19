@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Ns;
+<?php
+
+namespace MODX\CLI\Tests\Command\Ns;
 
 use MODX\CLI\Command\Ns\GetList;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -14,11 +16,11 @@ class GetListTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new GetList();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -54,12 +56,12 @@ class GetListTest extends BaseTest
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         $namespaces = [
             ['id' => 1, 'name' => 'core', 'path' => '{core_path}', 'assets_path' => '{assets_path}'],
             ['id' => 2, 'name' => 'test', 'path' => '{base_path}test/', 'assets_path' => '{assets_path}test/']
         ];
-        
+
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([
                 'success' => true,
@@ -67,15 +69,15 @@ class GetListTest extends BaseTest
                 'results' => $namespaces
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with('Workspace\PackageNamespace\GetList')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([]);
-        
+
         // Verify the output contains namespace data
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('core', $output);
@@ -88,12 +90,12 @@ class GetListTest extends BaseTest
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         $namespaces = [
             ['id' => 1, 'name' => 'core', 'path' => '{core_path}', 'assets_path' => '{assets_path}'],
             ['id' => 2, 'name' => 'test', 'path' => '{base_path}test/', 'assets_path' => '{assets_path}test/']
         ];
-        
+
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([
                 'success' => true,
@@ -101,18 +103,18 @@ class GetListTest extends BaseTest
                 'results' => $namespaces
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute(['--json' => true]);
-        
+
         // Verify the output is valid JSON
         $output = $this->commandTester->getDisplay();
         $json = json_decode($output, true);
-        
+
         $this->assertIsArray($json);
         $this->assertEquals(2, $json['total']);
         $this->assertCount(2, $json['results']);
@@ -125,7 +127,7 @@ class GetListTest extends BaseTest
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([
                 'success' => true,
@@ -133,14 +135,14 @@ class GetListTest extends BaseTest
                 'results' => []
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([]);
-        
+
         // Command should execute successfully even with no results
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
@@ -151,11 +153,11 @@ class GetListTest extends BaseTest
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         $namespaces = [
             ['id' => 11, 'name' => 'namespace11', 'path' => '{base_path}ns11/', 'assets_path' => '{assets_path}ns11/']
         ];
-        
+
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([
                 'success' => true,
@@ -163,25 +165,25 @@ class GetListTest extends BaseTest
                 'results' => $namespaces
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Workspace\PackageNamespace\GetList',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['limit']) && $properties['limit'] === 5 &&
                            isset($properties['start']) && $properties['start'] === 10;
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with pagination options
         $this->commandTester->execute([
             '--limit' => 5,
             '--start' => 10
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 }

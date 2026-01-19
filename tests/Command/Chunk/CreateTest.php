@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Chunk;
+<?php
+
+namespace MODX\CLI\Tests\Command\Chunk;
 
 use MODX\CLI\Command\Chunk\Create;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class CreateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Create();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,12 +55,12 @@ class CreateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Chunk\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['name']) && $properties['name'] === 'TestChunk' &&
                            isset($properties['description']) && $properties['description'] === 'Test description' &&
                            isset($properties['category']) && $properties['category'] === '1' &&
@@ -67,7 +69,7 @@ class CreateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'name' => 'TestChunk',
@@ -75,7 +77,7 @@ class CreateTest extends BaseTest
             '--category' => '1',
             '--snippet' => '<p>Test content</p>'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Chunk created successfully', $output);
@@ -94,16 +96,16 @@ class CreateTest extends BaseTest
                 'message' => 'Error creating chunk'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'name' => 'TestChunk'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to create chunk', $output);

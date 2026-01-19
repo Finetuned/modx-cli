@@ -16,35 +16,52 @@ class Remove extends ProcessorCmd
     protected $name = 'context:permissions:remove';
     protected $description = 'Remove a context access permission';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'context',
                 InputArgument::REQUIRED,
                 'The context key'
-            ),
-            array(
+            ],
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The access control entry ID'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force removal without confirmation'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $context = $this->argument('context');
         $id = $this->argument('id');
@@ -68,9 +85,16 @@ class Remove extends ProcessorCmd
                 return false;
             }
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

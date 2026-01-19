@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\SSH;
+<?php
+
+namespace MODX\CLI\Tests\SSH;
 
 use MODX\CLI\SSH\ConnectionParser;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +17,7 @@ class ConnectionParserTest extends TestCase
     public function testParseSimpleHostname()
     {
         $parser = new ConnectionParser('example.com');
-        
+
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals(22, $parser->getPort());
         $this->assertNull($parser->getPath());
@@ -24,7 +26,7 @@ class ConnectionParserTest extends TestCase
     public function testParseWithUser()
     {
         $parser = new ConnectionParser('john@example.com');
-        
+
         $this->assertEquals('john', $parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals(22, $parser->getPort());
@@ -33,7 +35,7 @@ class ConnectionParserTest extends TestCase
     public function testParseWithCustomPort()
     {
         $parser = new ConnectionParser('john@example.com:2222');
-        
+
         $this->assertEquals('john', $parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals(2222, $parser->getPort());
@@ -42,7 +44,7 @@ class ConnectionParserTest extends TestCase
     public function testParseWithPath()
     {
         $parser = new ConnectionParser('john@example.com:/var/www/html');
-        
+
         $this->assertEquals('john', $parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals('/var/www/html', $parser->getPath());
@@ -51,7 +53,7 @@ class ConnectionParserTest extends TestCase
     public function testParseCompleteConnectionString()
     {
         $parser = new ConnectionParser('john@example.com:2222/var/www/html');
-        
+
         $this->assertEquals('john', $parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals(2222, $parser->getPort());
@@ -65,7 +67,7 @@ class ConnectionParserTest extends TestCase
     public function testDefaultUserWhenNotSpecified()
     {
         $parser = new ConnectionParser('example.com');
-        
+
         // User should be set to current system user
         $this->assertNotNull($parser->getUser());
         $this->assertIsString($parser->getUser());
@@ -74,21 +76,21 @@ class ConnectionParserTest extends TestCase
     public function testDefaultPortWhenNotSpecified()
     {
         $parser = new ConnectionParser('john@example.com');
-        
+
         $this->assertEquals(22, $parser->getPort());
     }
 
     public function testPathWithTilde()
     {
         $parser = new ConnectionParser('john@example.com:~/modx');
-        
+
         $this->assertEquals('~/modx', $parser->getPath());
     }
 
     public function testIPv4Address()
     {
         $parser = new ConnectionParser('john@192.168.1.100');
-        
+
         $this->assertEquals('john', $parser->getUser());
         $this->assertEquals('192.168.1.100', $parser->getHost());
     }
@@ -96,21 +98,21 @@ class ConnectionParserTest extends TestCase
     public function testHostnameWithDots()
     {
         $parser = new ConnectionParser('john@sub.domain.example.com');
-        
+
         $this->assertEquals('sub.domain.example.com', $parser->getHost());
     }
 
     public function testPathWithMultipleDirectories()
     {
         $parser = new ConnectionParser('john@example.com:/var/www/html/modx/core');
-        
+
         $this->assertEquals('/var/www/html/modx/core', $parser->getPath());
     }
 
     public function testEmptyPath()
     {
         $parser = new ConnectionParser('john@example.com:');
-        
+
         $this->assertNull($parser->getPath());
     }
 
@@ -122,16 +124,16 @@ class ConnectionParserTest extends TestCase
     {
         $original = 'john@example.com:2222/var/www';
         $parser = new ConnectionParser($original);
-        
+
         $this->assertEquals($original, $parser->getOriginal());
     }
 
     public function testToStringReconstructsConnectionString()
     {
         $parser = new ConnectionParser('john@example.com:2222/var/www');
-        
+
         $result = (string) $parser;
-        
+
         $this->assertStringContainsString('john@example.com', $result);
         $this->assertStringContainsString('2222', $result);
         $this->assertStringContainsString('/var/www', $result);
@@ -140,9 +142,9 @@ class ConnectionParserTest extends TestCase
     public function testToStringWithDefaultPort()
     {
         $parser = new ConnectionParser('john@example.com');
-        
+
         $result = (string) $parser;
-        
+
         // Port 22 should not be included in string representation
         $this->assertStringNotContainsString(':22', $result);
     }
@@ -150,28 +152,28 @@ class ConnectionParserTest extends TestCase
     public function testGetUserReturnsCorrectUser()
     {
         $parser = new ConnectionParser('john@example.com');
-        
+
         $this->assertEquals('john', $parser->getUser());
     }
 
     public function testGetHostReturnsCorrectHost()
     {
         $parser = new ConnectionParser('john@example.com');
-        
+
         $this->assertEquals('example.com', $parser->getHost());
     }
 
     public function testGetPortReturnsCorrectPort()
     {
         $parser = new ConnectionParser('john@example.com:3000');
-        
+
         $this->assertEquals(3000, $parser->getPort());
     }
 
     public function testGetPathReturnsCorrectPath()
     {
         $parser = new ConnectionParser('john@example.com:/var/www');
-        
+
         $this->assertEquals('/var/www', $parser->getPath());
     }
 
@@ -185,13 +187,13 @@ class ConnectionParserTest extends TestCase
     public function testVariousConnectionStringFormats($connectionString, $expectedUser, $expectedHost, $expectedPort, $expectedPath)
     {
         $parser = new ConnectionParser($connectionString);
-        
+
         if ($expectedUser !== null) {
             $this->assertEquals($expectedUser, $parser->getUser());
         }
         $this->assertEquals($expectedHost, $parser->getHost());
         $this->assertEquals($expectedPort, $parser->getPort());
-        
+
         if ($expectedPath !== null) {
             $this->assertEquals($expectedPath, $parser->getPath());
         } else {
@@ -235,7 +237,7 @@ class ConnectionParserTest extends TestCase
     public function testIsAliasReturnsFalseForRegularHostname()
     {
         $parser = new ConnectionParser('user@example.com');
-        
+
         // Regular hostname with @ should not be detected as alias
         $this->assertFalse($parser->isAlias());
     }
@@ -247,28 +249,28 @@ class ConnectionParserTest extends TestCase
     public function testHostnameWithHyphen()
     {
         $parser = new ConnectionParser('my-server.com');
-        
+
         $this->assertEquals('my-server.com', $parser->getHost());
     }
 
     public function testHostnameWithUnderscore()
     {
         $parser = new ConnectionParser('my_server.com');
-        
+
         $this->assertEquals('my_server.com', $parser->getHost());
     }
 
     public function testLowercaseAndUppercaseHostnames()
     {
         $parser = new ConnectionParser('EXAMPLE.COM');
-        
+
         $this->assertEquals('EXAMPLE.COM', $parser->getHost());
     }
 
     public function testPortAsString()
     {
         $parser = new ConnectionParser('user@example.com:8080');
-        
+
         $this->assertIsInt($parser->getPort());
         $this->assertEquals(8080, $parser->getPort());
     }
@@ -276,7 +278,7 @@ class ConnectionParserTest extends TestCase
     public function testPathWithoutLeadingSlash()
     {
         $parser = new ConnectionParser('user@example.com:home/user/app');
-        
+
         $this->assertEquals('home/user/app', $parser->getPath());
     }
 }

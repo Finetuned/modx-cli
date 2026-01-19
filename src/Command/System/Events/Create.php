@@ -16,44 +16,61 @@ class Create extends ProcessorCmd
     protected $name = 'system:event:create';
     protected $description = 'Create a system event in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the event'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'service',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The service of the event',
                 1
-            ),
-            array(
+            ],
+            [
                 'groupname',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The group name of the event',
                 ''
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the name to the properties
         $properties['name'] = $this->argument('name');
 
         // Add options to the properties
-        $optionKeys = array('service', 'groupname');
+        $optionKeys = ['service', 'groupname'];
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
@@ -62,7 +79,13 @@ class Create extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

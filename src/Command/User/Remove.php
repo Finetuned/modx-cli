@@ -17,33 +17,50 @@ class Remove extends ProcessorCmd
     protected $description = 'Remove a MODX user';
     protected $userForRemoval;
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'identifier',
                 InputArgument::REQUIRED,
                 'The user ID or username'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force removal without confirmation'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare processor properties before execution.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null False to abort execution, otherwise null.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $identifier = $this->argument('identifier');
-        
+
         // If numeric, treat as ID; otherwise, treat as username and look up ID
         if (is_numeric($identifier)) {
             $userId = (int)$identifier;
@@ -51,7 +68,7 @@ class Remove extends ProcessorCmd
         } else {
             $user = $this->modx->getObject(\MODX\Revolution\modUser::class, ['username' => $identifier]);
         }
-        
+
         if (!$user) {
             $this->error("User not found: {$identifier}");
             return false;
@@ -74,8 +91,14 @@ class Remove extends ProcessorCmd
                 exit(0);
             }
         }
+        return null;
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $properties = array_merge(
@@ -110,7 +133,8 @@ class Remove extends ProcessorCmd
         $decoded = $this->decodeResponse($response);
 
         $message = $response->getMessage();
-        if ($response->isError()
+        if (
+            $response->isError()
             && (stripos($message, 'Requested processor not found') !== false
                 || stripos((string) ($decoded['message'] ?? ''), 'Requested processor not found') !== false)
         ) {
@@ -122,6 +146,11 @@ class Remove extends ProcessorCmd
         return $result === null ? 0 : $result;
     }
 
+    /**
+     * Remove a user without relying on processors.
+     *
+     * @return integer
+     */
     private function removeUserDirectly(): int
     {
         if (!$this->userForRemoval) {
@@ -159,12 +188,18 @@ class Remove extends ProcessorCmd
         return 1;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Process processor response.
+     *
+     * @param array $response The decoded processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
         }
-        
+
         if (isset($response['success']) && $response['success']) {
             $this->info('User removed successfully');
             return 0;

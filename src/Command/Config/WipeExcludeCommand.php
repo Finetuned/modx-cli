@@ -12,6 +12,16 @@ class WipeExcludeCommand extends BaseCmd
     protected $name = 'config:wipe-exclude-command';
     protected $description = 'Wipe all excluded commands';
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $excludedCommands = $this->getApplication()->excludedCommands;

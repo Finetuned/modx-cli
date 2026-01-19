@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Resource;
+<?php
+
+namespace MODX\CLI\Tests\Command\Resource;
 
 use MODX\CLI\Command\Resource\Update;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -15,11 +17,11 @@ class UpdateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Update();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester without using the Application class to avoid conflicts
         $this->commandTester = new CommandTester($this->command);
     }
@@ -60,13 +62,13 @@ class UpdateTest extends BaseTest
             ['searchable', 1],
             ['cacheable', 1]
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -77,12 +79,12 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Resource\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     // Verify that existing data is pre-populated and critical fields are set
                     return isset($properties['id']) && $properties['id'] === '123' &&
                            isset($properties['pagetitle']) && $properties['pagetitle'] === 'Updated Title' && // Overridden
@@ -94,14 +96,14 @@ class UpdateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--pagetitle' => 'Updated Title',
             '--alias' => 'updated-alias'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Resource updated successfully', $output);
@@ -128,13 +130,13 @@ class UpdateTest extends BaseTest
             ['searchable', 1],
             ['cacheable', 1]
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -145,12 +147,12 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Resource\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     // Verify that critical fields get proper defaults
                     return isset($properties['class_key']) && $properties['class_key'] === 'modDocument' &&
                            isset($properties['context_key']) && $properties['context_key'] === 'web' &&
@@ -159,13 +161,13 @@ class UpdateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--pagetitle' => 'Updated Title'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Resource updated successfully', $output);
@@ -178,17 +180,17 @@ class UpdateTest extends BaseTest
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '999', $this->anything())
             ->willReturn(null);
-        
+
         // runProcessor should not be called since the resource doesn't exist
         $this->modx->expects($this->never())
             ->method('runProcessor');
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999',
             '--pagetitle' => 'Updated Title'
         ]);
-        
+
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Resource with ID 999 not found', $output);
@@ -214,13 +216,13 @@ class UpdateTest extends BaseTest
             ['searchable', 1],
             ['cacheable', 1]
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -231,12 +233,12 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Resource\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     // Verify boolean fields are properly converted to integers
                     return isset($properties['published']) && $properties['published'] === 1 &&
                            isset($properties['hidemenu']) && $properties['hidemenu'] === 0;
@@ -244,14 +246,14 @@ class UpdateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with boolean values
         $this->commandTester->execute([
             'id' => '123',
             '--published' => 'true',
             '--hidemenu' => 'false'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Resource updated successfully', $output);
@@ -299,7 +301,7 @@ class UpdateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Resource\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['parent']) && $properties['parent'] === 10 &&
                            isset($properties['template']) && $properties['template'] === 2 &&
                            isset($properties['content']) && $properties['content'] === 'Updated content' &&
@@ -343,13 +345,13 @@ class UpdateTest extends BaseTest
             ['searchable', 1],
             ['cacheable', 1]
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -360,17 +362,17 @@ class UpdateTest extends BaseTest
                 'message' => 'Error updating resource'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--pagetitle' => 'Updated Title'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to update resource', $output);
@@ -397,13 +399,13 @@ class UpdateTest extends BaseTest
             ['searchable', 1],
             ['cacheable', 1]
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '2', $this->anything())
             ->willReturn($existingResource);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -414,12 +416,12 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 2]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Resource\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     // Verify that only pagetitle is updated, other fields are pre-populated
                     return isset($properties['id']) && $properties['id'] === '2' &&
                            isset($properties['pagetitle']) && $properties['pagetitle'] === 'Talks' &&
@@ -429,13 +431,13 @@ class UpdateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with minimal syntax (regression test for issue in progress.md)
         $this->commandTester->execute([
             'id' => '2',
             '--pagetitle' => 'Talks'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Resource updated successfully', $output);

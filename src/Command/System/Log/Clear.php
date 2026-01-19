@@ -14,7 +14,13 @@ class Clear extends ProcessorCmd
     protected $name = 'system:log:clear';
     protected $description = 'Clear the MODX system log';
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

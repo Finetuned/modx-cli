@@ -11,44 +11,56 @@ use Symfony\Component\Console\Input\InputOption;
 class GetList extends ListProcessor
 {
     protected $processor = 'Resource\GetList';
-    protected $headers = array(
+    protected $headers = [
         'id', 'pagetitle', 'alias', 'published', 'hidemenu', 'context_key'
-    );
+    ];
 
     protected $name = 'resource:list';
     protected $description = 'Get a list of resources';
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'parent',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by parent ID'
-            ),
-            array(
+            ],
+            [
                 'context',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by context key'
-            ),
-            array(
+            ],
+            [
                 'published',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by published status (1 or 0)'
-            ),
-            array(
+            ],
+            [
                 'hidemenu',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by hidemenu status (1 or 0)'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare processor properties before execution.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add filters based on options
         if ($this->option('parent') !== null) {
@@ -65,7 +77,14 @@ class GetList extends ListProcessor
         }
     }
 
-    protected function parseValue($value, $column)
+    /**
+     * Parse column values for display.
+     *
+     * @param mixed  $value  The column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'published' || $column === 'hidemenu') {
             return $this->renderBoolean($value);

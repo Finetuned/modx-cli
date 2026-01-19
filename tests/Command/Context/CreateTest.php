@@ -16,11 +16,11 @@ class CreateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Create();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,25 +53,25 @@ class CreateTest extends BaseTest
                 'object' => ['key' => 'testcontext']
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Context\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['key']) && $properties['key'] === 'testcontext';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'key' => 'testcontext',
             '--name' => 'Test Context',
             '--description' => 'Test description'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Context created successfully', $output);
@@ -89,16 +89,16 @@ class CreateTest extends BaseTest
                 'message' => 'Error creating context'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'key' => 'testcontext'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to create context', $output);
@@ -113,13 +113,13 @@ class CreateTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true, 'object' => ['key' => 'testcontext']]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Context\Create',
-                $this->callback(function($properties) {
-                    return isset($properties['key']) 
+                $this->callback(function ($properties) {
+                    return isset($properties['key'])
                         && $properties['key'] === 'testcontext'
                         && isset($properties['name'])
                         && $properties['name'] === 'Test Name'
@@ -129,13 +129,13 @@ class CreateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         $this->commandTester->execute([
             'key' => 'testcontext',
             '--name' => 'Test Name',
             '--description' => 'Test Description'
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 }

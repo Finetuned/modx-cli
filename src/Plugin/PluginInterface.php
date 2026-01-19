@@ -62,7 +62,7 @@ interface PluginInterface
      * - Register commands
      * - Initialize services
      *
-     * @param Application $app The application instance
+     * @param Application $app The application instance.
      * @return void
      */
     public function initialize(Application $app): void;
@@ -70,7 +70,7 @@ interface PluginInterface
     /**
      * Check if the plugin is enabled
      *
-     * @return bool True if enabled, false otherwise
+     * @return boolean True if enabled, false otherwise
      */
     public function isEnabled(): bool;
 
@@ -101,7 +101,7 @@ interface PluginInterface
     /**
      * Set plugin configuration
      *
-     * @param array<string, mixed> $config Configuration values
+     * @param array<string, mixed> $config Configuration values.
      * @return void
      */
     public function setConfig(array $config): void;

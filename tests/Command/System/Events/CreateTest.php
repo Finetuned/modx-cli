@@ -58,7 +58,7 @@ class CreateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'System\\Event\\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['name'] === 'OnPageNotFound'
                         && $properties['service'] === '2'
                         && $properties['groupname'] === 'Custom';

@@ -10,7 +10,13 @@ class Instance extends Base
     protected $file = 'instances.json';
     protected $current = null;
 
-    public function __construct(array $items = [], $loadExisting = true)
+    /**
+     * Create an instance configuration manager.
+     *
+     * @param array   $items        Initial configuration items.
+     * @param boolean $loadExisting Whether to load existing configuration.
+     */
+    public function __construct(array $items = [], bool $loadExisting = true)
     {
         $this->makeSureConfigPathExists();
         if ($loadExisting) {
@@ -36,10 +42,11 @@ class Instance extends Base
     /**
      * Save the configuration file
      */
-    public function save()
+    public function save(): bool
     {
         $file = $this->getConfigPath() . $this->file;
         file_put_contents($file, json_encode($this->items, JSON_PRETTY_PRINT));
+        return true;
     }
 
     /**
@@ -76,13 +83,13 @@ class Instance extends Base
     /**
      * Get a configuration value for the given instance
      *
-     * @param string $instance
-     * @param string $key
-     * @param mixed $default
+     * @param string $instance The instance name.
+     * @param string $key      The configuration key.
+     * @param mixed  $default  The default value.
      *
      * @return mixed
      */
-    public function getConfig($instance, $key, $default = null)
+    public function getConfig(string $instance, string $key, mixed $default = null): mixed
     {
         if (isset($this->items[$instance]) && isset($this->items[$instance][$key])) {
             return $this->items[$instance][$key];
@@ -94,12 +101,12 @@ class Instance extends Base
     /**
      * Get a configuration value for the current instance
      *
-     * @param string $key
-     * @param mixed $default
+     * @param string|null $key     The configuration key.
+     * @param mixed       $default The default value.
      *
      * @return mixed
      */
-    public function getCurrentConfig($key = null, $default = null)
+    public function getCurrentConfig(?string $key = null, mixed $default = null): mixed
     {
         $current = $this->current();
         if ($current) {
@@ -109,7 +116,13 @@ class Instance extends Base
         return $default;
     }
 
-    public function findFormPath($path)
+    /**
+     * Find the instance name for a given filesystem path.
+     *
+     * @param string $path The filesystem path to match.
+     * @return string|null
+     */
+    public function findFormPath(string $path): ?string
     {
         $normalizedPath = rtrim($path, '/') . '/';
 

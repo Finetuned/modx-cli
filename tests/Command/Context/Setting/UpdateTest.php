@@ -16,11 +16,11 @@ class UpdateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Update();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,18 +53,18 @@ class UpdateTest extends BaseTest
                 'object' => ['key' => 'site_name']
             ]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'context' => 'web',
             'key' => 'site_name',
             '--value' => 'New Site Name'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Context setting updated successfully', $output);
@@ -82,18 +82,18 @@ class UpdateTest extends BaseTest
                 'message' => 'Error updating context setting'
             ]));
         $updateResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'context' => 'web',
             'key' => 'site_name',
             '--value' => 'New Value'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to update context setting', $output);
@@ -109,17 +109,17 @@ class UpdateTest extends BaseTest
         $updateResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true, 'object' => ['key' => 'site_name']]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         $this->commandTester->execute([
             'context' => 'web',
             'key' => 'site_name',
             '--value' => 'Updated Value'
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -139,7 +139,7 @@ class UpdateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Context\\Setting\\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['area']) && $properties['area'] === 'site' &&
                            isset($properties['value']) && $properties['value'] === 'Updated Value';
                 }),
@@ -170,18 +170,18 @@ class UpdateTest extends BaseTest
                 'message' => 'Setting not found'
             ]));
         $getResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($getResponse);
-        
+
         $this->commandTester->execute([
             'context' => 'web',
             'key' => 'nonexistent',
             '--value' => 'Test'
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Setting not found', $output);
     }
-}        
+}

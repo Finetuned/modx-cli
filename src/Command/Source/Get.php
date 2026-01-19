@@ -13,21 +13,31 @@ class Get extends ProcessorCmd
     protected $name = 'source:get';
     protected $description = 'Get a MODX media source by ID';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The source ID'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $id = $this->argument('id');
-        $source = $this->modx->getObject('MODX\\Revolution\\Sources\\modMediaSource', array('id' => $id));
+        $source = $this->modx->getObject('MODX\\Revolution\\Sources\\modMediaSource', ['id' => $id]);
         if (!$source) {
             $this->error("Media source with ID {$id} not found");
             return 1;
@@ -49,7 +59,13 @@ class Get extends ProcessorCmd
         return 0;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         return 0;
     }

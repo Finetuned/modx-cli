@@ -3,17 +3,16 @@
 namespace MODX\CLI\Command;
 
 use MODX\CLI\Command\BaseCmd;
+use MODX\Revolution\modResource;
 use Symfony\Component\Console\Input\InputArgument;
+use xPDO\Om\xPDOQuery;
 
 /**
  * A command to crawl resources (to cache them)
  */
-use MODX\Revolution\modResource;
-use xPDO\Om\xPDOQuery;
-
 class Crawl extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'crawl';
     protected $description = 'Crawl resources to prime their caches';
@@ -21,15 +20,20 @@ class Crawl extends BaseCmd
     protected $curl;
     protected $start;
     protected $jsonOutput = false;
-    protected $crawlResults = array();
-    protected $crawlErrors = array();
+    protected $crawlResults = [];
+    protected $crawlErrors = [];
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $from = $this->argument('from');
         $this->jsonOutput = (bool) $this->option('json');
-        $this->crawlResults = array();
-        $this->crawlErrors = array();
+        $this->crawlResults = [];
+        $this->crawlErrors = [];
 
         try {
             $c = $this->getCriteria($from);
@@ -111,20 +115,20 @@ class Crawl extends BaseCmd
     /**
      * Build the query
      *
-     * @param mixed $from Either the context key (string) or a resource id (int) to grab the resources to crawl from
+     * @param string $from Either the context key (string) or a resource id (int) to grab the resources to crawl from.
      *
      * @return xPDOQuery
      */
-    protected function getCriteria($from): xPDOQuery
+    protected function getCriteria(string $from): xPDOQuery
     {
-        $criteria = array(
+        $criteria = [
             'published' => true,
             'deleted' => false,
             'cacheable' => true,
-        );
+        ];
         if (is_numeric($from)) {
             // From a given resource container
-            $criteria['parent'] = $from;
+            $criteria['parent'] = (int) $from;
         } else {
             if ($from === 'all') {
                 // We want all contexts
@@ -146,7 +150,7 @@ class Crawl extends BaseCmd
     /**
      * Perform the request to the given resource ID
      *
-     * @param int $id
+     * @param integer $id The id.
      */
     protected function crawl(int $id)
     {
@@ -185,25 +189,25 @@ class Crawl extends BaseCmd
 
     /**
      * Prepare cURL handler
-     * 
-     * @return bool True if cURL was initialized successfully, false otherwise
+     *
+     * @return boolean True if cURL was initialized successfully, false otherwise.
      */
-    protected function prepareCurl()
+    protected function prepareCurl(): bool
     {
         $this->start = microtime(true);
-        
+
         if (!function_exists('curl_init')) {
             $this->outputResult(false, 'cURL extension is not available');
             return false;
         }
-        
+
         $ch = curl_init();
         if ($ch === false) {
             $this->outputResult(false, 'Failed to initialize cURL');
             return false;
         }
-        
-        $result = curl_setopt_array($ch, array(
+
+        $result = curl_setopt_array($ch, [
             CURLOPT_NOBODY => true,
             CURLOPT_FAILONERROR => false,
             CURLOPT_FOLLOWLOCATION => true,
@@ -219,7 +223,7 @@ class Crawl extends BaseCmd
 
 //            CURLOPT_COOKIEFILE => '/tmp/cookie.txt',
 //            CURLOPT_COOKIEJAR => '/tmp/cookie.txt',
-        ));
+        ]);
 
         if (!$result) {
             $this->outputResult(false, 'Failed to set cURL options');
@@ -231,13 +235,21 @@ class Crawl extends BaseCmd
         return true;
     }
 
-    protected function outputResult($success, $message, array $payload = array())
+    /**
+     * Output the result payload.
+     *
+     * @param boolean $success Whether the operation succeeded.
+     * @param string  $message The message to display.
+     * @param array   $payload Additional payload data.
+     * @return void
+     */
+    protected function outputResult(bool $success, string $message, array $payload = []): void
     {
         if ($this->jsonOutput) {
-            $this->output->writeln(json_encode(array_merge(array(
+            $this->output->writeln(json_encode(array_merge([
                 'success' => (bool) $success,
                 'message' => $message,
-            ), $payload), JSON_PRETTY_PRINT));
+            ], $payload), JSON_PRETTY_PRINT));
         } else {
             if ($success) {
                 $this->comment($message);
@@ -247,14 +259,19 @@ class Crawl extends BaseCmd
         }
     }
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'from',
                 InputArgument::REQUIRED,
                 'The context key or resource ID to crawl from. Use "all" to process all web contexts.'
-            ),
-        );
+            ],
+        ];
     }
 }

@@ -16,92 +16,109 @@ class Read extends ProcessorCmd
     protected $name = 'registry:read';
     protected $description = 'Read messages from a MODX registry register';
 
-    protected $required = array('topic');
+    protected $required = ['topic'];
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'topic',
                 InputArgument::REQUIRED,
                 'The topic to read from'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'register',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Registry name to use',
                 'db'
-            ),
-            array(
+            ],
+            [
                 'format',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Output format (json, html_log, raw)',
                 'json'
-            ),
-            array(
+            ],
+            [
                 'register_class',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Custom registry class (optional)'
-            ),
-            array(
+            ],
+            [
                 'poll_limit',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Number of poll cycles',
                 1
-            ),
-            array(
+            ],
+            [
                 'poll_interval',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Interval between polls',
                 1
-            ),
-            array(
+            ],
+            [
                 'time_limit',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Time limit for polling',
                 10
-            ),
-            array(
+            ],
+            [
                 'message_limit',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Maximum messages to read',
                 200
-            ),
-            array(
+            ],
+            [
                 'keep',
                 null,
                 InputOption::VALUE_NONE,
                 'Keep messages after reading'
-            ),
-            array(
+            ],
+            [
                 'include_keys',
                 null,
                 InputOption::VALUE_NONE,
                 'Include message keys in the output'
-            ),
-            array(
+            ],
+            [
                 'show_filename',
                 null,
                 InputOption::VALUE_NONE,
                 'Include message filename metadata'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $properties['register'] = $this->option('register');
         $properties['format'] = $this->option('format');
@@ -119,7 +136,13 @@ class Read extends ProcessorCmd
         $properties['show_filename'] = (bool) $this->option('show_filename');
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             if (isset($response['message']) && $this->option('format') === 'json') {

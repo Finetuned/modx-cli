@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Configuration;
+<?php
+
+namespace MODX\CLI\Tests\Configuration;
 
 use PHPUnit\Framework\TestCase;
 use MODX\CLI\Configuration\Component;
@@ -228,17 +230,17 @@ class ComponentTest extends TestCase
 
     public static function getData()
     {
-        return array(
-            array(
-                array(
-                    'namespace' => array(
+        return [
+            [
+                [
+                    'namespace' => [
                         'service' => 'FakeService',
-                        'params' => array(
+                        'params' => [
                             'key' => 'value'
-                        ),
-                    ),
-                ),
-            ),
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 }

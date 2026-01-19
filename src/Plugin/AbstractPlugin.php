@@ -147,8 +147,8 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Get a configuration value
      *
-     * @param string $key The configuration key
-     * @param mixed $default Default value if key not found
+     * @param string $key     The configuration key.
+     * @param mixed  $default Default value if key not found.
      * @return mixed The configuration value
      */
     protected function getConfigValue(string $key, mixed $default = null): mixed
@@ -159,8 +159,8 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Set a configuration value
      *
-     * @param string $key The configuration key
-     * @param mixed $value The value to set
+     * @param string $key   The configuration key.
+     * @param mixed  $value The value to set.
      * @return void
      */
     protected function setConfigValue(string $key, mixed $value): void

@@ -35,12 +35,12 @@ class Tree
     /**
      * Format data as a tree
      *
-     * @param array $data
-     * @param string $prefix
+     * @param array  $data   The data.
+     * @param string $prefix The prefix.
      *
      * @return string
      */
-    public function format(array $data, $prefix = '')
+    public function format(array $data, string $prefix = ''): string
     {
         $this->prefix = $prefix;
         $output = '';

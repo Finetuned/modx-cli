@@ -15,30 +15,30 @@ class CategoryRemoveTest extends BaseIntegrationTest
     public function testCategoryRemoveExecutesSuccessfully()
     {
         $categoryName = 'IntegrationTestCategory_' . uniqid();
-        
+
         // Create category first
         $this->executeCommandSuccessfully([
             'category:create',
             $categoryName
         ]);
-        
+
         // Get the category ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $rows[0]['id'];
-        
+
         // Verify category exists
         $beforeCount = $this->countTableRows($this->categoriesTable, 'id = ?', [$categoryId]);
         $this->assertEquals(1, $beforeCount);
-        
+
         // Remove category
         $process = $this->executeCommandSuccessfully([
             'category:remove',
             $categoryId
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString('removed successfully', $output);
-        
+
         // Verify category no longer exists
         $afterCount = $this->countTableRows($this->categoriesTable, 'id = ?', [$categoryId]);
         $this->assertEquals(0, $afterCount);
@@ -50,23 +50,23 @@ class CategoryRemoveTest extends BaseIntegrationTest
     public function testCategoryRemoveReturnsValidJson()
     {
         $categoryName = 'IntegrationTestCategory_' . uniqid();
-        
+
         // Create category
         $this->executeCommandSuccessfully([
             'category:create',
             $categoryName
         ]);
-        
+
         // Get category ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $rows[0]['id'];
-        
+
         // Remove category with JSON
         $data = $this->executeCommandJson([
             'category:remove',
             $categoryId
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
         $this->assertTrue($data['success']);
@@ -81,7 +81,7 @@ class CategoryRemoveTest extends BaseIntegrationTest
             'category:remove',
             '999999'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }
@@ -93,33 +93,33 @@ class CategoryRemoveTest extends BaseIntegrationTest
     {
         $parentName = 'IntegrationTestParent_' . uniqid();
         $childName = 'IntegrationTestChild_' . uniqid();
-        
+
         // Create parent category
         $this->executeCommandSuccessfully([
             'category:create',
             $parentName
         ]);
-        
+
         // Get parent ID
         $parentRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$parentName]);
         $parentId = $parentRows[0]['id'];
-        
+
         // Create child category
         $this->executeCommandSuccessfully([
             'category:create',
             $childName,
             '--parent=' . $parentId
         ]);
-        
+
         // Try to remove parent (should handle gracefully)
         $process = $this->executeCommand([
             'category:remove',
             $parentId
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestChild_%']);
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestParent_%']);

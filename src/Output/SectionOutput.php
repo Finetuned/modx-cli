@@ -27,7 +27,7 @@ class SectionOutput
     /**
      * Constructor
      *
-     * @param ConsoleSectionOutput $section The console section output
+     * @param ConsoleSectionOutput $section The console section output.
      */
     public function __construct(ConsoleSectionOutput $section)
     {
@@ -37,8 +37,8 @@ class SectionOutput
     /**
      * Write content to the section
      *
-     * @param string $content The content to write
-     * @param bool $newline Whether to add a newline
+     * @param string  $content The content to write.
+     * @param boolean $newline Whether to add a newline.
      * @return void
      */
     public function write(string $content, bool $newline = true): void
@@ -54,7 +54,7 @@ class SectionOutput
     /**
      * Overwrite the entire section content
      *
-     * @param string|array<int, string> $content The new content
+     * @param string|array<int, string> $content The new content.
      * @return void
      */
     public function overwrite(string|array $content): void

@@ -10,7 +10,7 @@ interface HookableCommand
     /**
      * Set the before invoke hook
      *
-     * @param callable $callback The callback to execute before the command
+     * @param callable $callback The callback to execute before the command.
      * @return $this
      */
     public function setBeforeInvoke(callable $callback);
@@ -18,7 +18,7 @@ interface HookableCommand
     /**
      * Set the after invoke hook
      *
-     * @param callable $callback The callback to execute after the command
+     * @param callable $callback The callback to execute after the command.
      * @return $this
      */
     public function setAfterInvoke(callable $callback);

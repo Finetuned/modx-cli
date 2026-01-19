@@ -69,6 +69,9 @@ class Application extends BaseApp
      */
     protected $logoPrinted = false;
 
+    /**
+     * Create the CLI application.
+     */
     public function __construct()
     {
         // Suppress deprecation notices from the MODX core during CLI runs.
@@ -97,6 +100,11 @@ class Application extends BaseApp
         $this->pluginManager->loadPlugins();
     }
 
+    /**
+     * Get the default input definition with MODX CLI global options.
+     *
+     * @return InputDefinition
+     */
     protected function getDefaultInputDefinition(): InputDefinition
     {
         $def = parent::getDefaultInputDefinition();
@@ -109,12 +117,22 @@ class Application extends BaseApp
             new InputOption('--json', null, InputOption::VALUE_NONE, 'Output results in JSON format')
         );
         $def->addOption(
-            new InputOption('--ssh', null, InputOption::VALUE_REQUIRED, 'Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]')
+            new InputOption(
+                '--ssh',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]'
+            )
         );
 
         // Logging options
         $def->addOption(
-            new InputOption('--log-level', null, InputOption::VALUE_REQUIRED, 'Set log level (debug, info, notice, warning, error, critical, alert, emergency)')
+            new InputOption(
+                '--log-level',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Set log level (debug, info, notice, warning, error, critical, alert, emergency)'
+            )
         );
         $def->addOption(
             new InputOption('--log-file', null, InputOption::VALUE_REQUIRED, 'Write logs to specified file')
@@ -150,14 +168,20 @@ class Application extends BaseApp
         return '0.0.0';
     }
 
+    /**
+     * Decide whether to expose the version string in the base output.
+     *
+     * @return boolean
+     */
     private function shouldExposeVersionInOutput(): bool
     {
         $argv = $_SERVER['argv'] ?? [];
 
         $hasJson = in_array('--json', $argv, true);
         $hasVersionFlag = in_array('-V', $argv, true) || in_array('--version', $argv, true);
+        $isVersionCommand = in_array('version', $argv, true);
 
-        return $hasVersionFlag || !$hasJson;
+        return $hasVersionFlag || $isVersionCommand || !$hasJson;
     }
 
     /**
@@ -184,10 +208,10 @@ class Application extends BaseApp
     /**
      * Load commands registered via the internal API
      *
-     * @param array $commands
+     * @param array $commands The command list to append to.
      * @return void
      */
-    protected function loadInternalAPICommands(array &$commands = array()): void
+    protected function loadInternalAPICommands(array &$commands = []): void
     {
         // Add commands from the CommandRegistry
         foreach (MODX_CLI::get_commands() as $command) {
@@ -198,10 +222,10 @@ class Application extends BaseApp
     /**
      * Iterate over existing commands to declare them in the application
      *
-     * @param array $commands
+     * @param array $commands The command list to append to.
      * @return void
      */
-    protected function loadCommands(array &$commands = array()): void
+    protected function loadCommands(array &$commands = []): void
     {
         $basePath = __DIR__ . '/Command';
 
@@ -254,7 +278,7 @@ class Application extends BaseApp
     /**
      * Check if any instance name has been given from the CLI
      *
-     * @param string|null $instance
+     * @param string|null $instance The instance name to update.
      *
      * @return string|null
      */
@@ -278,7 +302,7 @@ class Application extends BaseApp
     /**
      * Generate a command class name from a file
      *
-     * @param \Symfony\Component\Finder\SplFileInfo $file
+     * @param \Symfony\Component\Finder\SplFileInfo $file The command file.
      *
      * @return string
      */
@@ -293,10 +317,10 @@ class Application extends BaseApp
     /**
      * Allow custom commands to be added (ie. a composer library)
      *
-     * @param array $commands
+     * @param array $commands The command list to append to.
      * @return void
      */
-    protected function loadExtraCommands(array &$commands = array()): void
+    protected function loadExtraCommands(array &$commands = []): void
     {
         $toRemove = false;
 
@@ -317,10 +341,10 @@ class Application extends BaseApp
     /**
      * Load registered commands within the modX instance
      *
-     * @param array $commands
+     * @param array $commands The command list to append to.
      * @return void
      */
-    protected function loadComponentsCommands(array &$commands = array()): void
+    protected function loadComponentsCommands(array &$commands = []): void
     {
         if ($this->getMODX()) {
             foreach ($this->components->getAll() as $k => $config) {
@@ -340,15 +364,15 @@ class Application extends BaseApp
     /**
      * Convenient method to load a service responsible of extra commands loading
      *
-     * @param array $data
+     * @param array $data The service configuration data.
      *
      * @return object|null
      */
-    public function getExtraService(array $data = array()): ?object
+    public function getExtraService(array $data = []): ?object
     {
         $service = $data['service'];
 
-        $params = array();
+        $params = [];
         if (array_key_exists('params', $data)) {
             $params = $data['params'];
         }
@@ -399,7 +423,7 @@ class Application extends BaseApp
     /**
      * Instantiate the MODx object from the given configuration file
      *
-     * @param string|false $config The path to MODX configuration file
+     * @param string|false $config The path to MODX configuration file.
      *
      * @return \MODX\Revolution\modX|false False if modX was not instantiated, or a modX instance
      */
@@ -433,17 +457,17 @@ class Application extends BaseApp
     /**
      * Convenient method to initialize modX
      *
-     * @param \MODX\Revolution\modX $modx
+     * @param \MODX\Revolution\modX $modx The modX instance.
      *
      * @return \MODX\Revolution\modX
      */
     protected function initialize(\MODX\Revolution\modX $modx): \MODX\Revolution\modX
     {
         $modx->initialize('mgr');
-        $modx->getService('error', 'error.modError', '', array());
+        $modx->getService('error', 'error.modError', '', []);
         //$this->modx->setLogTarget('ECHO');
 
-        // @todo: ability to define a user (or anything else)
+        // Note: ability to define a user (or anything else).
 
         return $modx;
     }
@@ -451,12 +475,12 @@ class Application extends BaseApp
     /**
      * Try to load a service class
      *
-     * @param string $name The service name
-     * @param array $params Some parameters to construct the service class
+     * @param string $name   The service name.
+     * @param array  $params Some parameters to construct the service class.
      *
      * @return object|null The instantiated service class if found
      */
-    public function getService(string $name = '', array $params = array()): ?object
+    public function getService(string $name = '', array $params = []): ?object
     {
         if (empty($name)) {
             $name = $this->instances->current();
@@ -511,8 +535,8 @@ class Application extends BaseApp
     /**
      * Configure the logger based on input options
      *
-     * @param InputInterface $input An Input instance
-     * @param OutputInterface $output An Output instance
+     * @param InputInterface  $input  An Input instance.
+     * @param OutputInterface $output An Output instance.
      *
      * @return void
      */
@@ -601,10 +625,10 @@ class Application extends BaseApp
     /**
      * Runs the current application.
      *
-     * @param InputInterface $input An Input instance
-     * @param OutputInterface $output An Output instance
+     * @param InputInterface  $input  An Input instance.
+     * @param OutputInterface $output An Output instance.
      *
-     * @return int 0 if everything went fine, or an error code
+     * @return integer 0 if everything went fine, or an error code
      */
     public function doRun(InputInterface $input, OutputInterface $output): int
     {
@@ -657,6 +681,13 @@ class Application extends BaseApp
         return $exitCode;
     }
 
+    /**
+     * Decide whether to render the logo for the current invocation.
+     *
+     * @param InputInterface  $input  The current input.
+     * @param OutputInterface $output The output instance.
+     * @return boolean
+     */
     private function shouldDisplayLogo(InputInterface $input, OutputInterface $output): bool
     {
         if ($this->logoPrinted) {
@@ -683,16 +714,23 @@ class Application extends BaseApp
         // }
 
         // Only show logo for informational commands (not data retrieval commands)
-    $command = $input->getFirstArgument();
-    if ($command) {
-        $showLogoCommands = ['list', 'help', 'list-commands'];
-        return in_array($command, $showLogoCommands, true);
+        $command = $input->getFirstArgument();
+        if ($command) {
+            $showLogoCommands = ['list', 'help', 'list-commands'];
+            return in_array($command, $showLogoCommands, true);
+        }
+
+        // Show logo when no command provided
+        return true;
     }
 
-    // Show logo when no command provided
-    return true;
-    }
-
+    /**
+     * Decide whether to use a pager for the output.
+     *
+     * @param InputInterface  $input  The current input.
+     * @param OutputInterface $output The output instance.
+     * @return boolean
+     */
     private function shouldUsePager(InputInterface $input, OutputInterface $output): bool
     {
         if (!$input->isInteractive()) {
@@ -711,6 +749,13 @@ class Application extends BaseApp
         return $input->hasParameterOption(['--help', '-h']);
     }
 
+    /**
+     * Stream content through a pager when output exceeds the terminal height.
+     *
+     * @param string          $content The content to output.
+     * @param OutputInterface $output  The output instance.
+     * @return void
+     */
     private function outputWithPagerIfNeeded(string $content, OutputInterface $output): void
     {
         if ($content === '') {
@@ -752,6 +797,12 @@ class Application extends BaseApp
         }
     }
 
+    /**
+     * Render the MODX CLI logo.
+     *
+     * @param string $version The CLI version.
+     * @return string
+     */
     private function renderLogo(string $version): string
     {
         $versionLength = strlen($version);
@@ -770,18 +821,18 @@ class Application extends BaseApp
             $versionLine,
             '│     github.com/Finetuned/modx-cli      │',
             '│                                        │',
-            '└────────────────────────────────────────┘                                                     ',
+            '└────────────────────────────────────────┘',
         ]);
     }
 
     /**
      * Run a command with an alias
      *
-     * @param string $alias The alias
-     * @param InputInterface $input An Input instance
-     * @param OutputInterface $output An Output instance
+     * @param string          $alias  The alias.
+     * @param InputInterface  $input  An Input instance.
+     * @param OutputInterface $output An Output instance.
      *
-     * @return int 0 if everything went fine, or an error code
+     * @return integer 0 if everything went fine, or an error code
      */
     protected function runWithAlias(string $alias, InputInterface $input, OutputInterface $output): int
     {
@@ -811,11 +862,11 @@ class Application extends BaseApp
     /**
      * Run a command with an alias group
      *
-     * @param array $group The alias group
-     * @param InputInterface $input An Input instance
-     * @param OutputInterface $output An Output instance
+     * @param array           $group  The alias group.
+     * @param InputInterface  $input  An Input instance.
+     * @param OutputInterface $output An Output instance.
      *
-     * @return int 0 if everything went fine, or an error code
+     * @return integer 0 if everything went fine, or an error code
      */
     protected function runWithAliasGroup(array $group, InputInterface $input, OutputInterface $output): int
     {
@@ -842,10 +893,10 @@ class Application extends BaseApp
     /**
      * Run a command in SSH mode
      *
-     * @param InputInterface $input An Input instance
-     * @param OutputInterface $output An Output instance
+     * @param InputInterface  $input  An Input instance.
+     * @param OutputInterface $output An Output instance.
      *
-     * @return int 0 if everything went fine, or an error code
+     * @return integer 0 if everything went fine, or an error code
      */
     protected function runInSSHMode(InputInterface $input, OutputInterface $output): int
     {
@@ -887,11 +938,11 @@ class Application extends BaseApp
     /**
      * Run a command with SSH
      *
-     * @param string $sshString The SSH connection string
-     * @param InputInterface $input An Input instance
-     * @param OutputInterface $output An Output instance
+     * @param string          $sshString The SSH connection string.
+     * @param InputInterface  $input     An Input instance.
+     * @param OutputInterface $output    An Output instance.
      *
-     * @return int 0 if everything went fine, or an error code
+     * @return integer 0 if everything went fine, or an error code
      */
     protected function runWithSSH(string $sshString, InputInterface $input, OutputInterface $output): int
     {

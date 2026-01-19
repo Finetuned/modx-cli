@@ -13,40 +13,59 @@ use Symfony\Component\Console\Input\InputOption;
 class Get extends ProcessorCmd
 {
     protected $processor = 'Resource\Get';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'resource:get';
     protected $description = 'Get a MODX resource';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the resource to get'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (table, json)',
                 'table'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Process processor response.
+     *
+     * @param array $response The decoded processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if (!isset($response['object'])) {
             if ($this->option('json') || $this->option('format') === 'json') {
-                $this->output->writeln(json_encode(['success' => false, 'message' => 'Resource not found'], JSON_PRETTY_PRINT));
+                $this->output->writeln(json_encode([
+                    'success' => false,
+                    'message' => 'Resource not found'
+                ], JSON_PRETTY_PRINT));
                 return 1;
             }
             $this->error('Resource not found');
@@ -63,15 +82,15 @@ class Get extends ProcessorCmd
 
         // Default to table format
         $table = new Table($this->output);
-        $table->setHeaders(array('Property', 'Value'));
+        $table->setHeaders(['Property', 'Value']);
 
         // Add basic properties
-        $properties = array(
+        $properties = [
             'id', 'pagetitle', 'longtitle', 'description', 'alias', 'published',
             'hidemenu', 'parent', 'template', 'menuindex', 'searchable', 'cacheable',
             'createdby', 'createdon', 'editedby', 'editedon', 'publishedon', 'publishedby',
             'context_key', 'content'
-        );
+        ];
 
         foreach ($properties as $property) {
             if (isset($resource[$property])) {
@@ -92,7 +111,7 @@ class Get extends ProcessorCmd
                     }
                 }
 
-                $table->addRow(array($property, $value));
+                $table->addRow([$property, $value]);
             }
         }
 

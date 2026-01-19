@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Snippet;
+<?php
+
+namespace MODX\CLI\Tests\Command\Snippet;
 
 use MODX\CLI\Command\Snippet\Update;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class UpdateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Update();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester without using the Application class to avoid conflicts
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,13 +55,13 @@ class UpdateTest extends BaseTest
             ['category', 1],
             ['snippet', '<?php return "Hello World!";']
         ]);
-        
+
         // Mock getObject to return existing snippet
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modSnippet::class, '123', $this->anything())
             ->willReturn($existingSnippet);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -70,12 +72,12 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Snippet\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     // Verify that existing data is pre-populated and new data overrides it
                     return isset($properties['id']) && $properties['id'] === '123' &&
                            isset($properties['name']) && $properties['name'] === 'ExistingSnippet' && // Pre-populated
@@ -86,7 +88,7 @@ class UpdateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command - note we don't need to specify --name anymore
         $this->commandTester->execute([
             'id' => '123',
@@ -94,7 +96,7 @@ class UpdateTest extends BaseTest
             '--category' => '2',
             '--snippet' => '<?php return "Updated Hello World!";'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Snippet updated successfully', $output);
@@ -108,17 +110,17 @@ class UpdateTest extends BaseTest
             ->method('getObject')
             ->with(\MODX\Revolution\modSnippet::class, '999', $this->anything())
             ->willReturn(null);
-        
+
         // runProcessor should not be called since the snippet doesn't exist
         $this->modx->expects($this->never())
             ->method('runProcessor');
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999',
             '--description' => 'Updated description'
         ]);
-        
+
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Snippet with ID 999 not found', $output);
@@ -136,13 +138,13 @@ class UpdateTest extends BaseTest
             ['category', 1],
             ['snippet', '<?php return "Hello World!";']
         ]);
-        
+
         // Mock getObject to return existing snippet
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modSnippet::class, '123', $this->anything())
             ->willReturn($existingSnippet);
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -153,17 +155,17 @@ class UpdateTest extends BaseTest
                 'message' => 'Error updating snippet'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--description' => 'Updated description'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to update snippet', $output);
@@ -202,7 +204,7 @@ class UpdateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Element\Snippet\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['locked']) && $properties['locked'] === 1 &&
                            isset($properties['static']) && $properties['static'] === 1 &&
                            isset($properties['static_file']) && $properties['static_file'] === 'core/snippets/test.php' &&

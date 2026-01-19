@@ -13,17 +13,37 @@ class Rm extends BaseCmd
     protected $name = 'config:rm';
     protected $description = 'Remove a MODX instance from the configuration';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the instance to remove'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $name = $this->argument('name');

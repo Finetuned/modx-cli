@@ -13,17 +13,37 @@ class RmExcludeCommand extends BaseCmd
     protected $name = 'config:rm-exclude-command';
     protected $description = 'Remove a command from the excluded commands';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'class',
                 InputArgument::REQUIRED,
                 'The command class to remove from the excluded commands'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $class = $this->argument('class');

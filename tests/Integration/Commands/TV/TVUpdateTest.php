@@ -16,7 +16,7 @@ class TVUpdateTest extends BaseIntegrationTest
     {
         $tvName = 'IntegrationTestTV_' . uniqid();
         $newCaption = 'Updated TV Caption';
-        
+
         // Create TV
         $this->executeCommandSuccessfully([
             'tv:create',
@@ -24,25 +24,25 @@ class TVUpdateTest extends BaseIntegrationTest
             '--type=text',
             '--caption=Original Caption'
         ]);
-        
+
         // Get TV ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
-        
+
         // Update TV
         $process = $this->executeCommandSuccessfully([
             'tv:update',
             $tvId,
             '--caption=' . $newCaption
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString('updated successfully', $output);
-        
+
         // Verify update in database
         $updatedRows = $this->queryDatabase('SELECT caption FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
         $this->assertEquals($newCaption, $updatedRows[0]['caption']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
@@ -53,29 +53,29 @@ class TVUpdateTest extends BaseIntegrationTest
     public function testTVUpdateReturnsValidJson()
     {
         $tvName = 'IntegrationTestTV_' . uniqid();
-        
+
         // Create TV
         $this->executeCommandSuccessfully([
             'tv:create',
             $tvName,
             '--type=text'
         ]);
-        
+
         // Get TV ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
-        
+
         // Update with JSON
         $data = $this->executeCommandJson([
             'tv:update',
             $tvId,
             '--caption=Updated Caption'
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
         $this->assertTrue($data['success']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
@@ -87,37 +87,37 @@ class TVUpdateTest extends BaseIntegrationTest
     {
         $tvName = 'IntegrationTestTV_' . uniqid();
         $categoryName = 'IntegrationTestCategory_' . uniqid();
-        
+
         // Create TV
         $this->executeCommandSuccessfully([
             'tv:create',
             $tvName,
             '--type=text'
         ]);
-        
+
         // Create category
         $this->executeCommandSuccessfully([
             'category:create',
             $categoryName
         ]);
-        
+
         // Get IDs
         $tvRows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $tvRows[0]['id'];
         $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
-        
+
         // Update TV category
         $this->executeCommandSuccessfully([
             'tv:update',
             $tvId,
             '--category=' . $categoryId
         ]);
-        
+
         // Verify category updated
         $updatedRows = $this->queryDatabase('SELECT category FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
         $this->assertEquals($categoryId, $updatedRows[0]['category']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
@@ -130,29 +130,29 @@ class TVUpdateTest extends BaseIntegrationTest
     {
         $tvName = 'IntegrationTestTV_' . uniqid();
         $newDefault = 'Updated Default Value';
-        
+
         // Create TV
         $this->executeCommandSuccessfully([
             'tv:create',
             $tvName,
             '--type=text'
         ]);
-        
+
         // Get TV ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
-        
+
         // Update default value
         $this->executeCommandSuccessfully([
             'tv:update',
             $tvId,
             '--default_text=' . $newDefault
         ]);
-        
+
         // Verify default value updated
         $updatedRows = $this->queryDatabase('SELECT default_text FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
         $this->assertEquals($newDefault, $updatedRows[0]['default_text']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
@@ -217,7 +217,7 @@ class TVUpdateTest extends BaseIntegrationTest
             '999999',
             '--caption=Test'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }

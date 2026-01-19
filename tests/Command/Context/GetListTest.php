@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Context;
+<?php
+
+namespace MODX\CLI\Tests\Command\Context;
 
 use MODX\CLI\Command\Context\GetList;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -15,11 +17,11 @@ class GetListTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new GetList();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -65,17 +67,17 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with('Context\GetList')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         // Verify the output contains context data
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('web', $output);
@@ -96,17 +98,17 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
-            
+
             '--json' => true,
         ]);
-        
+
         // Verify the output is valid JSON
         $output = $this->commandTester->getDisplay();
         $decoded = json_decode($output, true);

@@ -11,38 +11,50 @@ use Symfony\Component\Console\Input\InputOption;
 class GetList extends ListProcessor
 {
     protected $processor = 'System\Settings\GetList';
-    protected $headers = array(
+    protected $headers = [
         'key', 'value', 'name', 'description', 'area'
-    );
+    ];
 
     protected $name = 'system:setting:list';
     protected $description = 'Get a list of system settings in MODX';
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'area',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by area'
-            ),
-            array(
+            ],
+            [
                 'namespace',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Filter by namespace'
-            ),
-            array(
+            ],
+            [
                 'query',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Search query'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add filters based on options
         if ($this->option('area') !== null) {
@@ -56,7 +68,14 @@ class GetList extends ListProcessor
         }
     }
 
-    protected function parseValue($value, $column)
+    /**
+     * Format raw values for output.
+     *
+     * @param mixed  $value  The raw column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'area') {
             return $this->renderObject('modNamespace', $value, 'name');

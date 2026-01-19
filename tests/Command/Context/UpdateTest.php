@@ -16,11 +16,11 @@ class UpdateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Update();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,17 +53,17 @@ class UpdateTest extends BaseTest
                 'object' => ['key' => 'web']
             ]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'key' => 'web',
             '--description' => 'Updated description'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Context updated successfully', $output);
@@ -85,7 +85,7 @@ class UpdateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Context\\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['key']) && $properties['key'] === 'web' &&
                            isset($properties['name']) && $properties['name'] === 'Website' &&
                            isset($properties['description']) && $properties['description'] === 'Updated description';
@@ -116,17 +116,17 @@ class UpdateTest extends BaseTest
                 'message' => 'Error updating context'
             ]));
         $updateResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'key' => 'web',
             '--name' => 'Updated Name'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to update context', $output);
@@ -142,16 +142,16 @@ class UpdateTest extends BaseTest
         $updateResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true, 'object' => ['key' => 'web']]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         $this->commandTester->execute([
             'key' => 'web',
             '--rank' => '5'
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -167,16 +167,16 @@ class UpdateTest extends BaseTest
                 'message' => 'Context not found'
             ]));
         $getResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($getResponse);
-        
+
         $this->commandTester->execute([
             'key' => 'nonexistent',
             '--name' => 'Test'
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Context not found', $output);
     }

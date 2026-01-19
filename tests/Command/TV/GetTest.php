@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\TV;
+<?php
+
+namespace MODX\CLI\Tests\Command\TV;
 
 use MODX\CLI\Command\TV\Get;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class GetTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Get();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -67,7 +69,7 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         // Mock the category object
         $category = $this->getMockBuilder('MODX\Revolution\modCategory')
             ->disableOriginalConstructor()
@@ -75,7 +77,7 @@ class GetTest extends BaseTest
         $category->method('get')
             ->with('category')
             ->willReturn('Test Category');
-        
+
         // Mock the template objects
         $template1 = $this->getMockBuilder('MODX\Revolution\modTemplate')
             ->disableOriginalConstructor()
@@ -83,21 +85,21 @@ class GetTest extends BaseTest
         $template1->method('get')
             ->with('templatename')
             ->willReturn('Template 1');
-        
+
         $template2 = $this->getMockBuilder('MODX\Revolution\modTemplate')
             ->disableOriginalConstructor()
             ->getMock();
         $template2->method('get')
             ->with('templatename')
             ->willReturn('Template 2');
-        
+
         $template3 = $this->getMockBuilder('MODX\Revolution\modTemplate')
             ->disableOriginalConstructor()
             ->getMock();
         $template3->method('get')
             ->with('templatename')
             ->willReturn('Template 3');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->willReturnMap([
@@ -106,24 +108,24 @@ class GetTest extends BaseTest
                 ['modTemplate', 2, $template2],
                 ['modTemplate', 3, $template3]
             ]);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Tv\Get',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === '123';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--format' => 'table'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('TestTV', $output);
@@ -157,17 +159,17 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--format' => 'json'
         ]);
-        
+
         // Verify the output is JSON
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -203,17 +205,17 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
             'id' => '123',
             '--json' => true
         ]);
-        
+
         // Verify the output is JSON
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -233,17 +235,17 @@ class GetTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
             'id' => '999',
             '--json' => true
         ]);
-        
+
         // Verify the output is JSON with error message
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -261,16 +263,16 @@ class GetTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template variable not found', $output);

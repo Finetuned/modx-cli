@@ -10,11 +10,16 @@ use Symfony\Component\Console\Helper\Table;
  */
 class Extras extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'extra:list';
     protected $description = 'Get a list of extras in MODX';
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $json = (bool) $this->option('json');
@@ -36,7 +41,7 @@ class Extras extends BaseCmd
         // Get all packages first to create a lookup table
         $packagesLookup = $this->getPackagesLookup();
 
-        $extras = array();
+        $extras = [];
 
         /** @var \MODX\Revolution\modNamespace $namespace */
         foreach ($namespaces as $namespace) {
@@ -50,12 +55,12 @@ class Extras extends BaseCmd
             // Try to find the package using our lookup table
             $packageInfo = $this->findPackageForNamespace($name, $packagesLookup);
 
-            $extras[] = array(
+            $extras[] = [
                 'name' => $name,
                 'path' => $namespace->get('path'),
                 'version' => $packageInfo ? $packageInfo['version'] : 'Unknown',
                 'installed' => $packageInfo ? $packageInfo['installed'] : 'No',
-            );
+            ];
         }
 
         if (empty($extras)) {
@@ -82,15 +87,15 @@ class Extras extends BaseCmd
             ], JSON_PRETTY_PRINT));
         } else {
             $table = new Table($this->output);
-            $table->setHeaders(array('Name', 'Path', 'Version', 'Installed'));
+            $table->setHeaders(['Name', 'Path', 'Version', 'Installed']);
 
             foreach ($extras as $extra) {
-                $table->addRow(array(
+                $table->addRow([
                     $extra['name'],
                     $extra['path'],
                     $extra['version'],
                     $extra['installed'],
-                ));
+                ]);
             }
 
             $table->render();
@@ -196,11 +201,11 @@ class Extras extends BaseCmd
     /**
      * Find package information for a namespace
      *
-     * @param string $namespaceName
-     * @param array $packagesLookup
+     * @param string $namespaceName  The namespace to find.
+     * @param array  $packagesLookup Package lookup data.
      * @return array|null
      */
-    protected function findPackageForNamespace($namespaceName, array $packagesLookup)
+    protected function findPackageForNamespace(string $namespaceName, array $packagesLookup)
     {
         $lowerName = strtolower($namespaceName);
 

@@ -16,11 +16,11 @@ class GetListTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new GetList();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -73,7 +73,7 @@ class GetListTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Security\\Access\\GetList',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['type'])
                         && $properties['type'] === 'MODX\\Revolution\\modAccessContext'
                         && isset($properties['target'])

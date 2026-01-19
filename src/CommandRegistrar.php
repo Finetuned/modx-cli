@@ -12,20 +12,20 @@ use MODX\CLI\Configuration\ConfigurationInterface;
 abstract class CommandRegistrar
 {
     /**
-     * @var \Composer\IO\IOInterface|null
+     * @var object|null
      */
     public static $io;
     /**
      * @var \ReflectionClass|null
      */
     protected static $reflection = null;
-    protected static $unregistered = array();
+    protected static $unregistered = [];
     protected static $commandsFolder = 'Command';
 
     /**
      * Process the command registration
      *
-     * @param Event $event
+     * @param Event $event The event.
      */
     public static function run(Event $event)
     {
@@ -58,9 +58,9 @@ abstract class CommandRegistrar
     /**
      * Un-register previous commands, that are now deprecated/removed
      *
-     * @param ConfigurationInterface $config Existing commands
+     * @param ConfigurationInterface $config Existing commands.
      */
-    public static function unRegister($config)
+    public static function unRegister(ConfigurationInterface $config): void
     {
         $deprecated = static::getRootPath() . '/deprecated.php';
         if (file_exists($deprecated)) {
@@ -76,8 +76,11 @@ abstract class CommandRegistrar
 
     /**
      * Inject IO for testing or custom runners.
+     *
+     * @param object|null $io IO instance with a write() method.
+     * @return void
      */
-    public static function setIO($io): void
+    public static function setIO(?object $io): void
     {
         self::$io = $io;
     }
@@ -85,9 +88,9 @@ abstract class CommandRegistrar
     /**
      * Write output only when IO is available.
      */
-    protected static function writeIO($message): void
+    protected static function writeIO(string $message): void
     {
-        if (self::$io) {
+        if (self::$io && method_exists(self::$io, 'write')) {
             self::$io->write($message);
         }
     }
@@ -113,7 +116,7 @@ abstract class CommandRegistrar
     /**
      * Convert a file name to a class name
      *
-     * @param \Symfony\Component\Finder\SplFileInfo $file
+     * @param \Symfony\Component\Finder\SplFileInfo $file The file.
      *
      * @return string
      */

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Menu;
+<?php
+
+namespace MODX\CLI\Tests\Command\Menu;
 
 use MODX\CLI\Command\Menu\GetList;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -15,11 +17,11 @@ class GetListTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new GetList();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -66,17 +68,17 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with('System\Menu\GetList')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         // Verify the output contains menu data
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Dashboard', $output);

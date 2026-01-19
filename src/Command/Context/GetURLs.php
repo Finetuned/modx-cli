@@ -10,11 +10,16 @@ use Symfony\Component\Console\Helper\Table;
  */
 class GetURLs extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'context:geturls';
     protected $description = 'Get a list of context URLs in MODX';
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $contexts = $this->modx->getCollection(\MODX\Revolution\modContext::class);
@@ -70,14 +75,14 @@ class GetURLs extends BaseCmd
             ], JSON_PRETTY_PRINT));
         } else {
             $table = new Table($this->output);
-            $table->setHeaders(array('Context Key', 'Site URL', 'Site Start URL'));
+            $table->setHeaders(['Context Key', 'Site URL', 'Site Start URL']);
 
             foreach ($results as $row) {
-                $table->addRow(array(
+                $table->addRow([
                     $row['key'],
                     $row['site_url'],
                     $row['site_start_url'],
-                ));
+                ]);
             }
 
             $table->render();

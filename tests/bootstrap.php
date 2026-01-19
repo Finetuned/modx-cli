@@ -2,7 +2,7 @@
 
 /**
  * PHPUnit Bootstrap File
- * 
+ *
  * This file is loaded before tests run and provides necessary mocks
  * for coverage analysis.
  */

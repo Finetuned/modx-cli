@@ -16,41 +16,58 @@ class Update extends ProcessorCmd
     protected $name = 'context:setting:update';
     protected $description = 'Update a context setting';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'context',
                 InputArgument::REQUIRED,
                 'The context key'
-            ),
-            array(
+            ],
+            [
                 'key',
                 InputArgument::REQUIRED,
                 'The setting key'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'value',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The setting value'
-            ),
-            array(
+            ],
+            [
                 'area',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The setting area/category'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $properties['context_key'] = $this->argument('context');
         $properties['key'] = $this->argument('key');
@@ -59,7 +76,7 @@ class Update extends ProcessorCmd
         $this->prePopulateFromExisting($properties, 'Context\Setting\Get', 'key');
 
         // Add options to the properties
-        $optionKeys = array('value', 'area');
+        $optionKeys = ['value', 'area'];
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
@@ -68,12 +85,18 @@ class Update extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
         }
-        
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Context setting updated successfully');
             return 0;

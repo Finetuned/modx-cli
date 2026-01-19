@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Package;
+<?php
+
+namespace MODX\CLI\Tests\Command\Package;
 
 use MODX\CLI\Command\Package\Download;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -103,7 +105,7 @@ class DownloadTest extends BaseTest
 
         $this->modx->expects($this->exactly(2))
             ->method('runProcessor')
-            ->willReturnCallback(function($processor, $properties = [], $options = []) use ($upgradeableResponse, $downloadResponse) {
+            ->willReturnCallback(function ($processor, $properties = [], $options = []) use ($upgradeableResponse, $downloadResponse) {
                 if ($processor === 'workspace/packages/getlist') {
                     $this->assertTrue($properties['newest_only']);
                     $this->assertEquals(100, $properties['limit']);
@@ -172,7 +174,7 @@ class DownloadTest extends BaseTest
 
         $this->modx->expects($this->exactly(2))
             ->method('runProcessor')
-            ->willReturnCallback(function($processor) use ($upgradeableResponse, $downloadResponse) {
+            ->willReturnCallback(function ($processor) use ($upgradeableResponse, $downloadResponse) {
                 if ($processor === 'workspace/packages/getlist') {
                     return $upgradeableResponse;
                 }

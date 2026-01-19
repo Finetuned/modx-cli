@@ -15,19 +15,31 @@ class FlushPermissions extends ProcessorCmd
     protected $name = 'security:access:flush';
     protected $description = 'Flush permissions in MODX';
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force flush without confirmation'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Confirm flush unless --force is used
         if (!$this->option('force')) {
@@ -36,9 +48,16 @@ class FlushPermissions extends ProcessorCmd
                 return false;
             }
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

@@ -42,7 +42,7 @@ class HookManager
     /**
      * Constructor
      *
-     * @param LoggerInterface|null $logger Optional logger instance
+     * @param LoggerInterface|null $logger Optional logger instance.
      */
     public function __construct(?LoggerInterface $logger = null)
     {
@@ -52,9 +52,9 @@ class HookManager
     /**
      * Register a hook
      *
-     * @param string $hookName The hook name (e.g., 'command.before', 'command.after')
-     * @param callable $handler The hook handler callable
-     * @param int $priority Priority (higher = executed first), default 10
+     * @param string   $hookName The hook name (e.g., 'command.before', 'command.after').
+     * @param callable $handler  The hook handler callable.
+     * @param integer  $priority Priority (higher = executed first), default 10.
      * @return void
      */
     public function register(string $hookName, callable $handler, int $priority = 10): void
@@ -80,8 +80,8 @@ class HookManager
     /**
      * Unregister a hook
      *
-     * @param string $hookName The hook name
-     * @param callable|null $handler Specific handler to remove, or null to remove all
+     * @param string        $hookName The hook name.
+     * @param callable|null $handler  Specific handler to remove, or null to remove all.
      * @return void
      */
     public function unregister(string $hookName, ?callable $handler = null): void
@@ -113,9 +113,9 @@ class HookManager
      * Calls all registered handlers for the given hook name.
      * Handlers receive the context array and can modify it.
      *
-     * @param string $hookName The hook name
-     * @param array<string, mixed> $context Context data passed to handlers
-     * @return array<string, mixed> Modified context after all handlers have run
+     * @param string               $hookName The hook name.
+     * @param array<string, mixed> $context  Context data passed to handlers.
+     * @return array<string, mixed> Modified context after all handlers have run.
      */
     public function execute(string $hookName, array $context = []): array
     {
@@ -150,7 +150,6 @@ class HookManager
                     'hook' => $hookName,
                     'execution_time' => round($handlerTime * 1000, 2) . 'ms'
                 ]);
-
             } catch (\Throwable $e) {
                 $this->logger->error('Hook handler failed: {hook}', [
                     'hook' => $hookName,
@@ -190,8 +189,8 @@ class HookManager
     /**
      * Check if a hook has registered handlers
      *
-     * @param string $hookName The hook name
-     * @return bool True if hook has handlers
+     * @param string $hookName The hook name.
+     * @return boolean True if hook has handlers
      */
     public function hasHook(string $hookName): bool
     {
@@ -211,8 +210,8 @@ class HookManager
     /**
      * Get handler count for a specific hook
      *
-     * @param string $hookName The hook name
-     * @return int Number of registered handlers
+     * @param string $hookName The hook name.
+     * @return integer Number of registered handlers
      */
     public function getHandlerCount(string $hookName): int
     {
@@ -252,7 +251,7 @@ class HookManager
     /**
      * Sort hooks by priority
      *
-     * @param string $hookName The hook name
+     * @param string $hookName The hook name.
      * @return void
      */
     protected function sortHooks(string $hookName): void
@@ -278,7 +277,7 @@ class HookManager
     /**
      * Set logger instance
      *
-     * @param LoggerInterface $logger
+     * @param LoggerInterface $logger The logger.
      * @return void
      */
     public function setLogger(LoggerInterface $logger): void

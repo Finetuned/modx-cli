@@ -7,7 +7,7 @@ use MODX\CLI\SSH\ConnectionParser;
 
 /**
  * Integration tests for SSH connection string parsing and validation
- * 
+ *
  * Note: These tests do not require a MODX instance as they test
  * SSH connection parsing logic independently.
  */
@@ -19,7 +19,7 @@ class SSHConnectionTest extends TestCase
     public function testParseFullConnectionString()
     {
         $parser = new ConnectionParser('testuser@example.com:2222/var/www/html');
-        
+
         $this->assertEquals('testuser', $parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals(2222, $parser->getPort());
@@ -32,7 +32,7 @@ class SSHConnectionTest extends TestCase
     public function testParseConnectionStringWithDefaultPort()
     {
         $parser = new ConnectionParser('testuser@example.com/var/www/html');
-        
+
         $this->assertEquals('testuser', $parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals(22, $parser->getPort());
@@ -45,7 +45,7 @@ class SSHConnectionTest extends TestCase
     public function testParseConnectionStringWithoutUser()
     {
         $parser = new ConnectionParser('example.com:2222/var/www/html');
-        
+
         // User should be the current system user
         $this->assertNotEmpty($parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
@@ -59,7 +59,7 @@ class SSHConnectionTest extends TestCase
     public function testParseMinimalConnectionString()
     {
         $parser = new ConnectionParser('example.com');
-        
+
         $this->assertNotEmpty($parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals(22, $parser->getPort());
@@ -72,7 +72,7 @@ class SSHConnectionTest extends TestCase
     public function testParseConnectionStringWithTildePath()
     {
         $parser = new ConnectionParser('testuser@example.com:2222~/public_html');
-        
+
         $this->assertEquals('testuser', $parser->getUser());
         $this->assertEquals('example.com', $parser->getHost());
         $this->assertEquals(2222, $parser->getPort());
@@ -85,9 +85,9 @@ class SSHConnectionTest extends TestCase
     public function testConnectionStringReconstruction()
     {
         $parser = new ConnectionParser('testuser@example.com:2222/var/www/html');
-        
+
         $reconstructed = (string) $parser;
-        
+
         $this->assertStringContainsString('testuser', $reconstructed);
         $this->assertStringContainsString('example.com', $reconstructed);
         $this->assertStringContainsString('2222', $reconstructed);
@@ -100,9 +100,9 @@ class SSHConnectionTest extends TestCase
     public function testConnectionStringReconstructionOmitsDefaultPort()
     {
         $parser = new ConnectionParser('testuser@example.com/var/www/html');
-        
+
         $reconstructed = (string) $parser;
-        
+
         $this->assertStringNotContainsString(':22', $reconstructed);
         $this->assertStringContainsString('testuser', $reconstructed);
         $this->assertStringContainsString('example.com', $reconstructed);
@@ -114,7 +114,7 @@ class SSHConnectionTest extends TestCase
     public function testParseConnectionStringWithIPv4()
     {
         $parser = new ConnectionParser('testuser@192.168.1.100:2222/var/www/html');
-        
+
         $this->assertEquals('testuser', $parser->getUser());
         $this->assertEquals('192.168.1.100', $parser->getHost());
         $this->assertEquals(2222, $parser->getPort());

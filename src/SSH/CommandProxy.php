@@ -34,13 +34,17 @@ class CommandProxy
     /**
      * CommandProxy constructor.
      *
-     * @param ConnectionParser $connection The SSH connection
-     * @param string $command The command to execute
-     * @param array $args The command arguments
-     * @param CommandExecutorInterface|null $executor The command executor
+     * @param ConnectionParser              $connection The SSH connection.
+     * @param string                        $command    The command to execute.
+     * @param array                         $args       The command arguments.
+     * @param CommandExecutorInterface|null $executor   The command executor.
      */
-    public function __construct(ConnectionParser $connection, $command, array $args = [], ?CommandExecutorInterface $executor = null)
-    {
+    public function __construct(
+        ConnectionParser $connection,
+        string $command,
+        array $args = [],
+        ?CommandExecutorInterface $executor = null
+    ) {
         $this->connection = $connection;
         $this->command = $command;
         $this->args = $args;
@@ -50,9 +54,9 @@ class CommandProxy
     /**
      * Execute the command on the remote server
      *
-     * @return int The command exit code
+     * @return integer The command exit code
      */
-    public function execute()
+    public function execute(): int
     {
         $sshCommand = $this->buildSSHCommand();
 
@@ -70,7 +74,7 @@ class CommandProxy
      *
      * @return string The SSH command
      */
-    protected function buildSSHCommand()
+    protected function buildSSHCommand(): string
     {
         $user = $this->connection->getUser();
         $host = $this->connection->getHost();
@@ -100,7 +104,7 @@ class CommandProxy
      *
      * @return string The remote command
      */
-    protected function buildRemoteCommand()
+    protected function buildRemoteCommand(): string
     {
         $command = $this->command;
         $args = array_map('escapeshellarg', $this->args);

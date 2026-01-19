@@ -12,52 +12,69 @@ use Symfony\Component\Console\Input\InputOption;
 class Update extends ProcessorCmd
 {
     protected $processor = 'Element\Category\Update';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'category:update';
     protected $description = 'Update a MODX category';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the category to update'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'category',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The name of the category'
-            ),
-            array(
+            ],
+            [
                 'parent',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The parent ID of the category'
-            ),
-            array(
+            ],
+            [
                 'rank',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The rank of the category'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add options to the properties
-        $optionKeys = array(
+        $optionKeys = [
             'category', 'parent', 'rank'
-        );
+        ];
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
@@ -66,7 +83,13 @@ class Update extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

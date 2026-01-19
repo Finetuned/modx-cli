@@ -8,11 +8,11 @@ namespace MODX\CLI\SSH;
 interface CommandExecutorInterface
 {
     /**
-     * @param string $command
-     * @param int $timeout
-     * @param bool $tty
-     * @param callable|null $outputCallback
-     * @return int
+     * @param string        $command        The command.
+     * @param integer       $timeout        The timeout.
+     * @param boolean       $tty            The tty.
+     * @param callable|null $outputCallback The outputCallback.
+     * @return integer
      */
     public function run(string $command, int $timeout, bool $tty, ?callable $outputCallback = null): int;
 }

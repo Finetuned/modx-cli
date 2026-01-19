@@ -14,7 +14,13 @@ class ClearCache extends ProcessorCmd
     protected $name = 'system:clearcache';
     protected $description = 'Clear the MODX cache';
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

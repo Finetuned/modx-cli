@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Tests\Command\Package\Provider;
 
 use MODX\CLI\Command\Package\Provider\Info;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -66,7 +68,7 @@ class InfoTest extends BaseTest
 
         $this->modx->expects($this->once())
             ->method('runProcessor')
-            ->with('Workspace\\Providers\\GetList', $this->callback(function($properties) {
+            ->with('Workspace\\Providers\\GetList', $this->callback(function ($properties) {
                 return $properties['id'] === '5';
             }))
             ->willReturn($response);

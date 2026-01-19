@@ -13,17 +13,37 @@ class SetDefault extends BaseCmd
     protected $name = 'config:set-default';
     protected $description = 'Set a MODX instance as the default';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the instance to set as default'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $name = $this->argument('name');
@@ -43,9 +63,9 @@ class SetDefault extends BaseCmd
         }
 
         // Set the instance as default
-        $instances->set('__default__', array(
+        $instances->set('__default__', [
             'class' => $name,
-        ));
+        ]);
         $instances->save();
 
         $message = "Instance '{$name}' set as default";

@@ -15,18 +15,38 @@ class GetList extends BaseCmd
     protected $name = 'config:list';
     protected $description = 'List MODX instances in the configuration';
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'json',
                 null,
                 InputOption::VALUE_NONE,
                 'Output results as JSON'
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $app = $this->getApplication();
@@ -53,11 +73,11 @@ class GetList extends BaseCmd
         $data = [];
         foreach ($all as $name => $config) {
             $isDefault = ($default && isset($default['class']) && $default['class'] === $name);
-            $data[] = array(
+            $data[] = [
                 'name' => $name,
                 'base_path' => isset($config['base_path']) ? $config['base_path'] : '',
                 'is_default' => $isDefault
-            );
+            ];
         }
 
         // Output JSON or table
@@ -65,13 +85,13 @@ class GetList extends BaseCmd
             $this->output->writeln(json_encode($data, JSON_PRETTY_PRINT));
         } else {
             $table = new Table($this->output);
-            $table->setHeaders(array('Name', 'Base Path', 'Default'));
+            $table->setHeaders(['Name', 'Base Path', 'Default']);
             foreach ($data as $row) {
-                $table->addRow(array(
+                $table->addRow([
                     $row['name'],
                     $row['base_path'],
                     $row['is_default'] ? 'Yes' : 'No'
-                ));
+                ]);
             }
             $table->render();
         }

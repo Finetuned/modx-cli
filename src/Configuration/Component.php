@@ -18,8 +18,8 @@ class Component extends Base
     protected $app;
 
     /**
-     * @param Application $app
-     * @param array $items
+     * @param Application $app   The application instance.
+     * @param array       $items Initial component configuration items.
      */
     public function __construct(Application $app, array $items = [])
     {
@@ -51,9 +51,9 @@ class Component extends Base
     /**
      * Save the configuration to MODX and file
      *
-     * @return bool
+     * @return boolean
      */
-    public function save()
+    public function save(): bool
     {
         $modx = $this->app->getMODX();
         if (!$modx instanceof modX) {
@@ -82,7 +82,6 @@ class Component extends Base
         // Also save to file for backup
         $file = $this->getConfigPath() . $this->file;
         file_put_contents($file, json_encode($this->items, JSON_PRETTY_PRINT));
-
         return true;
     }
 }

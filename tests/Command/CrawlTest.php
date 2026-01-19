@@ -22,7 +22,7 @@ class CrawlTest extends BaseTest
             ->with('id,pagetitle,context_key');
         $query->expects($this->once())
             ->method('where')
-            ->with($this->callback(function($criteria) {
+            ->with($this->callback(function ($criteria) {
                 return $criteria['parent'] === 10
                     && $criteria['published'] === true
                     && $criteria['deleted'] === false
@@ -57,7 +57,7 @@ class CrawlTest extends BaseTest
 
         $query->expects($this->once())
             ->method('where')
-            ->with($this->callback(function($criteria) {
+            ->with($this->callback(function ($criteria) {
                 return $criteria['context_key:!='] === 'mgr';
             }));
 

@@ -16,48 +16,65 @@ class Update extends ProcessorCmd
     protected $name = 'source:update';
     protected $description = 'Update a MODX media source';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The source ID'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'name',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The name of the media source'
-            ),
-            array(
+            ],
+            [
                 'description',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The description of the media source'
-            ),
-            array(
+            ],
+            [
                 'class_key',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The class key of the media source'
-            ),
-            array(
+            ],
+            [
                 'source-properties',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The properties of the media source (JSON format)'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the ID to the properties
         $properties['id'] = $this->argument('id');
@@ -66,7 +83,7 @@ class Update extends ProcessorCmd
         $this->prePopulateFromExisting($properties, 'Source\Get', 'id');
 
         // Add options to the properties
-        $optionKeys = array('name', 'description', 'class_key');
+        $optionKeys = ['name', 'description', 'class_key'];
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
@@ -80,12 +97,18 @@ class Update extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
         }
-        
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Media source updated successfully');
 

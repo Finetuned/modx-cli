@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Category;
+<?php
+
+namespace MODX\CLI\Tests\Command\Category;
 
 use MODX\CLI\Command\Category\Remove;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class RemoveTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Remove();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -50,14 +52,14 @@ class RemoveTest extends BaseTest
         $category->method('get')
             ->with('category')
             ->willReturn('Test Category');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modCategory::class, '123', $this->anything())
             ->willReturn($category);
-        
+
         // We'll skip the confirmation by using the force option
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -67,24 +69,24 @@ class RemoveTest extends BaseTest
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Category\Remove',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === '123';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with force option
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Category removed successfully', $output);
@@ -99,12 +101,12 @@ class RemoveTest extends BaseTest
         $category->method('get')
             ->with('category')
             ->willReturn('Test Category');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modCategory::class, '123', $this->anything())
             ->willReturn($category);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -114,18 +116,18 @@ class RemoveTest extends BaseTest
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with force option
         $this->commandTester->execute([
-            
+
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Category removed successfully', $output);
@@ -137,13 +139,13 @@ class RemoveTest extends BaseTest
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modCategory::class, '999', $this->anything())
             ->willReturn(null);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
             'id' => '999'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Category with ID 999 not found', $output);
@@ -158,14 +160,14 @@ class RemoveTest extends BaseTest
         $category->method('get')
             ->with('category')
             ->willReturn('Test Category');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modCategory::class, '123')
             ->willReturn($category);
-        
+
         // We'll skip the confirmation by using the force option
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -176,17 +178,17 @@ class RemoveTest extends BaseTest
                 'message' => 'Error removing category'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with force option
         $this->commandTester->execute([
             '--force' => true,
             'id' => '123'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to remove category', $output);

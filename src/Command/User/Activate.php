@@ -10,22 +10,32 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class Activate extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'user:activate';
     protected $description = 'Activate a MODX user';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'identifier',
                 InputArgument::REQUIRED,
                 'The user ID or username'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $identifier = $this->argument('identifier');
@@ -47,6 +57,12 @@ class Activate extends BaseCmd
         return $this->emitResult(false, 'Failed to activate user', $user);
     }
 
+    /**
+     * Fetch a user by identifier.
+     *
+     * @param string $identifier The user ID or username.
+     * @return \MODX\Revolution\modUser|null The user instance, or null when not found.
+     */
     private function getUser(string $identifier)
     {
         if (is_numeric($identifier)) {
@@ -56,6 +72,14 @@ class Activate extends BaseCmd
         return $this->modx->getObject(\MODX\Revolution\modUser::class, ['username' => $identifier]);
     }
 
+    /**
+     * Emit command output and return exit code.
+     *
+     * @param boolean                       $success Whether the operation succeeded.
+     * @param string                        $message The message to display.
+     * @param \MODX\Revolution\modUser|null $user    The user instance.
+     * @return integer
+     */
     private function emitResult(bool $success, string $message, $user): int
     {
         if ($this->option('json')) {

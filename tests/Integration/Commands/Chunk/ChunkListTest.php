@@ -15,23 +15,23 @@ class ChunkListTest extends BaseIntegrationTest
     public function testChunkListExecutesSuccessfully()
     {
         $chunkName = 'IntegrationTestChunk_' . uniqid();
-        
+
         // Create a test chunk first
         $this->executeCommandSuccessfully([
             'chunk:create',
             $chunkName,
             '--snippet=<div>Test</div>'
         ]);
-        
+
         // List chunks with high limit to ensure test chunk appears
         $process = $this->executeCommandSuccessfully([
             'chunk:list',
             '--limit=100'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString($chunkName, $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
     }
@@ -45,12 +45,12 @@ class ChunkListTest extends BaseIntegrationTest
         $data = $this->executeCommandJson([
             'chunk:list'
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('total', $data, 'JSON should have total key');
         $this->assertArrayHasKey('results', $data, 'JSON should have results key');
         $this->assertIsArray($data['results'], 'Results should be an array');
-        
+
         // If results exist, verify structure
         if (!empty($data['results'])) {
             $firstChunk = $data['results'][0];
@@ -65,34 +65,34 @@ class ChunkListTest extends BaseIntegrationTest
     {
         $categoryName = 'IntegrationTestCategory_' . uniqid();
         $chunkName = 'IntegrationTestChunk_' . uniqid();
-        
+
         // Create category
         $this->executeCommandSuccessfully([
             'category:create',
             $categoryName
         ]);
-        
+
         // Get category ID
         $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
-        
+
         // Create chunk in category
         $this->executeCommandSuccessfully([
             'chunk:create',
             $chunkName,
             '--category=' . $categoryId
         ]);
-        
+
         // List chunks with category filter
         $process = $this->executeCommandSuccessfully([
             'chunk:list',
             '--limit=100',
             '--category=' . $categoryId
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString($chunkName, $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name = ?', [$chunkName]);
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
@@ -105,11 +105,11 @@ class ChunkListTest extends BaseIntegrationTest
     {
         // Remove all test chunks first
         $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name LIKE ?', ['IntegrationTestChunk_%']);
-        
+
         $process = $this->executeCommandSuccessfully([
             'chunk:list'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }
@@ -124,23 +124,23 @@ class ChunkListTest extends BaseIntegrationTest
         for ($i = 0; $i < 3; $i++) {
             $chunkName = 'IntegrationTestChunk_' . uniqid() . '_' . $i;
             $chunkNames[] = $chunkName;
-            
+
             $this->executeCommandSuccessfully([
                 'chunk:create',
                 $chunkName
             ]);
         }
-        
+
         // List with limit
         $data = $this->executeCommandJson([
             'chunk:list',
             '--limit=2'
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('results', $data);
         // Note: Result may include other chunks, just verify limit works
-        
+
         // Cleanup
         foreach ($chunkNames as $name) {
             $this->queryDatabase('DELETE FROM ' . $this->chunksTable . ' WHERE name = ?', [$name]);

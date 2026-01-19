@@ -12,6 +12,16 @@ class GetDefault extends BaseCmd
     protected $name = 'config:get-default';
     protected $description = 'Get the default MODX instance';
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $instances = $this->getApplication()->instances;

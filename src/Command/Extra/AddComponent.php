@@ -11,52 +11,67 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class AddComponent extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'extra:add-component';
     protected $description = 'Add a component to MODX';
     protected $jsonOutput = false;
-    protected $actions = array();
+    protected $actions = [];
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'namespace',
                 InputArgument::REQUIRED,
                 'The namespace of the component'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'path',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The path of the component'
-            ),
-            array(
+            ],
+            [
                 'assets_path',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The assets path of the component'
-            ),
-            array(
+            ],
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force creation without confirmation'
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $this->jsonOutput = (bool) $this->option('json');
-        $this->actions = array();
+        $this->actions = [];
         $namespace = $this->argument('namespace');
         $namespaceExists = false;
 
@@ -66,10 +81,10 @@ class AddComponent extends BaseCmd
             $namespaceExists = true;
             if (!$this->option('force')) {
                 if (!$this->confirm("Namespace '{$namespace}' already exists. Do you want to update it?")) {
-                    $this->outputResult(false, 'Operation aborted', array(
+                    $this->outputResult(false, 'Operation aborted', [
                         'namespace' => $namespace,
                         'updated' => true,
-                    ));
+                    ]);
                     return 0;
                 }
             }
@@ -110,7 +125,7 @@ class AddComponent extends BaseCmd
 
             // Create the component directories
             $basePath = $this->modx->getOption('base_path');
-            $directories = array(
+            $directories = [
                 $basePath . $path,
                 $basePath . $path . 'controllers/',
                 $basePath . $path . 'elements/',
@@ -123,7 +138,7 @@ class AddComponent extends BaseCmd
                 $basePath . $assetsPath . 'css/',
                 $basePath . $assetsPath . 'js/',
                 $basePath . $assetsPath . 'img/',
-            );
+            ];
 
             foreach ($directories as $directory) {
                 if (!file_exists($directory)) {
@@ -221,14 +236,14 @@ EOT;
             }
 
             // Create a menu for the component
-            $menu = $this->modx->getObject(\MODX\Revolution\modMenu::class, array(
+            $menu = $this->modx->getObject(\MODX\Revolution\modMenu::class, [
                 'namespace' => $namespace,
                 'action' => 'index',
-            ));
+            ]);
 
             if (!$menu) {
                 $menu = $this->modx->newObject(\MODX\Revolution\modMenu::class);
-                $menu->fromArray(array(
+                $menu->fromArray([
                     'namespace' => $namespace,
                     'action' => 'index',
                     'parent' => 'components',
@@ -238,7 +253,7 @@ EOT;
                     'menuindex' => 0,
                     'params' => '',
                     'handler' => '',
-                ));
+                ]);
 
                 if ($menu->save()) {
                     $this->emitInfo("Created menu for {$namespace}");
@@ -247,52 +262,72 @@ EOT;
                 }
             }
 
-            $this->outputResult(true, "Component '{$namespace}' created successfully", array(
+            $this->outputResult(true, "Component '{$namespace}' created successfully", [
                 'namespace' => $namespace,
                 'path' => $path,
                 'assets_path' => $assetsPath,
                 'updated' => $namespaceExists,
-            ));
+            ]);
         } else {
-            $this->outputResult(false, "Failed to save namespace '{$namespace}'", array(
+            $this->outputResult(false, "Failed to save namespace '{$namespace}'", [
                 'namespace' => $namespace,
                 'path' => $path,
                 'assets_path' => $assetsPath,
                 'updated' => $namespaceExists,
-            ));
+            ]);
         }
 
         return 0;
     }
 
-    protected function emitInfo($message)
+    /**
+     * Emit an informational message or action.
+     *
+     * @param string $message The message to emit.
+     * @return void
+     */
+    protected function emitInfo(string $message): void
     {
         if ($this->jsonOutput) {
-            $this->actions[] = array('success' => true, 'message' => $message);
+            $this->actions[] = ['success' => true, 'message' => $message];
             return;
         }
 
         $this->info($message);
     }
 
-    protected function emitError($message)
+    /**
+     * Emit an error message or action.
+     *
+     * @param string $message The message to emit.
+     * @return void
+     */
+    protected function emitError(string $message): void
     {
         if ($this->jsonOutput) {
-            $this->actions[] = array('success' => false, 'message' => $message);
+            $this->actions[] = ['success' => false, 'message' => $message];
             return;
         }
 
         $this->error($message);
     }
 
-    protected function outputResult($success, $message, array $payload = array())
+    /**
+     * Output the final result payload.
+     *
+     * @param boolean $success Whether the operation succeeded.
+     * @param string  $message The message to display.
+     * @param array   $payload Additional payload data.
+     * @return void
+     */
+    protected function outputResult(bool $success, string $message, array $payload = []): void
     {
         if ($this->jsonOutput) {
-            $this->output->writeln(json_encode(array_merge(array(
+            $this->output->writeln(json_encode(array_merge([
                 'success' => (bool) $success,
                 'message' => $message,
                 'actions' => $this->actions,
-            ), $payload), JSON_PRETTY_PRINT));
+            ], $payload), JSON_PRETTY_PRINT));
         } else {
             if ($success) {
                 $this->info($message);

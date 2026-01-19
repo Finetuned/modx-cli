@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Listen extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'system:log:listen';
     protected $description = 'Listen to the MODX system log';
@@ -31,26 +31,36 @@ class Listen extends BaseCmd
      */
     protected $running = true;
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'interval',
                 'i',
                 InputOption::VALUE_REQUIRED,
                 'Interval in seconds between checks',
                 1
-            ),
-            array(
+            ],
+            [
                 'limit',
                 'l',
                 InputOption::VALUE_REQUIRED,
                 'Number of log entries to display initially',
                 10
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $this->interval = (int) $this->option('interval');
@@ -76,11 +86,11 @@ class Listen extends BaseCmd
     }
 
     /**
-     * Get the last log ID
+     * Get the last log ID.
      *
-     * @return int
+     * @return integer
      */
-    protected function getLastLogId()
+    protected function getLastLogId(): int
     {
         $c = $this->modx->newQuery(\MODX\Revolution\modManagerLog::class);
         $c->sortby('id', 'DESC');
@@ -93,11 +103,12 @@ class Listen extends BaseCmd
     }
 
     /**
-     * Display the last N log entries
+     * Display the last N log entries.
      *
-     * @param int $limit
+     * @param integer $limit The number of entries to display.
+     * @return void
      */
-    protected function displayLastLogEntries($limit)
+    protected function displayLastLogEntries(int $limit): void
     {
         $json = $this->isJsonOutput();
         $c = $this->modx->newQuery(\MODX\Revolution\modManagerLog::class);
@@ -118,16 +129,16 @@ class Listen extends BaseCmd
             return;
         }
 
-        $entries = array();
+        $entries = [];
 
         /** @var \MODX\Revolution\modManagerLog $log */
         foreach ($logs as $log) {
-            $entries[] = array(
+            $entries[] = [
                 'id' => $log->get('id'),
                 'level' => $log->get('level'),
                 'message' => $log->get('message'),
                 'timestamp' => strtotime($log->get('occurred')),
-            );
+            ];
 
             $this->lastLogId = max($this->lastLogId, $log->get('id'));
         }
@@ -149,15 +160,17 @@ class Listen extends BaseCmd
     }
 
     /**
-     * Check for new log entries
+     * Check for new log entries.
+     *
+     * @return void
      */
-    protected function checkForNewLogEntries()
+    protected function checkForNewLogEntries(): void
     {
         $json = $this->isJsonOutput();
         $c = $this->modx->newQuery(\MODX\Revolution\modManagerLog::class);
-        $c->where(array(
+        $c->where([
             'id:>' => $this->lastLogId,
-        ));
+        ]);
         $c->sortby('id', 'ASC');
 
         $logs = $this->modx->getCollection(\MODX\Revolution\modManagerLog::class, $c);
@@ -166,15 +179,15 @@ class Listen extends BaseCmd
             return;
         }
 
-        $entries = array();
+        $entries = [];
 
         /** @var \MODX\Revolution\modManagerLog $log */
         foreach ($logs as $log) {
-            $entries[] = array(
+            $entries[] = [
                 'level' => $log->get('level'),
                 'message' => $log->get('message'),
                 'timestamp' => strtotime($log->get('occurred')),
-            );
+            ];
 
             $this->lastLogId = max($this->lastLogId, $log->get('id'));
         }
@@ -190,6 +203,11 @@ class Listen extends BaseCmd
         }
     }
 
+    /**
+     * Determine whether JSON output is requested.
+     *
+     * @return boolean
+     */
     protected function isJsonOutput(): bool
     {
         return $this->input ? (bool) $this->option('json') : false;

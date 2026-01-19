@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Alias;
+<?php
+
+namespace MODX\CLI\Tests\Alias;
 
 use MODX\CLI\Alias\Resolver;
 use MODX\CLI\Configuration\Yaml\YamlConfig;
@@ -17,7 +19,7 @@ class ResolverTest extends TestCase
     {
         $config = $this->createMock(YamlConfig::class);
         $resolver = new Resolver($config);
-        
+
         $this->assertTrue($resolver->isAlias('@prod'));
         $this->assertTrue($resolver->isAlias('@staging'));
         $this->assertTrue($resolver->isAlias('@dev'));
@@ -27,7 +29,7 @@ class ResolverTest extends TestCase
     {
         $config = $this->createMock(YamlConfig::class);
         $resolver = new Resolver($config);
-        
+
         $this->assertFalse($resolver->isAlias('prod'));
         $this->assertFalse($resolver->isAlias('staging'));
     }
@@ -36,7 +38,7 @@ class ResolverTest extends TestCase
     {
         $config = $this->createMock(YamlConfig::class);
         $resolver = new Resolver($config);
-        
+
         $this->assertFalse($resolver->isAlias(''));
     }
 
@@ -50,10 +52,10 @@ class ResolverTest extends TestCase
         $config->method('getAlias')
             ->with('prod')
             ->willReturn(['ssh' => 'user@production.com:/var/www']);
-        
+
         $resolver = new Resolver($config);
         $result = $resolver->resolveAlias('@prod');
-        
+
         $this->assertIsArray($result);
         $this->assertArrayHasKey('ssh', $result);
         $this->assertEquals('user@production.com:/var/www', $result['ssh']);
@@ -65,9 +67,9 @@ class ResolverTest extends TestCase
         $config->expects($this->once())
             ->method('getAlias')
             ->with('prod');  // Should be called without @ prefix
-        
+
         $resolver = new Resolver($config);
-        
+
         try {
             $resolver->resolveAlias('@prod');
         } catch (\Exception $e) {
@@ -81,12 +83,12 @@ class ResolverTest extends TestCase
         $config->method('getAlias')
             ->with('unknown')
             ->willReturn(null);
-        
+
         $resolver = new Resolver($config);
-        
+
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("Alias '@unknown' not found");
-        
+
         $resolver->resolveAlias('@unknown');
     }
 
@@ -98,7 +100,7 @@ class ResolverTest extends TestCase
     {
         $config = $this->createMock(YamlConfig::class);
         $resolver = new Resolver($config);
-        
+
         // Array without 'ssh' key is a group
         $group = ['@prod', '@staging', '@dev'];
         $this->assertTrue($resolver->isAliasGroup($group));
@@ -108,7 +110,7 @@ class ResolverTest extends TestCase
     {
         $config = $this->createMock(YamlConfig::class);
         $resolver = new Resolver($config);
-        
+
         // Array with 'ssh' key is a single alias
         $singleAlias = ['ssh' => 'user@example.com'];
         $this->assertFalse($resolver->isAliasGroup($singleAlias));
@@ -118,10 +120,10 @@ class ResolverTest extends TestCase
     {
         $config = $this->createMock(YamlConfig::class);
         $resolver = new Resolver($config);
-        
+
         $group = ['@prod', '@staging', '@dev'];
         $members = $resolver->getAliasGroupMembers($group);
-        
+
         $this->assertIsArray($members);
         $this->assertCount(3, $members);
         $this->assertEquals(['@prod', '@staging', '@dev'], $members);
@@ -131,10 +133,10 @@ class ResolverTest extends TestCase
     {
         $config = $this->createMock(YamlConfig::class);
         $resolver = new Resolver($config);
-        
+
         $emptyGroup = [];
         $members = $resolver->getAliasGroupMembers($emptyGroup);
-        
+
         $this->assertIsArray($members);
         $this->assertEmpty($members);
     }
@@ -147,7 +149,7 @@ class ResolverTest extends TestCase
     {
         $config = $this->createMock(YamlConfig::class);
         $resolver = new Resolver($config);
-        
+
         $this->assertInstanceOf(Resolver::class, $resolver);
     }
 
@@ -163,12 +165,12 @@ class ResolverTest extends TestCase
                 ['prod', ['ssh' => 'user@prod.com']],
                 ['staging', ['ssh' => 'user@staging.com']],
             ]);
-        
+
         $resolver = new Resolver($config);
-        
+
         $prod = $resolver->resolveAlias('@prod');
         $this->assertEquals('user@prod.com', $prod['ssh']);
-        
+
         $staging = $resolver->resolveAlias('@staging');
         $this->assertEquals('user@staging.com', $staging['ssh']);
     }

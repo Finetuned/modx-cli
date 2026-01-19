@@ -103,7 +103,7 @@ class RemoveComponentTest extends BaseTest
         $menu->method('remove')->willReturn(true);
 
         $this->modx->method('getObject')
-            ->willReturnCallback(function($class, $criteria) use ($namespace, $menu) {
+            ->willReturnCallback(function ($class, $criteria) use ($namespace, $menu) {
                 if ($class === \MODX\Revolution\modNamespace::class) {
                     return $namespace;
                 }

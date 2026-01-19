@@ -17,58 +17,75 @@ class Update extends ProcessorCmd
     protected $name = 'user:update';
     protected $description = 'Update a MODX user';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'identifier',
                 InputArgument::REQUIRED,
                 'The user ID or username'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'username',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The new username'
-            ),
-            array(
+            ],
+            [
                 'email',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The new email address'
-            ),
-            array(
+            ],
+            [
                 'fullname',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The full name'
-            ),
-            array(
+            ],
+            [
                 'active',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Active status (1 or 0)'
-            ),
-            array(
+            ],
+            [
                 'blocked',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Blocked status (1 or 0)'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $identifier = $this->argument('identifier');
         $user = null;
-        
+
         // If numeric, treat as ID; otherwise, treat as username and look up ID
         if (is_numeric($identifier)) {
             $properties['id'] = (int)$identifier;
@@ -94,21 +111,30 @@ class Update extends ProcessorCmd
         }
 
         // Add options to the properties
-        $optionKeys = array('username', 'email', 'fullname', 'active', 'blocked');
+        $optionKeys = ['username', 'email', 'fullname', 'active', 'blocked'];
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
                 $properties[$key] = $this->option($key);
             }
         }
-        
+
         // Ensure passwordnotifymethod is set to prevent unwanted notifications
         if (!isset($properties['passwordnotifymethod'])) {
             $properties['passwordnotifymethod'] = 'none';
         }
+        return null;
     }
 
-    private function prePopulateFromObject(array &$properties, $object, string $class): void
+    /**
+     * Pre-populate properties from an existing object.
+     *
+     * @param array  $properties The processor properties.
+     * @param mixed  $object     The MODX object.
+     * @param string $class      The MODX class name.
+     * @return void
+     */
+    private function prePopulateFromObject(array &$properties, mixed $object, string $class): void
     {
         if (!$object) {
             return;
@@ -125,12 +151,18 @@ class Update extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
         }
-        
+
         if (isset($response['success']) && $response['success']) {
             $this->info('User updated successfully');
 

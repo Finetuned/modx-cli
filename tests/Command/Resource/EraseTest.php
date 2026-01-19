@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Resource;
+<?php
+
+namespace MODX\CLI\Tests\Command\Resource;
 
 use MODX\CLI\Command\Resource\Erase;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -14,11 +16,11 @@ class EraseTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Erase();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -49,13 +51,13 @@ class EraseTest extends BaseTest
             ['pagetitle', 'Test Page'],
             ['deleted', 1]  // Resource is in trash
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -67,25 +69,25 @@ class EraseTest extends BaseTest
                 'count_failures' => 0
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Resource\Trash\Purge',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     // Verify 'ids' parameter is passed (not 'id')
                     return isset($properties['ids']) && $properties['ids'] === '123';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Resource erased successfully (permanently deleted)', $output);
@@ -98,17 +100,17 @@ class EraseTest extends BaseTest
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '999', $this->anything())
             ->willReturn(null);
-        
+
         // runProcessor should not be called since the resource doesn't exist
         $this->modx->expects($this->never())
             ->method('runProcessor');
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999',
             '--force' => true
         ]);
-        
+
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Resource with ID 999 not found', $output);
@@ -124,23 +126,23 @@ class EraseTest extends BaseTest
             ['pagetitle', 'Test Page'],
             ['deleted', 0]  // Resource is NOT in trash
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
-        
+
         // runProcessor should not be called since resource is not in trash
         $this->modx->expects($this->never())
             ->method('runProcessor');
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('is not in the trash', $output);
@@ -157,13 +159,13 @@ class EraseTest extends BaseTest
             ['pagetitle', 'Test Page'],
             ['deleted', 1]  // Resource is in trash
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -174,17 +176,17 @@ class EraseTest extends BaseTest
                 'message' => 'Error erasing resource'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to erase resource', $output);
@@ -201,13 +203,13 @@ class EraseTest extends BaseTest
             ['pagetitle', 'Test Page'],
             ['deleted', 1]  // Resource is in trash
         ]);
-        
+
         // Mock getObject to return existing resource
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modResource::class, '123', $this->anything())
             ->willReturn($existingResource);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -219,17 +221,17 @@ class EraseTest extends BaseTest
                 'count_failures' => 0
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force flag
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the command executed without asking for confirmation
         $output = $this->commandTester->getDisplay();
         $this->assertStringNotContainsString('Are you sure', $output);
@@ -246,11 +248,11 @@ class EraseTest extends BaseTest
             ['pagetitle', 'Test Page'],
             ['deleted', 1]
         ]);
-        
+
         $this->modx->expects($this->once())
             ->method('getObject')
             ->willReturn($existingResource);
-        
+
         // Verify that 'ids' parameter is passed as a string
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -258,26 +260,26 @@ class EraseTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true, 'count_success' => 1, 'count_failures' => 0]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Resource\Trash\Purge',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     // Ensure 'ids' is a string, not an integer
-                    return isset($properties['ids']) && 
-                           $properties['ids'] === '456' && 
+                    return isset($properties['ids']) &&
+                           $properties['ids'] === '456' &&
                            is_string($properties['ids']);
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         $this->commandTester->execute([
             'id' => '456',
             '--force' => true
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 }

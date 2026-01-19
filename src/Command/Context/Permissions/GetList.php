@@ -14,34 +14,51 @@ class GetList extends ListProcessor
     protected $name = 'context:permissions';
     protected $description = 'List context access permissions for a context';
 
-    protected $headers = array(
+    protected $headers = [
         'id', 'usergroup', 'authority', 'policy_name'
-    );
+    ];
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'context',
                 \Symfony\Component\Console\Input\InputArgument::REQUIRED,
                 'The context key'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'usergroup',
                 null,
                 \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED,
                 'Filter by user group ID'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $properties['type'] = 'MODX\\Revolution\\modAccessContext';
         $properties['target'] = $this->argument('context');
@@ -53,7 +70,13 @@ class GetList extends ListProcessor
         return parent::beforeRun($properties, $options);
     }
 
-    protected function processResponse(array $results = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $results The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $results = [])
     {
         if (isset($results['results']) && is_array($results['results'])) {
             foreach ($results['results'] as &$row) {
@@ -67,10 +90,16 @@ class GetList extends ListProcessor
         return parent::processResponse($results);
     }
 
-    protected function renderBody(array $results = array())
+    /**
+     * Render the results as a table.
+     *
+     * @param array $results The list of results.
+     * @return void
+     */
+    protected function renderBody(array $results = [])
     {
         $table = new \Symfony\Component\Console\Helper\Table($this->output);
-        $table->setHeaders(array('ID', 'User Group', 'Authority', 'Access Policy'));
+        $table->setHeaders(['ID', 'User Group', 'Authority', 'Access Policy']);
 
         foreach ($results as $row) {
             $table->addRow($this->processRow($row));

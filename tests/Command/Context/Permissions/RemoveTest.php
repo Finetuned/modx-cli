@@ -16,11 +16,11 @@ class RemoveTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Remove();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
         $this->commandTester->setInputs(['yes']);
@@ -67,7 +67,7 @@ class RemoveTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Security\\Access\\UserGroup\\Context\\Remove',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === '10';
                 }),
                 $this->anything()

@@ -52,8 +52,8 @@ class CommandMetadata
     /**
      * Constructor
      *
-     * @param string $name Command name
-     * @param array $data Metadata array
+     * @param string $name Command name.
+     * @param array  $data Metadata array.
      */
     public function __construct(string $name, array $data = [])
     {
@@ -140,7 +140,7 @@ class CommandMetadata
     /**
      * Get custom metadata value
      *
-     * @param string $key Custom metadata key
+     * @param string $key Custom metadata key.
      * @return mixed|null
      */
     public function getCustom(string $key)
@@ -151,8 +151,8 @@ class CommandMetadata
     /**
      * Check if command has a specific tag
      *
-     * @param string $tag Tag to check
-     * @return bool
+     * @param string $tag Tag to check.
+     * @return boolean
      */
     public function hasTag(string $tag): bool
     {
@@ -162,8 +162,8 @@ class CommandMetadata
     /**
      * Check if command has an alias
      *
-     * @param string $alias Alias to check
-     * @return bool
+     * @param string $alias Alias to check.
+     * @return boolean
      */
     public function hasAlias(string $alias): bool
     {

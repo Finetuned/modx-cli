@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Plugin;
+<?php
+
+namespace MODX\CLI\Tests\Command\Plugin;
 
 use MODX\CLI\Command\Plugin\DisabledPlugin;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -15,11 +17,11 @@ class DisabledPluginTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new DisabledPlugin();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -90,20 +92,20 @@ class DisabledPluginTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
-            ->with('Element\Plugin\GetList', $this->callback(function($properties) {
+            ->with('Element\Plugin\GetList', $this->callback(function ($properties) {
                 // Verify that disabled=1 is passed to processor
                 return isset($properties['disabled']) && $properties['disabled'] === 1;
             }))
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         // Verify the output contains only disabled plugin data
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('DisabledPlugin1', $output);
@@ -122,16 +124,16 @@ class DisabledPluginTest extends BaseTest
                 'results' => []
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         // Verify appropriate message is displayed (showing 0 items)
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('displaying 0 item(s)', $output);
@@ -151,21 +153,21 @@ class DisabledPluginTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
-            
+
             '--json' => true,
         ]);
-        
+
         // Verify JSON output
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
-        
+
         $data = json_decode($output, true);
         $this->assertIsArray($data);
         $this->assertArrayHasKey('results', $data);
@@ -188,23 +190,23 @@ class DisabledPluginTest extends BaseTest
                 'total' => 10
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
-            ->with('Element\\Plugin\\GetList', $this->callback(function($properties) {
+            ->with('Element\\Plugin\\GetList', $this->callback(function ($properties) {
                 // The ListProcessor base class may merge properties differently
                 // Just verify that disabled filter is set
                 return isset($properties['disabled']) && $properties['disabled'] === 1;
             }))
             ->willReturn($processorResponse);
-        
+
         // Execute the command with pagination options
         $this->commandTester->execute([
-            
+
             '--limit' => 5,
             '--start' => 10,
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -239,19 +241,19 @@ class DisabledPluginTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
-            ->with('Element\Plugin\GetList', $this->callback(function($properties) {
+            ->with('Element\Plugin\GetList', $this->callback(function ($properties) {
                 // Ensure disabled=1 is enforced
                 return $properties['disabled'] === 1;
             }))
             ->willReturn($processorResponse);
-        
+
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('DisabledPlugin', $output);
         $this->assertStringNotContainsString('EnabledPlugin', $output);

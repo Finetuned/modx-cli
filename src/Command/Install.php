@@ -34,19 +34,19 @@ class Install extends BaseCmd
      */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'source',
                 InputArgument::OPTIONAL,
                 'Path to MODX source (unused while command is disabled)',
                 ''
-            ),
-            array(
+            ],
+            [
                 'config',
                 InputArgument::OPTIONAL,
                 'Path to configuration file (unused while command is disabled)',
                 ''
-            ),
-        );
+            ],
+        ];
     }
 }

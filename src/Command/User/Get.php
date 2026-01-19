@@ -15,21 +15,33 @@ class Get extends ProcessorCmd
     protected $name = 'user:get';
     protected $description = 'Get detailed information about a MODX user';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'identifier',
                 InputArgument::REQUIRED,
                 'The user ID or username'
-            ),
-        );
+            ],
+        ];
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $identifier = $this->argument('identifier');
-        
+
         // If numeric, treat as ID; otherwise, treat as username
         if (is_numeric($identifier)) {
             $properties['id'] = (int)$identifier;
@@ -42,9 +54,16 @@ class Get extends ProcessorCmd
             }
             $properties['id'] = $user->get('id');
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

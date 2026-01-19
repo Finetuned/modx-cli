@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Ns;
+<?php
+
+namespace MODX\CLI\Tests\Command\Ns;
 
 use MODX\CLI\Command\Ns\Remove;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -14,11 +16,11 @@ class RemoveTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Remove();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -46,41 +48,41 @@ class RemoveTest extends BaseTest
             ->addMethods(['get'])
             ->getMock();
         $existingNamespace->method('get')->willReturn('testnamespace');
-        
+
         // Mock getObject to return existing namespace
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modNamespace::class, ['name' => 'testnamespace'], $this->anything())
             ->willReturn($existingNamespace);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Workspace\PackageNamespace\Remove',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['name']) && $properties['name'] === 'testnamespace';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute([
             'name' => 'testnamespace',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Namespace removed successfully', $output);
@@ -93,17 +95,17 @@ class RemoveTest extends BaseTest
             ->method('getObject')
             ->with(\MODX\Revolution\modNamespace::class, ['name' => 'nonexistent'], $this->anything())
             ->willReturn(null);
-        
+
         // runProcessor should not be called since the namespace doesn't exist
         $this->modx->expects($this->never())
             ->method('runProcessor');
-        
+
         // Execute the command
         $this->commandTester->execute([
             'name' => 'nonexistent',
             '--force' => true
         ]);
-        
+
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString("Namespace 'nonexistent' not found", $output);
@@ -116,35 +118,35 @@ class RemoveTest extends BaseTest
             ->addMethods(['get'])
             ->getMock();
         $existingNamespace->method('get')->willReturn('protected');
-        
+
         // Mock getObject to return existing namespace
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modNamespace::class, ['name' => 'protected'], $this->anything())
             ->willReturn($existingNamespace);
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([
                 'success' => false,
                 'message' => 'Cannot remove core namespace'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'name' => 'protected',
             '--force' => true
         ]);
-        
+
         // Verify the output shows error
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to remove namespace', $output);
@@ -158,33 +160,33 @@ class RemoveTest extends BaseTest
             ->addMethods(['get'])
             ->getMock();
         $existingNamespace->method('get')->willReturn('testns');
-        
+
         // Mock getObject to return existing namespace
         $this->modx->expects($this->once())
             ->method('getObject')
             ->willReturn($existingNamespace);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force flag
         $this->commandTester->execute([
             'name' => 'testns',
             '--force' => true
         ]);
-        
+
         // Verify the command executed without asking for confirmation
         $output = $this->commandTester->getDisplay();
         $this->assertStringNotContainsString('Are you sure', $output);

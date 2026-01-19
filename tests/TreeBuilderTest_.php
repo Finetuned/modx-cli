@@ -6,19 +6,19 @@ class TreeBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        $items = array(
-            array(
+        $items = [
+            [
                 'name' => 'Label',
                 'pk' => 1,
                 'owner' => 0,
-            ),
+            ],
 
-            array(
+            [
                 'name' => 'child',
                 'pk' => 2,
                 'owner' => 1,
-            ),
-        );
+            ],
+        ];
         $pkField = 'pk';
         $parentField = 'owner';
         $childrenField = 'owned';

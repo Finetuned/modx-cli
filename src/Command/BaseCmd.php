@@ -16,14 +16,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class BaseCmd extends Command
 {
     use LoggerAwareTrait;
+
     /**
      * Define whether or not a modX instance is required to run the command
      */
-    const MODX = false;
+    public const MODX = false;
     /**
      * Define if a minimum modX version is required (ie. 3.0.0-pl) to be able to run the command
      */
-    const MIN_MODX = '';
+    public const MIN_MODX = '';
 
     /**
      * The input interface implementation.
@@ -55,7 +56,6 @@ abstract class BaseCmd extends Command
 
     /**
      * Command help
-     * @todo allow advanced output (using a method ?)
      *
      * @var string
      */
@@ -110,19 +110,19 @@ abstract class BaseCmd extends Command
     protected function specifyParameters()
     {
         foreach ($this->getArguments() as $arguments) {
-            call_user_func_array(array($this, 'addArgument'), $arguments);
+            call_user_func_array([$this, 'addArgument'], $arguments);
         }
 
         foreach ($this->getOptions() as $options) {
-            call_user_func_array(array($this, 'addOption'), $options);
+            call_user_func_array([$this, 'addOption'], $options);
         }
     }
 
     /**
      * Run the console command.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  The input interface.
+     * @param \Symfony\Component\Console\Output\OutputInterface $output The output interface.
      *
      * @return integer
      */
@@ -143,7 +143,7 @@ abstract class BaseCmd extends Command
     /**
      * Required actions to be performed before execution
      *
-     * @return bool Whether or not required actions went successfully
+     * @return boolean Whether or not required actions went successfully
      */
     protected function init()
     {
@@ -153,8 +153,8 @@ abstract class BaseCmd extends Command
     /**
      * Execute the console command.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  The input interface.
+     * @param \Symfony\Component\Console\Output\OutputInterface $output The output interface.
      *
      * @return mixed
      */
@@ -180,12 +180,12 @@ abstract class BaseCmd extends Command
     /**
      * Call another console command.
      *
-     * @param  string  $command
-     * @param  array   $arguments
+     * @param string $command   The command name.
+     * @param array  $arguments The command arguments.
      *
      * @return integer
      */
-    public function call($command, array $arguments = array())
+    public function call(string $command, array $arguments = [])
     {
         $instance = $this->getApplication()->find($command);
         if (!isset($arguments['command'])) {
@@ -198,12 +198,12 @@ abstract class BaseCmd extends Command
     /**
      * Call another console command silently.
      *
-     * @param  string  $command
-     * @param  array   $arguments
+     * @param string $command   The command name.
+     * @param array  $arguments The command arguments.
      *
      * @return integer
      */
-    public function callSilent($command, array $arguments = array())
+    public function callSilent(string $command, array $arguments = [])
     {
         $instance = $this->getApplication()->find($command);
         if (!isset($arguments['command'])) {
@@ -216,11 +216,11 @@ abstract class BaseCmd extends Command
     /**
      * Get the value of a command argument.
      *
-     * @param  string  $key
+     * @param string|null $key The argument key.
      *
      * @return string|array
      */
-    public function argument($key = null)
+    public function argument(?string $key = null)
     {
         if (is_null($key)) {
             return $this->input->getArguments();
@@ -232,11 +232,11 @@ abstract class BaseCmd extends Command
     /**
      * Get the value of a command option.
      *
-     * @param  string  $key
+     * @param string|null $key The option key.
      *
      * @return string|array
      */
-    public function option($key = null)
+    public function option(?string $key = null)
     {
         if (is_null($key)) {
             return $this->input->getOptions();
@@ -248,16 +248,19 @@ abstract class BaseCmd extends Command
     /**
      * Confirm a question with the user.
      *
-     * @param  string  $question
-     * @param  bool    $default
+     * @param string  $question The question text.
+     * @param boolean $default  The default answer.
      *
-     * @return bool
+     * @return boolean
      */
-    public function confirm($question, $default = true)
+    public function confirm(string $question, bool $default = true)
     {
         /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
         $helper = $this->getHelper('question');
-        $question = new \Symfony\Component\Console\Question\ConfirmationQuestion("<question>$question</question>", $default);
+        $question = new \Symfony\Component\Console\Question\ConfirmationQuestion(
+            "<question>$question</question>",
+            $default
+        );
 
         return $helper->ask($this->input, $this->output, $question);
     }
@@ -265,12 +268,12 @@ abstract class BaseCmd extends Command
     /**
      * Prompt the user for input.
      *
-     * @param  string  $question
-     * @param  string  $default
+     * @param string      $question The question text.
+     * @param string|null $default  The default value.
      *
      * @return string
      */
-    public function ask($question, $default = null)
+    public function ask(string $question, ?string $default = null)
     {
         /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
         $helper = $this->getHelper('question');
@@ -283,12 +286,12 @@ abstract class BaseCmd extends Command
     /**
      * Prompt the user for input but hide the answer from the console.
      *
-     * @param  string  $question
-     * @param  bool    $fallback
+     * @param string  $question The question text.
+     * @param boolean $fallback Whether to allow a hidden fallback.
      *
      * @return string
      */
-    public function secret($question, $fallback = true)
+    public function secret(string $question, bool $fallback = true)
     {
         /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
         $helper = $this->getHelper('question');
@@ -302,11 +305,11 @@ abstract class BaseCmd extends Command
     /**
      * Write a string as standard output.
      *
-     * @param  string  $string
+     * @param string $string The output text.
      *
      * @return void
      */
-    public function line($string)
+    public function line(string $string)
     {
         $this->output->writeln($string);
     }
@@ -314,11 +317,11 @@ abstract class BaseCmd extends Command
     /**
      * Write a string as information output.
      *
-     * @param  string  $string
+     * @param string $string The output text.
      *
      * @return void
      */
-    public function info($string)
+    public function info(string $string)
     {
         $this->output->writeln("<info>$string</info>");
     }
@@ -326,11 +329,11 @@ abstract class BaseCmd extends Command
     /**
      * Write a string as comment output.
      *
-     * @param  string  $string
+     * @param string $string The output text.
      *
      * @return void
      */
-    public function comment($string)
+    public function comment(string $string)
     {
         $this->output->writeln("<comment>$string</comment>");
     }
@@ -338,11 +341,11 @@ abstract class BaseCmd extends Command
     /**
      * Write a string as question output.
      *
-     * @param  string  $string
+     * @param string $string The output text.
      *
      * @return void
      */
-    public function question($string)
+    public function question(string $string)
     {
         $this->output->writeln("<question>$string</question>");
     }
@@ -350,11 +353,11 @@ abstract class BaseCmd extends Command
     /**
      * Write a string as error output.
      *
-     * @param  string  $string
+     * @param string $string The output text.
      *
      * @return void
      */
-    public function error($string)
+    public function error(string $string)
     {
         $this->output->writeln("<error>$string</error>");
     }
@@ -366,7 +369,7 @@ abstract class BaseCmd extends Command
      */
     protected function getArguments()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -376,26 +379,26 @@ abstract class BaseCmd extends Command
      */
     protected function getOptions()
     {
-        return array(
-            array(
+        return [
+            [
                 'json',
                 null,
                 InputOption::VALUE_NONE,
                 'Output results in JSON format'
-            ),
-            array(
+            ],
+            [
                 'ssh',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]'
-            ),
-        );
+            ],
+        ];
     }
 
     /**
      * Check if the command is being run in SSH mode
      *
-     * @return bool
+     * @return boolean
      */
     protected function isSSHMode()
     {
@@ -440,13 +443,13 @@ abstract class BaseCmd extends Command
     }
 
     /**
-     * @param $bytes
+     * @param integer $bytes The number of bytes.
      *
      * @return string
      */
-    protected function convertBytes($bytes)
+    protected function convertBytes(int $bytes)
     {
-        $unit = array('b','kb','mb','gb','tb','pb');
+        $unit = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'];
         if ($bytes <= 0) {
             return '0 b';
         }
@@ -458,7 +461,7 @@ abstract class BaseCmd extends Command
     /**
      * Check if the command if "available" (mostly if a modX instance if available)
      *
-     * @return bool
+     * @return boolean
      */
     public function isEnabled()
     {

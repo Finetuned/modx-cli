@@ -53,8 +53,8 @@ class PluginManager
     /**
      * Constructor
      *
-     * @param Application $app Application instance
-     * @param LoggerInterface|null $logger Optional logger instance
+     * @param Application          $app    Application instance.
+     * @param LoggerInterface|null $logger Optional logger instance.
      */
     public function __construct(Application $app, ?LoggerInterface $logger = null)
     {
@@ -73,7 +73,7 @@ class PluginManager
     /**
      * Add a plugin directory to scan
      *
-     * @param string $directory The directory path
+     * @param string $directory The directory path.
      * @return void
      */
     public function addPluginDirectory(string $directory): void
@@ -112,7 +112,7 @@ class PluginManager
     /**
      * Discover plugins in a directory
      *
-     * @param string $directory The directory to scan
+     * @param string $directory The directory to scan.
      * @return void
      */
     protected function discoverPluginsInDirectory(string $directory): void
@@ -138,7 +138,7 @@ class PluginManager
     /**
      * Load a plugin from a file
      *
-     * @param string $filePath The plugin file path
+     * @param string $filePath The plugin file path.
      * @return void
      */
     protected function loadPluginFromFile(string $filePath): void
@@ -181,7 +181,6 @@ class PluginManager
                 'version' => $plugin->getVersion(),
                 'enabled' => $plugin->isEnabled()
             ]);
-
         } catch (\Throwable $e) {
             $this->logger->error('Failed to load plugin from file: {file}', [
                 'file' => $filePath,
@@ -194,7 +193,7 @@ class PluginManager
     /**
      * Extract class name from PHP file
      *
-     * @param string $filePath The file path
+     * @param string $filePath The file path.
      * @return string|null The fully qualified class name
      */
     protected function extractClassNameFromFile(string $filePath): ?string
@@ -222,8 +221,8 @@ class PluginManager
     /**
      * Check plugin requirements
      *
-     * @param PluginInterface $plugin The plugin instance
-     * @return bool True if requirements are met
+     * @param PluginInterface $plugin The plugin instance.
+     * @return boolean True if requirements are met
      */
     protected function checkRequirements(PluginInterface $plugin): bool
     {
@@ -254,7 +253,7 @@ class PluginManager
     /**
      * Register a plugin
      *
-     * @param PluginInterface $plugin The plugin instance
+     * @param PluginInterface $plugin The plugin instance.
      * @return void
      */
     public function registerPlugin(PluginInterface $plugin): void
@@ -273,7 +272,7 @@ class PluginManager
     /**
      * Initialize a plugin
      *
-     * @param PluginInterface $plugin The plugin instance
+     * @param PluginInterface $plugin The plugin instance.
      * @return void
      */
     protected function initializePlugin(PluginInterface $plugin): void
@@ -301,7 +300,7 @@ class PluginManager
     /**
      * Get a plugin by name
      *
-     * @param string $name The plugin name
+     * @param string $name The plugin name.
      * @return PluginInterface|null The plugin instance or null if not found
      */
     public function getPlugin(string $name): ?PluginInterface
@@ -332,8 +331,8 @@ class PluginManager
     /**
      * Enable a plugin
      *
-     * @param string $name The plugin name
-     * @return bool True if successful
+     * @param string $name The plugin name.
+     * @return boolean True if successful
      */
     public function enablePlugin(string $name): bool
     {
@@ -353,8 +352,8 @@ class PluginManager
     /**
      * Disable a plugin
      *
-     * @param string $name The plugin name
-     * @return bool True if successful
+     * @param string $name The plugin name.
+     * @return boolean True if successful
      */
     public function disablePlugin(string $name): bool
     {
@@ -397,8 +396,8 @@ class PluginManager
     /**
      * Save plugin configuration
      *
-     * @param string $pluginName The plugin name
-     * @param array $config Configuration to save
+     * @param string $pluginName The plugin name.
+     * @param array  $config     Configuration to save.
      * @return void
      */
     protected function savePluginConfig(string $pluginName, array $config): void
@@ -429,7 +428,7 @@ class PluginManager
     /**
      * Set logger instance
      *
-     * @param LoggerInterface $logger
+     * @param LoggerInterface $logger The logger.
      * @return void
      */
     public function setLogger(LoggerInterface $logger): void

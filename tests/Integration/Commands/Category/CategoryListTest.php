@@ -6,7 +6,7 @@ use MODX\CLI\Tests\Integration\BaseIntegrationTest;
 
 /**
  * Integration test for category:list command
- * 
+ *
  * This test executes the actual CLI command against a real MODX instance
  * and verifies the output and behavior
  */
@@ -18,13 +18,13 @@ class CategoryListTest extends BaseIntegrationTest
     public function testCategoryListExecutesSuccessfully()
     {
         $process = $this->executeCommand(['category:list']);
-        
+
         $this->assertEquals(
             0,
             $process->getExitCode(),
             'category:list command should execute successfully'
         );
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString('category', strtolower($output));
     }
@@ -35,11 +35,11 @@ class CategoryListTest extends BaseIntegrationTest
     public function testCategoryListReturnsValidJson()
     {
         $data = $this->executeCommandJson(['category:list']);
-        
+
         $this->assertIsArray($data, 'JSON output should be an array');
         $this->assertArrayHasKey('total', $data, 'JSON should have total key');
         $this->assertArrayHasKey('results', $data, 'JSON should have results key');
-        
+
         // If categories exist, verify structure
         if (!empty($data['results'])) {
             $firstCategory = $data['results'][0];
@@ -53,13 +53,13 @@ class CategoryListTest extends BaseIntegrationTest
     public function testCategoryListHandlesEmptyResults()
     {
         $process = $this->executeCommand(['category:list']);
-        
+
         $this->assertEquals(0, $process->getExitCode());
-        
+
         $output = $process->getOutput();
         // Should either show categories or indicate no results
         $this->assertTrue(
-            str_contains($output, 'displaying') || 
+            str_contains($output, 'displaying') ||
             str_contains($output, 'Category'),
             'Output should indicate results or empty state'
         );
@@ -72,10 +72,10 @@ class CategoryListTest extends BaseIntegrationTest
     {
         // Count categories in database
         $count = $this->countTableRows($this->categoriesTable);
-        
+
         // Get categories from command with NO LIMIT (--limit=0 returns all results)
         $data = $this->executeCommandJson(['category:list', '--limit=0']);
-        
+
         $this->assertEquals(
             $count,
             count($data['results']),
@@ -89,12 +89,12 @@ class CategoryListTest extends BaseIntegrationTest
     public function testCategoryListPerformance()
     {
         $startTime = microtime(true);
-        
+
         $process = $this->executeCommand(['category:list']);
-        
+
         $endTime = microtime(true);
         $executionTime = $endTime - $startTime;
-        
+
         $this->assertEquals(0, $process->getExitCode());
         $this->assertLessThan(
             5.0,

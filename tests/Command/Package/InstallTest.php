@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Package;
+<?php
+
+namespace MODX\CLI\Tests\Command\Package;
 
 use MODX\CLI\Command\Package\Install;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -15,14 +17,14 @@ class InstallTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Install();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester without using the Application class to avoid conflicts
         $this->commandTester = new CommandTester($this->command);
-        
+
         // Set non-interactive mode to avoid confirmation prompts in tests
         $this->commandTester->setInputs(['yes']);
     }
@@ -52,13 +54,13 @@ class InstallTest extends BaseTest
         $package->method('get')->willReturnMap([
             ['installed', null]
         ]);
-        
+
         // Mock getObject to return package
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\Transport\modTransportPackage::class, ['signature' => 'package1-1.0.0-pl'], $this->anything())
             ->willReturn($package);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -68,24 +70,24 @@ class InstallTest extends BaseTest
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Workspace\Packages\Install',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['signature']) && $properties['signature'] === 'package1-1.0.0-pl';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force option to skip confirmation
         $this->commandTester->execute([
             'signature' => 'package1-1.0.0-pl',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Package installed successfully', $output);
@@ -98,18 +100,18 @@ class InstallTest extends BaseTest
             ->method('getObject')
             ->with(\MODX\Revolution\Transport\modTransportPackage::class, ['signature' => 'nonexistent-1.0.0-pl'], $this->anything())
             ->willReturn(null);
-        
+
         // runProcessor should not be called since the package doesn't exist
         $this->modx->expects($this->never())
             ->method('runProcessor');
-        
+
         // Execute the command
         $this->commandTester->execute([
             'signature' => 'nonexistent-1.0.0-pl',
             '--force' => true,
             '--no-download' => true
         ]);
-        
+
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Package with signature \'nonexistent-1.0.0-pl\' not found', $output);
@@ -125,23 +127,23 @@ class InstallTest extends BaseTest
         $package->method('get')->willReturnMap([
             ['installed', '2023-01-01 12:00:00']
         ]);
-        
+
         // Mock getObject to return already installed package
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\Transport\modTransportPackage::class, ['signature' => 'package1-1.0.0-pl'], $this->anything())
             ->willReturn($package);
-        
+
         // runProcessor should not be called since the package is already installed
         $this->modx->expects($this->never())
             ->method('runProcessor');
-        
+
         // Execute the command
         $this->commandTester->execute([
             'signature' => 'package1-1.0.0-pl',
             '--force' => true
         ]);
-        
+
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Package \'package1-1.0.0-pl\' is already installed', $output);
@@ -156,13 +158,13 @@ class InstallTest extends BaseTest
         $package->method('get')->willReturnMap([
             ['installed', null]
         ]);
-        
+
         // Mock getObject to return package
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\Transport\modTransportPackage::class, ['signature' => 'package1-1.0.0-pl'], $this->anything())
             ->willReturn($package);
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -173,17 +175,17 @@ class InstallTest extends BaseTest
                 'message' => 'Error installing package'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'signature' => 'package1-1.0.0-pl',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to install package', $output);

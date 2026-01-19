@@ -16,79 +16,96 @@ class Create extends ProcessorCmd
     protected $name = 'resource:create';
     protected $description = 'Create a MODX resource';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'pagetitle',
                 InputArgument::REQUIRED,
                 'The page title of the resource'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'parent',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The parent ID of the resource',
                 0
-            ),
-            array(
+            ],
+            [
                 'template',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The template ID of the resource',
                 0
-            ),
-            array(
+            ],
+            [
                 'published',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the resource is published (1 or 0)',
                 1
-            ),
-            array(
+            ],
+            [
                 'hidemenu',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the resource is hidden from the menu (1 or 0)',
                 0
-            ),
-            array(
+            ],
+            [
                 'content',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The content of the resource',
                 ''
-            ),
-            array(
+            ],
+            [
                 'alias',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The alias of the resource',
                 ''
-            ),
-            array(
+            ],
+            [
                 'context_key',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The context key of the resource',
                 'web'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare processor properties before execution.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the pagetitle to the properties
         $properties['pagetitle'] = $this->argument('pagetitle');
 
         // Define default values for resource creation
-        $defaults = array(
+        $defaults = [
             'parent' => 0,
             'template' => 0,
             'published' => 1,
@@ -96,36 +113,42 @@ class Create extends ProcessorCmd
             'content' => '',
             'alias' => '',
             'context_key' => 'web'
-        );
+        ];
 
         // Apply defaults first
         $this->applyDefaults($properties, $defaults);
 
         // Add options to the properties with type conversion
-        $optionKeys = array(
+        $optionKeys = [
             'parent', 'template', 'content', 'alias', 'context_key'
-        );
-        
-        $typeMap = array(
+        ];
+
+        $typeMap = [
             'parent' => 'int',
             'template' => 'int',
             'published' => 'bool',
             'hidemenu' => 'bool'
-        );
+        ];
 
         $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
-        
+
         // Handle boolean fields separately to ensure proper conversion
         if ($this->option('published') !== null) {
             $properties['published'] = (int) filter_var($this->option('published'), FILTER_VALIDATE_BOOLEAN);
         }
-        
+
         if ($this->option('hidemenu') !== null) {
             $properties['hidemenu'] = (int) filter_var($this->option('hidemenu'), FILTER_VALIDATE_BOOLEAN);
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Process processor response.
+     *
+     * @param array $response The decoded processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

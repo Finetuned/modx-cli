@@ -16,11 +16,11 @@ class UpdateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Update();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -58,17 +58,17 @@ class UpdateTest extends BaseTest
                 ]
             ]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'identifier' => '1',
             '--email' => 'newemail@example.com'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('User updated successfully', $output);
@@ -87,7 +87,7 @@ class UpdateTest extends BaseTest
             }
             return null;
         });
-        
+
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(
@@ -95,7 +95,7 @@ class UpdateTest extends BaseTest
                 ['username' => 'admin']
             )
             ->willReturn($user);
-        
+
         // Mock Update processor
         $updateResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -133,12 +133,12 @@ class UpdateTest extends BaseTest
                 ['username' => 'nonexistent']
             )
             ->willReturn(null);
-        
+
         $this->commandTester->execute([
             'identifier' => 'nonexistent',
             '--email' => 'test@example.com'
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('User not found: nonexistent', $output);
     }
@@ -158,7 +158,7 @@ class UpdateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Security\\User\\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === 1 &&
                            isset($properties['username']) && $properties['username'] === 'newusername' &&
                            isset($properties['email']) && $properties['email'] === 'new@example.com' &&
@@ -193,17 +193,17 @@ class UpdateTest extends BaseTest
                 'message' => 'Username already exists'
             ]));
         $updateResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'identifier' => '1',
             '--username' => 'admin'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to update user', $output);
@@ -221,16 +221,16 @@ class UpdateTest extends BaseTest
         $updateResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true, 'object' => ['id' => 1]]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         $this->commandTester->execute([
             'identifier' => '1',
             '--active' => '0'
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -247,20 +247,20 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 1, 'username' => 'admin']
             ]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         $this->commandTester->execute([
             'identifier' => '1',
             '--email' => 'new@example.com',
             '--json' => true
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $data = json_decode($output, true);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
         $this->assertTrue($data['success']);
@@ -281,8 +281,8 @@ class UpdateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Security\\User\\Update',
-                $this->callback(function($properties) {
-                    return isset($properties['passwordnotifymethod']) && 
+                $this->callback(function ($properties) {
+                    return isset($properties['passwordnotifymethod']) &&
                            $properties['passwordnotifymethod'] === 'none';
                 }),
                 $this->anything()
@@ -297,7 +297,7 @@ class UpdateTest extends BaseTest
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
-    private function stubUserLookupById(int $id, array $values = array()): void
+    private function stubUserLookupById(int $id, array $values = []): void
     {
         $user = $this->createMock('MODX\\Revolution\\modUser');
         $user->method('get')->willReturnCallback(function ($key) use ($id, $values) {

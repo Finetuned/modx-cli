@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Configuration;
+<?php
+
+namespace MODX\CLI\Tests\Configuration;
 
 use PHPUnit\Framework\TestCase;
 use MODX\CLI\Configuration\Extension;
@@ -67,25 +69,25 @@ class ExtensionTest extends TestCase
         $this->assertEquals($items, eval($formatted), 'Items are correctly formatted for file storage');
     }
 
-    public function _testSave()
+    public function testSave()
     {
-        // @TODO
+        $this->markTestIncomplete('Implement persistence tests for Extension config.');
     }
 
-    public function _testLoad()
+    public function testLoad()
     {
-        // @TODO
+        $this->markTestIncomplete('Implement persistence tests for Extension config.');
     }
 
     public static function getData()
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     '\Some\Command\Class',
                     '\Another\Command\Class'
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

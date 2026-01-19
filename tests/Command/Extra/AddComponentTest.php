@@ -56,11 +56,11 @@ class AddComponentTest extends BaseTest
             ->addMethods(['set', 'get', 'save'])
             ->getMock();
         $namespace->method('set')
-            ->willReturnCallback(function($key, $value) use (&$namespaceData) {
+            ->willReturnCallback(function ($key, $value) use (&$namespaceData) {
                 $namespaceData[$key] = $value;
             });
         $namespace->method('get')
-            ->willReturnCallback(function($key) use (&$namespaceData) {
+            ->willReturnCallback(function ($key) use (&$namespaceData) {
                 return $namespaceData[$key] ?? null;
             });
         $namespace->method('save')->willReturn(true);
@@ -73,7 +73,7 @@ class AddComponentTest extends BaseTest
         $this->modx->method('getObject')
             ->willReturn(null);
         $this->modx->method('newObject')
-            ->willReturnCallback(function($class) use ($namespace, $menu) {
+            ->willReturnCallback(function ($class) use ($namespace, $menu) {
                 if ($class === \MODX\Revolution\modNamespace::class) {
                     return $namespace;
                 }
@@ -110,11 +110,11 @@ class AddComponentTest extends BaseTest
             ->addMethods(['set', 'get', 'save'])
             ->getMock();
         $namespace->method('set')
-            ->willReturnCallback(function($key, $value) use (&$namespaceData) {
+            ->willReturnCallback(function ($key, $value) use (&$namespaceData) {
                 $namespaceData[$key] = $value;
             });
         $namespace->method('get')
-            ->willReturnCallback(function($key) use (&$namespaceData) {
+            ->willReturnCallback(function ($key) use (&$namespaceData) {
                 return $namespaceData[$key] ?? null;
             });
         $namespace->method('save')->willReturn(true);
@@ -127,7 +127,7 @@ class AddComponentTest extends BaseTest
         $this->modx->method('getObject')
             ->willReturn(null);
         $this->modx->method('newObject')
-            ->willReturnCallback(function($class) use ($namespace, $menu) {
+            ->willReturnCallback(function ($class) use ($namespace, $menu) {
                 if ($class === \MODX\Revolution\modNamespace::class) {
                     return $namespace;
                 }

@@ -63,8 +63,8 @@ class StreamingOutput
     /**
      * Constructor
      *
-     * @param OutputInterface $output The output interface
-     * @param bool $buffered Whether to enable buffering
+     * @param OutputInterface $output   The output interface.
+     * @param boolean         $buffered Whether to enable buffering.
      */
     public function __construct(OutputInterface $output, bool $buffered = false)
     {
@@ -76,8 +76,8 @@ class StreamingOutput
     /**
      * Write a line to the output stream
      *
-     * @param string $message The message to write
-     * @param bool $newline Whether to add a newline
+     * @param string  $message The message to write.
+     * @param boolean $newline Whether to add a newline.
      * @return void
      */
     public function write(string $message, bool $newline = true): void
@@ -103,7 +103,7 @@ class StreamingOutput
     /**
      * Write multiple lines to the output stream
      *
-     * @param array<int, string> $lines Array of lines to write
+     * @param array<int, string> $lines Array of lines to write.
      * @return void
      */
     public function writeLines(array $lines): void
@@ -116,8 +116,8 @@ class StreamingOutput
     /**
      * Write formatted output
      *
-     * @param string $format The format string
-     * @param mixed ...$args Format arguments
+     * @param string $format  The format string.
+     * @param mixed  ...$args Format arguments.
      * @return void
      */
     public function writef(string $format, mixed ...$args): void
@@ -129,8 +129,8 @@ class StreamingOutput
     /**
      * Start a progress bar
      *
-     * @param int $max Maximum progress value
-     * @param string|null $message Optional message to display
+     * @param integer     $max     Maximum progress value.
+     * @param string|null $message Optional message to display.
      * @return ProgressBar
      */
     public function startProgress(int $max, ?string $message = null): ProgressBar
@@ -155,8 +155,8 @@ class StreamingOutput
     /**
      * Advance the progress bar
      *
-     * @param int $step Number of steps to advance
-     * @param string|null $message Optional message to update
+     * @param integer     $step    Number of steps to advance.
+     * @param string|null $message Optional message to update.
      * @return void
      */
     public function advanceProgress(int $step = 1, ?string $message = null): void
@@ -179,8 +179,8 @@ class StreamingOutput
     /**
      * Set progress bar to a specific value
      *
-     * @param int $current The current progress value
-     * @param string|null $message Optional message to update
+     * @param integer     $current The current progress value.
+     * @param string|null $message Optional message to update.
      * @return void
      */
     public function setProgress(int $current, ?string $message = null): void
@@ -217,7 +217,7 @@ class StreamingOutput
     /**
      * Add a message to the buffer
      *
-     * @param string $message The message to buffer
+     * @param string $message The message to buffer.
      * @return void
      */
     protected function addToBuffer(string $message): void
@@ -275,8 +275,8 @@ class StreamingOutput
      * Supported events: 'write', 'flush', 'progress.start', 'progress.advance',
      * 'progress.set', 'progress.finish'
      *
-     * @param string $event The event name
-     * @param callable $callback The callback function
+     * @param string   $event    The event name.
+     * @param callable $callback The callback function.
      * @return void
      */
     public function on(string $event, callable $callback): void
@@ -291,8 +291,8 @@ class StreamingOutput
     /**
      * Trigger a callback
      *
-     * @param string $event The event name
-     * @param array<string, mixed> $data Event data
+     * @param string               $event The event name.
+     * @param array<string, mixed> $data  Event data.
      * @return void
      */
     protected function triggerCallback(string $event, array $data = []): void
@@ -353,7 +353,7 @@ class StreamingOutput
     /**
      * Check if buffering is enabled
      *
-     * @return bool
+     * @return boolean
      */
     public function isBuffered(): bool
     {
@@ -363,7 +363,7 @@ class StreamingOutput
     /**
      * Set maximum buffer size
      *
-     * @param int $size Maximum number of lines
+     * @param integer $size Maximum number of lines.
      * @return void
      */
     public function setMaxBufferSize(int $size): void

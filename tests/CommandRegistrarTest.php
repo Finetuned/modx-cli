@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests;
+<?php
+
+namespace MODX\CLI\Tests;
 
 use MODX\CLI\CommandRegistrar;
 use MODX\CLI\Configuration\Extension;
@@ -20,18 +22,18 @@ class CommandRegistrarTest extends TestCase
         // Create a temporary commands directory for testing
         $this->testCommandsDir = sys_get_temp_dir() . '/modx_cli_test_commands_' . uniqid();
         mkdir($this->testCommandsDir . '/Command', 0777, true);
-        
+
         // Create test command files
         file_put_contents(
             $this->testCommandsDir . '/Command/TestCommand.php',
             '<?php namespace Test\Command; class TestCommand {}'
         );
-        
+
         file_put_contents(
             $this->testCommandsDir . '/Command/AnotherCommand.php',
             '<?php namespace Test\Command; class AnotherCommand {}'
         );
-        
+
         // Create abstract class (should be excluded)
         file_put_contents(
             $this->testCommandsDir . '/Command/AbstractBase.php',
@@ -45,7 +47,7 @@ class CommandRegistrarTest extends TestCase
         if ($this->testCommandsDir && is_dir($this->testCommandsDir)) {
             $this->recursiveDelete($this->testCommandsDir);
         }
-        
+
         if ($this->testDeprecatedFile && file_exists($this->testDeprecatedFile)) {
             unlink($this->testDeprecatedFile);
         }
@@ -61,7 +63,7 @@ class CommandRegistrarTest extends TestCase
         if (!is_dir($dir)) {
             return;
         }
-        
+
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
             $path = $dir . '/' . $file;
@@ -77,16 +79,16 @@ class CommandRegistrarTest extends TestCase
     public function testListCommandsFindsCommandFiles()
     {
         $registrar = $this->getTestRegistrar();
-        
+
         // Use reflection to call listCommands
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
         $method->setAccessible(true);
-        
+
         $finder = $method->invoke(null);
-        
+
         $this->assertInstanceOf(Finder::class, $finder);
-        
+
         // Count files (should be 2 - TestCommand and AnotherCommand, excluding AbstractBase)
         $count = iterator_count($finder);
         $this->assertEquals(2, $count, 'Should find 2 command files (excluding abstract class)');
@@ -95,21 +97,21 @@ class CommandRegistrarTest extends TestCase
     public function testListCommandsExcludesAbstractClasses()
     {
         $registrar = $this->getTestRegistrar();
-        
+
         // Use reflection to call listCommands
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
         $method->setAccessible(true);
-        
+
         $finder = $method->invoke(null);
-        
+
         $foundAbstract = false;
         foreach ($finder as $file) {
             if (strpos($file->getFilename(), 'AbstractBase') !== false) {
                 $foundAbstract = true;
             }
         }
-        
+
         $this->assertFalse($foundAbstract, 'Should not find abstract classes');
     }
 
@@ -122,14 +124,14 @@ class CommandRegistrarTest extends TestCase
         // Since getCommandClass requires pass-by-reference and is tightly coupled to Finder,
         // we test it indirectly through the command discovery process
         $registrar = $this->getTestRegistrar();
-        
+
         // Use reflection to call listCommands
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
         $method->setAccessible(true);
-        
+
         $finder = $method->invoke(null);
-        
+
         // Verify that files are found and can be processed
         $count = 0;
         foreach ($finder as $file) {
@@ -137,7 +139,7 @@ class CommandRegistrarTest extends TestCase
             // Just verify files exist - the actual getCommandClass is tested via integration
             $this->assertInstanceOf(SplFileInfo::class, $file);
         }
-        
+
         $this->assertEquals(2, $count, 'Should find 2 command files');
     }
 
@@ -145,13 +147,13 @@ class CommandRegistrarTest extends TestCase
     {
         // Test command class generation indirectly by verifying file discovery works
         $registrar = $this->getTestRegistrar();
-        
+
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
         $method->setAccessible(true);
-        
+
         $finder = $method->invoke(null);
-        
+
         // Verify simple filename files are found
         $foundSimpleFile = false;
         foreach ($finder as $file) {
@@ -159,7 +161,7 @@ class CommandRegistrarTest extends TestCase
                 $foundSimpleFile = true;
             }
         }
-        
+
         $this->assertTrue($foundSimpleFile, 'Should find simple filename command');
     }
 
@@ -171,16 +173,16 @@ class CommandRegistrarTest extends TestCase
             $this->testCommandsDir . '/Command/Context/Setting/GetList.php',
             '<?php namespace Test\\Command\\Context\\Setting; class GetList {}'
         );
-        
+
         $registrar = $this->getTestRegistrar();
-        
+
         // Use reflection to call listCommands
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
         $method->setAccessible(true);
-        
+
         $finder = $method->invoke(null);
-        
+
         // Verify nested directory files are found
         $foundNested = false;
         foreach ($finder as $file) {
@@ -188,7 +190,7 @@ class CommandRegistrarTest extends TestCase
                 $foundNested = true;
             }
         }
-        
+
         $this->assertTrue($foundNested, 'Should find nested directory command file');
     }
 
@@ -199,14 +201,14 @@ class CommandRegistrarTest extends TestCase
     public function testGetNSReturnsCorrectNamespace()
     {
         $registrar = $this->getTestRegistrar();
-        
+
         // Use reflection to call getNS
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('getNS');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke(null);
-        
+
         // getNS() uses get_called_class() which returns the actual calling class
         $this->assertEquals(
             'MODX\\CLI\\Tests',
@@ -218,14 +220,14 @@ class CommandRegistrarTest extends TestCase
     public function testGetReflectionReturnsReflectionClass()
     {
         $registrar = $this->getTestRegistrar();
-        
+
         // Use reflection to call getReflection
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('getReflection');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke(null);
-        
+
         $this->assertInstanceOf(\ReflectionClass::class, $result);
         $this->assertEquals(
             'MODX\\CLI\\Tests\\TestRegistrar',
@@ -236,14 +238,14 @@ class CommandRegistrarTest extends TestCase
     public function testGetRootPathReturnsCorrectPath()
     {
         $registrar = $this->getTestRegistrar();
-        
+
         // Use reflection to call getRootPath
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('getRootPath');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke(null);
-        
+
         $this->assertIsString($result);
         // getRootPath() should return the temporary test directory path
         $this->assertStringContainsString('modx_cli_test_commands_', $result);
@@ -306,7 +308,7 @@ class CommandRegistrarTest extends TestCase
         // Create a mock configuration
         $mockConfig = $this->getMockBuilder(Extension::class)
             ->getMock();
-        
+
         // Create mock IO
         $mockIO = new class {
             public function write($message)
@@ -314,16 +316,16 @@ class CommandRegistrarTest extends TestCase
                 // no-op
             }
         };
-        
+
         // Should not call remove if no deprecated file exists
         $mockConfig->expects($this->never())
             ->method('remove');
-        
+
         // Create test registrar
         $registrar = $this->getTestRegistrar();
-        
+
         $registrar::setIO($mockIO);
-        
+
         // Call unRegister
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('unRegister');
@@ -350,7 +352,7 @@ class CommandRegistrarTest extends TestCase
 class TestRegistrar extends CommandRegistrar
 {
     protected static $commandsFolder = 'Command';
-    
+
     /**
      * Override getRootPath to use our test directory
      */
@@ -359,11 +361,12 @@ class TestRegistrar extends CommandRegistrar
         // Get the test directory from the test case
         $testDir = sys_get_temp_dir();
         $dirs = glob($testDir . '/modx_cli_test_commands_*');
-        
+
         if (!empty($dirs)) {
+            rsort($dirs, SORT_STRING);
             return $dirs[0];
         }
-        
+
         // Fallback to tests directory
         return dirname(__DIR__) . '/tests';
     }

@@ -13,17 +13,37 @@ class ExcludeCommand extends BaseCmd
     protected $name = 'config:exclude-command';
     protected $description = 'Exclude a command from the available commands';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'class',
                 InputArgument::REQUIRED,
                 'The command class to exclude'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $class = $this->argument('class');

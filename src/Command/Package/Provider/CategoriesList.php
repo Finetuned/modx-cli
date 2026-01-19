@@ -11,26 +11,38 @@ use Symfony\Component\Console\Input\InputArgument;
 class CategoriesList extends ListProcessor
 {
     protected $processor = 'Workspace\Packages\Rest\GetNodes';
-    protected $required = array('provider');
-    protected $headers = array(
+    protected $required = ['provider'];
+    protected $headers = [
         'id', 'name', 'description'
-    );
+    ];
 
     protected $name = 'package:provider:categories';
     protected $description = 'Get a list of categories from a provider in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'provider',
                 InputArgument::REQUIRED,
                 'The ID of the provider'
-            ),
-        );
+            ],
+        ];
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Set node type to 'repository' to get categories
         // The GetNodes processor uses id format 'n_{type}_{key}'

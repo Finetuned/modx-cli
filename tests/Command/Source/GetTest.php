@@ -16,11 +16,11 @@ class GetTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Get();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -58,12 +58,12 @@ class GetTest extends BaseTest
             ->method('getObject')
             ->with('MODX\\Revolution\\Sources\\modMediaSource', ['id' => '1'])
             ->willReturn($source);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '1'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('ID: 1', $output);
@@ -76,12 +76,12 @@ class GetTest extends BaseTest
             ->method('getObject')
             ->with('MODX\\Revolution\\Sources\\modMediaSource', ['id' => '999'])
             ->willReturn(null);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Media source with ID 999 not found', $output);
@@ -99,15 +99,15 @@ class GetTest extends BaseTest
             ->method('getObject')
             ->with('MODX\\Revolution\\Sources\\modMediaSource', ['id' => '1'])
             ->willReturn($source);
-        
+
         $this->commandTester->execute([
             'id' => '1',
             '--json' => true
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $data = json_decode($output, true);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
         $this->assertTrue($data['success']);

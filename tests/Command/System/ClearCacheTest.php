@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\System;
+<?php
+
+namespace MODX\CLI\Tests\Command\System;
 
 use MODX\CLI\Command\System\ClearCache;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -15,11 +17,11 @@ class ClearCacheTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new ClearCache();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -49,17 +51,17 @@ class ClearCacheTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with('System\ClearCache')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Cache cleared successfully', $output);
@@ -74,16 +76,16 @@ class ClearCacheTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode(['success' => false]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to clear cache', $output);

@@ -10,9 +10,9 @@ use MODX\CLI\Command\ListProcessor;
 class GetList extends ListProcessor
 {
     protected $processor = 'Context\GetList';
-    protected $headers = array(
+    protected $headers = [
         'key', 'name', 'description', 'rank'
-    );
+    ];
 
     protected $name = 'context:list';
     protected $description = 'Get a list of contexts in MODX';

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests;
+<?php
+
+namespace MODX\CLI\Tests;
 
 use PHPUnit\Framework\TestCase;
 

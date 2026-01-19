@@ -8,7 +8,7 @@ use MODX\CLI\Configuration\Yaml\YamlConfig;
 
 /**
  * Integration tests for YAML alias resolution and command execution
- * 
+ *
  * Note: These tests do not require a MODX instance as they test
  * alias resolution logic independently using temporary config files.
  */
@@ -27,7 +27,7 @@ class AliasCommandTest extends TestCase
         // YamlConfig looks for modx-cli.yml in current working directory
         // Create it with test aliases (prefixed with @ as YamlConfig expects)
         $this->testAliasConfigPath = getcwd() . '/modx-cli.yml';
-        
+
         $testConfig = <<<YAML
 "@prod":
   ssh: "deploy@production.example.com:22/var/www/html"
@@ -43,7 +43,7 @@ class AliasCommandTest extends TestCase
   - prod
   - staging
 YAML;
-        
+
         file_put_contents($this->testAliasConfigPath, $testConfig);
     }
 
@@ -55,7 +55,7 @@ YAML;
         if (file_exists($this->testAliasConfigPath)) {
             unlink($this->testAliasConfigPath);
         }
-        
+
         parent::tearDown();
     }
 
@@ -66,7 +66,7 @@ YAML;
     {
         $config = new YamlConfig();
         $resolver = new Resolver($config);
-        
+
         $this->assertTrue($resolver->isAlias('@prod'));
         $this->assertTrue($resolver->isAlias('@staging'));
         $this->assertTrue($resolver->isAlias('@all'));
@@ -82,9 +82,9 @@ YAML;
     {
         $config = new YamlConfig();
         $resolver = new Resolver($config);
-        
+
         $prodAlias = $resolver->resolveAlias('@prod');
-        
+
         $this->assertIsArray($prodAlias);
         $this->assertArrayHasKey('ssh', $prodAlias);
         $this->assertEquals('deploy@production.example.com:22/var/www/html', $prodAlias['ssh']);
@@ -97,11 +97,11 @@ YAML;
     {
         $config = new YamlConfig();
         $resolver = new Resolver($config);
-        
+
         $prodAlias = $resolver->resolveAlias('@prod');
         $stagingAlias = $resolver->resolveAlias('@staging');
         $devAlias = $resolver->resolveAlias('@dev');
-        
+
         $this->assertEquals('deploy@production.example.com:22/var/www/html', $prodAlias['ssh']);
         $this->assertEquals('deploy@staging.example.com/var/www/staging', $stagingAlias['ssh']);
         $this->assertEquals('developer@dev.example.com:2222~/projects/modx', $devAlias['ssh']);
@@ -114,10 +114,10 @@ YAML;
     {
         $config = new YamlConfig();
         $resolver = new Resolver($config);
-        
+
         $prodAlias = $resolver->resolveAlias('@prod');
         $allAlias = $resolver->resolveAlias('@all');
-        
+
         $this->assertFalse($resolver->isAliasGroup($prodAlias));
         $this->assertTrue($resolver->isAliasGroup($allAlias));
     }
@@ -129,10 +129,10 @@ YAML;
     {
         $config = new YamlConfig();
         $resolver = new Resolver($config);
-        
+
         $allAlias = $resolver->resolveAlias('@all');
         $members = $resolver->getAliasGroupMembers($allAlias);
-        
+
         $this->assertIsArray($members);
         $this->assertCount(3, $members);
         $this->assertContains('prod', $members);
@@ -147,10 +147,10 @@ YAML;
     {
         $config = new YamlConfig();
         $resolver = new Resolver($config);
-        
+
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("Alias '@nonexistent' not found");
-        
+
         $resolver->resolveAlias('@nonexistent');
     }
 }

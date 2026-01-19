@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\TV;
+<?php
+
+namespace MODX\CLI\Tests\Command\TV;
 
 use MODX\CLI\Command\TV\Remove;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class RemoveTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Remove();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -50,12 +52,12 @@ class RemoveTest extends BaseTest
         $tv->method('get')
             ->with('name')
             ->willReturn('Test TV');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modTemplateVar::class, '123', $this->anything())
             ->willReturn($tv);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -65,24 +67,24 @@ class RemoveTest extends BaseTest
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Tv\Remove',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === '123';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with force option
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template variable removed successfully', $output);
@@ -94,12 +96,12 @@ class RemoveTest extends BaseTest
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modTemplateVar::class, '999', $this->anything())
             ->willReturn(null);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template variable with ID 999 not found', $output);
@@ -114,12 +116,12 @@ class RemoveTest extends BaseTest
         $tv->method('get')
             ->with('name')
             ->willReturn('Test TV');
-        
+
         // Mock the getObject method
         $this->modx->method('getObject')
             ->with(\MODX\Revolution\modTemplateVar::class, '123', $this->anything())
             ->willReturn($tv);
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -130,17 +132,17 @@ class RemoveTest extends BaseTest
                 'message' => 'Error removing template variable'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with force option
         $this->commandTester->execute([
             'id' => '123',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to remove template variable', $output);

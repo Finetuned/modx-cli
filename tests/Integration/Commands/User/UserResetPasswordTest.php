@@ -52,5 +52,4 @@ class UserResetPasswordTest extends UserTestBase
         $output = $process->getOutput();
         $this->assertStringContainsString('not found', $output);
     }
-
 }

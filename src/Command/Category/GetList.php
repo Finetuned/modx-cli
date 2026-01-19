@@ -10,14 +10,21 @@ use MODX\CLI\Command\ListProcessor;
 class GetList extends ListProcessor
 {
     protected $processor = 'Element\Category\GetList';
-    protected $headers = array(
+    protected $headers = [
         'id', 'category', 'parent'
-    );
+    ];
 
     protected $name = 'category:list';
     protected $description = 'Get a list of categories in MODX';
 
-    protected function parseValue($value, $column)
+    /**
+     * Format raw values for output.
+     *
+     * @param mixed  $value  The raw column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'parent') {
             return $this->renderObject('modCategory', $value, 'category');

@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Integration;
+<?php
+
+namespace MODX\CLI\Tests\Integration;
 
 use MODX\CLI\Xdom;
 
@@ -14,13 +16,13 @@ class XdomIntegrationTest extends BaseIntegrationTest
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Initialize Xdom with real MODX instance
         // Note: Xdom extends modX, so it requires MODX to be loaded
         $this->loadMODX();
         $this->xdom = new Xdom();
     }
-    
+
     /**
      * Load MODX instance for Xdom testing
      */
@@ -30,25 +32,25 @@ class XdomIntegrationTest extends BaseIntegrationTest
         if (class_exists('modX', false)) {
             return;
         }
-        
+
         // Load MODX configuration
         $configPath = $this->modxPath . '/config.core.php';
         if (!file_exists($configPath)) {
             $this->markTestSkipped("Skipped: MODX config.core.php not found at {$configPath}. See tests/Integration/README.md#skipped-tests.");
         }
-        
+
         require_once $configPath;
-        
+
         if (!defined('MODX_CORE_PATH')) {
             $this->markTestSkipped('Skipped: MODX_CORE_PATH not defined after loading config.core.php. See tests/Integration/README.md#skipped-tests.');
         }
-        
+
         // Load MODX class
         $modxClassPath = MODX_CORE_PATH . 'model/modx/modx.class.php';
         if (!file_exists($modxClassPath)) {
             $this->markTestSkipped("Skipped: MODX class not found at {$modxClassPath}. See tests/Integration/README.md#skipped-tests.");
         }
-        
+
         require_once $modxClassPath;
     }
 
@@ -103,5 +105,4 @@ class XdomIntegrationTest extends BaseIntegrationTest
         $decoded = $this->assertOutputMatches($data);
         $this->assertSame($data, $decoded['results']);
     }
-
 }

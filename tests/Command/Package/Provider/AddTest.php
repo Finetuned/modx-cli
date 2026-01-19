@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Tests\Command\Package\Provider;
 
 use MODX\CLI\Command\Package\Provider\Add;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -68,7 +70,7 @@ class AddTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Workspace\\Providers\\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['name'] === 'Provider Name'
                         && $properties['service_url'] === 'https://example.com'
                         && $properties['username'] === 'user'

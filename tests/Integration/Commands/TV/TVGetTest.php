@@ -15,7 +15,7 @@ class TVGetTest extends BaseIntegrationTest
     public function testTVGetExecutesSuccessfully()
     {
         $tvName = 'IntegrationTestTV_' . uniqid();
-        
+
         // Create TV first
         $this->executeCommandSuccessfully([
             'tv:create',
@@ -23,20 +23,20 @@ class TVGetTest extends BaseIntegrationTest
             '--type=text',
             '--caption=Test TV'
         ]);
-        
+
         // Get the TV ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
-        
+
         // Get TV
         $process = $this->executeCommandSuccessfully([
             'tv:get',
             $tvId
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString($tvName, $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
@@ -47,29 +47,29 @@ class TVGetTest extends BaseIntegrationTest
     public function testTVGetReturnsValidJson()
     {
         $tvName = 'IntegrationTestTV_' . uniqid();
-        
+
         // Create TV
         $this->executeCommandSuccessfully([
             'tv:create',
             $tvName,
             '--type=text'
         ]);
-        
+
         // Get TV ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $tvId = $rows[0]['id'];
-        
+
         // Get TV with JSON
         $data = $this->executeCommandJson([
             'tv:get',
             $tvId
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('id', $data);
         $this->assertEquals($tvId, $data['id']);
         $this->assertEquals($tvName, $data['name']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE id = ?', [$tvId]);
     }
@@ -83,7 +83,7 @@ class TVGetTest extends BaseIntegrationTest
             'tv:get',
             '999999'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }

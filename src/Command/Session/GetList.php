@@ -9,14 +9,21 @@ use MODX\CLI\Command\ListProcessor;
  */
 class GetList extends ListProcessor
 {
-    protected $headers = array(
+    protected $headers = [
         'id', 'access', 'data'
-    );
+    ];
 
     protected $name = 'session:list';
     protected $description = 'Get a list of sessions in MODX';
 
-    protected function parseValue($value, $column)
+    /**
+     * Format raw values for output.
+     *
+     * @param mixed  $value  The raw column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'access') {
             if (!empty($value)) {
@@ -34,10 +41,15 @@ class GetList extends ListProcessor
         return parent::parseValue($value, $column);
     }
 
-    protected function process()
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    protected function process(): int
     {
-        $criteria = array();
-        $options = array();
+        $criteria = [];
+        $options = [];
 
         $limit = $this->option('limit');
         if ($limit !== null) {
@@ -52,19 +64,19 @@ class GetList extends ListProcessor
         $total = (int) $this->modx->getCount('MODX\\Revolution\\modSession', $criteria);
         $collection = $this->modx->getCollection('MODX\\Revolution\\modSession', $criteria, $options);
 
-        $results = array();
+        $results = [];
         foreach ($collection as $session) {
-            $results[] = array(
+            $results[] = [
                 'id' => $session->get('id'),
                 'access' => $session->get('access'),
                 'data' => $session->get('data'),
-            );
+            ];
         }
 
-        return $this->processResponse(array(
+        return $this->processResponse([
             'total' => $total,
             'results' => $results,
             'success' => true,
-        ));
+        ]);
     }
 }

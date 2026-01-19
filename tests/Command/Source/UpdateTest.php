@@ -16,11 +16,11 @@ class UpdateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Update();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,17 +53,17 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 1]
             ]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '1',
             '--description' => 'Updated description'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Media source updated successfully', $output);
@@ -81,17 +81,17 @@ class UpdateTest extends BaseTest
                 'message' => 'Error updating media source'
             ]));
         $updateResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '1',
             '--name' => 'Updated Name'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to update media source', $output);
@@ -107,16 +107,16 @@ class UpdateTest extends BaseTest
         $updateResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true, 'object' => ['id' => 1]]));
         $updateResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($updateResponse);
-        
+
         $this->commandTester->execute([
             'id' => '1',
             '--description' => 'Updated Description'
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -132,16 +132,16 @@ class UpdateTest extends BaseTest
                 'message' => 'Media source not found'
             ]));
         $getResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($getResponse);
-        
+
         $this->commandTester->execute([
             'id' => '999',
             '--name' => 'Test'
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Media source not found', $output);
     }

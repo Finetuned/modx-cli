@@ -7,11 +7,12 @@ namespace MODX\CLI;
  */
 class Xdom extends \modX
 {
+    // phpcs:disable Squiz.Commenting.FunctionComment.TypeHintMissing, Squiz.Commenting.FunctionComment.ScalarTypeHintMissing
     /**
-     * @param array $array
-     * @param bool  $count
+     * @param array   $array The array.
+     * @param boolean $count The count.
      *
-     * @return bool|string
+     * @return boolean|string
      */
     public function outputArray($array, $count = false)
     {
@@ -24,4 +25,5 @@ class Xdom extends \modX
 
         return '{"total":"' . $count . '","results":' . $this->toJSON($array) . ',"success": true}';
     }
+    // phpcs:enable Squiz.Commenting.FunctionComment.TypeHintMissing, Squiz.Commenting.FunctionComment.ScalarTypeHintMissing
 }

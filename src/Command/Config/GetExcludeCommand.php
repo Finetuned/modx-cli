@@ -13,6 +13,16 @@ class GetExcludeCommand extends BaseCmd
     protected $name = 'config:get-exclude-command';
     protected $description = 'Get the list of excluded commands';
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $excludedCommands = $this->getApplication()->excludedCommands;
@@ -32,10 +42,10 @@ class GetExcludeCommand extends BaseCmd
         }
 
         $table = new Table($this->output);
-        $table->setHeaders(array('Class'));
+        $table->setHeaders(['Class']);
 
         foreach ($excluded as $class) {
-            $table->addRow(array($class));
+            $table->addRow([$class]);
         }
 
         $table->render();

@@ -2,7 +2,7 @@
 
 /**
  * Integration Test Bootstrap File
- * 
+ *
  * This file is loaded before integration tests run and ensures proper MODX loading
  * without any stub interference.
  */

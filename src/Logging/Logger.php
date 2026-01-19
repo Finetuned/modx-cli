@@ -67,11 +67,11 @@ class Logger extends AbstractLogger
     private $maxFiles = 5;
 
     // Verbosity levels
-    const VERBOSITY_QUIET = 0;
-    const VERBOSITY_NORMAL = 1;
-    const VERBOSITY_VERBOSE = 2;
-    const VERBOSITY_VERY_VERBOSE = 3;
-    const VERBOSITY_DEBUG = 4;
+    public const VERBOSITY_QUIET = 0;
+    public const VERBOSITY_NORMAL = 1;
+    public const VERBOSITY_VERBOSE = 2;
+    public const VERBOSITY_VERY_VERBOSE = 3;
+    public const VERBOSITY_DEBUG = 4;
 
     /**
      * @var array Map log levels to verbosity requirements
@@ -104,12 +104,15 @@ class Logger extends AbstractLogger
     /**
      * Constructor
      *
-     * @param int $verbosity Verbosity level
-     * @param string|null $logFile Log file path
-     * @param callable|null $outputCallback Output callback
+     * @param integer       $verbosity      Verbosity level.
+     * @param string|null   $logFile        Log file path.
+     * @param callable|null $outputCallback Output callback.
      */
-    public function __construct(int $verbosity = self::VERBOSITY_NORMAL, ?string $logFile = null, ?callable $outputCallback = null)
-    {
+    public function __construct(
+        int $verbosity = self::VERBOSITY_NORMAL,
+        ?string $logFile = null,
+        ?callable $outputCallback = null
+    ) {
         $this->verbosity = $verbosity;
         $this->outputCallback = $outputCallback;
 
@@ -121,13 +124,20 @@ class Logger extends AbstractLogger
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed $level
-     * @param string $message
-     * @param array $context
+     * @param mixed $level   Log level.
+     * @param mixed $message Log message.
+     * @param array $context Context data.
      * @return void
      */
-    public function log($level, $message, array $context = array()): void
+    public function log(mixed $level, mixed $message, array $context = []): void
     {
+        $level = (string) $level;
+        if ($message instanceof \Stringable || is_scalar($message)) {
+            $message = (string) $message;
+        } else {
+            $message = (string) $message;
+        }
+
         // Check if this level should be logged at current verbosity
         if (!$this->shouldLog($level)) {
             return;
@@ -154,7 +164,7 @@ class Logger extends AbstractLogger
     /**
      * Set verbosity level
      *
-     * @param int $verbosity Verbosity level
+     * @param integer $verbosity Verbosity level.
      * @return void
      */
     public function setVerbosity(int $verbosity): void
@@ -165,7 +175,7 @@ class Logger extends AbstractLogger
     /**
      * Get verbosity level
      *
-     * @return int
+     * @return integer
      */
     public function getVerbosity(): int
     {
@@ -175,7 +185,7 @@ class Logger extends AbstractLogger
     /**
      * Set log file
      *
-     * @param string $logFile Log file path
+     * @param string $logFile Log file path.
      * @return void
      */
     public function setLogFile(string $logFile): void
@@ -212,7 +222,7 @@ class Logger extends AbstractLogger
     /**
      * Enable/disable console output
      *
-     * @param bool $enabled
+     * @param boolean $enabled Whether console output is enabled.
      * @return void
      */
     public function setConsoleOutput(bool $enabled): void
@@ -223,7 +233,7 @@ class Logger extends AbstractLogger
     /**
      * Set a minimum PSR-3 log level to record
      *
-     * @param string $level
+     * @param string $level Log level.
      * @return void
      */
     public function setLogLevel(string $level): void
@@ -247,7 +257,7 @@ class Logger extends AbstractLogger
     /**
      * Set output callback
      *
-     * @param callable $callback
+     * @param callable $callback Output callback.
      * @return void
      */
     public function setOutputCallback(callable $callback): void
@@ -258,7 +268,7 @@ class Logger extends AbstractLogger
     /**
      * Set maximum file size for rotation
      *
-     * @param int $size Size in bytes
+     * @param integer $size Size in bytes.
      * @return void
      */
     public function setMaxFileSize(int $size): void
@@ -269,7 +279,7 @@ class Logger extends AbstractLogger
     /**
      * Set maximum number of rotated files to keep
      *
-     * @param int $count Number of files
+     * @param integer $count Number of files.
      * @return void
      */
     public function setMaxFiles(int $count): void
@@ -280,8 +290,8 @@ class Logger extends AbstractLogger
     /**
      * Check if a log level should be logged at current verbosity
      *
-     * @param string $level Log level
-     * @return bool
+     * @param string $level Log level.
+     * @return boolean
      */
     private function shouldLog(string $level): bool
     {
@@ -299,8 +309,8 @@ class Logger extends AbstractLogger
     /**
      * Interpolate context values into message placeholders
      *
-     * @param string $message Message with placeholders
-     * @param array $context Context values
+     * @param string $message Message with placeholders.
+     * @param array  $context Context values.
      * @return string
      */
     private function interpolate(string $message, array $context = []): string
@@ -320,7 +330,7 @@ class Logger extends AbstractLogger
     /**
      * Write message to file
      *
-     * @param string $message Formatted message
+     * @param string $message Formatted message.
      * @return void
      */
     private function writeToFile(string $message): void
@@ -337,8 +347,8 @@ class Logger extends AbstractLogger
     /**
      * Write message to console
      *
-     * @param string $level Log level
-     * @param string $message Formatted message
+     * @param string $level   Log level.
+     * @param string $message Formatted message.
      * @return void
      */
     private function writeToConsole(string $level, string $message): void

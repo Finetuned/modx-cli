@@ -16,46 +16,63 @@ class Create extends ProcessorCmd
     protected $name = 'category:create';
     protected $description = 'Create a MODX category';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'category',
                 InputArgument::REQUIRED,
                 'The name of the category'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'parent',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The parent ID of the category',
                 0
-            ),
-            array(
+            ],
+            [
                 'rank',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The rank of the category',
                 0
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the category name to the properties
         $properties['category'] = $this->argument('category');
 
         // Add options to the properties
-        $optionKeys = array(
+        $optionKeys = [
             'parent', 'rank'
-        );
+        ];
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
@@ -64,7 +81,13 @@ class Create extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

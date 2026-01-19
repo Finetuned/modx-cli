@@ -16,11 +16,11 @@ class GetTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Get();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -63,23 +63,23 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Security\\User\\Get',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === 1;
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'identifier' => '1'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('ID:          1', $output);
@@ -94,7 +94,7 @@ class GetTest extends BaseTest
         // Mock user lookup by username
         $user = $this->createMock('MODX\Revolution\modUser');
         $user->method('get')->with('id')->willReturn(1);
-        
+
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(
@@ -102,7 +102,7 @@ class GetTest extends BaseTest
                 ['username' => 'admin']
             )
             ->willReturn($user);
-        
+
         // Mock the runProcessor method
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -119,16 +119,16 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'identifier' => 'admin'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Username:    admin', $output);
@@ -144,12 +144,12 @@ class GetTest extends BaseTest
                 ['username' => 'nonexistent']
             )
             ->willReturn(null);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'identifier' => 'nonexistent'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('User not found: nonexistent', $output);
@@ -167,16 +167,16 @@ class GetTest extends BaseTest
                 'message' => 'User not found'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'identifier' => '999'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to get user', $output);
@@ -198,19 +198,19 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         $this->commandTester->execute([
             'identifier' => '1',
             '--json' => true
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $data = json_decode($output, true);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
         $this->assertTrue($data['success']);

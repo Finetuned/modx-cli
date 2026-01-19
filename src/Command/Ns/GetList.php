@@ -10,11 +10,10 @@ use MODX\CLI\Command\ListProcessor;
 class GetList extends ListProcessor
 {
     protected $processor = 'Workspace\PackageNamespace\GetList';
-    protected $headers = array(
+    protected $headers = [
         'id', 'name', 'path', 'assets_path'
-    );
+    ];
 
     protected $name = 'ns:list';
     protected $description = 'Get a list of namespaces in MODX';
-
 }

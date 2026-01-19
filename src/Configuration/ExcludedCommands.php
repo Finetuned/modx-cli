@@ -9,6 +9,9 @@ class ExcludedCommands extends Base
 {
     protected $file = 'excluded_commands.json';
 
+    /**
+     * Create the excluded commands configuration manager.
+     */
     public function __construct()
     {
         $this->makeSureConfigPathExists();
@@ -30,13 +33,19 @@ class ExcludedCommands extends Base
     /**
      * Save the configuration file
      */
-    public function save()
+    public function save(): bool
     {
         $file = $this->getConfigPath() . $this->file;
         file_put_contents($file, json_encode($this->items, JSON_PRETTY_PRINT));
+        return true;
     }
 
-    public function getAll()
+    /**
+     * Get all excluded commands.
+     *
+     * @return array
+     */
+    public function getAll(): array
     {
         return [];
     }

@@ -14,35 +14,65 @@ class Edit extends BaseCmd
     protected $name = 'config:edit';
     protected $description = 'Edit a MODX instance in the configuration';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the instance to edit'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'base_path',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The base path of the MODX instance'
-            ),
-            array(
+            ],
+            [
                 'default',
                 null,
                 InputOption::VALUE_NONE,
                 'Set this instance as the default'
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $name = $this->argument('name');
@@ -96,9 +126,9 @@ class Edit extends BaseCmd
 
         // Set as default if requested
         if ($default) {
-            $instances->set('__default__', array(
+            $instances->set('__default__', [
                 'class' => $name,
-            ));
+            ]);
             $instances->save();
             $message = "Instance '{$name}' updated and set as default";
         } else {

@@ -15,29 +15,47 @@ class Get extends ProcessorCmd
     protected $name = 'context:setting:get';
     protected $description = 'Get a context setting';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'context',
                 InputArgument::REQUIRED,
                 'The context key'
-            ),
-            array(
+            ],
+            [
                 'key',
                 InputArgument::REQUIRED,
                 'The setting key'
-            ),
-        );
+            ],
+        ];
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $properties['context_key'] = $this->argument('context');
         $properties['key'] = $this->argument('key');
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

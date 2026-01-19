@@ -16,30 +16,47 @@ class Download extends ProcessorCmd
     protected $name = 'package:download';
     protected $description = 'Download a package from the provider to MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'signature',
                 InputArgument::REQUIRED,
                 'The signature of the package to download'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force download without confirmation'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $signature = $this->argument('signature');
 
@@ -53,9 +70,9 @@ class Download extends ProcessorCmd
         }
 
         // Get the package object
-        $packageObject = $this->modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', array(
+        $packageObject = $this->modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', [
             'signature' => $currentPackageSignature
-        ));
+        ]);
 
         if (!$packageObject) {
             $this->error("Failed to retrieve package object for: {$currentPackageSignature}");
@@ -111,7 +128,13 @@ class Download extends ProcessorCmd
         return true;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
@@ -133,27 +156,27 @@ class Download extends ProcessorCmd
 
     /**
      * Get upgradeable packages using existing processor
-     * 
+     *
      * @return array
      */
     protected function getUpgradeablePackages()
     {
-        $response = $this->modx->runProcessor('workspace/packages/getlist', array(
+        $response = $this->modx->runProcessor('workspace/packages/getlist', [
             'newest_only' => true,
             'limit' => 100
-        ));
+        ]);
 
         if ($response->isError()) {
-            return array();
+            return [];
         }
 
         $responseData = json_decode($response->getResponse(), true);
         if (!isset($responseData['results'])) {
-            return array();
+            return [];
         }
 
         // Filter upgradeable packages
-        $upgradeable = array();
+        $upgradeable = [];
         foreach ($responseData['results'] as $package) {
             if (isset($package['updateable']) && $package['updateable']) {
                 $upgradeable[] = $package;
@@ -165,10 +188,10 @@ class Download extends ProcessorCmd
 
     /**
      * Find a signature in upgradeable packages by package name (ignoring version and release)
-     * 
-     * @param array $packages Array of upgradeable packages
-     * @param string $packageSignature Package signature to search for
-     * @return string|null The full signature if found, or null if not found
+     *
+     * @param array  $packages         Array of upgradeable packages.
+     * @param string $packageSignature Package signature to search for.
+     * @return string|null The full signature if found, or null if not found.
      */
     protected function findSignatureByPackageName(array $packages, string $packageSignature): ?string
     {

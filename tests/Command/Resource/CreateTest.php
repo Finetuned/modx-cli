@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Resource;
+<?php
+
+namespace MODX\CLI\Tests\Command\Resource;
 
 use MODX\CLI\Command\Resource\Create;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -65,7 +67,7 @@ class CreateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Resource\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['pagetitle'] === 'Test Page'
                         && $properties['parent'] === 0
                         && $properties['template'] === 0
@@ -99,7 +101,7 @@ class CreateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Resource\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['pagetitle'] === 'Custom Page'
                         && $properties['parent'] === 10
                         && $properties['template'] === 3

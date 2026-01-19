@@ -15,16 +15,16 @@ class SnippetCreateTest extends BaseIntegrationTest
     public function testSnippetCreateExecutesSuccessfully()
     {
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
-        
+
         $process = $this->executeCommandSuccessfully([
             'snippet:create',
             $snippetName,
             '--category=0'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString('created successfully', $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
@@ -35,17 +35,17 @@ class SnippetCreateTest extends BaseIntegrationTest
     public function testSnippetCreateReturnsValidJson()
     {
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
-        
+
         $data = $this->executeCommandJson([
             'snippet:create',
             $snippetName,
             '--snippet=<?php return "test";'
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
         $this->assertTrue($data['success']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
@@ -57,24 +57,24 @@ class SnippetCreateTest extends BaseIntegrationTest
     {
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
         $code = '<?php return $modx->getOption("test", $scriptProperties, "default");';
-        
+
         $beforeCount = $this->countTableRows($this->snippetsTable, 'name = ?', [$snippetName]);
         $this->assertEquals(0, $beforeCount);
-        
+
         $this->executeCommandSuccessfully([
             'snippet:create',
             $snippetName,
             '--snippet=' . $code
         ]);
-        
+
         $afterCount = $this->countTableRows($this->snippetsTable, 'name = ?', [$snippetName]);
         $this->assertEquals(1, $afterCount);
-        
+
         // Verify snippet code - MODX strips the <?php tag, so expect code without it
         $expectedCode = 'return $modx->getOption("test", $scriptProperties, "default");';
         $rows = $this->queryDatabase('SELECT snippet FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $this->assertEquals($expectedCode, $rows[0]['snippet']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
@@ -86,28 +86,28 @@ class SnippetCreateTest extends BaseIntegrationTest
     {
         $categoryName = 'IntegrationTestCategory_' . uniqid();
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
-        
+
         // Create category first
         $this->executeCommandSuccessfully([
             'category:create',
             $categoryName
         ]);
-        
+
         // Get category ID
         $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
-        
+
         // Create snippet with category
         $this->executeCommandSuccessfully([
             'snippet:create',
             $snippetName,
             '--category=' . $categoryId
         ]);
-        
+
         // Verify snippet has correct category
         $snippetRows = $this->queryDatabase('SELECT category FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $this->assertEquals($categoryId, $snippetRows[0]['category']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
@@ -119,22 +119,22 @@ class SnippetCreateTest extends BaseIntegrationTest
     public function testSnippetCreationWithDuplicateName()
     {
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
-        
+
         // Create first snippet
         $this->executeCommandSuccessfully([
             'snippet:create',
             $snippetName
         ]);
-        
+
         // Try to create duplicate
         $process = $this->executeCommand([
             'snippet:create',
             $snippetName
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
@@ -146,17 +146,17 @@ class SnippetCreateTest extends BaseIntegrationTest
     {
         $snippetName = 'IntegrationTestSnippet_' . uniqid();
         $description = 'Test snippet for integration testing';
-        
+
         $this->executeCommandSuccessfully([
             'snippet:create',
             $snippetName,
             '--description=' . $description
         ]);
-        
+
         // Verify description in database
         $rows = $this->queryDatabase('SELECT description FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
         $this->assertEquals($description, $rows[0]['description']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name = ?', [$snippetName]);
     }
@@ -196,7 +196,7 @@ class SnippetCreateTest extends BaseIntegrationTest
         // Remove any leftover test snippets
         $this->queryDatabase('DELETE FROM ' . $this->snippetsTable . ' WHERE name LIKE ?', ['IntegrationTestSnippet_%']);
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE category LIKE ?', ['IntegrationTestCategory_%']);
-        
+
         parent::tearDown();
     }
 }

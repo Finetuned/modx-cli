@@ -12,81 +12,98 @@ use Symfony\Component\Console\Input\InputOption;
 class Update extends ProcessorCmd
 {
     protected $processor = 'Resource\Update';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'resource:update';
     protected $description = 'Update a MODX resource';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the resource to update'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'pagetitle',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The page title of the resource'
-            ),
-            array(
+            ],
+            [
                 'parent',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The parent ID of the resource'
-            ),
-            array(
+            ],
+            [
                 'template',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The template ID of the resource'
-            ),
-            array(
+            ],
+            [
                 'published',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the resource is published (1 or 0)'
-            ),
-            array(
+            ],
+            [
                 'hidemenu',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the resource is hidden from the menu (1 or 0)'
-            ),
-            array(
+            ],
+            [
                 'content',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The content of the resource'
-            ),
-            array(
+            ],
+            [
                 'alias',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The alias of the resource'
-            ),
-            array(
+            ],
+            [
                 'context_key',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The context key of the resource'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare processor properties before execution.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null False to abort execution, otherwise null.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Get the resource ID from arguments
         $resourceId = (int) $this->argument('id');
-        
+
         // Pre-populate properties with existing resource data to avoid requiring name parameter
         if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modResource::class, $resourceId)) {
             $this->error("Resource with ID {$resourceId} not found");
@@ -97,40 +114,47 @@ class Update extends ProcessorCmd
         if (!isset($properties['class_key']) || empty($properties['class_key'])) {
             $properties['class_key'] = 'modDocument';
         }
-        
+
         if (!isset($properties['context_key']) || empty($properties['context_key'])) {
             $properties['context_key'] = 'web';
         }
-        
+
         if (!isset($properties['content_type']) || empty($properties['content_type'])) {
             $properties['content_type'] = 1;
         }
 
         // Add options to the properties with type conversion
-        $optionKeys = array(
+        $optionKeys = [
             'pagetitle', 'parent', 'template', 'content', 'alias', 'context_key'
-        );
-        
-        $typeMap = array(
+        ];
+
+        $typeMap = [
             'parent' => 'int',
             'template' => 'int',
             'published' => 'bool',
             'hidemenu' => 'bool'
-        );
+        ];
 
         $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
-        
+
         // Handle boolean fields separately since they need special handling
         if ($this->option('published') !== null) {
             $properties['published'] = (int) filter_var($this->option('published'), FILTER_VALIDATE_BOOLEAN);
         }
-        
+
         if ($this->option('hidemenu') !== null) {
             $properties['hidemenu'] = (int) filter_var($this->option('hidemenu'), FILTER_VALIDATE_BOOLEAN);
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Process processor response.
+     *
+     * @param array $response The decoded processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

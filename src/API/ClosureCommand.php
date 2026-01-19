@@ -38,18 +38,18 @@ class ClosureCommand extends Command implements HookableCommand
      */
     private $optionsConfig = [];
 
-/**
- * Create a new closure command
- *
- * @param string $name The command name
- * @param callable $closure The closure to execute
- * @param array $config Optional configuration for arguments and options
- */
-    public function __construct($name, callable $closure, array $config = [])
+    /**
+     * Create a new closure command
+     *
+     * @param string   $name    The command name.
+     * @param callable $closure The closure to execute.
+     * @param array    $config  Optional configuration for arguments and options.
+     */
+    public function __construct(string $name, callable $closure, array $config = [])
     {
         parent::__construct($name);
         $this->closure = $closure;
-        
+
         // Store configuration
         if (isset($config['arguments'])) {
             $this->argumentsConfig = $config['arguments'];
@@ -57,24 +57,26 @@ class ClosureCommand extends Command implements HookableCommand
         if (isset($config['options'])) {
             $this->optionsConfig = $config['options'];
         }
-        
+
         $this->configure();
     }
 
-/**
- * Configure the command
- */
-    protected function configure()
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
+    protected function configure(): void
     {
         parent::configure();
-        
+
         // Configure arguments from config
         foreach ($this->argumentsConfig as $argument) {
             $mode = InputArgument::OPTIONAL;
             if (isset($argument['required']) && $argument['required']) {
                 $mode = InputArgument::REQUIRED;
             }
-            
+
             $this->addArgument(
                 $argument['name'],
                 $mode,
@@ -82,7 +84,7 @@ class ClosureCommand extends Command implements HookableCommand
                 $argument['default'] ?? null
             );
         }
-        
+
         // Configure options from config
         foreach ($this->optionsConfig as $option) {
             $mode = InputOption::VALUE_OPTIONAL;
@@ -91,7 +93,7 @@ class ClosureCommand extends Command implements HookableCommand
             } elseif (isset($option['flag']) && $option['flag']) {
                 $mode = InputOption::VALUE_NONE;
             }
-            
+
             $this->addOption(
                 $option['name'],
                 $option['shortcut'] ?? null,
@@ -105,10 +107,10 @@ class ClosureCommand extends Command implements HookableCommand
     /**
      * Set the before invoke hook
      *
-     * @param callable $callback The callback to execute before the command
+     * @param callable $callback The callback to execute before the command.
      * @return $this
      */
-    public function setBeforeInvoke(callable $callback)
+    public function setBeforeInvoke(callable $callback): self
     {
         $this->beforeInvoke = $callback;
         return $this;
@@ -117,10 +119,10 @@ class ClosureCommand extends Command implements HookableCommand
     /**
      * Set the after invoke hook
      *
-     * @param callable $callback The callback to execute after the command
+     * @param callable $callback The callback to execute after the command.
      * @return $this
      */
-    public function setAfterInvoke(callable $callback)
+    public function setAfterInvoke(callable $callback): self
     {
         $this->afterInvoke = $callback;
         return $this;
@@ -129,11 +131,11 @@ class ClosureCommand extends Command implements HookableCommand
     /**
      * Execute the command
      *
-     * @param InputInterface $input The input interface
-     * @param OutputInterface $output The output interface
-     * @return int The command exit code
+     * @param InputInterface  $input  The input interface.
+     * @param OutputInterface $output The output interface.
+     * @return integer The command exit code.
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Run before invoke hook if set
         if ($this->beforeInvoke) {

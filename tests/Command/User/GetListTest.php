@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\User;
+<?php
+
+namespace MODX\CLI\Tests\Command\User;
 
 use MODX\CLI\Command\User\GetList;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -15,11 +17,11 @@ class GetListTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new GetList();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -66,17 +68,17 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with('Security\User\GetList')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         // Verify the output contains user data
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('admin', $output);
@@ -97,17 +99,17 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
-            
+
             '--json' => true,
         ]);
-        
+
         // Verify the output is valid JSON
         $output = $this->commandTester->getDisplay();
         $decoded = json_decode($output, true);
@@ -128,24 +130,24 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Security\User\GetList',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['active']) && $properties['active'] === '1';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --active filter
         $this->commandTester->execute([
-            
+
             '--active' => '1',
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('admin', $output);
     }
@@ -164,24 +166,24 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Security\User\GetList',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['query']) && $properties['query'] === 'admin';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --query filter
         $this->commandTester->execute([
-            
+
             '--query' => 'admin',
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('admin', $output);
     }

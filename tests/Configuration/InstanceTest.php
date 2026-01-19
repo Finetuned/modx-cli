@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Configuration;
+<?php
+
+namespace MODX\CLI\Tests\Configuration;
 
 use PHPUnit\Framework\TestCase;
 use MODX\CLI\Configuration\Instance;
@@ -57,7 +59,7 @@ class InstanceTest extends TestCase
         $config = new Instance($items, false);
         $formatted = $config->formatConfigurationData();
 
-        $expected = array();
+        $expected = [];
         foreach ($items as $instanceName => $configData) {
             $expected[$instanceName] = $configData;
         }
@@ -65,29 +67,29 @@ class InstanceTest extends TestCase
         $this->assertEquals($expected, parse_ini_string($formatted, true), 'Formatting the items array should result in a valid ini string');
     }
 
-    public function _testLoad()
+    public function testLoad()
     {
-        // @TODO
+        $this->markTestIncomplete('Implement persistence tests for Instance config.');
     }
 
-    public function _testSave()
+    public function testSave()
     {
-        // @TODO
+        $this->markTestIncomplete('Implement persistence tests for Instance config.');
     }
 
     public static function getData()
     {
-        return array(
-            array(
-                array(
-                    'InstanceName' => array(
+        return [
+            [
+                [
+                    'InstanceName' => [
                         'base_path' => './src/',
-                    ),
-                    'CurrentInstanceName' => array(
+                    ],
+                    'CurrentInstanceName' => [
                         'base_path' => getcwd(),
-                    ),
-                )
-            ),
-        );
+                    ],
+                ]
+            ],
+        ];
     }
 }

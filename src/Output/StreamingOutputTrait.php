@@ -20,7 +20,7 @@ trait StreamingOutputTrait
     /**
      * Get or create streaming output instance
      *
-     * @param bool $buffered Whether to enable buffering
+     * @param boolean $buffered Whether to enable buffering.
      * @return StreamingOutput
      */
     protected function getStreamingOutput(bool $buffered = false): StreamingOutput
@@ -35,8 +35,8 @@ trait StreamingOutputTrait
     /**
      * Stream a line of output
      *
-     * @param string $message The message to stream
-     * @param bool $newline Whether to add a newline
+     * @param string  $message The message to stream.
+     * @param boolean $newline Whether to add a newline.
      * @return void
      */
     protected function stream(string $message, bool $newline = true): void
@@ -47,7 +47,7 @@ trait StreamingOutputTrait
     /**
      * Stream multiple lines
      *
-     * @param array<int, string> $lines Lines to stream
+     * @param array<int, string> $lines Lines to stream.
      * @return void
      */
     protected function streamLines(array $lines): void
@@ -58,8 +58,8 @@ trait StreamingOutputTrait
     /**
      * Stream formatted output
      *
-     * @param string $format Format string
-     * @param mixed ...$args Format arguments
+     * @param string $format  Format string.
+     * @param mixed  ...$args Format arguments.
      * @return void
      */
     protected function streamf(string $format, mixed ...$args): void
@@ -70,8 +70,8 @@ trait StreamingOutputTrait
     /**
      * Start a progress bar
      *
-     * @param int $max Maximum progress value
-     * @param string|null $message Optional message
+     * @param integer     $max     Maximum progress value.
+     * @param string|null $message Optional message.
      * @return ProgressBar
      */
     protected function startProgress(int $max, ?string $message = null): ProgressBar
@@ -82,8 +82,8 @@ trait StreamingOutputTrait
     /**
      * Advance progress bar
      *
-     * @param int $step Steps to advance
-     * @param string|null $message Optional message update
+     * @param integer     $step    Steps to advance.
+     * @param string|null $message Optional message update.
      * @return void
      */
     protected function advanceProgress(int $step = 1, ?string $message = null): void
@@ -94,8 +94,8 @@ trait StreamingOutputTrait
     /**
      * Set progress to specific value
      *
-     * @param int $current Current progress value
-     * @param string|null $message Optional message update
+     * @param integer     $current Current progress value.
+     * @param string|null $message Optional message update.
      * @return void
      */
     protected function setProgress(int $current, ?string $message = null): void
@@ -166,8 +166,8 @@ trait StreamingOutputTrait
     /**
      * Register a stream event callback
      *
-     * @param string $event Event name
-     * @param callable $callback Callback function
+     * @param string   $event    Event name.
+     * @param callable $callback Callback function.
      * @return void
      */
     protected function onStreamEvent(string $event, callable $callback): void

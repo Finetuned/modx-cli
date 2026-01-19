@@ -9,11 +9,17 @@ use Symfony\Component\Console\Helper\Table;
  */
 abstract class GetProcessor extends ProcessorCmd
 {
-    protected $headers = array(
+    protected $headers = [
         'id', 'name', 'description'
-    );
+    ];
 
-    protected function processResponse(array $results = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $results The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $results = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($results);

@@ -16,57 +16,74 @@ class Create extends ProcessorCmd
     protected $name = 'user:create';
     protected $description = 'Create a MODX user';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'username',
                 InputArgument::REQUIRED,
                 'The username for the new user'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'email',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The email address for the user (required)'
-            ),
-            array(
+            ],
+            [
                 'password',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The password for the user (will be generated if not provided)'
-            ),
-            array(
+            ],
+            [
                 'fullname',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The full name of the user',
                 ''
-            ),
-            array(
+            ],
+            [
                 'active',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Active status (1 or 0)',
                 '1'
-            ),
-            array(
+            ],
+            [
                 'blocked',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Blocked status (1 or 0)',
                 '0'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Validate email is provided
         $email = $this->option('email');
@@ -98,22 +115,29 @@ class Create extends ProcessorCmd
         if ($this->option('fullname') !== null) {
             $properties['fullname'] = $this->option('fullname');
         }
-        
+
         if ($this->option('active') !== null) {
             $properties['active'] = (int)$this->option('active');
         }
-        
+
         if ($this->option('blocked') !== null) {
             $properties['blocked'] = (int)$this->option('blocked');
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
         }
-        
+
         if (isset($response['success']) && $response['success']) {
             $this->info('User created successfully');
 
@@ -138,12 +162,12 @@ class Create extends ProcessorCmd
     }
 
     /**
-     * Generate a random password
+     * Generate a random password.
      *
-     * @param int $length
+     * @param integer $length The password length.
      * @return string
      */
-    protected function generatePassword($length = 12)
+    protected function generatePassword(int $length = 12)
     {
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';
         $password = '';

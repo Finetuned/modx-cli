@@ -17,8 +17,8 @@ class CommandPublisher
     /**
      * Publish a command with a callback
      *
-     * @param string $command The command to execute
-     * @param callable $callback The callback to execute after the command
+     * @param string   $command  The command to execute.
+     * @param callable $callback The callback to execute after the command.
      * @return void
      */
     public function publish(string $command, callable $callback): void
@@ -76,7 +76,7 @@ class CommandPublisher
     /**
      * Create a process for a command
      *
-     * @param string $command The command to execute
+     * @param string $command The command to execute.
      * @return Process The process instance
      */
     protected function createProcess(string $command): Process
@@ -84,5 +84,4 @@ class CommandPublisher
         $cmdString = 'modx ' . $command;
         return new Process(explode(' ', $cmdString));
     }
-
 }

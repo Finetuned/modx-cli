@@ -16,11 +16,11 @@ class CreateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Create();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -56,13 +56,13 @@ class CreateTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Security\\User\\Create',
-                $this->callback(function($properties) {
-                    return isset($properties['username']) 
+                $this->callback(function ($properties) {
+                    return isset($properties['username'])
                         && $properties['username'] === 'testuser'
                         && isset($properties['email'])
                         && $properties['email'] === 'test@example.com';
@@ -70,14 +70,14 @@ class CreateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'username' => 'testuser',
             '--email' => 'test@example.com',
             '--password' => 'testpass123'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('User created successfully', $output);
@@ -90,7 +90,7 @@ class CreateTest extends BaseTest
         $this->commandTester->execute([
             'username' => 'testuser'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Email is required', $output);
@@ -103,7 +103,7 @@ class CreateTest extends BaseTest
             'username' => 'testuser',
             '--email' => 'invalid-email'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Invalid email format', $output);
@@ -117,24 +117,24 @@ class CreateTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true, 'object' => ['id' => 5, 'username' => 'testuser']]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Security\\User\\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['password']) && !empty($properties['password']);
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command without password
         $this->commandTester->execute([
             'username' => 'testuser',
             '--email' => 'test@example.com'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Generated password:', $output);
@@ -152,18 +152,18 @@ class CreateTest extends BaseTest
                 'message' => 'Username already exists'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'username' => 'admin',
             '--email' => 'admin@example.com',
             '--password' => 'test123'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to create user', $output);
@@ -178,13 +178,13 @@ class CreateTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true, 'object' => ['id' => 5]]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Security\\User\\Create',
-                $this->callback(function($properties) {
-                    return isset($properties['username']) 
+                $this->callback(function ($properties) {
+                    return isset($properties['username'])
                         && $properties['username'] === 'testuser'
                         && isset($properties['email'])
                         && $properties['email'] === 'test@example.com'
@@ -198,7 +198,7 @@ class CreateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         $this->commandTester->execute([
             'username' => 'testuser',
             '--email' => 'test@example.com',
@@ -207,7 +207,7 @@ class CreateTest extends BaseTest
             '--active' => '1',
             '--blocked' => '0'
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -222,21 +222,21 @@ class CreateTest extends BaseTest
                 'object' => ['id' => 5, 'username' => 'testuser']
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         $this->commandTester->execute([
             'username' => 'testuser',
             '--email' => 'test@example.com',
             '--password' => 'test123',
             '--json' => true
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $data = json_decode($output, true);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('success', $data);
         $this->assertTrue($data['success']);

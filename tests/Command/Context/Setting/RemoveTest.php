@@ -16,11 +16,11 @@ class RemoveTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Remove();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -52,13 +52,13 @@ class RemoveTest extends BaseTest
                 'success' => true
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Context\Setting\Remove',
-                $this->callback(function($properties) {
-                    return isset($properties['context_key']) 
+                $this->callback(function ($properties) {
+                    return isset($properties['context_key'])
                         && $properties['context_key'] === 'web'
                         && isset($properties['key'])
                         && $properties['key'] === 'custom_setting';
@@ -66,14 +66,14 @@ class RemoveTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force to skip confirmation
         $this->commandTester->execute([
             'context' => 'web',
             'key' => 'custom_setting',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Context setting removed successfully', $output);
@@ -91,18 +91,18 @@ class RemoveTest extends BaseTest
                 'message' => 'Cannot remove system setting'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --force
         $this->commandTester->execute([
             'context' => 'web',
             'key' => 'site_name',
             '--force' => true
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to remove context setting', $output);
@@ -117,17 +117,17 @@ class RemoveTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode(['success' => true]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         $this->commandTester->execute([
             'context' => 'web',
             'key' => 'custom_setting',
             '--force' => true
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 }

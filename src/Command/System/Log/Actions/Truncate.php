@@ -15,26 +15,38 @@ class Truncate extends ProcessorCmd
     protected $name = 'system:log:actions:truncate';
     protected $description = 'Truncate action logs in MODX';
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force truncation without confirmation'
-            ),
-            array(
+            ],
+            [
                 'age',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Truncate logs older than this many days',
                 0
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the age to the properties
         $age = (int) $this->option('age');
@@ -54,9 +66,16 @@ class Truncate extends ProcessorCmd
                 return false;
             }
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

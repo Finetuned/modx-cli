@@ -14,35 +14,35 @@ class RunSequenceTest extends TestCase
      * @var RunSequence
      */
     private $command;
-    
+
     /**
      * @var BufferedOutput
      */
     private $output;
-    
+
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $modxCliMock;
-    
+
     /**
      * @var \ReflectionProperty
      */
     private $instanceProperty;
-    
+
     /**
      * @var mixed
      */
     private $originalInstance;
-    
+
     protected function setUp(): void
     {
         $this->command = new RunSequence();
         $this->output = new BufferedOutput();
-        
+
         // Create a mock for CommandRunner
         $commandRunnerMock = $this->createMock(\MODX\CLI\API\CommandRunner::class);
-        
+
         // Configure the mock to return a success result by default
         $commandRunnerMock->method('run')
             ->willReturnCallback(function ($command, $args = [], $options = []) {
@@ -51,39 +51,39 @@ class RunSequenceTest extends TestCase
                 $result->return_code = 0;
                 $result->stdout = "Success: $command executed";
                 $result->stderr = '';
-                
+
                 // Simulate errors for specific commands
                 if (strpos($command, 'error') !== false) {
                     $result->return_code = 1;
                     $result->stdout = '';
                     $result->stderr = "Error: $command failed";
                 }
-                
+
                 return $result;
             });
-        
+
         // Use reflection to replace the static instance
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $this->instanceProperty = $reflection->getProperty('instance');
         $this->instanceProperty->setAccessible(true);
-        
+
         // Save the original instance
         $this->originalInstance = $this->instanceProperty->getValue(null);
-        
+
         // Create a new instance of MODX_CLI
         $this->modxCliMock = $this->getMockBuilder(MODX_CLI::class)
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         // Set the commandRunner property in the MODX_CLI instance
         $commandRunnerProperty = $reflection->getProperty('commandRunner');
         $commandRunnerProperty->setAccessible(true);
         $commandRunnerProperty->setValue($this->modxCliMock, $commandRunnerMock);
-        
+
         // Set our mock as the instance
         $this->instanceProperty->setValue(null, $this->modxCliMock);
     }
-    
+
     protected function tearDown(): void
     {
         // Restore the original instance
@@ -91,19 +91,19 @@ class RunSequenceTest extends TestCase
             $this->instanceProperty->setValue(null, $this->originalInstance);
         }
     }
-    
+
     public function testRunSequenceWithNoCommandSets()
     {
         $input = new ArrayInput([
             'command' => 'run-sequence'
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(1, $exitCode);
         $this->assertStringContainsString('No command sets provided', $this->output->fetch());
     }
-    
+
     public function testRunSequenceWithSingleCommandSet()
     {
         $commandSets = json_encode([
@@ -115,14 +115,14 @@ class RunSequenceTest extends TestCase
                 'is_asynchronous' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
         $this->assertStringContainsString('Executing command set: set1', $output);
@@ -130,7 +130,7 @@ class RunSequenceTest extends TestCase
         $this->assertStringContainsString('Running command: modx chunk:list', $output);
         $this->assertStringContainsString('All command sets have been executed', $output);
     }
-    
+
     public function testRunSequenceWithMultipleCommandSets()
     {
         $commandSets = json_encode([
@@ -149,14 +149,14 @@ class RunSequenceTest extends TestCase
                 'is_asynchronous' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
         $this->assertStringContainsString('Executing command set: set1', $output);
@@ -167,7 +167,7 @@ class RunSequenceTest extends TestCase
         $this->assertStringContainsString('Running command: modx tv:list', $output);
         $this->assertStringContainsString('All command sets have been executed', $output);
     }
-    
+
     public function testRunSequenceWithErrorAndContinueAfterError()
     {
         $commandSets = json_encode([
@@ -181,14 +181,14 @@ class RunSequenceTest extends TestCase
                 'is_asynchronous' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
         $this->assertStringContainsString('Running command: modx resource:list', $output);
@@ -197,7 +197,7 @@ class RunSequenceTest extends TestCase
         $this->assertStringContainsString('Running command: modx chunk:list', $output);
         $this->assertStringContainsString('All command sets have been executed', $output);
     }
-    
+
     public function testRunSequenceWithErrorAndStopAfterError()
     {
         $commandSets = json_encode([
@@ -211,14 +211,14 @@ class RunSequenceTest extends TestCase
                 'is_asynchronous' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(1, $exitCode);
         $output = $this->output->fetch();
         $this->assertStringContainsString('Running command: modx resource:list', $output);
@@ -227,7 +227,7 @@ class RunSequenceTest extends TestCase
         $this->assertStringContainsString('Execution stopped due to error', $output);
         $this->assertStringNotContainsString('Running command: modx chunk:list', $output);
     }
-    
+
     public function testRunSequenceWithCollatesErrors()
     {
         $commandSets = json_encode([
@@ -243,23 +243,23 @@ class RunSequenceTest extends TestCase
                 'is_asynchronous' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
-        
+
         // Check that the JSON output contains the errors
         $this->assertStringContainsString('"errors":', $output);
         $this->assertStringContainsString('"Error: error:command1 failed"', $output);
         $this->assertStringContainsString('"Error: error:command2 failed"', $output);
     }
-    
+
     public function testRunSequenceWithCollatesDataResponses()
     {
         $commandSets = json_encode([
@@ -273,23 +273,23 @@ class RunSequenceTest extends TestCase
                 'is_asynchronous' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
-        
+
         // Check that the JSON output contains the data responses
         $this->assertStringContainsString('"data_responses":', $output);
         $this->assertStringContainsString('"Success: resource:list executed"', $output);
         $this->assertStringContainsString('"Success: chunk:list executed"', $output);
     }
-    
+
     public function testResourceCRUDOperations()
     {
         $commandSets = json_encode([
@@ -305,14 +305,14 @@ class RunSequenceTest extends TestCase
                 'continue_after_error' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
         $this->assertStringContainsString('Executing command set: resource_operations', $output);
@@ -322,7 +322,7 @@ class RunSequenceTest extends TestCase
         $this->assertStringContainsString('Running command: modx resource:delete', $output);
         $this->assertStringContainsString('All command sets have been executed', $output);
     }
-    
+
     public function testChunkCRUDOperations()
     {
         $commandSets = json_encode([
@@ -338,14 +338,14 @@ class RunSequenceTest extends TestCase
                 'continue_after_error' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
         $this->assertStringContainsString('Executing command set: chunk_operations', $output);
@@ -355,7 +355,7 @@ class RunSequenceTest extends TestCase
         $this->assertStringContainsString('Running command: modx chunk:remove', $output);
         $this->assertStringContainsString('All command sets have been executed', $output);
     }
-    
+
     public function testSnippetCRUDOperations()
     {
         $commandSets = json_encode([
@@ -371,14 +371,14 @@ class RunSequenceTest extends TestCase
                 'continue_after_error' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
         $this->assertStringContainsString('Executing command set: snippet_operations', $output);
@@ -388,7 +388,7 @@ class RunSequenceTest extends TestCase
         $this->assertStringContainsString('Running command: modx snippet:remove', $output);
         $this->assertStringContainsString('All command sets have been executed', $output);
     }
-    
+
     public function testTVCRUDOperations()
     {
         $commandSets = json_encode([
@@ -404,14 +404,14 @@ class RunSequenceTest extends TestCase
                 'continue_after_error' => false
             ]
         ]);
-        
+
         $input = new ArrayInput([
             'command' => 'run-sequence',
             '--command_sets' => $commandSets
         ]);
-        
+
         $exitCode = $this->command->run($input, $this->output);
-        
+
         $this->assertEquals(0, $exitCode);
         $output = $this->output->fetch();
         $this->assertStringContainsString('Executing command set: tv_operations', $output);

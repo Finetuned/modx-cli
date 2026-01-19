@@ -12,55 +12,81 @@ use Symfony\Component\Console\Input\InputOption;
 class Install extends ProcessorCmd
 {
     protected $processor = 'Workspace\Packages\Install';
-    protected $required = array('signature');
+    protected $required = ['signature'];
 
     protected $name = 'package:install';
     protected $description = 'Install a package in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'signature',
                 InputArgument::REQUIRED,
                 'The signature of the package to install'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force installation without confirmation'
-            ),
-            array(
+            ],
+            [
                 'no-download',
                 null,
                 InputOption::VALUE_NONE,
                 'Disable auto-download if package is not found'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $signature = $this->argument('signature');
 
         // Get the package to display information
-        $package = $this->modx->getObject(\MODX\Revolution\Transport\modTransportPackage::class, array('signature' => $signature));
-        
+        $package = $this->modx->getObject(
+            \MODX\Revolution\Transport\modTransportPackage::class,
+            ['signature' => $signature]
+        );
+
         // If package not found and auto-download is enabled, try to download it
         if (!$package && !$this->option('no-download')) {
-            $this->info("Package '{$signature}' not found locally. Attempting to download...");
-            
+            $this->info(
+                "Package '{$signature}' not found locally. " .
+                'Attempting to download...'
+            );
+
             if ($this->downloadPackage($signature)) {
                 // Try to get the package again after download
-                $package = $this->modx->getObject(\MODX\Revolution\Transport\modTransportPackage::class, array('signature' => $signature));
-                
+                $package = $this->modx->getObject(
+                    \MODX\Revolution\Transport\modTransportPackage::class,
+                    ['signature' => $signature]
+                );
+
                 if ($package) {
                     $this->info("Package downloaded successfully");
                 }
@@ -69,11 +95,14 @@ class Install extends ProcessorCmd
                 return false;
             }
         }
-        
+
         if (!$package) {
             $this->error("Package with signature '{$signature}' not found");
             if ($this->option('no-download')) {
-                $this->error("Auto-download is disabled. Use 'package:download {$signature}' to download it first.");
+                $this->error(
+                    "Auto-download is disabled. Use 'package:download {$signature}' " .
+                    'to download it first.'
+                );
             }
             return false;
         }
@@ -91,9 +120,16 @@ class Install extends ProcessorCmd
                 return false;
             }
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
@@ -114,9 +150,9 @@ class Install extends ProcessorCmd
 
     /**
      * Download a package by signature
-     * 
-     * @param string $signature Package signature to download
-     * @return bool True if download succeeded, false otherwise
+     *
+     * @param string $signature Package signature to download.
+     * @return boolean True if download succeeded, false otherwise.
      */
     protected function downloadPackage(string $signature): bool
     {
@@ -130,9 +166,9 @@ class Install extends ProcessorCmd
             }
 
             // Get the package object
-            $packageObject = $this->modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', array(
+            $packageObject = $this->modx->getObject('MODX\\Revolution\\Transport\\modTransportPackage', [
                 'signature' => $currentPackageSignature
-            ));
+            ]);
 
             if (!$packageObject) {
                 return false;
@@ -169,13 +205,12 @@ class Install extends ProcessorCmd
             $providerId = $provider->get('id');
 
             // Use MODX's download processor
-            $response = $this->modx->runProcessor('workspace/packages/rest/download', array(
+            $response = $this->modx->runProcessor('workspace/packages/rest/download', [
                 'info' => $uri . '::' . $signature,
                 'provider' => $providerId,
-            ));
+            ]);
 
             return !$response->isError();
-
         } catch (\Exception $e) {
             return false;
         }
@@ -183,27 +218,27 @@ class Install extends ProcessorCmd
 
     /**
      * Get upgradeable packages using existing processor
-     * 
+     *
      * @return array<int, array<string, mixed>>
      */
     protected function getUpgradeablePackages(): array
     {
-        $response = $this->modx->runProcessor('workspace/packages/getlist', array(
+        $response = $this->modx->runProcessor('workspace/packages/getlist', [
             'newest_only' => true,
             'limit' => 100
-        ));
+        ]);
 
         if ($response->isError()) {
-            return array();
+            return [];
         }
 
         $responseData = json_decode($response->getResponse(), true);
         if (!isset($responseData['results'])) {
-            return array();
+            return [];
         }
 
         // Filter upgradeable packages
-        $upgradeable = array();
+        $upgradeable = [];
         foreach ($responseData['results'] as $package) {
             if (isset($package['updateable']) && $package['updateable']) {
                 $upgradeable[] = $package;
@@ -215,10 +250,10 @@ class Install extends ProcessorCmd
 
     /**
      * Find a signature in upgradeable packages by package name (ignoring version and release)
-     * 
-     * @param array $packages Array of upgradeable packages
-     * @param string $packageSignature Package signature to search for
-     * @return string|null The full signature if found, or null if not found
+     *
+     * @param array  $packages         Array of upgradeable packages.
+     * @param string $packageSignature Package signature to search for.
+     * @return string|null The full signature if found, or null if not found.
      */
     protected function findSignatureByPackageName(array $packages, string $packageSignature): ?string
     {

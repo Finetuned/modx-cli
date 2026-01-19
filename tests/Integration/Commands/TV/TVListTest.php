@@ -15,7 +15,7 @@ class TVListTest extends BaseIntegrationTest
     public function testTVListExecutesSuccessfully()
     {
         $tvName = 'IntegrationTestTV_' . uniqid();
-        
+
         // Create a test TV first
         $this->executeCommandSuccessfully([
             'tv:create',
@@ -23,15 +23,15 @@ class TVListTest extends BaseIntegrationTest
             '--type=text',
             '--caption=Test TV'
         ]);
-        
+
         // List TVs
         $process = $this->executeCommandSuccessfully([
             'tv:list'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString($tvName, $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
     }
@@ -45,12 +45,12 @@ class TVListTest extends BaseIntegrationTest
         $data = $this->executeCommandJson([
             'tv:list'
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('total', $data, 'JSON should have total key');
         $this->assertArrayHasKey('results', $data, 'JSON should have results key');
         $this->assertIsArray($data['results'], 'Results should be an array');
-        
+
         // If results exist, verify structure
         if (!empty($data['results'])) {
             $firstTV = $data['results'][0];
@@ -65,17 +65,17 @@ class TVListTest extends BaseIntegrationTest
     {
         $categoryName = 'IntegrationTestCategory_' . uniqid();
         $tvName = 'IntegrationTestTV_' . uniqid();
-        
+
         // Create category
         $this->executeCommandSuccessfully([
             'category:create',
             $categoryName
         ]);
-        
+
         // Get category ID
         $catRows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $catRows[0]['id'];
-        
+
         // Create TV in category
         $this->executeCommandSuccessfully([
             'tv:create',
@@ -83,16 +83,16 @@ class TVListTest extends BaseIntegrationTest
             '--type=text',
             '--category=' . $categoryId
         ]);
-        
+
         // List TVs with category filter
         $process = $this->executeCommandSuccessfully([
             'tv:list',
             '--category=' . $categoryId
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString($tvName, $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$tvName]);
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
@@ -105,11 +105,11 @@ class TVListTest extends BaseIntegrationTest
     {
         // Remove all test TVs first
         $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name LIKE ?', ['IntegrationTestTV_%']);
-        
+
         $process = $this->executeCommandSuccessfully([
             'tv:list'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }
@@ -124,23 +124,23 @@ class TVListTest extends BaseIntegrationTest
         for ($i = 0; $i < 3; $i++) {
             $tvName = 'IntegrationTestTV_' . uniqid() . '_' . $i;
             $tvNames[] = $tvName;
-            
+
             $this->executeCommandSuccessfully([
                 'tv:create',
                 $tvName,
                 '--type=text'
             ]);
         }
-        
+
         // List with limit
         $data = $this->executeCommandJson([
             'tv:list',
             '--limit=2'
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('results', $data);
-        
+
         // Cleanup
         foreach ($tvNames as $name) {
             $this->queryDatabase('DELETE FROM ' . $this->tvsTable . ' WHERE name = ?', [$name]);

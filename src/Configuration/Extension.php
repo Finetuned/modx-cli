@@ -9,7 +9,13 @@ class Extension extends Base
 {
     protected $file = 'extensions.json';
 
-    public function __construct(array $items = [], $loadExisting = true)
+    /**
+     * Create an extension configuration manager.
+     *
+     * @param array   $items        Initial configuration items.
+     * @param boolean $loadExisting Whether to load existing configuration.
+     */
+    public function __construct(array $items = [], bool $loadExisting = true)
     {
         $this->makeSureConfigPathExists();
         if ($loadExisting) {
@@ -21,7 +27,7 @@ class Extension extends Base
     /**
      * Override get method to handle array values
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         // Check if the key exists as a normal key
         if (isset($this->items[$key])) {
@@ -39,7 +45,7 @@ class Extension extends Base
     /**
      * Override set method to handle array values
      */
-    public function set($key, $value = null)
+    public function set(string $key, mixed $value = null): void
     {
         // If the value is already in the array, don't add it again
         if (in_array($key, $this->items)) {
@@ -59,7 +65,7 @@ class Extension extends Base
     /**
      * Override remove method to handle array values
      */
-    public function remove($key)
+    public function remove(string $key): void
     {
         // First try to remove as a key (parent implementation)
         parent::remove($key);
@@ -88,12 +94,18 @@ class Extension extends Base
     /**
      * Save the configuration file
      */
-    public function save()
+    public function save(): bool
     {
         $file = $this->getConfigPath() . $this->file;
         file_put_contents($file, json_encode($this->items, JSON_PRETTY_PRINT));
+        return true;
     }
 
+    /**
+     * Format extension data as a PHP array string.
+     *
+     * @return string
+     */
     public function formatData()
     {
         $items = $this->items;

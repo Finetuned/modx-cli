@@ -12,35 +12,50 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class Read extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'system:locks:read';
     protected $description = 'Read a lock in MODX';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'key',
                 InputArgument::OPTIONAL,
                 'The key of the lock'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (table, json)',
                 'table'
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $key = $this->argument('key');
@@ -51,21 +66,21 @@ class Read extends BaseCmd
 
         // Get the registry
         $registry = $this->modx->getService('registry', 'registry.modRegistry');
-        $registry->addRegister('locks', 'registry.modDbRegister', array('directory' => 'locks'));
+        $registry->addRegister('locks', 'registry.modDbRegister', ['directory' => 'locks']);
         $registry->locks->connect();
 
         // Get the locks
         if ($key) {
-            $locks = $registry->locks->read(array($key));
+            $locks = $registry->locks->read([$key]);
 
             if (empty($locks)) {
                 $this->error("Lock with key '{$key}' not found");
                 return 1;
             }
 
-            $locks = array($key => $locks[$key]);
+            $locks = [$key => $locks[$key]];
         } else {
-            $locks = $registry->locks->read(array(''));
+            $locks = $registry->locks->read(['']);
 
             if (empty($locks)) {
                 $this->info('No locks found');
@@ -80,7 +95,7 @@ class Read extends BaseCmd
 
         // Default to table format
         $table = new Table($this->output);
-        $table->setHeaders(array('Key', 'User', 'Message', 'Timestamp'));
+        $table->setHeaders(['Key', 'User', 'Message', 'Timestamp']);
 
         foreach ($locks as $lockKey => $lockData) {
             $user = '';
@@ -99,7 +114,7 @@ class Read extends BaseCmd
                 }
             }
 
-            $table->addRow(array($lockKey, $user, $message, $timestamp));
+            $table->addRow([$lockKey, $user, $message, $timestamp]);
         }
 
         $table->render();

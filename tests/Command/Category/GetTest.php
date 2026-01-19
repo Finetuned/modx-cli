@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Category;
+<?php
+
+namespace MODX\CLI\Tests\Command\Category;
 
 use MODX\CLI\Command\Category\Get;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class GetTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Get();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -57,25 +59,25 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Category\Get',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === '123';
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
             'id' => '123',
             '--format' => 'table'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Test Category', $output);
@@ -98,18 +100,18 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
             'id' => '123',
             '--format' => 'json'
         ]);
-        
+
         // Verify the output is JSON
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -134,18 +136,18 @@ class GetTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
-            
+
             'id' => '123',
             '--json' => true
         ]);
-        
+
         // Verify the output is JSON
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -163,18 +165,18 @@ class GetTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
-            
+
             'id' => '999',
             '--json' => true
         ]);
-        
+
         // Verify the output is JSON with error message
         $output = $this->commandTester->getDisplay();
         $this->assertJson($output);
@@ -192,17 +194,17 @@ class GetTest extends BaseTest
         $processorResponse->method('getResponse')
             ->willReturn(json_encode([]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
             'id' => '999'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Category not found', $output);

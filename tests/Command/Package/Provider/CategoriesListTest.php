@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Package\Provider;
+<?php
+
+namespace MODX\CLI\Tests\Command\Package\Provider;
 
 use MODX\CLI\Command\Package\Provider\CategoriesList;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -64,7 +66,7 @@ class CategoriesListTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Workspace\\Packages\\Rest\\GetNodes',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['provider'] === '1'
                         && $properties['id'] === 'n_repository_0';
                 }),

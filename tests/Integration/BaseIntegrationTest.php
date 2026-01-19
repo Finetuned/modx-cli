@@ -59,11 +59,11 @@ abstract class BaseIntegrationTest extends TestCase
 
         // Load environment variables from .env file
         $this->loadEnvironment();
-        
+
         $this->binPath = realpath(__DIR__ . '/../../bin/modx');
         $this->integrationTestsEnabled = (bool) getenv('MODX_INTEGRATION_TESTS');
-        
-        
+
+
 
         // Skip tests if integration testing is not enabled
         if (!$this->integrationTestsEnabled) {
@@ -92,7 +92,7 @@ abstract class BaseIntegrationTest extends TestCase
 
         // Ensure the database is reachable before running integration suites
         $this->assertDatabaseReady();
-        
+
         // Cache table names once
         $this->categoriesTable = $this->getTableName('categories');
         $this->chunksTable = $this->getTableName('site_htmlsnippets');
@@ -144,7 +144,7 @@ abstract class BaseIntegrationTest extends TestCase
             $this->markTestSkipped('Skipped: Integration database unavailable: ' . $e->getMessage() . '. See tests/Integration/README.md#skipped-tests.');
         }
     }
-    
+
     /**
      * Execute a MODX CLI command and return the process result
      *
@@ -159,19 +159,19 @@ abstract class BaseIntegrationTest extends TestCase
             ['php', $this->binPath, '-s', $this->instanceAlias],
             $arguments
         );
-        
+
         $process = new Process($command);
         $process->setTimeout($timeout);
         // Working directory not needed with -s flag, but set for consistency
         $process->setWorkingDirectory($this->modxPath);
-        
+
         // Set environment variables for the command
         $process->setEnv([
             'MODX_CONFIG_KEY' => 'config',
         ]);
-        
+
         $process->run();
-        
+
         return $process;
     }
 
@@ -184,7 +184,7 @@ abstract class BaseIntegrationTest extends TestCase
     protected function executeCommandSuccessfully(array $arguments): Process
     {
         $process = $this->executeCommand($arguments);
-        
+
         $this->assertEquals(
             0,
             $process->getExitCode(),
@@ -195,7 +195,7 @@ abstract class BaseIntegrationTest extends TestCase
                 $process->getErrorOutput()
             )
         );
-        
+
         return $process;
     }
 
@@ -211,14 +211,14 @@ abstract class BaseIntegrationTest extends TestCase
         if (!in_array('--json', $arguments)) {
             $arguments[] = '--json';
         }
-        
+
         $process = $this->executeCommandSuccessfully($arguments);
         $output = $process->getOutput();
-        
+
         $data = json_decode($output, true);
-        
+
         $this->assertIsArray($data, 'Command output is not valid JSON: ' . $output);
-        
+
         return $data;
     }
 
@@ -234,7 +234,7 @@ abstract class BaseIntegrationTest extends TestCase
             $this->dbConfig['host'],
             $this->dbConfig['name']
         );
-        
+
         return new \PDO(
             $dsn,
             $this->dbConfig['user'],
@@ -258,7 +258,7 @@ abstract class BaseIntegrationTest extends TestCase
         $pdo = $this->getTestDatabase();
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
-        
+
         return $stmt->fetchAll();
     }
 
@@ -276,9 +276,9 @@ abstract class BaseIntegrationTest extends TestCase
         if ($where) {
             $sql .= " WHERE {$where}";
         }
-        
+
         $result = $this->queryDatabase($sql, $params);
-        
+
         return (int) $result[0]['count'];
     }
 
@@ -290,6 +290,4 @@ abstract class BaseIntegrationTest extends TestCase
         // Subclasses can override to implement cleanup logic
         parent::tearDown();
     }
-
-
 }

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 abstract class ProcessorCmd extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     /**
      * A processor path
@@ -20,22 +20,22 @@ abstract class ProcessorCmd extends BaseCmd
      */
     protected $processor;
 
-    protected $defaultsOptions = array();
-    protected $defaultsProperties = array();
+    protected $defaultsOptions = [];
+    protected $defaultsProperties = [];
 
     /**
      * An array of columns to be used in tables output
      *
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * An array of required arguments to be set as processor properties (parameters)
      *
      * @var array
      */
-    protected $required = array();
+    protected $required = [];
 
     /**
      * The processor response
@@ -44,6 +44,11 @@ abstract class ProcessorCmd extends BaseCmd
      */
     protected $response;
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $properties = array_merge(
@@ -80,19 +85,19 @@ abstract class ProcessorCmd extends BaseCmd
             $this->output->writeln('<error>' . $response->getMessage() . '</error>');
             return 1; // Return non-zero for failure
         }
-        
+
         // Trick for "list" processors not returning "success"
         if ($response->isError() && isset($response->response['success']) && !$response->response['success']) {
             $errors = $response->getFieldErrors();
-            
+
             // Check for --json flag
             if ($this->option('json')) {
-                $errorData = array('success' => false);
+                $errorData = ['success' => false];
                 if (empty($errors)) {
                     $errorData['message'] = $response->getMessage();
                 } else {
-                    $errorData['errors'] = array_map(function($e) {
-                        return array('field' => $e->field, 'message' => $e->message);
+                    $errorData['errors'] = array_map(function ($e) {
+                        return ['field' => $e->field, 'message' => $e->message];
                     }, $errors);
                 }
                 $this->output->writeln(json_encode($errorData, JSON_PRETTY_PRINT));
@@ -110,7 +115,7 @@ abstract class ProcessorCmd extends BaseCmd
             }
             return 1; // Return non-zero for failure
         }
-        
+
         $this->response =& $response;
 
         $result = $this->processResponse($this->decodeResponse($response));
@@ -126,10 +131,10 @@ abstract class ProcessorCmd extends BaseCmd
     /**
      * Command result logic
      *
-     * @param array $response
-     * @return int
+     * @param array $response The decoded processor response.
+     * @return integer
      */
-    protected function processResponse(array $response = array())
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             $this->output->writeln(json_encode($response, JSON_PRETTY_PRINT));
@@ -141,25 +146,25 @@ abstract class ProcessorCmd extends BaseCmd
     }
 
     /**
-     * A Method to implement before running the processor. Return false to break the execution (ie. if some criteria arent't met)
+     * A method to implement before running the processor. Return false to break execution.
      *
-     * @param array $properties The properties which will be sent to the processor
-     * @param array $options The options which will be sent to the processor
+     * @param array $properties The properties which will be sent to the processor.
+     * @param array $options    The options which will be sent to the processor.
      *
-     * @return mixed Return false here to break the command execution
+     * @return mixed Return false here to break the command execution.
      */
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
     }
 
     /**
      * Fetch an existing MODX object by ID and class
      *
-     * @param string $class The MODX object class name
-     * @param int|string $id The object ID or unique key
+     * @param string         $class The MODX object class name.
+     * @param integer|string $id    The object ID or unique key.
      * @return \xPDO\Om\xPDOObject|null
      */
-    protected function getExistingObject($class, $id)
+    protected function getExistingObject(string $class, int|string $id)
     {
         if (!$this->modx) {
             return null;
@@ -172,14 +177,18 @@ abstract class ProcessorCmd extends BaseCmd
      * Pre-populate properties with existing object data for update operations
      * This prevents MODX processors from requiring fields that shouldn't be required for updates
      *
-     * @param array $properties The properties array to populate
-     * @param string $class The MODX object class name
-     * @param int|string $id The object ID or unique key
-     * @param array $fieldMap Optional mapping of property names to object field names
-     * @return bool True if object was found and properties populated, false otherwise
+     * @param array          $properties The properties array to populate.
+     * @param string         $class      The MODX object class name.
+     * @param integer|string $id         The object ID or unique key.
+     * @param array          $fieldMap   Optional mapping of property names to object field names.
+     * @return boolean True if object was found and properties populated, false otherwise.
      */
-    protected function prePopulateFromExisting(array &$properties, $class, $id, array $fieldMap = array())
-    {
+    protected function prePopulateFromExisting(
+        array &$properties,
+        string $class,
+        int|string $id,
+        array $fieldMap = []
+    ) {
         $object = $this->getExistingObject($class, $id);
         if (!$object) {
             return false;
@@ -206,10 +215,10 @@ abstract class ProcessorCmd extends BaseCmd
      * Handle default values for create operations
      * Ensures default values are properly applied when options are provided
      *
-     * @param array $properties The properties array to populate
-     * @param array $defaults Array of default values
+     * @param array $properties The properties array to populate.
+     * @param array $defaults   Array of default values.
      */
-    protected function applyDefaults(array &$properties, array $defaults = array())
+    protected function applyDefaults(array &$properties, array $defaults = [])
     {
         foreach ($defaults as $key => $defaultValue) {
             // Only apply default if the property is not already set
@@ -228,11 +237,11 @@ abstract class ProcessorCmd extends BaseCmd
     /**
      * Safely add options to properties, handling type conversion and validation
      *
-     * @param array $properties The properties array to populate
-     * @param array $optionKeys Array of option keys to process
-     * @param array $typeMap Optional type mapping for conversion (e.g., 'published' => 'boolean')
+     * @param array $properties The properties array to populate.
+     * @param array $optionKeys Array of option keys to process.
+     * @param array $typeMap    Optional type mapping for conversion (e.g., 'published' => 'boolean').
      */
-    protected function addOptionsToProperties(array &$properties, array $optionKeys, array $typeMap = array())
+    protected function addOptionsToProperties(array &$properties, array $optionKeys, array $typeMap = [])
     {
         foreach ($optionKeys as $key) {
             $value = $this->option($key);
@@ -266,7 +275,7 @@ abstract class ProcessorCmd extends BaseCmd
     /**
      * Decode the processor response if json encoded
      *
-     * @param \MODX\Revolution\Processors\ProcessorResponse $response
+     * @param \MODX\Revolution\Processors\ProcessorResponse $response The processor response.
      *
      * @return array|mixed
      */
@@ -283,14 +292,14 @@ abstract class ProcessorCmd extends BaseCmd
     /**
      * Process an array value (option/argument)
      *
-     * @param string $key The argument/option name
-     * @param string $type argument or option
+     * @param string $key  The argument/option name.
+     * @param string $type Argument or option.
      *
      * @return array
      */
-    protected function processArray($key, $type = 'option')
+    protected function processArray(string $key, string $type = 'option')
     {
-        $result = array();
+        $result = [];
         foreach ($this->$type($key) as $data) {
             $exp = explode('=', $data);
 
@@ -300,42 +309,50 @@ abstract class ProcessorCmd extends BaseCmd
         return $result;
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'properties',
                 'p',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'An array of properties to be sent to the processor, ie. --properties=\'key=value\' --properties=\'another_key=value\''
-            ),
-            array(
+                'An array of properties to be sent to the processor, ' .
+                "i.e. --properties='key=value' --properties='another_key=value'"
+            ],
+            [
                 'options',
                 'o',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'An array of options to be sent to the processor, ie. --options=\'processors_path=value\' --options=\'location=value\''
-            ),
+                'An array of options to be sent to the processor, ' .
+                "i.e. --options='processors_path=value' --options='location=value'"
+            ],
             // Tables related
-            array(
+            [
                 'unset',
                 'u',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'An array of columns to hidden from results table, ie. --unset=id --unset=name'
-            ),
-            array(
+                'An array of columns to hide from the results table, ' .
+                'i.e. --unset=id --unset=name'
+            ],
+            [
                 'add',
                 'a',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'An array of columns to add to results table, ie. --add=column -a\'other_column\''
-            ),
-        ));
+                'An array of columns to add to the results table, ' .
+                "i.e. --add=column -a'other_column'"
+            ],
+        ]);
     }
 
-// Tables related
-// @todo find a cleaner way to handle this ? since all processors do not make use of tables
+    // Tables related.
 
     /**
-     * Allow "on the fly" table columns addition/removal
+     * Allow on-the-fly table column addition or removal.
      *
      * @return void
      */
@@ -368,13 +385,13 @@ abstract class ProcessorCmd extends BaseCmd
     /**
      * Grab the appropriate columns for the given record
      *
-     * @param array $record
+     * @param array $record The record to format.
      *
-     * @return array Usable row for the table output
+     * @return array Usable row for the table output.
      */
-    protected function processRow(array $record = array())
+    protected function processRow(array $record = [])
     {
-        $result = array();
+        $result = [];
         foreach ($this->headers as $k) {
             if (!array_key_exists($k, $record)) {
                 $result[] = '';
@@ -390,12 +407,12 @@ abstract class ProcessorCmd extends BaseCmd
     /**
      * Allow raw values to be "formatted"
      *
-     * @param mixed $value
-     * @param string $column
+     * @param mixed  $value  The raw value.
+     * @param string $column The column name.
      *
      * @return mixed
      */
-    protected function parseValue($value, $column)
+    protected function parseValue(mixed $value, string $column)
     {
         $method = 'format' . ucfirst($column);
         if (method_exists($this, $method)) {
@@ -408,11 +425,11 @@ abstract class ProcessorCmd extends BaseCmd
     /**
      * A "formatter" method to display booleans as "Yes/No" instead of "1/0"
      *
-     * @param string $value
+     * @param mixed $value The raw value.
      *
      * @return string
      */
-    protected function renderBoolean($value)
+    protected function renderBoolean(mixed $value)
     {
         $result = 'No';
         if ($value) {
@@ -425,13 +442,13 @@ abstract class ProcessorCmd extends BaseCmd
     /**
      * Retrieve a column value for the given object
      *
-     * @param string $class The object class
-     * @param mixed $pk The primary key or criteria to grab the object
-     * @param string $column The desired column value
+     * @param string $class  The object class.
+     * @param mixed  $pk     The primary key or criteria to grab the object.
+     * @param string $column The desired column value.
      *
-     * @return mixed Either the column value if found, or the given primary key
+     * @return mixed Either the column value if found, or the given primary key.
      */
-    protected function renderObject($class, $pk, $column)
+    protected function renderObject(string $class, mixed $pk, string $column)
     {
         if ($pk && $pk != '0') {
             /** @var \xPDO\Om\xPDOObject $object */

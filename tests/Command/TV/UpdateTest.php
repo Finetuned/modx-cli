@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\TV;
+<?php
+
+namespace MODX\CLI\Tests\Command\TV;
 
 use MODX\CLI\Command\TV\Update;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class UpdateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Update();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester without using the Application class to avoid conflicts
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,13 +55,13 @@ class UpdateTest extends BaseTest
             ['type', 'text'],
             ['default_text', 'Default value']
         ]);
-        
+
         // Mock getObject to return existing TV
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modTemplateVar::class, '123', $this->anything())
             ->willReturn($existingTV);
-        
+
         // Mock the runProcessor method to return a successful response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -70,12 +72,12 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Tv\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     // Verify that new data is properly set and types are converted correctly
                     return isset($properties['id']) && $properties['id'] === '123' &&
                            isset($properties['caption']) && $properties['caption'] === 'Updated Caption' &&
@@ -83,13 +85,13 @@ class UpdateTest extends BaseTest
                            isset($properties['category']) && $properties['category'] === 2 && // Converted to int
                            isset($properties['type']) && $properties['type'] === 'textarea' &&
                            isset($properties['default_text']) && $properties['default_text'] === 'Updated default value' &&
-                           isset($properties['templates']) && is_array($properties['templates']) && 
+                           isset($properties['templates']) && is_array($properties['templates']) &&
                            $properties['templates'] === ['1', '2', '3', '4']; // Converted from comma-separated string to array
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command - note we don't need to specify --name anymore
         $this->commandTester->execute([
             'id' => '123',
@@ -100,7 +102,7 @@ class UpdateTest extends BaseTest
             '--default_text' => 'Updated default value',
             '--templates' => '1,2,3,4'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template variable updated successfully', $output);
@@ -114,17 +116,17 @@ class UpdateTest extends BaseTest
             ->method('getObject')
             ->with(\MODX\Revolution\modTemplateVar::class, '999', $this->anything())
             ->willReturn(null);
-        
+
         // runProcessor should not be called since the TV doesn't exist
         $this->modx->expects($this->never())
             ->method('runProcessor');
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '999',
             '--description' => 'Updated description'
         ]);
-        
+
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template Variable with ID 999 not found', $output);
@@ -142,13 +144,13 @@ class UpdateTest extends BaseTest
             ['type', 'text'],
             ['default_text', 'Default value']
         ]);
-        
+
         // Mock getObject to return existing TV
         $this->modx->expects($this->once())
             ->method('getObject')
             ->with(\MODX\Revolution\modTemplateVar::class, '123', $this->anything())
             ->willReturn($existingTV);
-        
+
         // Mock the runProcessor method to return a failed response
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -159,17 +161,17 @@ class UpdateTest extends BaseTest
                 'message' => 'Error updating template variable'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'id' => '123',
             '--description' => 'Updated description'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to update template variable', $output);
@@ -208,7 +210,7 @@ class UpdateTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'Element\Tv\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['elements']) && $properties['elements'] === 'one==1||two==2' &&
                            isset($properties['rank']) && $properties['rank'] === 5 &&
                            isset($properties['display']) && $properties['display'] === 'default' &&

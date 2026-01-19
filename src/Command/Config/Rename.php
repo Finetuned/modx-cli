@@ -13,22 +13,42 @@ class Rename extends BaseCmd
     protected $name = 'config:rename';
     protected $description = 'Rename a MODX instance in the configuration';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'old_name',
                 InputArgument::REQUIRED,
                 'The current name of the instance'
-            ),
-            array(
+            ],
+            [
                 'new_name',
                 InputArgument::REQUIRED,
                 'The new name of the instance'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $oldName = $this->argument('old_name');
@@ -77,9 +97,9 @@ class Rename extends BaseCmd
 
         // Update the default instance if needed
         if ($isDefault) {
-            $instances->set('__default__', array(
+            $instances->set('__default__', [
                 'class' => $newName,
-            ));
+            ]);
         }
 
         $instances->save();

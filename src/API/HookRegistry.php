@@ -15,11 +15,11 @@ class HookRegistry
     /**
      * Register a hook
      *
-     * @param string $name The hook name
-     * @param callable $callback The callback to execute
-     * @return bool True on success
+     * @param string   $name     The hook name.
+     * @param callable $callback The callback to execute.
+     * @return boolean True on success.
      */
-    public function register($name, callable $callback)
+    public function register(string $name, callable $callback): bool
     {
         if (!isset($this->hooks[$name])) {
             $this->hooks[$name] = [];
@@ -33,11 +33,11 @@ class HookRegistry
     /**
      * Unregister a hook
      *
-     * @param string $name The hook name
-     * @param callable|null $callback The callback to unregister (null to unregister all)
-     * @return bool True if hook was unregistered, false if it didn't exist
+     * @param string        $name     The hook name.
+     * @param callable|null $callback The callback to unregister (null to unregister all).
+     * @return boolean True if hook was unregistered, false if it didn't exist.
      */
-    public function unregister($name, ?callable $callback = null)
+    public function unregister(string $name, ?callable $callback = null): bool
     {
         if (!isset($this->hooks[$name])) {
             return false;
@@ -72,10 +72,10 @@ class HookRegistry
     /**
      * Get all callbacks for a hook
      *
-     * @param string $name The hook name
-     * @return callable[] Array of callbacks
+     * @param string $name The hook name.
+     * @return callable[] Array of callbacks.
      */
-    public function get($name)
+    public function get(string $name): array
     {
         return isset($this->hooks[$name]) ? $this->hooks[$name] : [];
     }
@@ -83,10 +83,10 @@ class HookRegistry
     /**
      * Check if a hook exists
      *
-     * @param string $name The hook name
-     * @return bool True if hook exists, false otherwise
+     * @param string $name The hook name.
+     * @return boolean True if hook exists, false otherwise.
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->hooks[$name]) && !empty($this->hooks[$name]);
     }
@@ -94,9 +94,9 @@ class HookRegistry
     /**
      * Get all registered hooks
      *
-     * @return array Array of hook names and callbacks
+     * @return array Array of hook names and callbacks.
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->hooks;
     }
@@ -104,11 +104,11 @@ class HookRegistry
     /**
      * Run all callbacks for a hook
      *
-     * @param string $name The hook name
-     * @param array $args Arguments to pass to the callbacks
-     * @return array Array of results from the callbacks
+     * @param string $name The hook name.
+     * @param array  $args Arguments to pass to the callbacks.
+     * @return array Array of results from the callbacks.
      */
-    public function run($name, array $args = [])
+    public function run(string $name, array $args = []): array
     {
         $results = [];
 

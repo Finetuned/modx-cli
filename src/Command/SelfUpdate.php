@@ -15,10 +15,14 @@ class SelfUpdate extends BaseCmd
 
     protected $name = 'self-update';
     protected $description = 'Update MODX CLI to the latest release';
-    protected $help = 'Self-update MODX CLI when installed as a Phar. Composer installs should be updated via Composer.';
+    protected $help = 'Self-update MODX CLI when installed as a Phar. ' .
+        'Composer installs should be updated via Composer.';
 
     private const API_BASE = 'https://api.github.com/repos/Finetuned/modx-cli';
 
+    /**
+     * Create the command.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -30,58 +34,63 @@ class SelfUpdate extends BaseCmd
      */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'stable',
                 null,
                 InputOption::VALUE_NONE,
                 'Update to latest stable release (default)'
-            ),
-            array(
+            ],
+            [
                 'nightly',
                 null,
                 InputOption::VALUE_NONE,
                 'Update to latest pre-release (alpha/beta)'
-            ),
-            array(
+            ],
+            [
                 'target-version',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Update to a specific version (e.g. 0.6.1)'
-            ),
-            array(
+            ],
+            [
                 'to',
                 't',
                 InputOption::VALUE_REQUIRED,
                 'Alias for --target-version'
-            ),
-            array(
+            ],
+            [
                 'force',
                 null,
                 InputOption::VALUE_NONE,
                 'Update without confirmation'
-            ),
-            array(
+            ],
+            [
                 'dry-run',
                 null,
                 InputOption::VALUE_NONE,
                 'Preview update without executing'
-            ),
-            array(
+            ],
+            [
                 'no-backup',
                 null,
                 InputOption::VALUE_NONE,
                 'Skip creating a backup'
-            ),
-            array(
+            ],
+            [
                 'check',
                 null,
                 InputOption::VALUE_NONE,
                 'Only check for available updates'
-            ),
-        ));
+            ],
+        ]);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $json = (bool) $this->option('json');
@@ -122,7 +131,8 @@ class SelfUpdate extends BaseCmd
 
         if (!$this->isPharInstall()) {
             return $this->fail(
-                'Self-update is only supported for Phar installs. Update with Composer: `composer global update finetuned/modx-cli`.',
+                'Self-update is only supported for Phar installs. ' .
+                'Update with Composer: `composer global update finetuned/modx-cli`.',
                 $json
             );
         }
@@ -151,6 +161,15 @@ class SelfUpdate extends BaseCmd
         return $this->performUpdate($release, $currentVersion, $json, $downloadUrl);
     }
 
+    /**
+     * Handle the --check flow.
+     *
+     * @param boolean $json              Whether JSON output is enabled.
+     * @param string  $currentVersion    The current version.
+     * @param array   $release           The release payload.
+     * @param boolean $isUpdateAvailable Whether an update is available.
+     * @return integer
+     */
     private function handleCheck(bool $json, string $currentVersion, array $release, bool $isUpdateAvailable): int
     {
         if ($json) {
@@ -178,6 +197,14 @@ class SelfUpdate extends BaseCmd
         return 0;
     }
 
+    /**
+     * Handle the no-update case.
+     *
+     * @param boolean $json           Whether JSON output is enabled.
+     * @param string  $currentVersion The current version.
+     * @param array   $release        The release payload.
+     * @return integer
+     */
     private function handleNoUpdate(bool $json, string $currentVersion, array $release): int
     {
         if ($json) {
@@ -194,6 +221,14 @@ class SelfUpdate extends BaseCmd
         return 0;
     }
 
+    /**
+     * Handle the dry-run flow.
+     *
+     * @param boolean $json           Whether JSON output is enabled.
+     * @param string  $currentVersion The current version.
+     * @param array   $release        The release payload.
+     * @return integer
+     */
     private function handleDryRun(bool $json, string $currentVersion, array $release): int
     {
         if ($json) {
@@ -217,6 +252,15 @@ class SelfUpdate extends BaseCmd
         return 0;
     }
 
+    /**
+     * Perform the update process.
+     *
+     * @param array   $release        The release payload.
+     * @param string  $currentVersion The current version.
+     * @param boolean $json           Whether JSON output is enabled.
+     * @param string  $downloadUrl    The download URL.
+     * @return integer
+     */
     private function performUpdate(array $release, string $currentVersion, bool $json, string $downloadUrl): int
     {
         $pharPath = $this->getExecutablePath();
@@ -288,6 +332,11 @@ class SelfUpdate extends BaseCmd
         return 0;
     }
 
+    /**
+     * Resolve the update channel.
+     *
+     * @return string|null
+     */
     private function resolveChannel(): ?string
     {
         $stable = (bool) $this->option('stable');
@@ -304,6 +353,15 @@ class SelfUpdate extends BaseCmd
         return 'stable';
     }
 
+    /**
+     * Resolve the release to install.
+     *
+     * @param string      $channel        The update channel.
+     * @param string|null $targetVersion  The target version.
+     * @param string      $currentVersion The current version.
+     * @param boolean     $json           Whether JSON output is enabled.
+     * @return array|null
+     */
     private function resolveRelease(string $channel, ?string $targetVersion, string $currentVersion, bool $json): ?array
     {
         if ($targetVersion !== null) {
@@ -364,6 +422,13 @@ class SelfUpdate extends BaseCmd
         return $data;
     }
 
+    /**
+     * Fetch a release by tag.
+     *
+     * @param string      $version      The version to fetch.
+     * @param string|null $errorMessage Optional error message output.
+     * @return array|null
+     */
     private function fetchReleaseByTag(string $version, ?string &$errorMessage = null): ?array
     {
         $tag = $version;
@@ -421,6 +486,12 @@ class SelfUpdate extends BaseCmd
         return $normalized;
     }
 
+    /**
+     * Check if a tag exists on GitHub.
+     *
+     * @param string $tag The tag name.
+     * @return boolean
+     */
     private function tagExists(string $tag): bool
     {
         if ($tag === '') {
@@ -432,7 +503,11 @@ class SelfUpdate extends BaseCmd
     }
 
     /**
-     * @param array<int, array<string, mixed>> $releases
+     * Select the latest release.
+     *
+     * @param array<int, array<string, mixed>> $releases          The releases payload.
+     * @param boolean                          $includePrerelease Whether to include pre-releases.
+     * @return array|null
      */
     private function selectLatestRelease(array $releases, bool $includePrerelease): ?array
     {
@@ -462,6 +537,12 @@ class SelfUpdate extends BaseCmd
         return $latest;
     }
 
+    /**
+     * Normalize a release payload.
+     *
+     * @param array $release The raw release payload.
+     * @return array|null
+     */
     private function normalizeRelease(array $release): ?array
     {
         if (empty($release['tag_name']) || empty($release['assets'])) {
@@ -483,7 +564,10 @@ class SelfUpdate extends BaseCmd
     }
 
     /**
-     * @param array<int, array<string, mixed>> $assets
+     * Find the .phar asset in a release.
+     *
+     * @param array<int, array<string, mixed>> $assets The release assets.
+     * @return array|null
      */
     private function findPharAsset(array $assets): ?array
     {
@@ -503,6 +587,14 @@ class SelfUpdate extends BaseCmd
         return null;
     }
 
+    /**
+     * Verify the download checksum if available.
+     *
+     * @param array   $release  The release payload.
+     * @param string  $filePath The downloaded file path.
+     * @param boolean $json     Whether JSON output is enabled.
+     * @return boolean
+     */
     private function verifyChecksum(array $release, string $filePath, bool $json): bool
     {
         $assets = $release['assets'] ?? [];
@@ -546,7 +638,11 @@ class SelfUpdate extends BaseCmd
     }
 
     /**
-     * @param array<int, array<string, mixed>> $assets
+     * Find a checksum asset URL by suffix.
+     *
+     * @param array<int, array<string, mixed>> $assets The release assets.
+     * @param string                           $suffix The filename suffix.
+     * @return string|null
      */
     private function findAssetUrl(array $assets, string $suffix): ?string
     {
@@ -562,6 +658,12 @@ class SelfUpdate extends BaseCmd
         return null;
     }
 
+    /**
+     * Extract a checksum hash from payload.
+     *
+     * @param string $payload The checksum payload.
+     * @return string|null
+     */
     private function extractHash(string $payload): ?string
     {
         if (preg_match('/([a-f0-9]{32,128})/i', $payload, $matches)) {
@@ -571,6 +673,13 @@ class SelfUpdate extends BaseCmd
         return null;
     }
 
+    /**
+     * Verify that the downloaded Phar executes.
+     *
+     * @param string  $pharPath The Phar path.
+     * @param boolean $json     Whether JSON output is enabled.
+     * @return boolean
+     */
     private function verifyPharRuns(string $pharPath, bool $json): bool
     {
         $phpBinary = PHP_BINARY;
@@ -586,6 +695,14 @@ class SelfUpdate extends BaseCmd
         return true;
     }
 
+    /**
+     * Download a file to the target path.
+     *
+     * @param string  $url    The download URL.
+     * @param string  $target The target file path.
+     * @param integer $size   Expected file size.
+     * @return boolean
+     */
     private function downloadFile(string $url, string $target, int $size = 0): bool
     {
         if (!function_exists('curl_init')) {
@@ -745,11 +862,22 @@ class SelfUpdate extends BaseCmd
         return $headers;
     }
 
+    /**
+     * Normalize a version string.
+     *
+     * @param string $version The raw version string.
+     * @return string
+     */
     private function normalizeVersion(string $version): string
     {
         return ltrim($version, 'v');
     }
 
+    /**
+     * Get the current CLI version.
+     *
+     * @return string|null
+     */
     private function getCurrentVersion(): ?string
     {
         $pharPath = \Phar::running(false);
@@ -773,11 +901,21 @@ class SelfUpdate extends BaseCmd
         return null;
     }
 
+    /**
+     * Determine whether running as a Phar.
+     *
+     * @return boolean
+     */
     private function isPharInstall(): bool
     {
         return \Phar::running(false) !== '';
     }
 
+    /**
+     * Get the current executable path.
+     *
+     * @return string
+     */
     private function getExecutablePath(): string
     {
         $path = $_SERVER['argv'][0] ?? '';
@@ -786,6 +924,12 @@ class SelfUpdate extends BaseCmd
         return $resolved ?: $path;
     }
 
+    /**
+     * Render release notes.
+     *
+     * @param string $notes The release notes.
+     * @return void
+     */
     private function renderReleaseNotes(string $notes): void
     {
         if ($notes === '') {
@@ -797,6 +941,13 @@ class SelfUpdate extends BaseCmd
         $this->line($notes);
     }
 
+    /**
+     * Build a backup path for the current Phar.
+     *
+     * @param string $pharPath The Phar path.
+     * @param string $version  The version string.
+     * @return string
+     */
     private function buildBackupPath(string $pharPath, string $version): string
     {
         $safeVersion = str_replace(['/', '\\', ' '], '-', $version);
@@ -808,6 +959,14 @@ class SelfUpdate extends BaseCmd
         return $pharPath . '.' . $safeVersion . '.' . uniqid('', true) . '.backup';
     }
 
+    /**
+     * Restore a backup after a failed update.
+     *
+     * @param boolean $backupCreated Whether a backup exists.
+     * @param string  $backupPath    The backup path.
+     * @param string  $pharPath      The Phar path.
+     * @return void
+     */
     private function restoreBackup(bool $backupCreated, string $backupPath, string $pharPath): void
     {
         if ($backupCreated && file_exists($backupPath)) {
@@ -815,6 +974,12 @@ class SelfUpdate extends BaseCmd
         }
     }
 
+    /**
+     * Format bytes for display.
+     *
+     * @param integer $bytes The number of bytes.
+     * @return string
+     */
     private function formatBytes(int $bytes): string
     {
         if ($bytes <= 0) {
@@ -828,6 +993,13 @@ class SelfUpdate extends BaseCmd
         return round($bytes / pow(1024, $index), 2) . ' ' . $units[$index];
     }
 
+    /**
+     * Emit a failure response.
+     *
+     * @param string  $message The error message.
+     * @param boolean $json    Whether JSON output is enabled.
+     * @return integer
+     */
     private function fail(string $message, bool $json): int
     {
         if ($json) {

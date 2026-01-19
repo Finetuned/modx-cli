@@ -16,11 +16,11 @@ class GetListTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new GetList();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -55,10 +55,10 @@ class GetListTest extends BaseTest
             ->method('getCollection')
             ->with('MODX\\Revolution\\modSession', [], $this->anything())
             ->willReturn([$session]);
-        
+
         // Execute the command
         $this->commandTester->execute([]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('abc123', $output);
@@ -76,10 +76,10 @@ class GetListTest extends BaseTest
             ->method('getCollection')
             ->with('MODX\\Revolution\\modSession', [], $this->anything())
             ->willReturn([]);
-        
+
         // Execute the command
         $this->commandTester->execute([]);
-        
+
         // Command should execute successfully even with no results
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
@@ -104,10 +104,10 @@ class GetListTest extends BaseTest
             ->method('getCollection')
             ->with('MODX\\Revolution\\modSession', [], $this->anything())
             ->willReturn([$session]);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute(['--json' => true]);
-        
+
         // Verify JSON output
         $output = $this->commandTester->getDisplay();
         $data = json_decode($output, true);
@@ -123,7 +123,7 @@ class GetListTest extends BaseTest
         $reflection = new \ReflectionClass($this->command);
         $method = $reflection->getMethod('parseValue');
         $method->setAccessible(true);
-        
+
         // Test timestamp formatting for 'access' column
         $timestamp = '1698768000';
         $result = $method->invoke($this->command, $timestamp, 'access');
@@ -140,11 +140,11 @@ class GetListTest extends BaseTest
         $reflection = new \ReflectionClass($this->command);
         $method = $reflection->getMethod('parseValue');
         $method->setAccessible(true);
-        
+
         // Test empty timestamp for 'access' column
         $result = $method->invoke($this->command, '', 'access');
         $this->assertEquals('', $result);
-        
+
         // Test string timestamp for 'access' column
         $result = $method->invoke($this->command, '2026-01-09 15:10:00', 'access');
         $this->assertEquals('2026-01-09 15:10:00', $result);

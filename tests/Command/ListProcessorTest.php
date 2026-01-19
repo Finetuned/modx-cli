@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command;
+<?php
+
+namespace MODX\CLI\Tests\Command;
 
 use MODX\CLI\Command\ListProcessor;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -14,16 +16,16 @@ class ListProcessorTest extends BaseTest
     protected function setUp(): void
     {
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         $this->command = new class extends ListProcessor {
             protected $processor = 'test/processor';
             protected $headers = ['id', 'name', 'description'];
             protected $name = 'test:list';
             protected $description = 'Test list command';
         };
-        
+
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester without using the Application class to avoid conflicts
         $this->commandTester = new CommandTester($this->command);
     }
@@ -31,12 +33,12 @@ class ListProcessorTest extends BaseTest
     public function testHasPaginationOptions()
     {
         $definition = $this->command->getDefinition();
-        
+
         $this->assertTrue($definition->hasOption('limit'));
         $limitOption = $definition->getOption('limit');
         $this->assertEquals('l', $limitOption->getShortcut());
         $this->assertEquals(10, $limitOption->getDefault());
-        
+
         $this->assertTrue($definition->hasOption('start'));
         $startOption = $definition->getOption('start');
         $this->assertNull($startOption->getShortcut()); // No shortcut to avoid conflict with --ssh
@@ -58,24 +60,24 @@ class ListProcessorTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'test/processor',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['limit']) && $properties['limit'] === 5 &&
                            isset($properties['start']) && $properties['start'] === 10;
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         $this->commandTester->execute([
             '--limit' => '5',
             '--start' => '10'
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('displaying 2 item(s)', $output);
         $this->assertStringContainsString('of 25', $output);

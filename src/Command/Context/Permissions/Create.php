@@ -16,41 +16,58 @@ class Create extends ProcessorCmd
     protected $name = 'context:permissions:create';
     protected $description = 'Create a context access permission';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'context',
                 InputArgument::REQUIRED,
                 'The context key'
-            ),
-            array(
+            ],
+            [
                 'usergroup',
                 InputArgument::REQUIRED,
                 'The user group ID'
-            ),
-            array(
+            ],
+            [
                 'policy',
                 InputArgument::REQUIRED,
                 'The access policy ID'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'authority',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The authority level',
                 0
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $properties['target'] = $this->argument('context');
         $properties['principal'] = $this->argument('usergroup');
@@ -58,7 +75,13 @@ class Create extends ProcessorCmd
         $properties['authority'] = (int) $this->option('authority');
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

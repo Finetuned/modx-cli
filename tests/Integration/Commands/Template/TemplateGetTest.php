@@ -15,27 +15,27 @@ class TemplateGetTest extends BaseIntegrationTest
     public function testTemplateGetExecutesSuccessfully()
     {
         $templateName = 'IntegrationTestTemplate_' . uniqid();
-        
+
         // Create template first
         $this->executeCommandSuccessfully([
             'template:create',
             $templateName,
             '--content=<html><body>Test</body></html>'
         ]);
-        
+
         // Get the template ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
-        
+
         // Get template
         $process = $this->executeCommandSuccessfully([
             'template:get',
             $templateId
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString($templateName, $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
     }
@@ -46,28 +46,28 @@ class TemplateGetTest extends BaseIntegrationTest
     public function testTemplateGetReturnsValidJson()
     {
         $templateName = 'IntegrationTestTemplate_' . uniqid();
-        
+
         // Create template
         $this->executeCommandSuccessfully([
             'template:create',
             $templateName
         ]);
-        
+
         // Get template ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->templatesTable . ' WHERE templatename = ?', [$templateName]);
         $templateId = $rows[0]['id'];
-        
+
         // Get template with JSON
         $data = $this->executeCommandJson([
             'template:get',
             $templateId
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('id', $data);
         $this->assertEquals($templateId, $data['id']);
         $this->assertEquals($templateName, $data['templatename']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->templatesTable . ' WHERE id = ?', [$templateId]);
     }
@@ -81,7 +81,7 @@ class TemplateGetTest extends BaseIntegrationTest
             'template:get',
             '999999'
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertNotEmpty($output);
     }

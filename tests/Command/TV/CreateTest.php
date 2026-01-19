@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\TV;
+<?php
+
+namespace MODX\CLI\Tests\Command\TV;
 
 use MODX\CLI\Command\TV\Create;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class CreateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Create();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,12 +55,12 @@ class CreateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Tv\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['name']) && $properties['name'] === 'TestTV' &&
                            isset($properties['caption']) && $properties['caption'] === 'Test Caption' &&
                            isset($properties['description']) && $properties['description'] === 'Test description' &&
@@ -70,7 +72,7 @@ class CreateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'name' => 'TestTV',
@@ -81,7 +83,7 @@ class CreateTest extends BaseTest
             '--default_text' => 'Default value',
             '--templates' => '1,2,3'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Template variable created successfully', $output);
@@ -100,16 +102,16 @@ class CreateTest extends BaseTest
                 'message' => 'Error creating template variable'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'name' => 'TestTV'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to create template variable', $output);

@@ -16,11 +16,11 @@ class GetListTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new GetList();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -61,17 +61,17 @@ class GetListTest extends BaseTest
                 'total' => 1
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with('Registry\\Message\\GetList')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with required topic argument
         $this->commandTester->execute([
             'topic' => 'test-topic'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('test-topic', $output);
@@ -91,16 +91,16 @@ class GetListTest extends BaseTest
                 'total' => 0
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with required topic argument
         $this->commandTester->execute([
             'topic' => 'test-topic'
         ]);
-        
+
         // Verify the output shows 0 items
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('displaying 0 item(s) of 0', $output);
@@ -120,16 +120,16 @@ class GetListTest extends BaseTest
                 'total' => 0
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with required topic argument
         $this->commandTester->execute([
             'topic' => 'test-topic'
         ]);
-        
+
         // Verify the output - ListProcessor displays empty table for failed responses without field errors
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('displaying 0 item(s) of 0', $output);
@@ -150,19 +150,19 @@ class GetListTest extends BaseTest
                 'total' => 1
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
-            ->with('Registry\\Message\\GetList', $this->callback(function($properties) {
+            ->with('Registry\\Message\\GetList', $this->callback(function ($properties) {
                 return isset($properties['topic']) && $properties['topic'] === 'specific-topic';
             }))
             ->willReturn($processorResponse);
-        
+
         // Execute the command with topic argument
         $this->commandTester->execute([
             'topic' => 'specific-topic'
         ]);
-        
+
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -192,16 +192,16 @@ class GetListTest extends BaseTest
                 'total' => 2
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with required topic argument
         $this->commandTester->execute([
             'topic' => 'test-topic'
         ]);
-        
+
         // Verify both messages are in output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('topic1', $output);

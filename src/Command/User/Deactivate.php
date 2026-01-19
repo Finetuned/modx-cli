@@ -10,22 +10,32 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class Deactivate extends BaseCmd
 {
-    const MODX = true;
+    public const MODX = true;
 
     protected $name = 'user:deactivate';
     protected $description = 'Deactivate a MODX user';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'identifier',
                 InputArgument::REQUIRED,
                 'The user ID or username'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $identifier = $this->argument('identifier');
@@ -47,6 +57,12 @@ class Deactivate extends BaseCmd
         return $this->emitResult(false, 'Failed to deactivate user', $user);
     }
 
+    /**
+     * Fetch a user by identifier.
+     *
+     * @param string $identifier The user ID or username.
+     * @return \MODX\Revolution\modUser|null The user instance, or null when not found.
+     */
     private function getUser(string $identifier)
     {
         if (is_numeric($identifier)) {
@@ -56,7 +72,15 @@ class Deactivate extends BaseCmd
         return $this->modx->getObject(\MODX\Revolution\modUser::class, ['username' => $identifier]);
     }
 
-    private function emitResult(bool $success, string $message, $user): int
+    /**
+     * Emit command output and return exit code.
+     *
+     * @param boolean $success Whether the operation succeeded.
+     * @param string  $message The message to display.
+     * @param mixed   $user    The user instance.
+     * @return integer
+     */
+    private function emitResult(bool $success, string $message, mixed $user): int
     {
         if ($this->option('json')) {
             $this->output->writeln(json_encode([

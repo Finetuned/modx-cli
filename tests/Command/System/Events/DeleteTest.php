@@ -80,7 +80,7 @@ class DeleteTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'System\\Event\\Remove',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['id'] === '10';
                 }),
                 $this->anything()

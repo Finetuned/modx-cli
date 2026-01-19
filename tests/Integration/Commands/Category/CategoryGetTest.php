@@ -15,26 +15,26 @@ class CategoryGetTest extends BaseIntegrationTest
     public function testCategoryGetExecutesSuccessfully()
     {
         $categoryName = 'IntegrationTestCategory_' . uniqid();
-        
+
         // Create category first
         $this->executeCommandSuccessfully([
             'category:create',
             $categoryName
         ]);
-        
+
         // Get the category ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $rows[0]['id'];
-        
+
         // Get category
         $process = $this->executeCommandSuccessfully([
             'category:get',
             $categoryId
         ]);
-        
+
         $output = $process->getOutput();
         $this->assertStringContainsString($categoryName, $output);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
@@ -45,28 +45,28 @@ class CategoryGetTest extends BaseIntegrationTest
     public function testCategoryGetReturnsValidJson()
     {
         $categoryName = 'IntegrationTestCategory_' . uniqid();
-        
+
         // Create category
         $this->executeCommandSuccessfully([
             'category:create',
             $categoryName
         ]);
-        
+
         // Get category ID
         $rows = $this->queryDatabase('SELECT id FROM ' . $this->categoriesTable . ' WHERE category = ?', [$categoryName]);
         $categoryId = $rows[0]['id'];
-        
+
         // Get category with JSON
         $data = $this->executeCommandJson([
             'category:get',
             $categoryId
         ]);
-        
+
         $this->assertIsArray($data);
         $this->assertArrayHasKey('id', $data);
         $this->assertEquals($categoryId, $data['id']);
         $this->assertEquals($categoryName, $data['category']);
-        
+
         // Cleanup
         $this->queryDatabase('DELETE FROM ' . $this->categoriesTable . ' WHERE id = ?', [$categoryId]);
     }
@@ -80,9 +80,9 @@ class CategoryGetTest extends BaseIntegrationTest
             'category:get',
             '999999'
         ]);
-        
+
         $exitCode = $process->getExitCode();
-        
+
         // The command should return non-zero exit code for error
         $this->assertEquals(1, $exitCode, 'Command should return exit code 1 for invalid category ID');
     }

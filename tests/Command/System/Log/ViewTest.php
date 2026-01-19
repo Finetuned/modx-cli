@@ -86,7 +86,7 @@ class ViewTest extends BaseTest
             ->method('runProcessor')
             ->with(
                 'System\\Log\\GetList',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return $properties['level'] === 'ERROR';
                 }),
                 $this->anything()

@@ -1,5 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Category;
+<?php
 
+namespace MODX\CLI\Tests\Command\Category;
 
 use MODX\CLI\Command\Category\Create;
 //use PHPUnit\Framework\TestCase;
@@ -17,11 +18,11 @@ class CreateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Create();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -55,12 +56,12 @@ class CreateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Category\Create',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['category']) && $properties['category'] === 'TestCategory' &&
                            isset($properties['parent']) && $properties['parent'] === '1' &&
                            isset($properties['rank']) && $properties['rank'] === '5';
@@ -68,14 +69,14 @@ class CreateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'category' => 'TestCategory',
             '--parent' => '1',
             '--rank' => '5'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Category created successfully', $output);
@@ -94,16 +95,16 @@ class CreateTest extends BaseTest
                 'message' => 'Error creating category'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
             'category' => 'TestCategory'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to create category', $output);

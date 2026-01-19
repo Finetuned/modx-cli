@@ -16,117 +16,134 @@ class Create extends ProcessorCmd
     protected $name = 'tv:create';
     protected $description = 'Create a MODX template variable';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'name',
                 InputArgument::REQUIRED,
                 'The name of the template variable'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'caption',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The caption of the template variable',
                 ''
-            ),
-            array(
+            ],
+            [
                 'description',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The description of the template variable',
                 ''
-            ),
-            array(
+            ],
+            [
                 'category',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The category ID of the template variable',
                 0
-            ),
-            array(
+            ],
+            [
                 'type',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The input type of the template variable (text, textarea, richtext, etc.)',
                 'text'
-            ),
-            array(
+            ],
+            [
                 'default_text',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The default value of the template variable',
                 ''
-            ),
-            array(
+            ],
+            [
                 'elements',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The possible values for the template variable (for select, radio, etc.)',
                 ''
-            ),
-            array(
+            ],
+            [
                 'rank',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The rank of the template variable',
                 0
-            ),
-            array(
+            ],
+            [
                 'display',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The display type of the template variable',
                 'default'
-            ),
-            array(
+            ],
+            [
                 'templates',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of template IDs to associate with the template variable',
                 ''
-            ),
-            array(
+            ],
+            [
                 'locked',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the template variable is locked (1 or 0)',
                 0
-            ),
-            array(
+            ],
+            [
                 'static',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the template variable is static (1 or 0)',
                 0
-            ),
-            array(
+            ],
+            [
                 'static_file',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The static file path for the template variable',
                 ''
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return void
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Add the name to the properties
         $properties['name'] = $this->argument('name');
 
         // Add options to the properties
-        $optionKeys = array(
+        $optionKeys = [
             'caption', 'description', 'category', 'type', 'default_text', 'elements',
             'rank', 'display', 'templates', 'locked', 'static', 'static_file'
-        );
+        ];
 
         foreach ($optionKeys as $key) {
             if ($this->option($key) !== null) {
@@ -135,12 +152,18 @@ class Create extends ProcessorCmd
         }
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
         }
-        
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Template variable created successfully');
 

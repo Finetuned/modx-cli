@@ -12,35 +12,52 @@ use Symfony\Component\Console\Input\InputOption;
 class Delete extends ProcessorCmd
 {
     protected $processor = 'Resource\Delete';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'resource:delete';
     protected $description = 'Delete a MODX resource (move to trash)';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the resource to delete'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'Force deletion without confirmation'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare processor properties before execution.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null False to abort execution, otherwise null.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         $id = $this->argument('id');
 
@@ -60,9 +77,16 @@ class Delete extends ProcessorCmd
                 return false;
             }
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Process processor response.
+     *
+     * @param array $response The decoded processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);

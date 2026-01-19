@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Config;
+<?php
+
+namespace MODX\CLI\Tests\Command\Config;
 
 use MODX\CLI\Command\Config\Add;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -30,7 +32,7 @@ class AddTest extends BaseTest
         $this->command = new Add();
         $this->command->setApplication($this->app);
         $this->command->setHelperSet($helperSet);
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }

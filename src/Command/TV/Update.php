@@ -12,111 +12,128 @@ use Symfony\Component\Console\Input\InputOption;
 class Update extends ProcessorCmd
 {
     protected $processor = 'Element\Tv\Update';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'tv:update';
     protected $description = 'Update a MODX template variable';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the template variable to update'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'name',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The name of the template variable'
-            ),
-            array(
+            ],
+            [
                 'caption',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The caption of the template variable'
-            ),
-            array(
+            ],
+            [
                 'description',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The description of the template variable'
-            ),
-            array(
+            ],
+            [
                 'category',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The category ID of the template variable'
-            ),
-            array(
+            ],
+            [
                 'type',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The input type of the template variable (text, textarea, richtext, etc.)'
-            ),
-            array(
+            ],
+            [
                 'default_text',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The default value of the template variable'
-            ),
-            array(
+            ],
+            [
                 'elements',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The possible values for the template variable (for select, radio, etc.)'
-            ),
-            array(
+            ],
+            [
                 'rank',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The rank of the template variable'
-            ),
-            array(
+            ],
+            [
                 'display',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The display type of the template variable'
-            ),
-            array(
+            ],
+            [
                 'templates',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of template IDs to associate with the template variable'
-            ),
-            array(
+            ],
+            [
                 'locked',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the template variable is locked (1 or 0)'
-            ),
-            array(
+            ],
+            [
                 'static',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the template variable is static (1 or 0)'
-            ),
-            array(
+            ],
+            [
                 'static_file',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The static file path for the template variable'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Get the TV ID from arguments
         $tvId = (int) $this->argument('id');
-        
+
         // Pre-populate properties with existing TV data to avoid requiring name parameter
         if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modTemplateVar::class, $tvId)) {
             $this->error("Template Variable with ID {$tvId} not found");
@@ -124,29 +141,29 @@ class Update extends ProcessorCmd
         }
 
         // Add options to the properties with type conversion
-        $optionKeys = array(
+        $optionKeys = [
             'name', 'caption', 'description', 'category', 'type', 'default_text', 'elements',
             'rank', 'display', 'templates', 'static_file'
-        );
-        
-        $typeMap = array(
+        ];
+
+        $typeMap = [
             'category' => 'int',
             'rank' => 'int',
             'locked' => 'bool',
             'static' => 'bool'
-        );
+        ];
 
         $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
-        
+
         // Handle boolean fields separately since they need special handling
         if ($this->option('locked') !== null) {
             $properties['locked'] = (int) filter_var($this->option('locked'), FILTER_VALIDATE_BOOLEAN);
         }
-        
+
         if ($this->option('static') !== null) {
             $properties['static'] = (int) filter_var($this->option('static'), FILTER_VALIDATE_BOOLEAN);
         }
-        
+
         // Handle templates field - convert comma-separated string to array if needed
         if ($this->option('templates') !== null) {
             $templates = $this->option('templates');
@@ -156,14 +173,21 @@ class Update extends ProcessorCmd
                 $properties['templates'] = $templates;
             }
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if ($this->option('json')) {
             return parent::processResponse($response);
         }
-        
+
         if (isset($response['success']) && $response['success']) {
             $this->info('Template variable updated successfully');
 

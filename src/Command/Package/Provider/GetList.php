@@ -10,14 +10,21 @@ use MODX\CLI\Command\ListProcessor;
 class GetList extends ListProcessor
 {
     protected $processor = 'Workspace\Providers\GetList';
-    protected $headers = array(
+    protected $headers = [
         'id', 'name', 'service_url', 'username', 'verified'
-    );
+    ];
 
     protected $name = 'package:provider:list';
     protected $description = 'Get a list of package providers in MODX';
 
-    protected function parseValue($value, $column)
+    /**
+     * Format raw values for output.
+     *
+     * @param mixed  $value  The raw column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'verified') {
             return $this->renderBoolean($value);

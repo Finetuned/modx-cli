@@ -35,11 +35,11 @@ class ColoredLog
     /**
      * Format a log entry with colors
      *
-     * @param array $entry
+     * @param array $entry The entry.
      *
      * @return string
      */
-    public function format(array $entry)
+    public function format(array $entry): string
     {
         $level = strtoupper($entry['level']);
         $color = $this->getColorForLevel($level);
@@ -60,11 +60,11 @@ class ColoredLog
     /**
      * Get the color for a log level
      *
-     * @param string $level
+     * @param string $level The level.
      *
      * @return string
      */
-    protected function getColorForLevel($level)
+    protected function getColorForLevel(string $level): string
     {
         return isset($this->levelColors[$level]) ? $this->levelColors[$level] : 'white';
     }
@@ -72,11 +72,11 @@ class ColoredLog
     /**
      * Format multiple log entries with colors
      *
-     * @param array $entries
+     * @param array $entries The entries.
      *
      * @return string
      */
-    public function formatMultiple(array $entries)
+    public function formatMultiple(array $entries): string
     {
         $output = '';
         foreach ($entries as $entry) {

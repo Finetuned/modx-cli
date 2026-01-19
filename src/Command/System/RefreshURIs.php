@@ -14,7 +14,13 @@ class RefreshURIs extends ProcessorCmd
     protected $name = 'system:refreshuris';
     protected $description = 'Refresh URIs in MODX';
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if (isset($response['success']) && $response['success']) {
             $this->info('URIs refreshed successfully');

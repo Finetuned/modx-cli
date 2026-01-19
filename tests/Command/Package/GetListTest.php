@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Package;
+<?php
+
+namespace MODX\CLI\Tests\Command\Package;
 
 use MODX\CLI\Command\Package\GetList;
 use MODX\CLI\Tests\Configuration\BaseTest;
@@ -15,11 +17,11 @@ class GetListTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new GetList();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -81,17 +83,17 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with('Workspace\Packages\GetList')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
         ]);
-        
+
         // Verify the output contains package data
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('package1', $output);
@@ -119,17 +121,17 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command with --json option
         $this->commandTester->execute([
-            
+
             '--json' => true,
         ]);
-        
+
         // Verify the output is valid JSON
         $output = $this->commandTester->getDisplay();
         $decoded = json_decode($output, true);
@@ -157,26 +159,26 @@ class GetListTest extends BaseTest
                 ]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Workspace\Packages\GetList',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['limit']) && $properties['limit'] === 10 &&
                            isset($properties['start']) && $properties['start'] === 20;
                 }),
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command with pagination options
         $this->commandTester->execute([
-            
+
             '--limit' => 10,
             '--start' => 20,
         ]);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('package1', $output);
     }

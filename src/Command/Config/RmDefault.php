@@ -12,6 +12,16 @@ class RmDefault extends BaseCmd
     protected $name = 'config:rm-default';
     protected $description = 'Remove the default MODX instance';
 
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
+    /**
+     * Execute the command.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $instances = $this->getApplication()->instances;

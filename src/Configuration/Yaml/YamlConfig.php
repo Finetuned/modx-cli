@@ -58,10 +58,10 @@ class YamlConfig
     /**
      * Parse a YAML file
      *
-     * @param string $path The path to the YAML file
-     * @return array The parsed YAML data
+     * @param string $path The path to the YAML file.
+     * @return array The parsed YAML data.
      */
-    protected function parseYaml($path)
+    protected function parseYaml(string $path)
     {
         return Yaml::parseFile($path);
     }
@@ -69,7 +69,7 @@ class YamlConfig
     /**
      * Load a YAML configuration file
      *
-     * @param string $path
+     * @param string $path The path to the YAML file.
      * @return array|null
      */
     public function load(string $path): ?array
@@ -89,9 +89,9 @@ class YamlConfig
     /**
      * Save configuration data to a YAML file
      *
-     * @param string $path
-     * @param array $data
-     * @return bool
+     * @param string $path The path to the YAML file.
+     * @param array  $data The configuration data to store.
+     * @return boolean
      */
     public function save(string $path, array $data): bool
     {
@@ -102,7 +102,8 @@ class YamlConfig
     /**
      * Merge new configuration data with existing data
      *
-     * @param array $newConfig The new configuration data
+     * @param array $newConfig The new configuration data.
+     * @return void
      */
     protected function mergeConfig(array $newConfig)
     {
@@ -130,10 +131,10 @@ class YamlConfig
     /**
      * Get a specific alias definition
      *
-     * @param string $name The alias name
-     * @return array|null The alias definition, or null if not found
+     * @param string $name The alias name.
+     * @return array|null The alias definition, or null if not found.
      */
-    public function getAlias($name)
+    public function getAlias(string $name)
     {
         $key = '@' . $name;
 
@@ -153,11 +154,11 @@ class YamlConfig
     /**
      * Get a specific configuration value
      *
-     * @param string $key The configuration key
-     * @param mixed $default The default value to return if the key is not found
-     * @return mixed The configuration value
+     * @param string $key     The configuration key.
+     * @param mixed  $default The default value to return if the key is not found.
+     * @return mixed The configuration value.
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return isset($this->config[$key]) ? $this->config[$key] : $default;
     }

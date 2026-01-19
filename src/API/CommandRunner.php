@@ -2,6 +2,7 @@
 
 namespace MODX\CLI\API;
 
+use MODX\CLI\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,10 +25,10 @@ class CommandRunner
     /**
      * Create a new command runner
      *
-     * @param \MODX\CLI\Application $application The application instance
-     * @param HookRegistry $hookRegistry The hook registry
+     * @param Application  $application  The application instance.
+     * @param HookRegistry $hookRegistry The hook registry.
      */
-    public function __construct($application, HookRegistry $hookRegistry)
+    public function __construct(Application $application, HookRegistry $hookRegistry)
     {
         $this->application = $application;
         $this->hookRegistry = $hookRegistry;
@@ -36,19 +37,18 @@ class CommandRunner
     /**
      * Run a command
      *
-     * @param string $command The command name
-     * @param array $args Command arguments
-     * @param array $options {
-     *     Optional. An associative array of options for command execution.
+     * @param string $command The command name.
+     * @param array  $args    Command arguments.
+     * @param array  $options Execution options for the command.
      *
-     *     @type bool $return Whether to return the command result
-     *     @type bool $exit_error Whether to exit on error
-     *     @type bool $parse Whether to parse the command string
+     *     @type bool $return Whether to return the command result.
+     *     @type bool $exit_error Whether to exit on error.
+     *     @type bool $parse Whether to parse the command string.
      * }
-     * @return mixed Command result if $return is true
-     * @throws \Exception If command execution fails and $exit_error is true
+     * @return mixed Command result if $return is true.
+     * @throws \Exception If command execution fails and $exit_error is true.
      */
-    public function run($command, array $args = [], array $options = [])
+    public function run(string $command, array $args = [], array $options = [])
     {
         // Parse the command if needed
         if (!empty($options['parse']) && is_string($command)) {
@@ -122,10 +122,10 @@ class CommandRunner
     /**
      * Parse a command string into command name and arguments
      *
-     * @param string $command The command string
-     * @return array Array containing command name and arguments
+     * @param string $command The command string.
+     * @return array Array containing command name and arguments.
      */
-    private function parseCommand($command)
+    private function parseCommand(string $command): array
     {
         $args = [];
         $parts = explode(' ', $command);

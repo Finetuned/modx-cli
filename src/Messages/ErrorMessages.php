@@ -11,54 +11,54 @@ namespace MODX\CLI\Messages;
 class ErrorMessages
 {
     // General errors
-    const COMMAND_INIT_FAILED = 'command_init_failed';
-    const COMMAND_NOT_FOUND = 'command_not_found';
-    const OPERATION_ABORTED = 'operation_aborted';
-    const UNKNOWN_ERROR = 'unknown_error';
+    public const COMMAND_INIT_FAILED = 'command_init_failed';
+    public const COMMAND_NOT_FOUND = 'command_not_found';
+    public const OPERATION_ABORTED = 'operation_aborted';
+    public const UNKNOWN_ERROR = 'unknown_error';
 
     // MODX instance errors
-    const MODX_NOT_FOUND = 'modx_not_found';
-    const MODX_VERSION_INCOMPATIBLE = 'modx_version_incompatible';
-    const MODX_INIT_FAILED = 'modx_init_failed';
+    public const MODX_NOT_FOUND = 'modx_not_found';
+    public const MODX_VERSION_INCOMPATIBLE = 'modx_version_incompatible';
+    public const MODX_INIT_FAILED = 'modx_init_failed';
 
     // Processor errors
-    const PROCESSOR_FAILED = 'processor_failed';
-    const PROCESSOR_NOT_FOUND = 'processor_not_found';
-    const PROCESSOR_INVALID_RESPONSE = 'processor_invalid_response';
+    public const PROCESSOR_FAILED = 'processor_failed';
+    public const PROCESSOR_NOT_FOUND = 'processor_not_found';
+    public const PROCESSOR_INVALID_RESPONSE = 'processor_invalid_response';
 
     // Resource errors
-    const RESOURCE_NOT_FOUND = 'resource_not_found';
-    const RESOURCE_CREATE_FAILED = 'resource_create_failed';
-    const RESOURCE_UPDATE_FAILED = 'resource_update_failed';
-    const RESOURCE_DELETE_FAILED = 'resource_delete_failed';
+    public const RESOURCE_NOT_FOUND = 'resource_not_found';
+    public const RESOURCE_CREATE_FAILED = 'resource_create_failed';
+    public const RESOURCE_UPDATE_FAILED = 'resource_update_failed';
+    public const RESOURCE_DELETE_FAILED = 'resource_delete_failed';
 
     // Object errors
-    const OBJECT_NOT_FOUND = 'object_not_found';
-    const OBJECT_CREATE_FAILED = 'object_create_failed';
-    const OBJECT_UPDATE_FAILED = 'object_update_failed';
-    const OBJECT_DELETE_FAILED = 'object_delete_failed';
+    public const OBJECT_NOT_FOUND = 'object_not_found';
+    public const OBJECT_CREATE_FAILED = 'object_create_failed';
+    public const OBJECT_UPDATE_FAILED = 'object_update_failed';
+    public const OBJECT_DELETE_FAILED = 'object_delete_failed';
 
     // Validation errors
-    const INVALID_ARGUMENT = 'invalid_argument';
-    const MISSING_REQUIRED_FIELD = 'missing_required_field';
-    const INVALID_FIELD_VALUE = 'invalid_field_value';
+    public const INVALID_ARGUMENT = 'invalid_argument';
+    public const MISSING_REQUIRED_FIELD = 'missing_required_field';
+    public const INVALID_FIELD_VALUE = 'invalid_field_value';
 
     // Configuration errors
-    const CONFIG_NOT_FOUND = 'config_not_found';
-    const CONFIG_INVALID = 'config_invalid';
-    const CONFIG_WRITE_FAILED = 'config_write_failed';
-    const INSTANCE_NOT_FOUND = 'instance_not_found';
+    public const CONFIG_NOT_FOUND = 'config_not_found';
+    public const CONFIG_INVALID = 'config_invalid';
+    public const CONFIG_WRITE_FAILED = 'config_write_failed';
+    public const INSTANCE_NOT_FOUND = 'instance_not_found';
 
     // SSH/Remote errors
-    const SSH_CONNECTION_FAILED = 'ssh_connection_failed';
-    const SSH_COMMAND_FAILED = 'ssh_command_failed';
-    const ALIAS_NOT_FOUND = 'alias_not_found';
+    public const SSH_CONNECTION_FAILED = 'ssh_connection_failed';
+    public const SSH_COMMAND_FAILED = 'ssh_command_failed';
+    public const ALIAS_NOT_FOUND = 'alias_not_found';
 
     // File system errors
-    const FILE_NOT_FOUND = 'file_not_found';
-    const FILE_NOT_READABLE = 'file_not_readable';
-    const FILE_NOT_WRITABLE = 'file_not_writable';
-    const DIRECTORY_NOT_FOUND = 'directory_not_found';
+    public const FILE_NOT_FOUND = 'file_not_found';
+    public const FILE_NOT_READABLE = 'file_not_readable';
+    public const FILE_NOT_WRITABLE = 'file_not_writable';
+    public const DIRECTORY_NOT_FOUND = 'directory_not_found';
 
     /**
      * @var array Message templates
@@ -118,7 +118,7 @@ class ErrorMessages
     /**
      * Get a message by key
      *
-     * @param string $key Message key
+     * @param string $key Message key.
      * @return string The message template
      */
     public static function get(string $key): string
@@ -129,8 +129,8 @@ class ErrorMessages
     /**
      * Format a message with parameters
      *
-     * @param string $key Message key
-     * @param array $params Parameters to substitute
+     * @param string $key    Message key.
+     * @param array  $params Parameters to substitute.
      * @return string Formatted message
      */
     public static function format(string $key, array $params = []): string
@@ -147,8 +147,8 @@ class ErrorMessages
     /**
      * Check if a message key exists
      *
-     * @param string $key Message key
-     * @return bool True if the key exists
+     * @param string $key Message key.
+     * @return boolean True if the key exists
      */
     public static function has(string $key): bool
     {

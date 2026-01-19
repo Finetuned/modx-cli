@@ -13,36 +13,52 @@ use Symfony\Component\Console\Input\InputOption;
 class Get extends ProcessorCmd
 {
     protected $processor = 'Element\Tv\Get';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'tv:get';
     protected $description = 'Get a MODX template variable';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the template variable to get'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (table, json)',
                 'table'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
         if (!isset($response['object'])) {
             if ($this->option('json') || $this->option('format') === 'json') {
@@ -66,13 +82,13 @@ class Get extends ProcessorCmd
 
         // Default to table format
         $table = new Table($this->output);
-        $table->setHeaders(array('Property', 'Value'));
+        $table->setHeaders(['Property', 'Value']);
 
         // Add basic properties
-        $properties = array(
+        $properties = [
             'id', 'name', 'caption', 'description', 'category', 'type', 'default_text',
             'elements', 'rank', 'display', 'locked', 'static', 'static_file'
-        );
+        ];
 
         foreach ($properties as $property) {
             if (isset($tv[$property])) {
@@ -91,7 +107,7 @@ class Get extends ProcessorCmd
                     }
                 }
 
-                $table->addRow(array($property, $value));
+                $table->addRow([$property, $value]);
             }
         }
 
@@ -105,12 +121,12 @@ class Get extends ProcessorCmd
                 $this->output->writeln("None (available to all templates)");
             } else {
                 $templateTable = new Table($this->output);
-                $templateTable->setHeaders(array('Template ID', 'Template Name'));
+                $templateTable->setHeaders(['Template ID', 'Template Name']);
 
                 foreach ($tv['template_access'] as $templateId) {
                     $template = $this->modx->getObject(\MODX\Revolution\modTemplate::class, $templateId);
                     $templateName = $template ? $template->get('templatename') : 'Unknown';
-                    $templateTable->addRow(array($templateId, $templateName));
+                    $templateTable->addRow([$templateId, $templateName]);
                 }
 
                 $templateTable->render();

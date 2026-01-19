@@ -1,4 +1,6 @@
-<?php namespace MODX\CLI\Tests\Command\Category;
+<?php
+
+namespace MODX\CLI\Tests\Command\Category;
 
 use MODX\CLI\Command\Category\Update;
 //use PHPUnit\Framework\TestCase;
@@ -16,11 +18,11 @@ class UpdateTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Update();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -53,12 +55,12 @@ class UpdateTest extends BaseTest
                 'object' => ['id' => 123]
             ]));
         $processorResponse->method('isError')->willReturn(false);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->with(
                 'Element\Category\Update',
-                $this->callback(function($properties) {
+                $this->callback(function ($properties) {
                     return isset($properties['id']) && $properties['id'] === '123' &&
                            isset($properties['category']) && $properties['category'] === 'Updated Category' &&
                            isset($properties['parent']) && $properties['parent'] === '1' &&
@@ -67,16 +69,16 @@ class UpdateTest extends BaseTest
                 $this->anything()
             )
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
             'id' => '123',
             '--category' => 'Updated Category',
             '--parent' => '1',
             '--rank' => '5'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Category updated successfully', $output);
@@ -95,18 +97,18 @@ class UpdateTest extends BaseTest
                 'message' => 'Error updating category'
             ]));
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->expects($this->once())
             ->method('runProcessor')
             ->willReturn($processorResponse);
-        
+
         // Execute the command
         $this->commandTester->execute([
-            
+
             'id' => '123',
             '--category' => 'Updated Category'
         ]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Failed to update category', $output);

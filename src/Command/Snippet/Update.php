@@ -12,75 +12,92 @@ use Symfony\Component\Console\Input\InputOption;
 class Update extends ProcessorCmd
 {
     protected $processor = 'Element\Snippet\Update';
-    protected $required = array('id');
+    protected $required = ['id'];
 
     protected $name = 'snippet:update';
     protected $description = 'Update a MODX snippet';
 
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
-        return array(
-            array(
+        return [
+            [
                 'id',
                 InputArgument::REQUIRED,
                 'The ID of the snippet to update'
-            ),
-        );
+            ],
+        ];
     }
 
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
-        return array_merge(parent::getOptions(), array(
-            array(
+        return array_merge(parent::getOptions(), [
+            [
                 'name',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The name of the snippet'
-            ),
-            array(
+            ],
+            [
                 'description',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The description of the snippet'
-            ),
-            array(
+            ],
+            [
                 'category',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The category ID of the snippet'
-            ),
-            array(
+            ],
+            [
                 'snippet',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The PHP code of the snippet'
-            ),
-            array(
+            ],
+            [
                 'locked',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the snippet is locked (1 or 0)'
-            ),
-            array(
+            ],
+            [
                 'static',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Whether the snippet is static (1 or 0)'
-            ),
-            array(
+            ],
+            [
                 'static_file',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The static file path for the snippet'
-            ),
-        ));
+            ],
+        ]);
     }
 
-    protected function beforeRun(array &$properties = array(), array &$options = array())
+    /**
+     * Prepare properties before running the processor.
+     *
+     * @param array $properties The processor properties.
+     * @param array $options    The processor options.
+     * @return boolean|null Return false to abort.
+     */
+    protected function beforeRun(array &$properties = [], array &$options = [])
     {
         // Get the snippet ID from arguments
         $snippetId = (int) $this->argument('id');
-        
+
         // Pre-populate properties with existing snippet data to avoid requiring name parameter
         if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modSnippet::class, $snippetId)) {
             $this->error("Snippet with ID {$snippetId} not found");
@@ -88,34 +105,41 @@ class Update extends ProcessorCmd
         }
 
         // Add options to the properties with type conversion
-        $optionKeys = array(
+        $optionKeys = [
             'name', 'description', 'category', 'snippet', 'properties', 'static_file'
-        );
-        
-        $typeMap = array(
+        ];
+
+        $typeMap = [
             'category' => 'int',
             'locked' => 'bool',
             'static' => 'bool'
-        );
+        ];
 
         $this->addOptionsToProperties($properties, $optionKeys, $typeMap);
-        
+
         // Handle locked and static separately since they need special handling
         if ($this->option('locked') !== null) {
             $properties['locked'] = (int) filter_var($this->option('locked'), FILTER_VALIDATE_BOOLEAN);
         }
-        
+
         if ($this->option('static') !== null) {
             $properties['static'] = (int) filter_var($this->option('static'), FILTER_VALIDATE_BOOLEAN);
         }
+        return null;
     }
 
-    protected function processResponse(array $response = array())
+    /**
+     * Handle the processor response.
+     *
+     * @param array $response The processor response.
+     * @return integer
+     */
+    protected function processResponse(array $response = [])
     {
 
         if ($this->option('json')) {
             return parent::processResponse($response);
-        }        
+        }
 
         if (isset($response['success']) && $response['success']) {
             $this->info('Snippet updated successfully');

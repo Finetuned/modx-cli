@@ -10,14 +10,21 @@ use MODX\CLI\Command\ListProcessor;
 class GetList extends ListProcessor
 {
     protected $processor = 'Workspace\Packages\GetList';
-    protected $headers = array(
+    protected $headers = [
         'signature', 'name', 'version', 'release', 'installed', 'provider'
-    );
+    ];
 
     protected $name = 'package:list';
     protected $description = 'Get a list of packages in MODX';
 
-    protected function parseValue($value, $column)
+    /**
+     * Parse column values for display.
+     *
+     * @param mixed  $value  The column value.
+     * @param string $column The column name.
+     * @return mixed
+     */
+    protected function parseValue(mixed $value, string $column)
     {
         if ($column === 'installed') {
             return $value ? date('Y-m-d H:i:s', strtotime($value)) : 'Not installed';

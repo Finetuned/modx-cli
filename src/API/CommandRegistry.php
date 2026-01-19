@@ -17,13 +17,13 @@ class CommandRegistry
     /**
      * Register a command
      *
-     * @param string $name The command name
-     * @param callable|object|string $callable The command implementation
-     * @param array $args Additional arguments for the command
-     * @return bool True on success, false if deferred
-     * @throws \Exception If registration fails
+     * @param string                 $name     The command name.
+     * @param callable|object|string $callable The command implementation.
+     * @param array                  $args     Additional arguments for the command.
+     * @return boolean True on success, false if deferred.
+     * @throws \Exception If registration fails.
      */
-    public function register($name, $callable, array $args = [])
+    public function register(string $name, $callable, array $args = []): bool
     {
         // Check if command is deferred
         if (!empty($args['is_deferred'])) {
@@ -52,10 +52,10 @@ class CommandRegistry
     /**
      * Unregister a command
      *
-     * @param string $name The command name
-     * @return bool True if command was unregistered, false if it didn't exist
+     * @param string $name The command name.
+     * @return boolean True if command was unregistered, false if it didn't exist.
      */
-    public function unregister($name)
+    public function unregister(string $name): bool
     {
         if (isset($this->commands[$name])) {
             unset($this->commands[$name]);
@@ -67,10 +67,10 @@ class CommandRegistry
     /**
      * Get a command by name
      *
-     * @param string $name The command name
-     * @return Command|null The command instance or null if not found
+     * @param string $name The command name.
+     * @return Command|null The command instance or null if not found.
      */
-    public function get($name)
+    public function get(string $name): ?Command
     {
         if (isset($this->commands[$name])) {
             $command = $this->commands[$name];
@@ -91,10 +91,10 @@ class CommandRegistry
     /**
      * Check if a command exists
      *
-     * @param string $name The command name
-     * @return bool True if command exists, false otherwise
+     * @param string $name The command name.
+     * @return boolean True if command exists, false otherwise.
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->commands[$name]);
     }
@@ -102,9 +102,9 @@ class CommandRegistry
     /**
      * Get all registered commands
      *
-     * @return Command[] Array of command instances
+     * @return Command[] Array of command instances.
      */
-    public function getAll()
+    public function getAll(): array
     {
         $commands = [];
 
@@ -126,13 +126,13 @@ class CommandRegistry
     /**
      * Create a command instance
      *
-     * @param string $name The command name
-     * @param callable|object|string $callable The command implementation
-     * @param array $args Additional arguments for the command
-     * @return Command The command instance
-     * @throws \Exception If command creation fails
+     * @param string                 $name     The command name.
+     * @param callable|object|string $callable The command implementation.
+     * @param array                  $args     Additional arguments for the command.
+     * @return Command The command instance.
+     * @throws \Exception If command creation fails.
      */
-    private function createCommand($name, $callable, array $args = [])
+    private function createCommand(string $name, $callable, array $args = []): Command
     {
         // Handle different types of callables
         if (is_string($callable) && class_exists($callable)) {

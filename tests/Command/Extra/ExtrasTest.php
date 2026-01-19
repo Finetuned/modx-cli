@@ -16,11 +16,11 @@ class ExtrasTest extends BaseTest
     {
         // Create a mock MODX object
         $this->modx = $this->createMock('MODX\Revolution\modX');
-        
+
         // Create the command
         $this->command = new Extras();
         $this->command->modx = $this->modx;
-        
+
         // Create a command tester
         $this->commandTester = new CommandTester($this->command);
     }
@@ -42,10 +42,10 @@ class ExtrasTest extends BaseTest
             ->method('getCollection')
             ->with(\MODX\Revolution\modNamespace::class, $this->anything(), $this->anything())
             ->willReturn([]);
-        
+
         // Execute the command
         $this->commandTester->execute([]);
-        
+
         // Verify the output
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('No namespaces found', $output);
@@ -62,29 +62,29 @@ class ExtrasTest extends BaseTest
             ['name', 'core'],
             ['path', '/path/to/core'],
         ]);
-        
+
         // Mock getCollection to return core namespace
         $this->modx->method('getCollection')
-            ->willReturnCallback(function($class) use ($namespace) {
+            ->willReturnCallback(function ($class) use ($namespace) {
                 if ($class === \MODX\Revolution\modNamespace::class) {
                     return [$namespace];
                 }
                 return []; // For transport.modTransportPackage calls
             });
-        
+
         // Mock runProcessor for package list
         $processorResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
         $processorResponse->method('isError')->willReturn(false);
         $processorResponse->method('getResponse')->willReturn(json_encode(['results' => []]));
-        
+
         $this->modx->method('runProcessor')->willReturn($processorResponse);
         $this->modx->method('getObject')->willReturn(null);
-        
+
         // Execute the command
         $this->commandTester->execute([]);
-        
+
         // Verify the output (core namespace should be skipped)
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('No extras found', $output);
@@ -101,7 +101,7 @@ class ExtrasTest extends BaseTest
             ['name', 'myextra'],
             ['path', '/path/to/myextra'],
         ]);
-        
+
         $namespace2 = $this->getMockBuilder('stdClass')
             ->addMethods(['get'])
             ->getMock();
@@ -109,13 +109,13 @@ class ExtrasTest extends BaseTest
             ['name', 'anotherextra'],
             ['path', '/path/to/anotherextra'],
         ]);
-        
+
         // Mock getCollection to return namespaces
         $this->modx->expects($this->once())
             ->method('getCollection')
             ->with(\MODX\Revolution\modNamespace::class, $this->anything(), $this->anything())
             ->willReturn([$namespace1, $namespace2]);
-        
+
         // Mock runProcessor for package list
         $processorResponse = $this->getMockBuilder('MODX\Revolution\Processors\ProcessorResponse')
             ->disableOriginalConstructor()
@@ -132,15 +132,15 @@ class ExtrasTest extends BaseTest
                 ]
             ]
         ]));
-        
+
         $this->modx->method('runProcessor')->willReturn($processorResponse);
-        
+
         // Mock getObject for namespace without package
         $this->modx->method('getObject')->willReturn(null);
-        
+
         // Execute the command
         $this->commandTester->execute([]);
-        
+
         // Verify the output contains table headers and data
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Name', $output);
@@ -162,28 +162,28 @@ class ExtrasTest extends BaseTest
             ['name', 'testextra'],
             ['path', '/path/to/testextra'],
         ]);
-        
+
         // Mock getCollection
         $this->modx->method('getCollection')
-            ->willReturnCallback(function($class) use ($namespace) {
+            ->willReturnCallback(function ($class) use ($namespace) {
                 if ($class === \MODX\Revolution\modNamespace::class) {
                     return [$namespace];
                 }
                 return []; // For transport.modTransportPackage calls
             });
-        
+
         // Mock runProcessor to return error
         $processorResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
         $processorResponse->method('isError')->willReturn(true);
-        
+
         $this->modx->method('runProcessor')->willReturn($processorResponse);
         $this->modx->method('getObject')->willReturn(null);
-        
+
         // Execute the command - should still work with fallback
         $this->commandTester->execute([]);
-        
+
         // Should display the extra with "Unknown" version
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('testextra', $output);
@@ -201,7 +201,7 @@ class ExtrasTest extends BaseTest
             ['name', 'zebra'],
             ['path', '/path/to/zebra'],
         ]);
-        
+
         $namespace2 = $this->getMockBuilder('stdClass')
             ->addMethods(['get'])
             ->getMock();
@@ -209,29 +209,29 @@ class ExtrasTest extends BaseTest
             ['name', 'alpha'],
             ['path', '/path/to/alpha'],
         ]);
-        
+
         // Mock getCollection
         $this->modx->method('getCollection')
-            ->willReturnCallback(function($class) use ($namespace1, $namespace2) {
+            ->willReturnCallback(function ($class) use ($namespace1, $namespace2) {
                 if ($class === \MODX\Revolution\modNamespace::class) {
                     return [$namespace1, $namespace2];
                 }
                 return []; // For transport.modTransportPackage calls
             });
-        
+
         // Mock runProcessor
         $processorResponse = $this->getMockBuilder('MODX\\Revolution\\Processors\\ProcessorResponse')
             ->disableOriginalConstructor()
             ->getMock();
         $processorResponse->method('isError')->willReturn(false);
         $processorResponse->method('getResponse')->willReturn(json_encode(['results' => []]));
-        
+
         $this->modx->method('runProcessor')->willReturn($processorResponse);
         $this->modx->method('getObject')->willReturn(null);
-        
+
         // Execute the command
         $this->commandTester->execute([]);
-        
+
         // Verify both extras are in output (sorting is internal, hard to test output order)
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('alpha', $output);
@@ -249,7 +249,7 @@ class ExtrasTest extends BaseTest
         ]);
 
         $this->modx->method('getCollection')
-            ->willReturnCallback(function($class) use ($namespace) {
+            ->willReturnCallback(function ($class) use ($namespace) {
                 if ($class === \MODX\Revolution\modNamespace::class) {
                     return [$namespace];
                 }

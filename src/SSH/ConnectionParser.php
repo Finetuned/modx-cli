@@ -44,10 +44,10 @@ class ConnectionParser
     /**
      * ConnectionParser constructor.
      *
-     * @param string $connectionString The SSH connection string to parse
-     * @param string|null $sshConfigPath Optional SSH config path override
+     * @param string      $connectionString The SSH connection string to parse.
+     * @param string|null $sshConfigPath    Optional SSH config path override.
      */
-    public function __construct($connectionString, $sshConfigPath = null)
+    public function __construct(string $connectionString, ?string $sshConfigPath = null)
     {
         $this->original = $connectionString;
         $this->sshConfigPath = $sshConfigPath;
@@ -57,9 +57,9 @@ class ConnectionParser
     /**
      * Parse the connection string into its components
      *
-     * @param string $connectionString The SSH connection string to parse
+     * @param string $connectionString The SSH connection string to parse.
      */
-    protected function parse($connectionString)
+    protected function parse(string $connectionString): void
     {
         // Handle SSH config aliases
         if (!preg_match('/[@:]/', $connectionString) && $this->isSSHAlias($connectionString)) {
@@ -72,7 +72,9 @@ class ConnectionParser
             list($this->user, $connectionString) = explode('@', $connectionString, 2);
         } else {
             // If no user is specified, use the current system user
-            $this->user = function_exists('posix_getpwuid') ? posix_getpwuid(posix_geteuid())['name'] : get_current_user();
+            $this->user = function_exists('posix_getpwuid')
+                ? posix_getpwuid(posix_geteuid())['name']
+                : get_current_user();
         }
 
         // Extract host and port
@@ -104,10 +106,10 @@ class ConnectionParser
     /**
      * Check if the given name is an SSH alias defined in ~/.ssh/config
      *
-     * @param string $name The name to check
-     * @return bool True if the name is an SSH alias, false otherwise
+     * @param string $name The name to check.
+     * @return boolean True if the name is an SSH alias, false otherwise.
      */
-    protected function isSSHAlias($name)
+    protected function isSSHAlias(string $name): bool
     {
         $sshConfigPath = $this->getSSHConfigPath();
 
@@ -124,7 +126,7 @@ class ConnectionParser
      *
      * @return string
      */
-    protected function getSSHConfigPath()
+    protected function getSSHConfigPath(): string
     {
         if ($this->sshConfigPath) {
             return $this->sshConfigPath;
@@ -142,7 +144,7 @@ class ConnectionParser
      *
      * @return string The user's home directory
      */
-    protected function getHomeDir()
+    protected function getHomeDir(): string
     {
         // Try to get the home directory from environment variables
         if (isset($_SERVER['HOME'])) {
@@ -191,7 +193,7 @@ class ConnectionParser
     /**
      * Get the port for SSH connection
      *
-     * @return int The port
+     * @return integer The port
      */
     public function getPort()
     {
@@ -211,7 +213,7 @@ class ConnectionParser
     /**
      * Check if this is an SSH config alias
      *
-     * @return bool True if this is an SSH config alias, false otherwise
+     * @return boolean True if this is an SSH config alias, false otherwise
      */
     public function isAlias()
     {

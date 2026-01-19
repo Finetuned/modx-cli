@@ -112,8 +112,8 @@ class FieldMappings
     /**
      * Get field mapping for a class
      *
-     * @param string $class MODX object class name
-     * @return array Field mapping array
+     * @param string $class MODX object class name.
+     * @return array Field mapping array.
      */
     public static function get(string $class): array
     {
@@ -141,8 +141,8 @@ class FieldMappings
     /**
      * Check if a mapping exists for a class
      *
-     * @param string $class MODX object class name
-     * @return bool True if mapping exists
+     * @param string $class MODX object class name.
+     * @return boolean True if mapping exists.
      */
     public static function has(string $class): bool
     {
@@ -154,8 +154,8 @@ class FieldMappings
     /**
      * Set a custom field mapping for a class
      *
-     * @param string $class MODX object class name
-     * @param array $mapping Field mapping array
+     * @param string $class   MODX object class name.
+     * @param array  $mapping Field mapping array.
      * @return void
      */
     public static function set(string $class, array $mapping): void
@@ -166,8 +166,8 @@ class FieldMappings
     /**
      * Merge custom mapping with default mapping
      *
-     * @param string $class MODX object class name
-     * @param array $mapping Additional field mappings
+     * @param string $class   MODX object class name.
+     * @param array  $mapping Additional field mappings.
      * @return void
      */
     public static function extend(string $class, array $mapping): void
@@ -258,7 +258,7 @@ class FieldMappings
     /**
      * Save custom mappings to user configuration file
      *
-     * @return bool True if saved successfully
+     * @return boolean True if saved successfully
      */
     public static function save(): bool
     {
