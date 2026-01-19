@@ -1,8 +1,11 @@
 <?php
 
-use MODX\CLI\TreeBuilder;
+namespace MODX\CLI\Tests;
 
-class TreeBuilderTest extends \PHPUnit_Framework_TestCase
+use MODX\CLI\TreeBuilder;
+use PHPUnit\Framework\TestCase;
+
+class TreeBuilderTest extends TestCase
 {
     public function testConstruct()
     {

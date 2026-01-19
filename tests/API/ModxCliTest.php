@@ -9,7 +9,7 @@ use MODX\CLI\API\MODX_CLI;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 
-class MODX_CLITest extends TestCase
+class ModxCliTest extends TestCase
 {
     protected function setUp(): void
     {
