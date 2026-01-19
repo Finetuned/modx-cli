@@ -74,6 +74,15 @@ When a MODX instance is configured and set as default, many commands become avai
 - `tv:create` - Create a MODX template variable
 - `tv:update` - Update a MODX template variable (supports partial updates)
 - `user:list` - Get a list of users
+- `user:get` - Get a user by ID or username
+- `user:create` - Create a user
+- `user:update` - Update a user
+- `user:remove` - Remove a user
+- `user:activate` - Activate a user
+- `user:deactivate` - Deactivate a user
+- `user:block` - Block a user
+- `user:unblock` - Unblock a user
+- `user:resetpassword` - Reset a user password
 - `package:list` - Get a list of packages (supports pagination)
 - `crawl` - Crawl resources to prime their caches
 - And many more
