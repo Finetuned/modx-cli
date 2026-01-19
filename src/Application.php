@@ -71,6 +71,9 @@ class Application extends BaseApp
 
     public function __construct()
     {
+        // Suppress deprecation notices from the MODX core during CLI runs.
+        error_reporting(error_reporting() & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
         $this->instances = new Configuration\Instance();
         // Change the "context" if executing the command on a specific instance
         $this->handleForcedInstance();
