@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MODX 3.x Installation Configuration File
+  
+  This file is used with the `modx install` command to automate MODX 3.x setup.
+  
+  Usage:
+    modx install /path/to/project --setup --setup-config=install-config.xml
+  
+  Or with custom installer:
+    modx install /path/to/project install-config.xml \
+      --installer=gitify \
+      --installer-command="gitify modx:install {target} --config={config}"
+-->
+<modx>
+    <!-- Database Configuration -->
+    <database_type>mysql</database_type>
+    <database_server>localhost</database_server>
+    <database>modx3_db</database>
+    <database_user>modx_user</database_user>
+    <database_password>your_secure_password_here</database_password>
+    
+    <!-- Database Character Sets (MODX 3.x uses UTF-8MB4 by default) -->
+    <database_connection_charset>utf8mb4</database_connection_charset>
+    <database_charset>utf8mb4</database_charset>
+    <database_collation>utf8mb4_unicode_ci</database_collation>
+    <table_prefix>modx_</table_prefix>
+    
+    <!-- Host Configuration -->
+    <http_host>example.com</http_host>
+    <https_port>443</https_port>
+    
+    <!-- MODX Installation Settings -->
+    <language>en</language>
+    <cache_disabled>0</cache_disabled>
+    <inplace>1</inplace>
+    <unpacked>0</unpacked>
+    
+    <!-- Manager Administrator Account -->
+    <cmsadmin>admin</cmsadmin>
+    <cmspassword>YourSecurePassword123!</cmspassword>
+    <cmsadminemail>admin@example.com</cmsadminemail>
+    
+    <!-- Core Path Configuration
+         Default: core/
+         You can specify a custom path relative to the installation directory
+         or an absolute path starting with /
+    -->
+    <core_path>core/</core_path>
+    
+    <!-- Manager Directory
+         Default: manager/
+         The name of the manager directory (must be relative to installation root)
+    -->
+    <context_mgr_path>manager/</context_mgr_path>
+    <context_mgr_url>/manager/</context_mgr_url>
+    
+    <!-- Connectors Path -->
+    <context_connectors_path>connectors/</context_connectors_path>
+    <context_connectors_url>/connectors/</context_connectors_url>
+    
+    <!-- Web Context (Frontend) -->
+    <context_web_path>/</context_web_path>
+    <context_web_url>/</context_web_url>
+    
+    <!-- Cleanup
+         Remove setup directory after successful installation
+    -->
+    <remove_setup_directory>true</remove_setup_directory>
+</modx>
+
+<!--
+  ENVIRONMENT-SPECIFIC EXAMPLES:
+  
+  DEVELOPMENT:
+  - database_server: localhost
+  - http_host: localhost:8080 or dev.example.local
+  - cache_disabled: 1 (optional, for active development)
+  - cmspassword: simpler password acceptable
+  
+  STAGING:
+  - database_server: staging-db.example.com
+  - http_host: staging.example.com
+  - cache_disabled: 0
+  - Strong password required
+  
+  PRODUCTION:
+  - database_server: production-db.example.com (or RDS endpoint)
+  - http_host: example.com
+  - cache_disabled: 0
+  - Very strong password required
+  - Consider custom core_path for added security (e.g., /var/www/modx-core/)
+  - Consider renaming manager directory (e.g., admin/)
+  
+  SECURITY NOTES:
+  - Never commit this file with actual passwords to version control
+  - Use environment-specific config files (e.g., install-config.dev.xml, install-config.prod.xml)
+  - Ensure database user has appropriate permissions (CREATE, ALTER, DROP, SELECT, INSERT, UPDATE, DELETE)
+  - After installation, secure or remove this configuration file
+  
+  MODX 3.x REQUIREMENTS:
+  - PHP 8.0 or higher
+  - MySQL 5.7.8+ or MariaDB 10.2.2+
+  - Apache 2.4+ or Nginx 1.18+
+  - Required PHP extensions: pdo, pdo_mysql, gd, json, zip, simplexml, curl
+-->

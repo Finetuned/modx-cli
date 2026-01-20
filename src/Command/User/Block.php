@@ -81,9 +81,9 @@ class Block extends BaseCmd
     /**
      * Emit command output and return exit code.
      *
-     * @param boolean                              $success Whether the operation succeeded.
-     * @param string                               $message The message to display.
-     * @param \MODX\Revolution\modUser|null $user The user instance.
+     * @param boolean                       $success Whether the operation succeeded.
+     * @param string                        $message The message to display.
+     * @param \MODX\Revolution\modUser|null $user    The user instance.
      * @param \xPDO\Om\xPDOObject|null      $profile The profile instance.
      * @return integer
      */
@@ -92,8 +92,7 @@ class Block extends BaseCmd
         string $message,
         ?\MODX\Revolution\modUser $user,
         ?\xPDO\Om\xPDOObject $profile
-    ): int
-    {
+    ): int {
         if ($this->option('json')) {
             $this->output->writeln(json_encode([
                 'success' => $success,
