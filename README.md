@@ -335,7 +335,7 @@ modx --ssh=user@example.com:/path/to/modx system:info
 
 #### Aliases
 
-Define aliases in `~/.modx/config.yml` or `modx-cli.yml` in your project directory:
+Define aliases in `~/.config/modx-cli/config.yml` or `modx-cli.yml` in your project directory:
 
 ```yaml
 @prod:

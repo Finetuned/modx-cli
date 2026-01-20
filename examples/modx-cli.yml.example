@@ -1,5 +1,5 @@
 # Example MODX CLI configuration file
-# Save this as ~/.modx/config.yml for global configuration
+# Save this as ~/.config/modx-cli/config.yml for global configuration
 # or as modx-cli.yml in your project directory for project-specific configuration
 
 # SSH aliases for different environments

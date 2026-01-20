@@ -32,7 +32,7 @@ class YamlConfig
      */
     protected function loadGlobalConfig()
     {
-        $globalConfigPath = $this->getHomeDir() . '/.modx/config.yml';
+        $globalConfigPath = $this->getHomeDir() . '/.config/modx-cli/config.yml';
         if (file_exists($globalConfigPath)) {
             $parsed = $this->parseYaml($globalConfigPath);
             if (is_array($parsed)) {

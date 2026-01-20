@@ -54,7 +54,7 @@ Aliases provide a way to define shortcuts for commonly used MODX installations. 
 
 Aliases are defined in YAML configuration files:
 
-- Global aliases: `~/.modx/config.yml`
+- Global aliases: `~/.config/modx-cli/config.yml`
 - Project-specific aliases: `modx-cli.yml` in the project directory
 
 Project-specific aliases override global aliases with the same name.
