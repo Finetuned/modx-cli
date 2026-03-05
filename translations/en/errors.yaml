@@ -1,0 +1,52 @@
+# Error Messages - English
+# This file contains all error messages for the MODX CLI
+
+# General errors
+command_init_failed: 'Unable to initialize the command'
+command_not_found: 'Command not found'
+operation_aborted: 'Operation aborted'
+unknown_error: 'An unknown error occurred'
+
+# MODX instance errors
+modx_not_found: 'MODX instance not found. Please configure a MODX instance first.'
+modx_version_incompatible: 'MODX version {current} is not compatible. Minimum required: {required}'
+modx_init_failed: 'Failed to initialize MODX'
+
+# Processor errors
+processor_failed: 'Something went wrong while executing the processor'
+processor_not_found: 'Processor "{processor}" not found'
+processor_invalid_response: 'Invalid response from processor'
+
+# Resource errors
+resource_not_found: 'Resource with ID {id} not found'
+resource_create_failed: 'Failed to create resource'
+resource_update_failed: 'Failed to update resource with ID {id}'
+resource_delete_failed: 'Failed to delete resource with ID {id}'
+
+# Object errors
+object_not_found: '{class} with ID {id} not found'
+object_create_failed: 'Failed to create {class}'
+object_update_failed: 'Failed to update {class} with ID {id}'
+object_delete_failed: 'Failed to delete {class} with ID {id}'
+
+# Validation errors
+invalid_argument: 'Invalid argument: {argument}'
+missing_required_field: 'Missing required field: {field}'
+invalid_field_value: 'Invalid value for field "{field}": {value}'
+
+# Configuration errors
+config_not_found: 'Configuration file not found'
+config_invalid: 'Invalid configuration'
+config_write_failed: 'Failed to write configuration file'
+instance_not_found: 'Instance "{instance}" not found'
+
+# SSH/Remote errors
+ssh_connection_failed: 'Failed to connect to SSH host: {host}'
+ssh_command_failed: 'SSH command failed'
+alias_not_found: 'Alias "{alias}" not found'
+
+# File system errors
+file_not_found: 'File not found: {path}'
+file_not_readable: 'File is not readable: {path}'
+file_not_writable: 'File is not writable: {path}'
+directory_not_found: 'Directory not found: {path}'

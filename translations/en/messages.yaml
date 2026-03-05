@@ -1,0 +1,33 @@
+# General Messages - English
+# This file contains general UI messages and prompts
+
+# Confirmation prompts
+confirm_delete: 'Are you sure you want to delete {item}?'
+confirm_continue: 'Do you want to continue?'
+confirm_overwrite: 'File already exists. Overwrite?'
+
+# Operation status
+operation_success: 'Operation completed successfully'
+operation_cancelled: 'Operation cancelled'
+operation_in_progress: 'Operation in progress...'
+
+# Common UI text
+yes: 'Yes'
+no: 'No'
+cancel: 'Cancel'
+continue: 'Continue'
+back: 'Back'
+next: 'Next'
+finish: 'Finish'
+
+# Progress indicators
+processing: 'Processing...'
+loading: 'Loading...'
+saving: 'Saving...'
+deleting: 'Deleting...'
+updating: 'Updating...'
+
+# Pluralization examples
+users_found: '{0} No users found|{1} One user found|]1,Inf[ %count% users found'
+files_processed: '{1} Processed one file|]1,Inf[ Processed %count% files'
+items_selected: '{0} No items selected|{1} One item selected|]1,Inf[ %count% items selected'

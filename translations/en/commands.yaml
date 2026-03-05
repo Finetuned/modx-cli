@@ -1,0 +1,16 @@
+# Command Messages - English
+# This file contains command descriptions, help text, and success messages
+
+# Placeholder structure - will be populated during Phase 3 migration
+# Example structure:
+# user:
+#   create:
+#     description: 'Create a new user'
+#     help: 'This command creates a new user with the specified credentials'
+#     success: 'User {username} created successfully'
+#     prompts:
+#       username: 'Enter username'
+#       email: 'Enter email address'
+#       password: 'Enter password'
+
+# This file will be populated as commands are migrated to use translations
