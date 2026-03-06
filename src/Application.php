@@ -138,6 +138,16 @@ class Application extends BaseApp
             new InputOption('--log-file', null, InputOption::VALUE_REQUIRED, 'Write logs to specified file')
         );
 
+        // Internationalization option
+        $def->addOption(
+            new InputOption(
+                '--locale',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Set the locale for translations (e.g., en, es, fr, de)'
+            )
+        );
+
         return $def;
     }
 
@@ -544,6 +554,14 @@ class Application extends BaseApp
     {
         if (!$this->logger) {
             $this->initializeLogger();
+        }
+
+        // Configure locale if specified
+        if ($input->hasParameterOption('--locale')) {
+            $locale = $input->getParameterOption('--locale');
+            if ($locale && is_string($locale)) {
+                \MODX\CLI\Translation\TranslationManager::getInstance()->setLocale($locale);
+            }
         }
 
         // Map Symfony Console verbosity to Logger verbosity
