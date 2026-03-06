@@ -2,11 +2,13 @@
 
 namespace MODX\CLI\Messages;
 
+use MODX\CLI\Translation\TranslationManager;
+
 /**
  * Centralized error messages for MODX CLI
  *
  * This class provides a single source of truth for all error messages,
- * making them easier to maintain and prepare for future internationalization.
+ * with support for internationalization via TranslationManager.
  */
 class ErrorMessages
 {
@@ -119,10 +121,22 @@ class ErrorMessages
      * Get a message by key
      *
      * @param string $key Message key.
+     * @param bool $useTranslation Whether to use translation system (default: true)
      * @return string The message template
      */
-    public static function get(string $key): string
+    public static function get(string $key, bool $useTranslation = true): string
     {
+        if ($useTranslation) {
+            $translator = TranslationManager::getInstance()->getTranslator();
+            $translated = $translator->trans($key, [], 'errors');
+            
+            // If translation is found (not same as key), return it
+            if ($translated !== $key) {
+                return $translated;
+            }
+        }
+        
+        // Fallback to hardcoded messages
         return self::$messages[$key] ?? $key;
     }
 
@@ -131,11 +145,23 @@ class ErrorMessages
      *
      * @param string $key    Message key.
      * @param array  $params Parameters to substitute.
+     * @param bool $useTranslation Whether to use translation system (default: true)
      * @return string Formatted message
      */
-    public static function format(string $key, array $params = []): string
+    public static function format(string $key, array $params = [], bool $useTranslation = true): string
     {
-        $message = self::get($key);
+        if ($useTranslation) {
+            $translator = TranslationManager::getInstance()->getTranslator();
+            $message = $translator->trans($key, $params, 'errors');
+            
+            // If translation is found (not same as key), return it
+            if ($message !== $key) {
+                return $message;
+            }
+        }
+        
+        // Fallback to hardcoded messages with parameter substitution
+        $message = self::$messages[$key] ?? $key;
 
         foreach ($params as $k => $v) {
             $message = str_replace('{' . $k . '}', (string)$v, $message);
