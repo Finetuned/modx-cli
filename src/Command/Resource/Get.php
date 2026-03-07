@@ -64,11 +64,11 @@ class Get extends ProcessorCmd
             if ($this->option('json') || $this->option('format') === 'json') {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => 'Resource not found'
+                    'message' => $this->trans('resource.get.not_found', [], 'commands')
                 ], JSON_PRETTY_PRINT));
                 return 1;
             }
-            $this->error('Resource not found');
+            $this->error($this->trans('resource.get.not_found', [], 'commands'));
             return 1;
         }
 

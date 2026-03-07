@@ -64,7 +64,7 @@ class Erase extends ProcessorCmd
         // Get the resource to display information
         $resource = $this->modx->getObject(\MODX\Revolution\modResource::class, $id);
         if (!$resource) {
-            $this->error("Resource with ID {$id} not found");
+            $this->error($this->trans('resource_not_found', ['%id%' => $id], 'errors'));
             return false;
         }
 
@@ -73,8 +73,8 @@ class Erase extends ProcessorCmd
 
         // Check if resource is in trash
         if (!$isDeleted) {
-            $this->error("Resource '{$pagetitle}' (ID: {$id}) is not in the trash");
-            $this->info("Use 'resource:delete' to move it to trash first");
+            $this->error($this->trans('resource.erase.not_in_trash', ['%pagetitle%' => $pagetitle, '%id%' => $id], 'commands'));
+            $this->info($this->trans('resource.erase.use_delete_hint', [], 'commands'));
             return false;
         }
 
@@ -83,10 +83,10 @@ class Erase extends ProcessorCmd
 
         // Confirm erase unless --force is used
         if (!$this->option('force')) {
-            $this->error('WARNING: This operation is irreversible!');
+            $this->error($this->trans('resource.erase.irreversible_warning', [], 'commands'));
             $message = "Are you sure you want to permanently erase resource '{$pagetitle}' (ID: {$id}) from trash?";
             if (!$this->confirm($message)) {
-                $this->info('Operation aborted');
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
@@ -106,10 +106,10 @@ class Erase extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Resource erased successfully (permanently deleted)');
+            $this->info($this->trans('resource.erase.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to erase resource');
+            $this->error($this->trans('resource.erase.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

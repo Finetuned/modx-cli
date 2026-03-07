@@ -64,7 +64,7 @@ class Delete extends ProcessorCmd
         // Get the resource to display information
         $resource = $this->modx->getObject(\MODX\Revolution\modResource::class, $id);
         if (!$resource) {
-            $this->error("Resource with ID {$id} not found");
+            $this->error($this->trans('resource_not_found', ['%id%' => $id], 'errors'));
             return false;
         }
 
@@ -73,7 +73,7 @@ class Delete extends ProcessorCmd
         // Confirm deletion unless --force is used
         if (!$this->option('force')) {
             if (!$this->confirm("Are you sure you want to delete resource '{$pagetitle}' (ID: {$id})?")) {
-                $this->info('Operation aborted');
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
@@ -93,10 +93,10 @@ class Delete extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Resource deleted successfully (moved to trash)');
+            $this->info($this->trans('resource.delete.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to delete resource');
+            $this->error($this->trans('resource.delete.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

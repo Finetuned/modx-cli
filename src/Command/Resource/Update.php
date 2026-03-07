@@ -106,7 +106,7 @@ class Update extends ProcessorCmd
 
         // Pre-populate properties with existing resource data to avoid requiring name parameter
         if (!$this->prePopulateFromExisting($properties, \MODX\Revolution\modResource::class, $resourceId)) {
-            $this->error("Resource with ID {$resourceId} not found");
+            $this->error($this->trans('resource_not_found', ['%id%' => $resourceId], 'errors'));
             return false;
         }
 
@@ -161,14 +161,14 @@ class Update extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Resource updated successfully');
+            $this->info($this->trans('resource.update.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Resource ID: ' . $response['object']['id']);
             }
             return 0;
         } else {
-            $this->error('Failed to update resource');
+            $this->error($this->trans('resource.update.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

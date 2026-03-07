@@ -155,14 +155,14 @@ class Create extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Resource created successfully');
+            $this->info($this->trans('resource.create.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['id'])) {
                 $this->info('Resource ID: ' . $response['object']['id']);
             }
             return 0;
         } else {
-            $this->error('Failed to create resource');
+            $this->error($this->trans('resource_create_failed', [], 'errors'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
