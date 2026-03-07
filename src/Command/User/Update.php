@@ -91,13 +91,13 @@ class Update extends ProcessorCmd
             $properties['id'] = (int)$identifier;
             $user = $this->modx->getObject(\MODX\Revolution\modUser::class, $properties['id']);
             if (!$user) {
-                $this->error("User not found: {$identifier}");
+                $this->error($this->trans('user_not_found', ['%identifier%' => $identifier], 'errors'));
                 return false;
             }
         } else {
             $user = $this->modx->getObject(\MODX\Revolution\modUser::class, ['username' => $identifier]);
             if (!$user) {
-                $this->error("User not found: {$identifier}");
+                $this->error($this->trans('user_not_found', ['%identifier%' => $identifier], 'errors'));
                 return false;
             }
             $properties['id'] = $user->get('id');
@@ -164,20 +164,20 @@ class Update extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('User updated successfully');
+            $this->info($this->trans('user.update.success', [], 'commands'));
 
             if (isset($response['object'])) {
                 $user = $response['object'];
                 if (isset($user['id'])) {
-                    $this->info('User ID: ' . $user['id']);
+                    $this->info($this->trans('user.update.user_id_label', [], 'commands') . $user['id']);
                 }
                 if (isset($user['username'])) {
-                    $this->info('Username: ' . $user['username']);
+                    $this->info($this->trans('user.update.username_label', [], 'commands') . $user['username']);
                 }
             }
             return 0;
         } else {
-            $this->error('Failed to update user');
+            $this->error($this->trans('user.update.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

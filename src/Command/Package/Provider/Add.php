@@ -102,14 +102,14 @@ class Add extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Provider added successfully');
+            $this->info($this->trans('package.provider.add.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['id'])) {
-                $this->info('Provider ID: ' . $response['object']['id']);
+                $this->info($this->trans('package.provider.add.id_label', [], 'commands') . $response['object']['id']);
             }
             return 0;
         } else {
-            $this->error('Failed to add provider');
+            $this->error($this->trans('package.provider.add.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

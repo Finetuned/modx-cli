@@ -49,7 +49,7 @@ class Get extends ProcessorCmd
             // For username lookup, we need to find the user first
             $user = $this->modx->getObject(\MODX\Revolution\modUser::class, ['username' => $identifier]);
             if (!$user) {
-                $this->error("User not found: {$identifier}");
+                $this->error($this->trans('user_not_found', ['%identifier%' => $identifier], 'errors'));
                 return false;
             }
             $properties['id'] = $user->get('id');
@@ -72,23 +72,25 @@ class Get extends ProcessorCmd
         if (isset($response['success']) && $response['success']) {
             if (isset($response['object'])) {
                 $user = $response['object'];
-                $this->info('ID:          ' . ($user['id'] ?? ''));
-                $this->info('Username:    ' . ($user['username'] ?? ''));
-                $this->info('Email:       ' . ($user['email'] ?? ''));
-                $this->info('Full Name:   ' . ($user['fullname'] ?? ''));
-                $this->info('Active:      ' . ($user['active'] ? 'Yes' : 'No'));
-                $this->info('Blocked:     ' . ($user['blocked'] ? 'Yes' : 'No'));
-                $this->info('Sudo:        ' . (isset($user['sudo']) && $user['sudo'] ? 'Yes' : 'No'));
+                $yes = $this->trans('yes', [], 'messages');
+                $no  = $this->trans('no', [], 'messages');
+                $this->info($this->trans('user.get.label_id', [], 'commands') . ($user['id'] ?? ''));
+                $this->info($this->trans('user.get.label_username', [], 'commands') . ($user['username'] ?? ''));
+                $this->info($this->trans('user.get.label_email', [], 'commands') . ($user['email'] ?? ''));
+                $this->info($this->trans('user.get.label_fullname', [], 'commands') . ($user['fullname'] ?? ''));
+                $this->info($this->trans('user.get.label_active', [], 'commands') . ($user['active'] ? $yes : $no));
+                $this->info($this->trans('user.get.label_blocked', [], 'commands') . ($user['blocked'] ? $yes : $no));
+                $this->info($this->trans('user.get.label_sudo', [], 'commands') . (isset($user['sudo']) && $user['sudo'] ? $yes : $no));
                 if (isset($user['createdon']) && is_numeric($user['createdon'])) {
-                    $this->info('Created:     ' . date('Y-m-d H:i:s', (int)$user['createdon']));
+                    $this->info($this->trans('user.get.label_createdon', [], 'commands') . date('Y-m-d H:i:s', (int)$user['createdon']));
                 }
                 if (isset($user['lastlogin']) && is_numeric($user['lastlogin']) && $user['lastlogin'] > 0) {
-                    $this->info('Last Login:  ' . date('Y-m-d H:i:s', (int)$user['lastlogin']));
+                    $this->info($this->trans('user.get.label_lastlogin', [], 'commands') . date('Y-m-d H:i:s', (int)$user['lastlogin']));
                 }
             }
             return 0;
         } else {
-            $this->error('Failed to get user');
+            $this->error($this->trans('user.get.failed', [], 'commands'));
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

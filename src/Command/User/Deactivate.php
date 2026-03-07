@@ -41,20 +41,20 @@ class Deactivate extends BaseCmd
         $identifier = $this->argument('identifier');
         $user = $this->getUser($identifier);
         if (!$user) {
-            $this->error("User not found: {$identifier}");
+            $this->error($this->trans('user_not_found', ['%identifier%' => $identifier], 'errors'));
             return 1;
         }
 
         if ((int) $user->get('active') === 0) {
-            return $this->emitResult(true, 'User is already inactive', $user);
+            return $this->emitResult(true, $this->trans('user.deactivate.already_inactive', [], 'commands'), $user);
         }
 
         $user->set('active', 0);
         if ($user->save()) {
-            return $this->emitResult(true, 'User deactivated', $user);
+            return $this->emitResult(true, $this->trans('user.deactivate.success', [], 'commands'), $user);
         }
 
-        return $this->emitResult(false, 'Failed to deactivate user', $user);
+        return $this->emitResult(false, $this->trans('user.deactivate.failed', [], 'commands'), $user);
     }
 
     /**

@@ -41,27 +41,27 @@ class Unblock extends BaseCmd
         $identifier = $this->argument('identifier');
         $user = $this->getUser($identifier);
         if (!$user) {
-            $this->error("User not found: {$identifier}");
+            $this->error($this->trans('user_not_found', ['%identifier%' => $identifier], 'errors'));
             return 1;
         }
 
         $profile = $user->getOne('Profile');
         if (!$profile) {
-            $this->error('User profile not found');
+            $this->error($this->trans('user_profile_not_found', [], 'errors'));
             return 1;
         }
 
         if ((int) $profile->get('blocked') === 0) {
-            return $this->emitResult(true, 'User is not blocked', $user, $profile);
+            return $this->emitResult(true, $this->trans('user.unblock.not_blocked', [], 'commands'), $user, $profile);
         }
 
         $profile->set('blocked', 0);
         $profile->set('blockeduntil', 0);
         if ($profile->save()) {
-            return $this->emitResult(true, 'User unblocked', $user, $profile);
+            return $this->emitResult(true, $this->trans('user.unblock.success', [], 'commands'), $user, $profile);
         }
 
-        return $this->emitResult(false, 'Failed to unblock user', $user, $profile);
+        return $this->emitResult(false, $this->trans('user.unblock.failed', [], 'commands'), $user, $profile);
     }
 
     /**

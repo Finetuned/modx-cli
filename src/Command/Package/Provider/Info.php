@@ -75,7 +75,7 @@ class Info extends ProcessorCmd
     {
         // GetList returns 'results' array instead of 'object'
         if (!isset($response['results']) || empty($response['results'])) {
-            $this->error('Provider not found');
+            $this->error($this->trans('package.provider.info.not_found', [], 'commands'));
             return 1;
         }
 

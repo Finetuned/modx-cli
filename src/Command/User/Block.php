@@ -41,26 +41,26 @@ class Block extends BaseCmd
         $identifier = $this->argument('identifier');
         $user = $this->getUser($identifier);
         if (!$user) {
-            $this->error("User not found: {$identifier}");
+            $this->error($this->trans('user_not_found', ['%identifier%' => $identifier], 'errors'));
             return 1;
         }
 
         $profile = $user->getOne('Profile');
         if (!$profile) {
-            $this->error('User profile not found');
+            $this->error($this->trans('user_profile_not_found', [], 'errors'));
             return 1;
         }
 
         if ((int) $profile->get('blocked') === 1) {
-            return $this->emitResult(true, 'User is already blocked', $user, $profile);
+            return $this->emitResult(true, $this->trans('user.block.already_blocked', [], 'commands'), $user, $profile);
         }
 
         $profile->set('blocked', 1);
         if ($profile->save()) {
-            return $this->emitResult(true, 'User blocked', $user, $profile);
+            return $this->emitResult(true, $this->trans('user.block.success', [], 'commands'), $user, $profile);
         }
 
-        return $this->emitResult(false, 'Failed to block user', $user, $profile);
+        return $this->emitResult(false, $this->trans('user.block.failed', [], 'commands'), $user, $profile);
     }
 
     /**

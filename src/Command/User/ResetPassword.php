@@ -74,7 +74,7 @@ class ResetPassword extends ProcessorCmd
         // Get the user to display information
         $user = $this->modx->getObject(\MODX\Revolution\modUser::class, $id);
         if (!$user) {
-            $this->error("User with ID {$id} not found");
+            $this->error($this->trans('user.resetpassword.not_found', ['%id%' => $id], 'commands'));
             return false;
         }
 
@@ -92,7 +92,7 @@ class ResetPassword extends ProcessorCmd
         } else {
             $password = $this->option('password');
             if (!$password) {
-                $password = $this->secret('Enter new password for user ' . $username . ':');
+                $password = $this->secret($this->trans('user.resetpassword.prompt', ['%username%' => $username], 'commands'));
             }
         }
 
@@ -118,14 +118,14 @@ class ResetPassword extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Password reset successfully');
+            $this->info($this->trans('user.resetpassword.success', [], 'commands'));
 
             if (isset($this->password)) {
-                $this->info('New password: ' . $this->password);
+                $this->info($this->trans('user.resetpassword.new_password_label', [], 'commands') . $this->password);
             }
             return 0;
         } else {
-            $this->error('Failed to reset password');
+            $this->error($this->trans('user.resetpassword.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

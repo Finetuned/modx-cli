@@ -88,13 +88,13 @@ class Create extends ProcessorCmd
         // Validate email is provided
         $email = $this->option('email');
         if (!$email) {
-            $this->error('Email is required. Use --email=<address>');
+            $this->error($this->trans('user.create.email_required', [], 'commands'));
             return false;
         }
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->error('Invalid email format');
+            $this->error($this->trans('user.create.invalid_email', [], 'commands'));
             return false;
         }
 
@@ -106,7 +106,7 @@ class Create extends ProcessorCmd
         $password = $this->option('password');
         if (!$password) {
             $password = $this->generatePassword();
-            $this->info('Generated password: ' . $password);
+            $this->info($this->trans('user.create.generated_password', ['%password%' => $password], 'commands'));
         }
         $properties['password'] = $password;
         $properties['passwordnotifymethod'] = 'none';
@@ -139,20 +139,20 @@ class Create extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('User created successfully');
+            $this->info($this->trans('user.create.success', [], 'commands'));
 
             if (isset($response['object'])) {
                 $user = $response['object'];
                 if (isset($user['id'])) {
-                    $this->info('User ID: ' . $user['id']);
+                    $this->info($this->trans('user.create.user_id_label', [], 'commands') . $user['id']);
                 }
                 if (isset($user['username'])) {
-                    $this->info('Username: ' . $user['username']);
+                    $this->info($this->trans('user.create.username_label', [], 'commands') . $user['username']);
                 }
             }
             return 0;
         } else {
-            $this->error('Failed to create user');
+            $this->error($this->trans('user.create.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

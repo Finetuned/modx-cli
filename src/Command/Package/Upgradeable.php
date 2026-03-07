@@ -67,7 +67,7 @@ class Upgradeable extends ListProcessor
         }
 
         if (empty($upgradeable)) {
-            $this->info('No upgradeable packages found');
+            $this->info($this->trans('package.upgradeable.none_found', [], 'commands'));
             return 0;
         }
 

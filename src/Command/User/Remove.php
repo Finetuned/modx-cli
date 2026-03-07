@@ -70,7 +70,7 @@ class Remove extends ProcessorCmd
         }
 
         if (!$user) {
-            $this->error("User not found: {$identifier}");
+            $this->error($this->trans('user_not_found', ['%identifier%' => $identifier], 'errors'));
             return false;
         }
 
@@ -82,12 +82,12 @@ class Remove extends ProcessorCmd
         // Ask for confirmation unless --force is used
         if (!$this->option('force')) {
             $confirmed = $this->confirm(
-                "Are you sure you want to remove the user '{$username}' (ID: {$userId})?",
+                $this->trans('user.remove.confirm', ['%username%' => $username, '%id%' => $userId], 'commands'),
                 false
             );
 
             if (!$confirmed) {
-                $this->info('User removal cancelled');
+                $this->info($this->trans('user.remove.cancelled', [], 'commands'));
                 exit(0);
             }
         }
@@ -120,7 +120,7 @@ class Remove extends ProcessorCmd
         $this->handleColumns();
 
         if ($this->beforeRun($properties, $options) === false) {
-            $this->info('Operation aborted');
+            $this->info($this->trans('operation_aborted', [], 'errors'));
             return 0;
         }
 
@@ -154,7 +154,7 @@ class Remove extends ProcessorCmd
     private function removeUserDirectly(): int
     {
         if (!$this->userForRemoval) {
-            $this->error('Failed to remove user');
+            $this->error($this->trans('user.remove.failed', [], 'commands'));
             return 1;
         }
 
@@ -171,7 +171,7 @@ class Remove extends ProcessorCmd
                     ],
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->info('User removed successfully');
+                $this->info($this->trans('user.remove.success', [], 'commands'));
             }
             return 0;
         }
@@ -179,10 +179,10 @@ class Remove extends ProcessorCmd
         if ($this->option('json')) {
             $this->output->writeln(json_encode([
                 'success' => false,
-                'message' => 'Failed to remove user',
+                'message' => $this->trans('user.remove.failed', [], 'commands'),
             ], JSON_PRETTY_PRINT));
         } else {
-            $this->error('Failed to remove user');
+            $this->error($this->trans('user.remove.failed', [], 'commands'));
         }
 
         return 1;
@@ -201,10 +201,10 @@ class Remove extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('User removed successfully');
+            $this->info($this->trans('user.remove.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to remove user');
+            $this->error($this->trans('user.remove.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

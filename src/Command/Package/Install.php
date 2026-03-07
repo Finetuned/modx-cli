@@ -75,10 +75,7 @@ class Install extends ProcessorCmd
 
         // If package not found and auto-download is enabled, try to download it
         if (!$package && !$this->option('no-download')) {
-            $this->info(
-                "Package '{$signature}' not found locally. " .
-                'Attempting to download...'
-            );
+            $this->info($this->trans('package.install.downloading', ['%signature%' => $signature], 'commands'));
 
             if ($this->downloadPackage($signature)) {
                 // Try to get the package again after download
@@ -88,35 +85,32 @@ class Install extends ProcessorCmd
                 );
 
                 if ($package) {
-                    $this->info("Package downloaded successfully");
+                    $this->info($this->trans('package.install.download_success', [], 'commands'));
                 }
             } else {
-                $this->error("Failed to download package '{$signature}'");
+                $this->error($this->trans('package.install.download_failed', ['%signature%' => $signature], 'commands'));
                 return false;
             }
         }
 
         if (!$package) {
-            $this->error("Package with signature '{$signature}' not found");
+            $this->error($this->trans('package.install.not_found', ['%signature%' => $signature], 'commands'));
             if ($this->option('no-download')) {
-                $this->error(
-                    "Auto-download is disabled. Use 'package:download {$signature}' " .
-                    'to download it first.'
-                );
+                $this->error($this->trans('package.install.download_disabled', ['%signature%' => $signature], 'commands'));
             }
             return false;
         }
 
         // Check if the package is already installed
         if ($package->get('installed') !== null) {
-            $this->error("Package '{$signature}' is already installed");
+            $this->error($this->trans('package.install.already_installed', ['%signature%' => $signature], 'commands'));
             return false;
         }
 
         // Confirm installation unless --force is used
         if (!$this->option('force')) {
-            if (!$this->confirm("Are you sure you want to install package '{$signature}'?")) {
-                $this->info('Operation aborted');
+            if (!$this->confirm($this->trans('package.install.confirm', ['%signature%' => $signature], 'commands'))) {
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
@@ -136,10 +130,10 @@ class Install extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Package installed successfully');
+            $this->info($this->trans('package.install.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to install package');
+            $this->error($this->trans('package.install.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

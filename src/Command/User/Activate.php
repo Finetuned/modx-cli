@@ -41,20 +41,20 @@ class Activate extends BaseCmd
         $identifier = $this->argument('identifier');
         $user = $this->getUser($identifier);
         if (!$user) {
-            $this->error("User not found: {$identifier}");
+            $this->error($this->trans('user_not_found', ['%identifier%' => $identifier], 'errors'));
             return 1;
         }
 
         if ((int) $user->get('active') === 1) {
-            return $this->emitResult(true, 'User is already active', $user);
+            return $this->emitResult(true, $this->trans('user.activate.already_active', [], 'commands'), $user);
         }
 
         $user->set('active', 1);
         if ($user->save()) {
-            return $this->emitResult(true, 'User activated', $user);
+            return $this->emitResult(true, $this->trans('user.activate.success', [], 'commands'), $user);
         }
 
-        return $this->emitResult(false, 'Failed to activate user', $user);
+        return $this->emitResult(false, $this->trans('user.activate.failed', [], 'commands'), $user);
     }
 
     /**

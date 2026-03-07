@@ -65,7 +65,7 @@ class Download extends ProcessorCmd
         $currentPackageSignature = $this->findSignatureByPackageName($upgradeablePackages, $signature);
 
         if (!$currentPackageSignature) {
-            $this->error("Package not found in upgradeable packages: {$signature}");
+            $this->error($this->trans('package.download.not_found', ['%signature%' => $signature], 'commands'));
             return false;
         }
 
@@ -75,7 +75,7 @@ class Download extends ProcessorCmd
         ]);
 
         if (!$packageObject) {
-            $this->error("Failed to retrieve package object for: {$currentPackageSignature}");
+            $this->error($this->trans('package.download.package_object_failed', ['%signature%' => $currentPackageSignature], 'commands'));
             return false;
         }
 
@@ -83,7 +83,7 @@ class Download extends ProcessorCmd
         /** @var \MODX\Revolution\Transport\modTransportProvider $provider */
         $provider = $packageObject->getOne('Provider');
         if (!$provider) {
-            $this->error("Failed to retrieve provider from package object");
+            $this->error($this->trans('package.download.provider_failed', [], 'commands'));
             return false;
         }
 
@@ -91,7 +91,7 @@ class Download extends ProcessorCmd
         $latest = $provider->latest($packageObject->get('signature'));
 
         if (!is_array($latest) || empty($latest)) {
-            $this->error("Failed to retrieve package data from provider service using signature: {$signature}");
+            $this->error($this->trans('package.download.provider_data_failed', ['%signature%' => $signature], 'commands'));
             return false;
         }
 
@@ -116,7 +116,7 @@ class Download extends ProcessorCmd
         if (!$this->option('force')) {
             $message = "Download package '{$signature}' from provider '{$providerName}'?";
             if (!$this->confirm($message)) {
-                $this->info('Operation aborted');
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
@@ -142,10 +142,10 @@ class Download extends ProcessorCmd
 
         if (isset($response['success']) && $response['success']) {
             $signature = $this->argument('signature');
-            $this->info("Package {$signature} downloaded successfully");
+            $this->info($this->trans('package.download.success', ['%signature%' => $signature], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to download package');
+            $this->error($this->trans('package.download.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);
