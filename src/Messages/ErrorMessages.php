@@ -152,19 +152,23 @@ class ErrorMessages
     {
         if ($useTranslation) {
             $translator = TranslationManager::getInstance()->getTranslator();
-            $message = $translator->trans($key, $params, 'errors');
-            
+            $translatorParams = [];
+            foreach ($params as $k => $v) {
+                $translatorParams['%' . trim($k, '%') . '%'] = $v;
+            }
+            $message = $translator->trans($key, $translatorParams, 'errors');
+
             // If translation is found (not same as key), return it
             if ($message !== $key) {
                 return $message;
             }
         }
-        
+
         // Fallback to hardcoded messages with parameter substitution
         $message = self::$messages[$key] ?? $key;
 
         foreach ($params as $k => $v) {
-            $message = str_replace('{' . $k . '}', (string)$v, $message);
+            $message = str_replace('{' . trim($k, '%') . '}', (string)$v, $message);
         }
 
         return $message;
