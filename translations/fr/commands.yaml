@@ -17,3 +17,84 @@ resource:
     failed: 'Échec de l''effacement de la ressource'
   get:
     not_found: 'Ressource introuvable'
+
+user:
+  create:
+    success: 'Utilisateur créé avec succès'
+    failed: 'Échec de la création de l''utilisateur'
+    email_required: 'L''adresse e-mail est requise. Utilisez --email=<adresse>'
+    invalid_email: 'Format d''adresse e-mail invalide'
+    generated_password: 'Mot de passe généré : %password%'
+    user_id_label: 'ID utilisateur : '
+    username_label: 'Nom d''utilisateur : '
+  update:
+    success: 'Utilisateur mis à jour avec succès'
+    failed: 'Échec de la mise à jour de l''utilisateur'
+    user_id_label: 'ID utilisateur : '
+    username_label: 'Nom d''utilisateur : '
+  get:
+    failed: 'Échec de la récupération de l''utilisateur'
+    label_id: 'ID : '
+    label_username: 'Nom d''utilisateur : '
+    label_email: 'E-mail : '
+    label_fullname: 'Nom complet : '
+    label_active: 'Actif : '
+    label_blocked: 'Bloqué : '
+    label_sudo: 'Sudo : '
+    label_createdon: 'Créé le : '
+    label_lastlogin: 'Dernière connexion : '
+  activate:
+    success: 'Utilisateur activé'
+    failed: 'Échec de l''activation de l''utilisateur'
+    already_active: 'L''utilisateur est déjà actif'
+  deactivate:
+    success: 'Utilisateur désactivé'
+    failed: 'Échec de la désactivation de l''utilisateur'
+    already_inactive: 'L''utilisateur est déjà inactif'
+  block:
+    success: 'Utilisateur bloqué'
+    failed: 'Échec du blocage de l''utilisateur'
+    already_blocked: 'L''utilisateur est déjà bloqué'
+  unblock:
+    success: 'Utilisateur débloqué'
+    failed: 'Échec du déblocage de l''utilisateur'
+    not_blocked: 'L''utilisateur n''est pas bloqué'
+  remove:
+    confirm: 'Êtes-vous sûr de vouloir supprimer l''utilisateur "%username%" (ID : %id%) ?'
+    cancelled: 'Suppression de l''utilisateur annulée'
+    success: 'Utilisateur supprimé avec succès'
+    failed: 'Échec de la suppression de l''utilisateur'
+  resetpassword:
+    not_found: 'Utilisateur avec l''ID %id% introuvable'
+    prompt: 'Entrez le nouveau mot de passe pour l''utilisateur %username% :'
+    success: 'Mot de passe réinitialisé avec succès'
+    new_password_label: 'Nouveau mot de passe : '
+    failed: 'Échec de la réinitialisation du mot de passe'
+
+package:
+  download:
+    success: 'Package %signature% téléchargé avec succès'
+    failed: 'Échec du téléchargement du package'
+    not_found: 'Package introuvable dans les packages pouvant être mis à niveau : %signature%'
+    package_object_failed: 'Échec de la récupération de l''objet package pour : %signature%'
+    provider_failed: 'Échec de la récupération du fournisseur depuis l''objet package'
+    provider_data_failed: 'Échec de la récupération des données du package depuis le service fournisseur pour la signature : %signature%'
+  install:
+    success: 'Package installé avec succès'
+    failed: 'Échec de l''installation du package'
+    not_found: 'Package avec la signature "%signature%" introuvable'
+    downloading: 'Package "%signature%" introuvable localement. Tentative de téléchargement...'
+    download_success: 'Package téléchargé avec succès'
+    download_failed: 'Échec du téléchargement du package "%signature%"'
+    download_disabled: 'Le téléchargement automatique est désactivé. Utilisez "package:download %signature%" pour le télécharger d''abord.'
+    already_installed: 'Le package "%signature%" est déjà installé'
+    confirm: 'Êtes-vous sûr de vouloir installer le package "%signature%" ?'
+  upgradeable:
+    none_found: 'Aucun package pouvant être mis à niveau trouvé'
+  provider:
+    add:
+      success: 'Fournisseur ajouté avec succès'
+      failed: 'Échec de l''ajout du fournisseur'
+      id_label: 'ID du fournisseur : '
+    info:
+      not_found: 'Fournisseur introuvable'

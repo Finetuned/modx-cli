@@ -19,3 +19,84 @@ resource:
     failed: 'Failed to erase resource'
   get:
     not_found: 'Resource not found'
+
+user:
+  create:
+    success: 'User created successfully'
+    failed: 'Failed to create user'
+    email_required: 'Email is required. Use --email=<address>'
+    invalid_email: 'Invalid email format'
+    generated_password: 'Generated password: %password%'
+    user_id_label: 'User ID: '
+    username_label: 'Username: '
+  update:
+    success: 'User updated successfully'
+    failed: 'Failed to update user'
+    user_id_label: 'User ID: '
+    username_label: 'Username: '
+  get:
+    failed: 'Failed to get user'
+    label_id: 'ID: '
+    label_username: 'Username: '
+    label_email: 'Email: '
+    label_fullname: 'Full Name: '
+    label_active: 'Active: '
+    label_blocked: 'Blocked: '
+    label_sudo: 'Sudo: '
+    label_createdon: 'Created: '
+    label_lastlogin: 'Last Login: '
+  activate:
+    success: 'User activated'
+    failed: 'Failed to activate user'
+    already_active: 'User is already active'
+  deactivate:
+    success: 'User deactivated'
+    failed: 'Failed to deactivate user'
+    already_inactive: 'User is already inactive'
+  block:
+    success: 'User blocked'
+    failed: 'Failed to block user'
+    already_blocked: 'User is already blocked'
+  unblock:
+    success: 'User unblocked'
+    failed: 'Failed to unblock user'
+    not_blocked: 'User is not blocked'
+  remove:
+    confirm: 'Are you sure you want to remove the user "%username%" (ID: %id%)?'
+    cancelled: 'User removal cancelled'
+    success: 'User removed successfully'
+    failed: 'Failed to remove user'
+  resetpassword:
+    not_found: 'User with ID %id% not found'
+    prompt: 'Enter new password for user %username%:'
+    success: 'Password reset successfully'
+    new_password_label: 'New password: '
+    failed: 'Failed to reset password'
+
+package:
+  download:
+    success: 'Package %signature% downloaded successfully'
+    failed: 'Failed to download package'
+    not_found: 'Package not found in upgradeable packages: %signature%'
+    package_object_failed: 'Failed to retrieve package object for: %signature%'
+    provider_failed: 'Failed to retrieve provider from package object'
+    provider_data_failed: 'Failed to retrieve package data from provider service using signature: %signature%'
+  install:
+    success: 'Package installed successfully'
+    failed: 'Failed to install package'
+    not_found: 'Package with signature "%signature%" not found'
+    downloading: 'Package "%signature%" not found locally. Attempting to download...'
+    download_success: 'Package downloaded successfully'
+    download_failed: 'Failed to download package "%signature%"'
+    download_disabled: 'Auto-download is disabled. Use "package:download %signature%" to download it first.'
+    already_installed: 'Package "%signature%" is already installed'
+    confirm: 'Are you sure you want to install package "%signature%"?'
+  upgradeable:
+    none_found: 'No upgradeable packages found'
+  provider:
+    add:
+      success: 'Provider added successfully'
+      failed: 'Failed to add provider'
+      id_label: 'Provider ID: '
+    info:
+      not_found: 'Provider not found'

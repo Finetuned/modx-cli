@@ -16,6 +16,10 @@ processor_failed: 'Une erreur s''est produite lors de l''exécution du processeu
 processor_not_found: 'Processeur "%processor%" introuvable'
 processor_invalid_response: 'Réponse invalide du processeur'
 
+# Erreurs utilisateur
+user_not_found: 'Utilisateur introuvable : %identifier%'
+user_profile_not_found: 'Profil utilisateur introuvable'
+
 # Erreurs de ressource
 resource_not_found: 'Ressource avec l''ID %id% introuvable'
 resource_create_failed: 'Échec de la création de la ressource'

@@ -17,3 +17,84 @@ resource:
     failed: 'No se pudo borrar el recurso'
   get:
     not_found: 'Recurso no encontrado'
+
+user:
+  create:
+    success: 'Usuario creado con éxito'
+    failed: 'No se pudo crear el usuario'
+    email_required: 'Se requiere dirección de correo electrónico. Use --email=<dirección>'
+    invalid_email: 'Formato de correo electrónico no válido'
+    generated_password: 'Contraseña generada: %password%'
+    user_id_label: 'ID de usuario: '
+    username_label: 'Nombre de usuario: '
+  update:
+    success: 'Usuario actualizado con éxito'
+    failed: 'No se pudo actualizar el usuario'
+    user_id_label: 'ID de usuario: '
+    username_label: 'Nombre de usuario: '
+  get:
+    failed: 'No se pudo obtener el usuario'
+    label_id: 'ID: '
+    label_username: 'Nombre de usuario: '
+    label_email: 'Correo electrónico: '
+    label_fullname: 'Nombre completo: '
+    label_active: 'Activo: '
+    label_blocked: 'Bloqueado: '
+    label_sudo: 'Sudo: '
+    label_createdon: 'Creado: '
+    label_lastlogin: 'Último acceso: '
+  activate:
+    success: 'Usuario activado'
+    failed: 'No se pudo activar el usuario'
+    already_active: 'El usuario ya está activo'
+  deactivate:
+    success: 'Usuario desactivado'
+    failed: 'No se pudo desactivar el usuario'
+    already_inactive: 'El usuario ya está inactivo'
+  block:
+    success: 'Usuario bloqueado'
+    failed: 'No se pudo bloquear el usuario'
+    already_blocked: 'El usuario ya está bloqueado'
+  unblock:
+    success: 'Usuario desbloqueado'
+    failed: 'No se pudo desbloquear el usuario'
+    not_blocked: 'El usuario no está bloqueado'
+  remove:
+    confirm: '¿Está seguro de que desea eliminar el usuario "%username%" (ID: %id%)?'
+    cancelled: 'Eliminación de usuario cancelada'
+    success: 'Usuario eliminado con éxito'
+    failed: 'No se pudo eliminar el usuario'
+  resetpassword:
+    not_found: 'Usuario con ID %id% no encontrado'
+    prompt: 'Introduzca la nueva contraseña para el usuario %username%:'
+    success: 'Contraseña restablecida con éxito'
+    new_password_label: 'Nueva contraseña: '
+    failed: 'No se pudo restablecer la contraseña'
+
+package:
+  download:
+    success: 'Paquete %signature% descargado con éxito'
+    failed: 'No se pudo descargar el paquete'
+    not_found: 'Paquete no encontrado entre los actualizables: %signature%'
+    package_object_failed: 'No se pudo obtener el objeto del paquete para: %signature%'
+    provider_failed: 'No se pudo obtener el proveedor del objeto del paquete'
+    provider_data_failed: 'No se pudieron obtener los datos del paquete del servicio proveedor para la firma: %signature%'
+  install:
+    success: 'Paquete instalado con éxito'
+    failed: 'No se pudo instalar el paquete'
+    not_found: 'Paquete con firma "%signature%" no encontrado'
+    downloading: 'Paquete "%signature%" no encontrado localmente. Intentando descargar...'
+    download_success: 'Paquete descargado con éxito'
+    download_failed: 'No se pudo descargar el paquete "%signature%"'
+    download_disabled: 'La descarga automática está desactivada. Use "package:download %signature%" para descargarlo primero.'
+    already_installed: 'El paquete "%signature%" ya está instalado'
+    confirm: '¿Está seguro de que desea instalar el paquete "%signature%"?'
+  upgradeable:
+    none_found: 'No se encontraron paquetes actualizables'
+  provider:
+    add:
+      success: 'Proveedor añadido con éxito'
+      failed: 'No se pudo añadir el proveedor'
+      id_label: 'ID del proveedor: '
+    info:
+      not_found: 'Proveedor no encontrado'

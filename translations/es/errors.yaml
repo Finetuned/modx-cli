@@ -16,6 +16,10 @@ processor_failed: 'Se produjo un error al ejecutar el procesador'
 processor_not_found: 'Procesador "%processor%" no encontrado'
 processor_invalid_response: 'Respuesta no válida del procesador'
 
+# Errores de usuario
+user_not_found: 'Usuario no encontrado: %identifier%'
+user_profile_not_found: 'Perfil de usuario no encontrado'
+
 # Errores de recurso
 resource_not_found: 'Recurso con ID %id% no encontrado'
 resource_create_failed: 'No se pudo crear el recurso'

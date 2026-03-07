@@ -17,3 +17,84 @@ resource:
     failed: 'Ressource konnte nicht endgültig gelöscht werden'
   get:
     not_found: 'Ressource nicht gefunden'
+
+user:
+  create:
+    success: 'Benutzer erfolgreich erstellt'
+    failed: 'Benutzer konnte nicht erstellt werden'
+    email_required: 'E-Mail-Adresse ist erforderlich. Verwenden Sie --email=<Adresse>'
+    invalid_email: 'Ungültiges E-Mail-Format'
+    generated_password: 'Generiertes Passwort: %password%'
+    user_id_label: 'Benutzer-ID: '
+    username_label: 'Benutzername: '
+  update:
+    success: 'Benutzer erfolgreich aktualisiert'
+    failed: 'Benutzer konnte nicht aktualisiert werden'
+    user_id_label: 'Benutzer-ID: '
+    username_label: 'Benutzername: '
+  get:
+    failed: 'Benutzer konnte nicht abgerufen werden'
+    label_id: 'ID: '
+    label_username: 'Benutzername: '
+    label_email: 'E-Mail: '
+    label_fullname: 'Vollständiger Name: '
+    label_active: 'Aktiv: '
+    label_blocked: 'Gesperrt: '
+    label_sudo: 'Sudo: '
+    label_createdon: 'Erstellt am: '
+    label_lastlogin: 'Letzte Anmeldung: '
+  activate:
+    success: 'Benutzer aktiviert'
+    failed: 'Benutzer konnte nicht aktiviert werden'
+    already_active: 'Benutzer ist bereits aktiv'
+  deactivate:
+    success: 'Benutzer deaktiviert'
+    failed: 'Benutzer konnte nicht deaktiviert werden'
+    already_inactive: 'Benutzer ist bereits inaktiv'
+  block:
+    success: 'Benutzer gesperrt'
+    failed: 'Benutzer konnte nicht gesperrt werden'
+    already_blocked: 'Benutzer ist bereits gesperrt'
+  unblock:
+    success: 'Benutzer entsperrt'
+    failed: 'Benutzer konnte nicht entsperrt werden'
+    not_blocked: 'Benutzer ist nicht gesperrt'
+  remove:
+    confirm: 'Möchten Sie den Benutzer "%username%" (ID: %id%) wirklich entfernen?'
+    cancelled: 'Entfernen des Benutzers abgebrochen'
+    success: 'Benutzer erfolgreich entfernt'
+    failed: 'Benutzer konnte nicht entfernt werden'
+  resetpassword:
+    not_found: 'Benutzer mit ID %id% nicht gefunden'
+    prompt: 'Neues Passwort für Benutzer %username% eingeben:'
+    success: 'Passwort erfolgreich zurückgesetzt'
+    new_password_label: 'Neues Passwort: '
+    failed: 'Passwort konnte nicht zurückgesetzt werden'
+
+package:
+  download:
+    success: 'Paket %signature% erfolgreich heruntergeladen'
+    failed: 'Paket konnte nicht heruntergeladen werden'
+    not_found: 'Paket in aktualisierbaren Paketen nicht gefunden: %signature%'
+    package_object_failed: 'Paketobjekt konnte nicht abgerufen werden für: %signature%'
+    provider_failed: 'Anbieter konnte nicht aus dem Paketobjekt abgerufen werden'
+    provider_data_failed: 'Paketdaten konnten nicht vom Anbieterdienst abgerufen werden für Signatur: %signature%'
+  install:
+    success: 'Paket erfolgreich installiert'
+    failed: 'Paket konnte nicht installiert werden'
+    not_found: 'Paket mit Signatur "%signature%" nicht gefunden'
+    downloading: 'Paket "%signature%" nicht lokal gefunden. Versuche herunterzuladen...'
+    download_success: 'Paket erfolgreich heruntergeladen'
+    download_failed: 'Paket "%signature%" konnte nicht heruntergeladen werden'
+    download_disabled: 'Automatischer Download ist deaktiviert. Verwenden Sie "package:download %signature%", um es zuerst herunterzuladen.'
+    already_installed: 'Paket "%signature%" ist bereits installiert'
+    confirm: 'Möchten Sie das Paket "%signature%" wirklich installieren?'
+  upgradeable:
+    none_found: 'Keine aktualisierbaren Pakete gefunden'
+  provider:
+    add:
+      success: 'Anbieter erfolgreich hinzugefügt'
+      failed: 'Anbieter konnte nicht hinzugefügt werden'
+      id_label: 'Anbieter-ID: '
+    info:
+      not_found: 'Anbieter nicht gefunden'

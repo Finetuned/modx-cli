@@ -17,6 +17,10 @@ processor_failed: 'Something went wrong while executing the processor'
 processor_not_found: 'Processor "%processor%" not found'
 processor_invalid_response: 'Invalid response from processor'
 
+# User errors
+user_not_found: 'User not found: %identifier%'
+user_profile_not_found: 'User profile not found'
+
 # Resource errors
 resource_not_found: 'Resource with ID %id% not found'
 resource_create_failed: 'Failed to create resource'

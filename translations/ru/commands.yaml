@@ -17,3 +17,84 @@ resource:
     failed: 'Не удалось безвозвратно удалить ресурс'
   get:
     not_found: 'Ресурс не найден'
+
+user:
+  create:
+    success: 'Пользователь успешно создан'
+    failed: 'Не удалось создать пользователя'
+    email_required: 'Требуется адрес электронной почты. Используйте --email=<адрес>'
+    invalid_email: 'Недопустимый формат электронной почты'
+    generated_password: 'Сгенерированный пароль: %password%'
+    user_id_label: 'ID пользователя: '
+    username_label: 'Имя пользователя: '
+  update:
+    success: 'Пользователь успешно обновлён'
+    failed: 'Не удалось обновить пользователя'
+    user_id_label: 'ID пользователя: '
+    username_label: 'Имя пользователя: '
+  get:
+    failed: 'Не удалось получить данные пользователя'
+    label_id: 'ID: '
+    label_username: 'Имя пользователя: '
+    label_email: 'Электронная почта: '
+    label_fullname: 'Полное имя: '
+    label_active: 'Активен: '
+    label_blocked: 'Заблокирован: '
+    label_sudo: 'Sudo: '
+    label_createdon: 'Создан: '
+    label_lastlogin: 'Последний вход: '
+  activate:
+    success: 'Пользователь активирован'
+    failed: 'Не удалось активировать пользователя'
+    already_active: 'Пользователь уже активен'
+  deactivate:
+    success: 'Пользователь деактивирован'
+    failed: 'Не удалось деактивировать пользователя'
+    already_inactive: 'Пользователь уже неактивен'
+  block:
+    success: 'Пользователь заблокирован'
+    failed: 'Не удалось заблокировать пользователя'
+    already_blocked: 'Пользователь уже заблокирован'
+  unblock:
+    success: 'Пользователь разблокирован'
+    failed: 'Не удалось разблокировать пользователя'
+    not_blocked: 'Пользователь не заблокирован'
+  remove:
+    confirm: 'Вы уверены, что хотите удалить пользователя "%username%" (ID: %id%)?'
+    cancelled: 'Удаление пользователя отменено'
+    success: 'Пользователь успешно удалён'
+    failed: 'Не удалось удалить пользователя'
+  resetpassword:
+    not_found: 'Пользователь с ID %id% не найден'
+    prompt: 'Введите новый пароль для пользователя %username%:'
+    success: 'Пароль успешно сброшен'
+    new_password_label: 'Новый пароль: '
+    failed: 'Не удалось сбросить пароль'
+
+package:
+  download:
+    success: 'Пакет %signature% успешно загружен'
+    failed: 'Не удалось загрузить пакет'
+    not_found: 'Пакет не найден среди обновляемых пакетов: %signature%'
+    package_object_failed: 'Не удалось получить объект пакета для: %signature%'
+    provider_failed: 'Не удалось получить поставщика из объекта пакета'
+    provider_data_failed: 'Не удалось получить данные пакета от сервиса поставщика по сигнатуре: %signature%'
+  install:
+    success: 'Пакет успешно установлен'
+    failed: 'Не удалось установить пакет'
+    not_found: 'Пакет с сигнатурой "%signature%" не найден'
+    downloading: 'Пакет "%signature%" не найден локально. Попытка загрузки...'
+    download_success: 'Пакет успешно загружен'
+    download_failed: 'Не удалось загрузить пакет "%signature%"'
+    download_disabled: 'Автоматическая загрузка отключена. Используйте "package:download %signature%", чтобы сначала загрузить его.'
+    already_installed: 'Пакет "%signature%" уже установлен'
+    confirm: 'Вы уверены, что хотите установить пакет "%signature%"?'
+  upgradeable:
+    none_found: 'Обновляемые пакеты не найдены'
+  provider:
+    add:
+      success: 'Поставщик успешно добавлен'
+      failed: 'Не удалось добавить поставщика'
+      id_label: 'ID поставщика: '
+    info:
+      not_found: 'Поставщик не найден'

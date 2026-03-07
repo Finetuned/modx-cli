@@ -16,6 +16,10 @@ processor_failed: 'При выполнении процессора произо
 processor_not_found: 'Процессор "%processor%" не найден'
 processor_invalid_response: 'Недопустимый ответ от процессора'
 
+# Ошибки пользователя
+user_not_found: 'Пользователь не найден: %identifier%'
+user_profile_not_found: 'Профиль пользователя не найден'
+
 # Ошибки ресурса
 resource_not_found: 'Ресурс с ID %id% не найден'
 resource_create_failed: 'Не удалось создать ресурс'
