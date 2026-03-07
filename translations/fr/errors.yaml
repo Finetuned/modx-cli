@@ -1,0 +1,51 @@
+# Messages d'erreur - Français
+
+# Erreurs générales
+command_init_failed: 'Impossible d''initialiser la commande'
+command_not_found: 'Commande introuvable'
+operation_aborted: 'Opération annulée'
+unknown_error: 'Une erreur inconnue s''est produite'
+
+# Erreurs d'instance MODX
+modx_not_found: 'Instance MODX introuvable. Veuillez d''abord configurer une instance MODX.'
+modx_version_incompatible: 'La version MODX %current% n''est pas compatible. Version minimale requise : %required%'
+modx_init_failed: 'Échec de l''initialisation de MODX'
+
+# Erreurs de processeur
+processor_failed: 'Une erreur s''est produite lors de l''exécution du processeur'
+processor_not_found: 'Processeur "%processor%" introuvable'
+processor_invalid_response: 'Réponse invalide du processeur'
+
+# Erreurs de ressource
+resource_not_found: 'Ressource avec l''ID %id% introuvable'
+resource_create_failed: 'Échec de la création de la ressource'
+resource_update_failed: 'Échec de la mise à jour de la ressource avec l''ID %id%'
+resource_delete_failed: 'Échec de la suppression de la ressource avec l''ID %id%'
+
+# Erreurs d'objet
+object_not_found: '%class% avec l''ID %id% introuvable'
+object_create_failed: 'Échec de la création de %class%'
+object_update_failed: 'Échec de la mise à jour de %class% avec l''ID %id%'
+object_delete_failed: 'Échec de la suppression de %class% avec l''ID %id%'
+
+# Erreurs de validation
+invalid_argument: 'Argument invalide : %argument%'
+missing_required_field: 'Champ obligatoire manquant : %field%'
+invalid_field_value: 'Valeur invalide pour le champ "%field%" : %value%'
+
+# Erreurs de configuration
+config_not_found: 'Fichier de configuration introuvable'
+config_invalid: 'Configuration invalide'
+config_write_failed: 'Échec de l''écriture du fichier de configuration'
+instance_not_found: 'Instance "%instance%" introuvable'
+
+# Erreurs SSH/distant
+ssh_connection_failed: 'Échec de la connexion à l''hôte SSH : %host%'
+ssh_command_failed: 'Échec de la commande SSH'
+alias_not_found: 'Alias "%alias%" introuvable'
+
+# Erreurs de système de fichiers
+file_not_found: 'Fichier introuvable : %path%'
+file_not_readable: 'Le fichier n''est pas lisible : %path%'
+file_not_writable: 'Le fichier n''est pas accessible en écriture : %path%'
+directory_not_found: 'Répertoire introuvable : %path%'

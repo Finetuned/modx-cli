@@ -1,0 +1,19 @@
+# Messages des commandes - Français
+
+resource:
+  create:
+    success: 'Ressource créée avec succès'
+  delete:
+    success: 'Ressource supprimée avec succès (déplacée dans la corbeille)'
+    failed: 'Échec de la suppression de la ressource'
+  update:
+    success: 'Ressource mise à jour avec succès'
+    failed: 'Échec de la mise à jour de la ressource'
+  erase:
+    success: 'Ressource effacée avec succès (suppression permanente)'
+    not_in_trash: 'La ressource "%pagetitle%" (ID : %id%) n''est pas dans la corbeille'
+    use_delete_hint: "Utilisez 'resource:delete' pour la déplacer d'abord dans la corbeille"
+    irreversible_warning: 'ATTENTION : Cette opération est irréversible !'
+    failed: 'Échec de l''effacement de la ressource'
+  get:
+    not_found: 'Ressource introuvable'

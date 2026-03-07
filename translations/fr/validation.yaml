@@ -1,0 +1,25 @@
+# Messages de validation - Français
+
+# Validation e-mail
+email_required: 'L''adresse e-mail est obligatoire'
+email_invalid: 'Format d''adresse e-mail invalide'
+
+# Validation du mot de passe
+password_required: 'Le mot de passe est obligatoire'
+password_too_short: 'Le mot de passe doit comporter au moins %min% caractères'
+password_too_weak: 'Le mot de passe est trop faible'
+
+# Validation du nom d'utilisateur
+username_required: 'Le nom d''utilisateur est obligatoire'
+username_invalid_chars: 'Le nom d''utilisateur contient des caractères invalides'
+username_already_exists: 'Le nom d''utilisateur "%username%" existe déjà'
+
+# Validation générale
+field_required: 'Le champ "%field%" est obligatoire'
+value_too_long: 'La valeur du champ "%field%" est trop longue (maximum : %max% caractères)'
+value_too_short: 'La valeur du champ "%field%" est trop courte (minimum : %min% caractères)'
+invalid_format: 'Format invalide pour "%field%"'
+
+# Validation numérique
+value_not_numeric: 'La valeur du champ "%field%" doit être numérique'
+value_out_of_range: 'La valeur du champ "%field%" doit être comprise entre %min% et %max%'
