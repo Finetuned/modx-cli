@@ -64,7 +64,7 @@ class Delete extends ProcessorCmd
         // Get the event to display information
         $event = $this->modx->getObject(\MODX\Revolution\modEvent::class, $id);
         if (!$event) {
-            $this->error("Event with ID {$id} not found");
+            $this->error($this->trans('system.events.delete.not_found', ['%id%' => $id], 'commands'));
             return false;
         }
 
@@ -72,8 +72,8 @@ class Delete extends ProcessorCmd
 
         // Confirm deletion unless --force is used
         if (!$this->option('force')) {
-            if (!$this->confirm("Are you sure you want to delete event '{$name}' (ID: {$id})?")) {
-                $this->info('Operation aborted');
+            if (!$this->confirm($this->trans('system.events.delete.confirm', ['%name%' => $name, '%id%' => $id], 'commands'))) {
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
@@ -93,10 +93,10 @@ class Delete extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Event deleted successfully');
+            $this->info($this->trans('system.events.delete.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to delete event');
+            $this->error($this->trans('system.events.delete.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

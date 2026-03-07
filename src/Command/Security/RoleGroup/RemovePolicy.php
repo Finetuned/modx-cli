@@ -47,24 +47,24 @@ class RemovePolicy extends BaseCmd
     {
         $group = $this->findGroup($this->argument('group'));
         if (!$group) {
-            return $this->outputResult(false, 'Role group not found');
+            return $this->outputResult(false, $this->trans('security.role_group.remove_policy.group_not_found', [], 'commands'));
         }
 
         $policy = $this->findPolicyTemplate($this->argument('policy'));
         if (!$policy) {
-            return $this->outputResult(false, 'Policy template not found');
+            return $this->outputResult(false, $this->trans('security.role_group.remove_policy.template_not_found', [], 'commands'));
         }
 
         if ((int) $policy->get('template_group') !== (int) $group->get('id')) {
-            return $this->outputResult(false, 'Policy template is not assigned to the specified role group');
+            return $this->outputResult(false, $this->trans('security.role_group.remove_policy.not_assigned', [], 'commands'));
         }
 
         $policy->set('template_group', 0);
         if (!$policy->save()) {
-            return $this->outputResult(false, 'Failed to remove policy template from role group');
+            return $this->outputResult(false, $this->trans('security.role_group.remove_policy.failed', [], 'commands'));
         }
 
-        return $this->outputResult(true, 'Policy template removed from role group', [
+        return $this->outputResult(true, $this->trans('security.role_group.remove_policy.success', [], 'commands'), [
             'group' => $group->get('name'),
             'group_id' => (int) $group->get('id'),
             'policy' => $policy->get('name'),

@@ -44,7 +44,7 @@ class ReadTest extends BaseTest
         ]);
 
         $output = $tester->getDisplay();
-        $this->assertStringContainsString("Lock with key 'missing' not found", $output);
+        $this->assertStringContainsString('Lock with key "missing" not found', $output);
         $this->assertEquals(1, $tester->getStatusCode());
     }
 

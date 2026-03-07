@@ -67,14 +67,14 @@ class Remove extends ProcessorCmd
         // Get the namespace to display information
         $namespace = $this->modx->getObject(\MODX\Revolution\modNamespace::class, ['name' => $name]);
         if (!$namespace) {
-            $this->error("Namespace '{$name}' not found");
+            $this->error($this->trans('ns.remove.not_found', ['%name%' => $name], 'commands'));
             return false;
         }
 
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
-            if (!$this->confirm("Are you sure you want to remove namespace '{$name}'?")) {
-                $this->info('Operation aborted');
+            if (!$this->confirm($this->trans('ns.remove.confirm', ['%name%' => $name], 'commands'))) {
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
@@ -94,10 +94,10 @@ class Remove extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Namespace removed successfully');
+            $this->info($this->trans('ns.remove.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to remove namespace');
+            $this->error($this->trans('ns.remove.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

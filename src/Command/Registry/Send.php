@@ -134,9 +134,9 @@ class Send extends ProcessorCmd
         }
 
         if (!empty($response['success'])) {
-            $this->info('Registry message sent successfully');
+            $this->info($this->trans('registry.send.success', [], 'commands'));
         } else {
-            $this->error('Failed to send registry message');
+            $this->error($this->trans('registry.send.failed', [], 'commands'));
         }
 
         return 0;

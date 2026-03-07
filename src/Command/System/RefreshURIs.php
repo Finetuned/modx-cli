@@ -23,14 +23,14 @@ class RefreshURIs extends ProcessorCmd
     protected function processResponse(array $response = [])
     {
         if (isset($response['success']) && $response['success']) {
-            $this->info('URIs refreshed successfully');
+            $this->info($this->trans('system.refresh_uris.success', [], 'commands'));
 
             if (isset($response['total'])) {
-                $this->info('Total resources processed: ' . $response['total']);
+                $this->info($this->trans('system.refresh_uris.count_label', [], 'commands') . $response['total']);
             }
             return 0; // Return 0 for success
         } else {
-            $this->error('Failed to refresh URIs');
+            $this->error($this->trans('system.refresh_uris.failed', [], 'commands'));
             return 1; // Return non-zero for failure
         }
     }

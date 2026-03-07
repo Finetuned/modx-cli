@@ -27,10 +27,10 @@ class Clear extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('System log cleared successfully');
+            $this->info($this->trans('system.log.clear.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to clear system log');
+            $this->error($this->trans('system.log.clear.failed', [], 'commands'));
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

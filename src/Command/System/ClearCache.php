@@ -27,10 +27,10 @@ class ClearCache extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Cache cleared successfully');
+            $this->info($this->trans('system.cache.clear.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to clear cache');
+            $this->error($this->trans('system.cache.clear.failed', [], 'commands'));
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

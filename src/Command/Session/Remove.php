@@ -60,15 +60,14 @@ class Remove extends BaseCmd
 
         $session = $this->modx->getObject('MODX\\Revolution\\modSession', ['id' => $id]);
         if (!$session) {
-            $this->error("Session with ID {$id} not found");
+            $this->error($this->trans('session.remove.not_found', ['%id%' => $id], 'commands'));
             return 1;
         }
 
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
-            $message = "Are you sure you want to remove session '{$id}'?";
-            if (!$this->confirm($message)) {
-                $this->info('Operation aborted');
+            if (!$this->confirm($this->trans('session.remove.confirm', ['%id%' => $id], 'commands'))) {
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return 0;
             }
         }
@@ -77,20 +76,20 @@ class Remove extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => true,
-                    'message' => 'Session removed successfully'
+                    'message' => $this->trans('session.remove.success', [], 'commands'),
                 ]));
             } else {
-                $this->info('Session removed successfully');
+                $this->info($this->trans('session.remove.success', [], 'commands'));
             }
             return 0;
         } else {
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => 'Failed to remove session'
+                    'message' => $this->trans('session.remove.failed', [], 'commands'),
                 ]));
             } else {
-                $this->error('Failed to remove session');
+                $this->error($this->trans('session.remove.failed', [], 'commands'));
             }
             return 1;
         }

@@ -85,7 +85,7 @@ class View extends ListProcessor
     protected function renderColored(array $logs = []): void
     {
         if (count($logs) === 0) {
-            $this->info('No log entries found');
+            $this->info($this->trans('system.log.view.not_found', [], 'commands'));
             return;
         }
 

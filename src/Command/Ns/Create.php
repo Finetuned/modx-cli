@@ -90,14 +90,14 @@ class Create extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Namespace created successfully');
+            $this->info($this->trans('ns.create.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['id'])) {
-                $this->info('Namespace ID: ' . $response['object']['id']);
+                $this->info($this->trans('ns.create.id_label', [], 'commands') . $response['object']['id']);
             }
             return 0;
         } else {
-            $this->error('Failed to create namespace');
+            $this->error($this->trans('ns.create.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

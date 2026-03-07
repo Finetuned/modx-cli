@@ -74,7 +74,7 @@ class Read extends BaseCmd
             $locks = $registry->locks->read([$key]);
 
             if (empty($locks)) {
-                $this->error("Lock with key '{$key}' not found");
+                $this->error($this->trans('system.locks.read.not_found', ['%key%' => $key], 'commands'));
                 return 1;
             }
 
@@ -83,7 +83,7 @@ class Read extends BaseCmd
             $locks = $registry->locks->read(['']);
 
             if (empty($locks)) {
-                $this->info('No locks found');
+                $this->info($this->trans('system.locks.read.none_found', [], 'commands'));
                 return 0;
             }
         }

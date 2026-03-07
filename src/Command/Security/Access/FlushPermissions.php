@@ -43,8 +43,8 @@ class FlushPermissions extends ProcessorCmd
     {
         // Confirm flush unless --force is used
         if (!$this->option('force')) {
-            if (!$this->confirm('Are you sure you want to flush permissions? This will clear all permission caches.')) {
-                $this->info('Operation aborted');
+            if (!$this->confirm($this->trans('security.access.flush.confirm', [], 'commands'))) {
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
@@ -64,10 +64,10 @@ class FlushPermissions extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Permissions flushed successfully');
+            $this->info($this->trans('security.access.flush.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to flush permissions');
+            $this->error($this->trans('security.access.flush.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

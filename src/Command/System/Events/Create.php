@@ -92,14 +92,14 @@ class Create extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Event created successfully');
+            $this->info($this->trans('system.events.create.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['name'])) {
-                $this->info('Event name: ' . $response['object']['name']);
+                $this->info($this->trans('system.events.create.name_label', [], 'commands') . $response['object']['name']);
             }
             return 0;
         } else {
-            $this->error('Failed to create event');
+            $this->error($this->trans('system.events.create.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

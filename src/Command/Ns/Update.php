@@ -91,14 +91,14 @@ class Update extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Namespace updated successfully');
+            $this->info($this->trans('ns.update.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['id'])) {
-                $this->info('Namespace ID: ' . $response['object']['id']);
+                $this->info($this->trans('ns.update.id_label', [], 'commands') . $response['object']['id']);
             }
             return 0;
         } else {
-            $this->error('Failed to update namespace');
+            $this->error($this->trans('ns.update.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

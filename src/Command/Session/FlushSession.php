@@ -43,14 +43,14 @@ class FlushSession extends ProcessorCmd
     {
         // Confirm flush unless --force is used
         if (!$this->option('force')) {
-            if (!$this->confirm('Are you sure you want to flush all sessions? This will log out all users.')) {
-                $this->info('Operation aborted');
+            if (!$this->confirm($this->trans('session.flush.confirm', [], 'commands'))) {
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
 
         if (!$this->ensureSessionHandler()) {
-            $this->error('Session handler not available');
+            $this->error($this->trans('session.flush.no_handler', [], 'commands'));
             return false;
         }
         return null;
@@ -67,9 +67,9 @@ class FlushSession extends ProcessorCmd
         if ($this->option('json')) {
             if (!isset($response['message']) || $response['message'] === '') {
                 if (isset($response['success']) && $response['success']) {
-                    $response['message'] = 'Sessions flushed successfully';
+                    $response['message'] = $this->trans('session.flush.success', [], 'commands');
                 } else {
-                    $response['message'] = 'Failed to flush sessions';
+                    $response['message'] = $this->trans('session.flush.failed', [], 'commands');
                 }
             }
 

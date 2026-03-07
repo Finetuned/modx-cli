@@ -108,7 +108,7 @@ class RemoveTest extends BaseTest
 
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Namespace 'nonexistent' not found", $output);
+        $this->assertStringContainsString('Namespace "nonexistent" not found', $output);
     }
 
     public function testExecuteWithFailedResponse()

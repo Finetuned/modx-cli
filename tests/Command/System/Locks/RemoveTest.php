@@ -35,7 +35,7 @@ class RemoveTest extends BaseTest
         ]);
 
         $output = $tester->getDisplay();
-        $this->assertStringContainsString("Lock with key 'missing' not found", $output);
+        $this->assertStringContainsString('Lock with key "missing" not found', $output);
         $this->assertEquals(1, $tester->getStatusCode());
     }
 
@@ -52,7 +52,7 @@ class RemoveTest extends BaseTest
 
         $decoded = json_decode($tester->getDisplay(), true);
         $this->assertFalse($decoded['success']);
-        $this->assertEquals("Lock with key 'missing' not found", $decoded['message']);
+        $this->assertEquals('Lock with key "missing" not found', $decoded['message']);
         $this->assertEquals('missing', $decoded['lock']['key']);
         $this->assertEquals(1, $tester->getStatusCode());
     }
@@ -80,7 +80,7 @@ class RemoveTest extends BaseTest
         ]);
 
         $output = $tester->getDisplay();
-        $this->assertStringContainsString("Lock with key 'lock1' removed successfully", $output);
+        $this->assertStringContainsString('Lock with key "lock1" removed successfully', $output);
     }
 
     public function testExecuteWithForceRemovesLockJsonOutput()
@@ -108,7 +108,7 @@ class RemoveTest extends BaseTest
 
         $decoded = json_decode($tester->getDisplay(), true);
         $this->assertTrue($decoded['success']);
-        $this->assertEquals("Lock with key 'lock1' removed successfully", $decoded['message']);
+        $this->assertEquals('Lock with key "lock1" removed successfully', $decoded['message']);
         $this->assertTrue($decoded['removed']);
         $this->assertEquals('lock1', $decoded['lock']['key']);
     }

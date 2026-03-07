@@ -161,7 +161,7 @@ class Read extends ProcessorCmd
             return 0;
         }
 
-        $this->info('No registry messages found');
+        $this->info($this->trans('registry.read.not_found', [], 'commands'));
         return 0;
     }
 }

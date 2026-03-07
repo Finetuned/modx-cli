@@ -75,7 +75,7 @@ class Listen extends BaseCmd
 
         // Listen for new log entries
         if (!$json) {
-            $this->info('Listening for new log entries (Ctrl+C to stop)...');
+            $this->info($this->trans('system.log.listen.watching', [], 'commands'));
         }
         while ($this->running) {
             $this->checkForNewLogEntries();
@@ -124,7 +124,7 @@ class Listen extends BaseCmd
                     'results' => [],
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->info('No log entries found');
+                $this->info($this->trans('system.log.listen.not_found', [], 'commands'));
             }
             return;
         }

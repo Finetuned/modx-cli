@@ -67,7 +67,7 @@ class Remove extends BaseCmd
         $locks = $registry->locks->read([$key]);
 
         if (empty($locks)) {
-            $message = "Lock with key '{$key}' not found";
+            $message = $this->trans('system.locks.remove.not_found', ['%key%' => $key], 'commands');
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
@@ -96,15 +96,15 @@ class Remove extends BaseCmd
         // Confirm removal unless --force is used
         if (!$this->option('force')) {
             if (!$this->option('json')) {
-                $this->info('Lock information:');
-                $this->info("Key: {$lockInfo['key']}");
-                $this->info("User: {$lockInfo['user']}");
-                $this->info("Message: {$lockInfo['message']}");
-                $this->info("Timestamp: {$lockInfo['occurred']}");
+                $this->info($this->trans('system.locks.remove.info', [], 'commands'));
+                $this->info($this->trans('system.locks.remove.key_label', [], 'commands') . $lockInfo['key']);
+                $this->info($this->trans('system.locks.remove.user_label', [], 'commands') . $lockInfo['user']);
+                $this->info($this->trans('system.locks.remove.message_label', [], 'commands') . $lockInfo['message']);
+                $this->info($this->trans('system.locks.remove.timestamp_label', [], 'commands') . $lockInfo['occurred']);
             }
 
-            if (!$this->confirm("Are you sure you want to remove this lock?")) {
-                $message = 'Operation aborted';
+            if (!$this->confirm($this->trans('system.locks.remove.confirm', [], 'commands'))) {
+                $message = $this->trans('operation_aborted', [], 'errors');
                 if ($this->option('json')) {
                     $this->output->writeln(json_encode([
                         'success' => false,
@@ -123,7 +123,7 @@ class Remove extends BaseCmd
         $registry->locks->subscribe([$key]);
         $registry->locks->remove();
 
-        $message = "Lock with key '{$key}' removed successfully";
+        $message = $this->trans('system.locks.remove.success', ['%key%' => $key], 'commands');
         if ($this->option('json')) {
             $this->output->writeln(json_encode([
                 'success' => true,
