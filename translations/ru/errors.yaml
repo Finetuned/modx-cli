@@ -1,0 +1,51 @@
+# Сообщения об ошибках - Русский
+
+# Общие ошибки
+command_init_failed: 'Не удалось инициализировать команду'
+command_not_found: 'Команда не найдена'
+operation_aborted: 'Операция отменена'
+unknown_error: 'Произошла неизвестная ошибка'
+
+# Ошибки экземпляра MODX
+modx_not_found: 'Экземпляр MODX не найден. Сначала настройте экземпляр MODX.'
+modx_version_incompatible: 'Версия MODX %current% несовместима. Минимально требуемая: %required%'
+modx_init_failed: 'Не удалось инициализировать MODX'
+
+# Ошибки процессора
+processor_failed: 'При выполнении процессора произошла ошибка'
+processor_not_found: 'Процессор "%processor%" не найден'
+processor_invalid_response: 'Недопустимый ответ от процессора'
+
+# Ошибки ресурса
+resource_not_found: 'Ресурс с ID %id% не найден'
+resource_create_failed: 'Не удалось создать ресурс'
+resource_update_failed: 'Не удалось обновить ресурс с ID %id%'
+resource_delete_failed: 'Не удалось удалить ресурс с ID %id%'
+
+# Ошибки объекта
+object_not_found: '%class% с ID %id% не найден'
+object_create_failed: 'Не удалось создать %class%'
+object_update_failed: 'Не удалось обновить %class% с ID %id%'
+object_delete_failed: 'Не удалось удалить %class% с ID %id%'
+
+# Ошибки валидации
+invalid_argument: 'Недопустимый аргумент: %argument%'
+missing_required_field: 'Отсутствует обязательное поле: %field%'
+invalid_field_value: 'Недопустимое значение для поля "%field%": %value%'
+
+# Ошибки конфигурации
+config_not_found: 'Файл конфигурации не найден'
+config_invalid: 'Недопустимая конфигурация'
+config_write_failed: 'Не удалось записать файл конфигурации'
+instance_not_found: 'Экземпляр "%instance%" не найден'
+
+# Ошибки SSH/удалённого доступа
+ssh_connection_failed: 'Не удалось подключиться к SSH-хосту: %host%'
+ssh_command_failed: 'Команда SSH завершилась с ошибкой'
+alias_not_found: 'Псевдоним "%alias%" не найден'
+
+# Ошибки файловой системы
+file_not_found: 'Файл не найден: %path%'
+file_not_readable: 'Файл недоступен для чтения: %path%'
+file_not_writable: 'Файл недоступен для записи: %path%'
+directory_not_found: 'Каталог не найден: %path%'
