@@ -1,0 +1,32 @@
+# Allgemeine Nachrichten - Deutsch
+
+# Bestätigungsabfragen
+confirm_delete: 'Möchten Sie %item% wirklich löschen?'
+confirm_continue: 'Möchten Sie fortfahren?'
+confirm_overwrite: 'Datei existiert bereits. Überschreiben?'
+
+# Vorgangsstatus
+operation_success: 'Vorgang erfolgreich abgeschlossen'
+operation_cancelled: 'Vorgang abgebrochen'
+operation_in_progress: 'Vorgang läuft...'
+
+# Benutzeroberfläche
+yes: 'Ja'
+no: 'Nein'
+cancel: 'Abbrechen'
+continue: 'Weiter'
+back: 'Zurück'
+next: 'Weiter'
+finish: 'Fertig'
+
+# Fortschrittsanzeigen
+processing: 'Wird verarbeitet...'
+loading: 'Wird geladen...'
+saving: 'Wird gespeichert...'
+deleting: 'Wird gelöscht...'
+updating: 'Wird aktualisiert...'
+
+# Pluralformen
+users_found: '{0} Keine Benutzer gefunden|{1} Ein Benutzer gefunden|]1,Inf[ %count% Benutzer gefunden'
+files_processed: '{1} Eine Datei verarbeitet|]1,Inf[ %count% Dateien verarbeitet'
+items_selected: '{0} Keine Elemente ausgewählt|{1} Ein Element ausgewählt|]1,Inf[ %count% Elemente ausgewählt'

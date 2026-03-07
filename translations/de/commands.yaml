@@ -1,0 +1,19 @@
+# Befehlsmeldungen - Deutsch
+
+resource:
+  create:
+    success: 'Ressource erfolgreich erstellt'
+  delete:
+    success: 'Ressource erfolgreich gelöscht (in den Papierkorb verschoben)'
+    failed: 'Ressource konnte nicht gelöscht werden'
+  update:
+    success: 'Ressource erfolgreich aktualisiert'
+    failed: 'Ressource konnte nicht aktualisiert werden'
+  erase:
+    success: 'Ressource erfolgreich gelöscht (endgültig)'
+    not_in_trash: 'Ressource "%pagetitle%" (ID: %id%) befindet sich nicht im Papierkorb'
+    use_delete_hint: "Verwenden Sie 'resource:delete', um sie zuerst in den Papierkorb zu verschieben"
+    irreversible_warning: 'WARNUNG: Dieser Vorgang ist nicht rückgängig zu machen!'
+    failed: 'Ressource konnte nicht endgültig gelöscht werden'
+  get:
+    not_found: 'Ressource nicht gefunden'

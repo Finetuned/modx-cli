@@ -1,0 +1,25 @@
+# Validierungsmeldungen - Deutsch
+
+# E-Mail-Validierung
+email_required: 'E-Mail-Adresse ist erforderlich'
+email_invalid: 'Ungültiges E-Mail-Adressformat'
+
+# Passwort-Validierung
+password_required: 'Passwort ist erforderlich'
+password_too_short: 'Das Passwort muss mindestens %min% Zeichen lang sein'
+password_too_weak: 'Das Passwort ist zu schwach'
+
+# Benutzername-Validierung
+username_required: 'Benutzername ist erforderlich'
+username_invalid_chars: 'Benutzername enthält ungültige Zeichen'
+username_already_exists: 'Benutzername "%username%" existiert bereits'
+
+# Allgemeine Validierung
+field_required: 'Feld "%field%" ist erforderlich'
+value_too_long: 'Wert für "%field%" ist zu lang (Maximum: %max% Zeichen)'
+value_too_short: 'Wert für "%field%" ist zu kurz (Minimum: %min% Zeichen)'
+invalid_format: 'Ungültiges Format für "%field%"'
+
+# Numerische Validierung
+value_not_numeric: 'Wert für "%field%" muss numerisch sein'
+value_out_of_range: 'Wert für "%field%" muss zwischen %min% und %max% liegen'

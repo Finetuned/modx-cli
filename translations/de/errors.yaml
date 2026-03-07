@@ -1,0 +1,51 @@
+# Fehlermeldungen - Deutsch
+
+# Allgemeine Fehler
+command_init_failed: 'Befehl konnte nicht initialisiert werden'
+command_not_found: 'Befehl nicht gefunden'
+operation_aborted: 'Vorgang abgebrochen'
+unknown_error: 'Ein unbekannter Fehler ist aufgetreten'
+
+# MODX-Instanzfehler
+modx_not_found: 'MODX-Instanz nicht gefunden. Bitte zuerst eine MODX-Instanz konfigurieren.'
+modx_version_incompatible: 'MODX-Version %current% ist nicht kompatibel. Mindestversion erforderlich: %required%'
+modx_init_failed: 'MODX konnte nicht initialisiert werden'
+
+# Prozessorfehler
+processor_failed: 'Beim Ausführen des Prozessors ist ein Fehler aufgetreten'
+processor_not_found: 'Prozessor "%processor%" nicht gefunden'
+processor_invalid_response: 'Ungültige Antwort vom Prozessor'
+
+# Ressourcenfehler
+resource_not_found: 'Ressource mit ID %id% nicht gefunden'
+resource_create_failed: 'Ressource konnte nicht erstellt werden'
+resource_update_failed: 'Ressource mit ID %id% konnte nicht aktualisiert werden'
+resource_delete_failed: 'Ressource mit ID %id% konnte nicht gelöscht werden'
+
+# Objektfehler
+object_not_found: '%class% mit ID %id% nicht gefunden'
+object_create_failed: '%class% konnte nicht erstellt werden'
+object_update_failed: '%class% mit ID %id% konnte nicht aktualisiert werden'
+object_delete_failed: '%class% mit ID %id% konnte nicht gelöscht werden'
+
+# Validierungsfehler
+invalid_argument: 'Ungültiges Argument: %argument%'
+missing_required_field: 'Pflichtfeld fehlt: %field%'
+invalid_field_value: 'Ungültiger Wert für Feld "%field%": %value%'
+
+# Konfigurationsfehler
+config_not_found: 'Konfigurationsdatei nicht gefunden'
+config_invalid: 'Ungültige Konfiguration'
+config_write_failed: 'Konfigurationsdatei konnte nicht geschrieben werden'
+instance_not_found: 'Instanz "%instance%" nicht gefunden'
+
+# SSH/Remote-Fehler
+ssh_connection_failed: 'Verbindung zum SSH-Host fehlgeschlagen: %host%'
+ssh_command_failed: 'SSH-Befehl fehlgeschlagen'
+alias_not_found: 'Alias "%alias%" nicht gefunden'
+
+# Dateisystemfehler
+file_not_found: 'Datei nicht gefunden: %path%'
+file_not_readable: 'Datei ist nicht lesbar: %path%'
+file_not_writable: 'Datei ist nicht beschreibbar: %path%'
+directory_not_found: 'Verzeichnis nicht gefunden: %path%'
