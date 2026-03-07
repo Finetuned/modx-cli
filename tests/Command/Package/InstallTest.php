@@ -114,7 +114,7 @@ class InstallTest extends BaseTest
 
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Package with signature \'nonexistent-1.0.0-pl\' not found', $output);
+        $this->assertStringContainsString('Package with signature "nonexistent-1.0.0-pl" not found', $output);
         $this->assertStringContainsString('Auto-download is disabled', $output);
     }
 
@@ -146,7 +146,7 @@ class InstallTest extends BaseTest
 
         // Verify the output shows error message
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Package \'package1-1.0.0-pl\' is already installed', $output);
+        $this->assertStringContainsString('Package "package1-1.0.0-pl" is already installed', $output);
     }
 
     public function testExecuteWithFailedResponse()
