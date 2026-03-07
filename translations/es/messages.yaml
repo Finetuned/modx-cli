@@ -1,0 +1,32 @@
+# Mensajes generales - Español
+
+# Confirmaciones
+confirm_delete: '¿Está seguro de que desea eliminar %item%?'
+confirm_continue: '¿Desea continuar?'
+confirm_overwrite: 'El archivo ya existe. ¿Sobrescribir?'
+
+# Estado de operaciones
+operation_success: 'Operación completada con éxito'
+operation_cancelled: 'Operación cancelada'
+operation_in_progress: 'Operación en curso...'
+
+# Interfaz de usuario
+yes: 'Sí'
+no: 'No'
+cancel: 'Cancelar'
+continue: 'Continuar'
+back: 'Atrás'
+next: 'Siguiente'
+finish: 'Finalizar'
+
+# Indicadores de progreso
+processing: 'Procesando...'
+loading: 'Cargando...'
+saving: 'Guardando...'
+deleting: 'Eliminando...'
+updating: 'Actualizando...'
+
+# Pluralización
+users_found: '{0} No se encontraron usuarios|{1} Se encontró un usuario|]1,Inf[ Se encontraron %count% usuarios'
+files_processed: '{1} Se procesó un archivo|]1,Inf[ Se procesaron %count% archivos'
+items_selected: '{0} No hay elementos seleccionados|{1} Un elemento seleccionado|]1,Inf[ %count% elementos seleccionados'

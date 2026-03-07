@@ -1,0 +1,19 @@
+# Mensajes de comandos - Español
+
+resource:
+  create:
+    success: 'Recurso creado con éxito'
+  delete:
+    success: 'Recurso eliminado con éxito (movido a la papelera)'
+    failed: 'No se pudo eliminar el recurso'
+  update:
+    success: 'Recurso actualizado con éxito'
+    failed: 'No se pudo actualizar el recurso'
+  erase:
+    success: 'Recurso borrado con éxito (eliminado permanentemente)'
+    not_in_trash: 'El recurso "%pagetitle%" (ID: %id%) no está en la papelera'
+    use_delete_hint: "Use 'resource:delete' para moverlo primero a la papelera"
+    irreversible_warning: 'ADVERTENCIA: ¡Esta operación es irreversible!'
+    failed: 'No se pudo borrar el recurso'
+  get:
+    not_found: 'Recurso no encontrado'
