@@ -19,3 +19,6 @@
 /phpstan.neon
 phpstan-baseline.neon
 .phpstan.cache
+
+# AI directives
+CLAUDE.md
