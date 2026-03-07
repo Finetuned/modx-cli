@@ -98,3 +98,101 @@ package:
       id_label: 'Anbieter-ID: '
     info:
       not_found: 'Anbieter nicht gefunden'
+
+system:
+  events:
+    create:
+      success: 'Ereignis erfolgreich erstellt'
+      name_label: 'Ereignisname: '
+      failed: 'Ereignis konnte nicht erstellt werden'
+    delete:
+      not_found: 'Ereignis mit ID %id% nicht gefunden'
+      confirm: 'Möchten Sie das Ereignis „%name%" (ID: %id%) wirklich löschen?'
+      success: 'Ereignis erfolgreich gelöscht'
+      failed: 'Ereignis konnte nicht gelöscht werden'
+  log:
+    clear:
+      success: 'Systemprotokoll erfolgreich geleert'
+      failed: 'Systemprotokoll konnte nicht geleert werden'
+    view:
+      not_found: 'Keine Protokolleinträge gefunden'
+    listen:
+      watching: 'Warte auf neue Protokolleinträge (Strg+C zum Beenden)...'
+      not_found: 'Keine Protokolleinträge gefunden'
+    actions:
+      truncate:
+        confirm_all: 'Möchten Sie alle Aktionsprotokolle wirklich kürzen?'
+        confirm_age: 'Möchten Sie Aktionsprotokolle älter als %age% Tage wirklich kürzen?'
+        success: 'Aktionsprotokolle erfolgreich gekürzt'
+        count_label: 'Gesamt entfernte Protokolle: '
+        failed: 'Aktionsprotokolle konnten nicht gekürzt werden'
+  cache:
+    clear:
+      success: 'Cache erfolgreich geleert'
+      failed: 'Cache konnte nicht geleert werden'
+  refresh_uris:
+    success: 'URIs erfolgreich aktualisiert'
+    count_label: 'Verarbeitete Ressourcen gesamt: '
+    failed: 'URIs konnten nicht aktualisiert werden'
+  locks:
+    read:
+      not_found: 'Sperre mit Schlüssel „%key%" nicht gefunden'
+      none_found: 'Keine Sperren gefunden'
+    remove:
+      not_found: 'Sperre mit Schlüssel „%key%" nicht gefunden'
+      info: 'Sperrinformationen:'
+      key_label: 'Schlüssel: '
+      user_label: 'Benutzer: '
+      message_label: 'Nachricht: '
+      timestamp_label: 'Zeitstempel: '
+      confirm: 'Möchten Sie diese Sperre wirklich entfernen?'
+      success: 'Sperre mit Schlüssel „%key%" erfolgreich entfernt'
+ns:
+  create:
+    success: 'Namespace erfolgreich erstellt'
+    id_label: 'Namespace-ID: '
+    failed: 'Namespace konnte nicht erstellt werden'
+  update:
+    success: 'Namespace erfolgreich aktualisiert'
+    id_label: 'Namespace-ID: '
+    failed: 'Namespace konnte nicht aktualisiert werden'
+  remove:
+    not_found: 'Namespace „%name%" nicht gefunden'
+    confirm: 'Möchten Sie den Namespace „%name%" wirklich entfernen?'
+    success: 'Namespace erfolgreich entfernt'
+    failed: 'Namespace konnte nicht entfernt werden'
+session:
+  flush:
+    confirm: 'Möchten Sie alle Sessions wirklich leeren? Dadurch werden alle Benutzer abgemeldet.'
+    no_handler: 'Session-Handler nicht verfügbar'
+    success: 'Sessions erfolgreich geleert'
+    failed: 'Sessions konnten nicht geleert werden'
+  remove:
+    not_found: 'Session mit ID %id% nicht gefunden'
+    confirm: 'Möchten Sie die Session „%id%" wirklich entfernen?'
+    success: 'Session erfolgreich entfernt'
+    failed: 'Session konnte nicht entfernt werden'
+security:
+  access:
+    flush:
+      confirm: 'Möchten Sie die Berechtigungen wirklich leeren? Dadurch werden alle Berechtigungs-Caches gelöscht.'
+      success: 'Berechtigungen erfolgreich geleert'
+      failed: 'Berechtigungen konnten nicht geleert werden'
+  role_group:
+    add_policy:
+      group_not_found: 'Rollengruppe nicht gefunden'
+      template_not_found: 'Richtlinienvorlage nicht gefunden'
+      failed: 'Richtlinienvorlage konnte der Rollengruppe nicht zugewiesen werden'
+      success: 'Richtlinienvorlage zur Rollengruppe hinzugefügt'
+    remove_policy:
+      group_not_found: 'Rollengruppe nicht gefunden'
+      template_not_found: 'Richtlinienvorlage nicht gefunden'
+      not_assigned: 'Richtlinienvorlage ist der angegebenen Rollengruppe nicht zugewiesen'
+      failed: 'Richtlinienvorlage konnte nicht aus der Rollengruppe entfernt werden'
+      success: 'Richtlinienvorlage aus der Rollengruppe entfernt'
+registry:
+  send:
+    success: 'Registry-Nachricht erfolgreich gesendet'
+    failed: 'Registry-Nachricht konnte nicht gesendet werden'
+  read:
+    not_found: 'Keine Registry-Nachrichten gefunden'

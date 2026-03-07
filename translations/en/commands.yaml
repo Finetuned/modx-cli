@@ -100,3 +100,105 @@ package:
       id_label: 'Provider ID: '
     info:
       not_found: 'Provider not found'
+
+system:
+  events:
+    create:
+      success: 'Event created successfully'
+      name_label: 'Event name: '
+      failed: 'Failed to create event'
+    delete:
+      not_found: 'Event with ID %id% not found'
+      confirm: 'Are you sure you want to delete event "%name%" (ID: %id%)?'
+      success: 'Event deleted successfully'
+      failed: 'Failed to delete event'
+  log:
+    clear:
+      success: 'System log cleared successfully'
+      failed: 'Failed to clear system log'
+    view:
+      not_found: 'No log entries found'
+    listen:
+      watching: 'Listening for new log entries (Ctrl+C to stop)...'
+      not_found: 'No log entries found'
+    actions:
+      truncate:
+        confirm_all: 'Are you sure you want to truncate all action logs?'
+        confirm_age: 'Are you sure you want to truncate action logs older than %age% days?'
+        success: 'Action logs truncated successfully'
+        count_label: 'Total logs removed: '
+        failed: 'Failed to truncate action logs'
+  cache:
+    clear:
+      success: 'Cache cleared successfully'
+      failed: 'Failed to clear cache'
+  refresh_uris:
+    success: 'URIs refreshed successfully'
+    count_label: 'Total resources processed: '
+    failed: 'Failed to refresh URIs'
+  locks:
+    read:
+      not_found: 'Lock with key "%key%" not found'
+      none_found: 'No locks found'
+    remove:
+      not_found: 'Lock with key "%key%" not found'
+      info: 'Lock information:'
+      key_label: 'Key: '
+      user_label: 'User: '
+      message_label: 'Message: '
+      timestamp_label: 'Timestamp: '
+      confirm: 'Are you sure you want to remove this lock?'
+      success: 'Lock with key "%key%" removed successfully'
+
+ns:
+  create:
+    success: 'Namespace created successfully'
+    id_label: 'Namespace ID: '
+    failed: 'Failed to create namespace'
+  update:
+    success: 'Namespace updated successfully'
+    id_label: 'Namespace ID: '
+    failed: 'Failed to update namespace'
+  remove:
+    not_found: 'Namespace "%name%" not found'
+    confirm: 'Are you sure you want to remove namespace "%name%"?'
+    success: 'Namespace removed successfully'
+    failed: 'Failed to remove namespace'
+
+session:
+  flush:
+    confirm: 'Are you sure you want to flush all sessions? This will log out all users.'
+    no_handler: 'Session handler not available'
+    success: 'Sessions flushed successfully'
+    failed: 'Failed to flush sessions'
+  remove:
+    not_found: 'Session with ID %id% not found'
+    confirm: 'Are you sure you want to remove session "%id%"?'
+    success: 'Session removed successfully'
+    failed: 'Failed to remove session'
+
+security:
+  access:
+    flush:
+      confirm: 'Are you sure you want to flush permissions? This will clear all permission caches.'
+      success: 'Permissions flushed successfully'
+      failed: 'Failed to flush permissions'
+  role_group:
+    add_policy:
+      group_not_found: 'Role group not found'
+      template_not_found: 'Policy template not found'
+      failed: 'Failed to assign policy template to role group'
+      success: 'Policy template added to role group'
+    remove_policy:
+      group_not_found: 'Role group not found'
+      template_not_found: 'Policy template not found'
+      not_assigned: 'Policy template is not assigned to the specified role group'
+      failed: 'Failed to remove policy template from role group'
+      success: 'Policy template removed from role group'
+
+registry:
+  send:
+    success: 'Registry message sent successfully'
+    failed: 'Failed to send registry message'
+  read:
+    not_found: 'No registry messages found'

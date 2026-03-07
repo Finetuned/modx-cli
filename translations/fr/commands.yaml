@@ -98,3 +98,101 @@ package:
       id_label: 'ID du fournisseur : '
     info:
       not_found: 'Fournisseur introuvable'
+
+system:
+  events:
+    create:
+      success: 'Événement créé avec succès'
+      name_label: 'Nom de l''événement : '
+      failed: 'Échec de la création de l''événement'
+    delete:
+      not_found: 'Événement avec l''ID %id% introuvable'
+      confirm: 'Voulez-vous vraiment supprimer l''événement « %name% » (ID : %id%) ?'
+      success: 'Événement supprimé avec succès'
+      failed: 'Échec de la suppression de l''événement'
+  log:
+    clear:
+      success: 'Journal système effacé avec succès'
+      failed: 'Échec de l''effacement du journal système'
+    view:
+      not_found: 'Aucune entrée de journal trouvée'
+    listen:
+      watching: 'Écoute des nouvelles entrées de journal (Ctrl+C pour arrêter)...'
+      not_found: 'Aucune entrée de journal trouvée'
+    actions:
+      truncate:
+        confirm_all: 'Voulez-vous vraiment tronquer tous les journaux d''actions ?'
+        confirm_age: 'Voulez-vous vraiment tronquer les journaux d''actions de plus de %age% jours ?'
+        success: 'Journaux d''actions tronqués avec succès'
+        count_label: 'Total des journaux supprimés : '
+        failed: 'Échec de la troncature des journaux d''actions'
+  cache:
+    clear:
+      success: 'Cache effacé avec succès'
+      failed: 'Échec de l''effacement du cache'
+  refresh_uris:
+    success: 'URIs actualisées avec succès'
+    count_label: 'Total des ressources traitées : '
+    failed: 'Échec de l''actualisation des URIs'
+  locks:
+    read:
+      not_found: 'Verrou avec la clé « %key% » introuvable'
+      none_found: 'Aucun verrou trouvé'
+    remove:
+      not_found: 'Verrou avec la clé « %key% » introuvable'
+      info: 'Informations sur le verrou :'
+      key_label: 'Clé : '
+      user_label: 'Utilisateur : '
+      message_label: 'Message : '
+      timestamp_label: 'Horodatage : '
+      confirm: 'Voulez-vous vraiment supprimer ce verrou ?'
+      success: 'Verrou avec la clé « %key% » supprimé avec succès'
+ns:
+  create:
+    success: 'Espace de noms créé avec succès'
+    id_label: 'ID de l''espace de noms : '
+    failed: 'Échec de la création de l''espace de noms'
+  update:
+    success: 'Espace de noms mis à jour avec succès'
+    id_label: 'ID de l''espace de noms : '
+    failed: 'Échec de la mise à jour de l''espace de noms'
+  remove:
+    not_found: 'Espace de noms « %name% » introuvable'
+    confirm: 'Voulez-vous vraiment supprimer l''espace de noms « %name% » ?'
+    success: 'Espace de noms supprimé avec succès'
+    failed: 'Échec de la suppression de l''espace de noms'
+session:
+  flush:
+    confirm: 'Voulez-vous vraiment vider toutes les sessions ? Cela déconnectera tous les utilisateurs.'
+    no_handler: 'Gestionnaire de session non disponible'
+    success: 'Sessions vidées avec succès'
+    failed: 'Échec du vidage des sessions'
+  remove:
+    not_found: 'Session avec l''ID %id% introuvable'
+    confirm: 'Voulez-vous vraiment supprimer la session « %id% » ?'
+    success: 'Session supprimée avec succès'
+    failed: 'Échec de la suppression de la session'
+security:
+  access:
+    flush:
+      confirm: 'Voulez-vous vraiment vider les permissions ? Cela effacera tous les caches de permissions.'
+      success: 'Permissions vidées avec succès'
+      failed: 'Échec du vidage des permissions'
+  role_group:
+    add_policy:
+      group_not_found: 'Groupe de rôles introuvable'
+      template_not_found: 'Modèle de politique introuvable'
+      failed: 'Échec de l''attribution du modèle de politique au groupe de rôles'
+      success: 'Modèle de politique ajouté au groupe de rôles'
+    remove_policy:
+      group_not_found: 'Groupe de rôles introuvable'
+      template_not_found: 'Modèle de politique introuvable'
+      not_assigned: 'Le modèle de politique n''est pas attribué au groupe de rôles spécifié'
+      failed: 'Échec de la suppression du modèle de politique du groupe de rôles'
+      success: 'Modèle de politique supprimé du groupe de rôles'
+registry:
+  send:
+    success: 'Message de registre envoyé avec succès'
+    failed: 'Échec de l''envoi du message de registre'
+  read:
+    not_found: 'Aucun message de registre trouvé'

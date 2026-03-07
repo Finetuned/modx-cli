@@ -98,3 +98,101 @@ package:
       id_label: 'ID del proveedor: '
     info:
       not_found: 'Proveedor no encontrado'
+
+system:
+  events:
+    create:
+      success: 'Evento creado con éxito'
+      name_label: 'Nombre del evento: '
+      failed: 'No se pudo crear el evento'
+    delete:
+      not_found: 'Evento con ID %id% no encontrado'
+      confirm: '¿Está seguro de que desea eliminar el evento «%name%» (ID: %id%)?'
+      success: 'Evento eliminado con éxito'
+      failed: 'No se pudo eliminar el evento'
+  log:
+    clear:
+      success: 'Registro del sistema limpiado con éxito'
+      failed: 'No se pudo limpiar el registro del sistema'
+    view:
+      not_found: 'No se encontraron entradas de registro'
+    listen:
+      watching: 'Escuchando nuevas entradas de registro (Ctrl+C para detener)...'
+      not_found: 'No se encontraron entradas de registro'
+    actions:
+      truncate:
+        confirm_all: '¿Está seguro de que desea truncar todos los registros de acciones?'
+        confirm_age: '¿Está seguro de que desea truncar los registros de acciones con más de %age% días?'
+        success: 'Registros de acciones truncados con éxito'
+        count_label: 'Total de registros eliminados: '
+        failed: 'No se pudieron truncar los registros de acciones'
+  cache:
+    clear:
+      success: 'Caché limpiado con éxito'
+      failed: 'No se pudo limpiar el caché'
+  refresh_uris:
+    success: 'URIs actualizadas con éxito'
+    count_label: 'Total de recursos procesados: '
+    failed: 'No se pudieron actualizar las URIs'
+  locks:
+    read:
+      not_found: 'Bloqueo con clave «%key%» no encontrado'
+      none_found: 'No se encontraron bloqueos'
+    remove:
+      not_found: 'Bloqueo con clave «%key%» no encontrado'
+      info: 'Información del bloqueo:'
+      key_label: 'Clave: '
+      user_label: 'Usuario: '
+      message_label: 'Mensaje: '
+      timestamp_label: 'Marca de tiempo: '
+      confirm: '¿Está seguro de que desea eliminar este bloqueo?'
+      success: 'Bloqueo con clave «%key%» eliminado con éxito'
+ns:
+  create:
+    success: 'Espacio de nombres creado con éxito'
+    id_label: 'ID del espacio de nombres: '
+    failed: 'No se pudo crear el espacio de nombres'
+  update:
+    success: 'Espacio de nombres actualizado con éxito'
+    id_label: 'ID del espacio de nombres: '
+    failed: 'No se pudo actualizar el espacio de nombres'
+  remove:
+    not_found: 'Espacio de nombres «%name%» no encontrado'
+    confirm: '¿Está seguro de que desea eliminar el espacio de nombres «%name%»?'
+    success: 'Espacio de nombres eliminado con éxito'
+    failed: 'No se pudo eliminar el espacio de nombres'
+session:
+  flush:
+    confirm: '¿Está seguro de que desea vaciar todas las sesiones? Esto cerrará la sesión de todos los usuarios.'
+    no_handler: 'Manejador de sesión no disponible'
+    success: 'Sesiones vaciadas con éxito'
+    failed: 'No se pudieron vaciar las sesiones'
+  remove:
+    not_found: 'Sesión con ID %id% no encontrada'
+    confirm: '¿Está seguro de que desea eliminar la sesión «%id%»?'
+    success: 'Sesión eliminada con éxito'
+    failed: 'No se pudo eliminar la sesión'
+security:
+  access:
+    flush:
+      confirm: '¿Está seguro de que desea vaciar los permisos? Esto limpiará todos los cachés de permisos.'
+      success: 'Permisos vaciados con éxito'
+      failed: 'No se pudieron vaciar los permisos'
+  role_group:
+    add_policy:
+      group_not_found: 'Grupo de roles no encontrado'
+      template_not_found: 'Plantilla de política no encontrada'
+      failed: 'No se pudo asignar la plantilla de política al grupo de roles'
+      success: 'Plantilla de política añadida al grupo de roles'
+    remove_policy:
+      group_not_found: 'Grupo de roles no encontrado'
+      template_not_found: 'Plantilla de política no encontrada'
+      not_assigned: 'La plantilla de política no está asignada al grupo de roles especificado'
+      failed: 'No se pudo eliminar la plantilla de política del grupo de roles'
+      success: 'Plantilla de política eliminada del grupo de roles'
+registry:
+  send:
+    success: 'Mensaje de registro enviado con éxito'
+    failed: 'No se pudo enviar el mensaje de registro'
+  read:
+    not_found: 'No se encontraron mensajes de registro'
