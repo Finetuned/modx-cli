@@ -2,7 +2,7 @@
 # This file contains general UI messages and prompts
 
 # Confirmation prompts
-confirm_delete: 'Are you sure you want to delete {item}?'
+confirm_delete: 'Are you sure you want to delete %item%?'
 confirm_continue: 'Do you want to continue?'
 confirm_overwrite: 'File already exists. Overwrite?'
 

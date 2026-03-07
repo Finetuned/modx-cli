@@ -7,20 +7,20 @@ email_invalid: 'Invalid email address format'
 
 # Password validation
 password_required: 'Password is required'
-password_too_short: 'Password must be at least {min} characters'
+password_too_short: 'Password must be at least %min% characters'
 password_too_weak: 'Password is too weak'
 
 # Username validation
 username_required: 'Username is required'
 username_invalid_chars: 'Username contains invalid characters'
-username_already_exists: 'Username "{username}" already exists'
+username_already_exists: 'Username "%username%" already exists'
 
 # General validation
-field_required: 'Field "{field}" is required'
-value_too_long: 'Value for "{field}" is too long (maximum: {max} characters)'
-value_too_short: 'Value for "{field}" is too short (minimum: {min} characters)'
-invalid_format: 'Invalid format for "{field}"'
+field_required: 'Field "%field%" is required'
+value_too_long: 'Value for "%field%" is too long (maximum: %max% characters)'
+value_too_short: 'Value for "%field%" is too short (minimum: %min% characters)'
+invalid_format: 'Invalid format for "%field%"'
 
 # Numeric validation
-value_not_numeric: 'Value for "{field}" must be numeric'
-value_out_of_range: 'Value for "{field}" must be between {min} and {max}'
+value_not_numeric: 'Value for "%field%" must be numeric'
+value_out_of_range: 'Value for "%field%" must be between %min% and %max%'
