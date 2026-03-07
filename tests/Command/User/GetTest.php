@@ -82,11 +82,11 @@ class GetTest extends BaseTest
 
         // Verify the output
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('ID:          1', $output);
-        $this->assertStringContainsString('Username:    admin', $output);
-        $this->assertStringContainsString('Email:       admin@example.com', $output);
-        $this->assertStringContainsString('Active:      Yes', $output);
-        $this->assertStringContainsString('Sudo:        Yes', $output);
+        $this->assertStringContainsString('ID: 1', $output);
+        $this->assertStringContainsString('Username: admin', $output);
+        $this->assertStringContainsString('Email: admin@example.com', $output);
+        $this->assertStringContainsString('Active: Yes', $output);
+        $this->assertStringContainsString('Sudo: Yes', $output);
     }
 
     public function testExecuteWithSuccessfulResponseByUsername()
@@ -131,7 +131,7 @@ class GetTest extends BaseTest
 
         // Verify the output
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Username:    admin', $output);
+        $this->assertStringContainsString('Username: admin', $output);
     }
 
     public function testExecuteWithNonExistentUser()
