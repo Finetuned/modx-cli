@@ -4,7 +4,6 @@ namespace MODX\CLI\Command\I18n;
 
 use MODX\CLI\Command\BaseCmd;
 use MODX\CLI\Translation\TranslationReader;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Validate translation files for completeness and consistency.
@@ -21,13 +20,6 @@ class Validate extends BaseCmd
     protected function getArguments()
     {
         return [];
-    }
-
-    protected function getOptions()
-    {
-        return array_merge(parent::getOptions(), [
-            ['locale', 'l', InputOption::VALUE_REQUIRED, 'Limit validation to a specific locale'],
-        ]);
     }
 
     protected function process()
