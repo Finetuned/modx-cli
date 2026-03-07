@@ -1,16 +1,21 @@
 # Command Messages - English
-# This file contains command descriptions, help text, and success messages
+# This file contains command runtime messages (success, info, warnings)
+# Keyed by command namespace and action, using Symfony %param% substitution format
 
-# Placeholder structure - will be populated during Phase 3 migration
-# Example structure:
-# user:
-#   create:
-#     description: 'Create a new user'
-#     help: 'This command creates a new user with the specified credentials'
-#     success: 'User {username} created successfully'
-#     prompts:
-#       username: 'Enter username'
-#       email: 'Enter email address'
-#       password: 'Enter password'
-
-# This file will be populated as commands are migrated to use translations
+resource:
+  create:
+    success: 'Resource created successfully'
+  delete:
+    success: 'Resource deleted successfully (moved to trash)'
+    failed: 'Failed to delete resource'
+  update:
+    success: 'Resource updated successfully'
+    failed: 'Failed to update resource'
+  erase:
+    success: 'Resource erased successfully (permanently deleted)'
+    not_in_trash: 'Resource "%pagetitle%" (ID: %id%) is not in the trash'
+    use_delete_hint: "Use 'resource:delete' to move it to trash first"
+    irreversible_warning: 'WARNING: This operation is irreversible!'
+    failed: 'Failed to erase resource'
+  get:
+    not_found: 'Resource not found'
