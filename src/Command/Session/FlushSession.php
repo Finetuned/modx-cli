@@ -77,7 +77,7 @@ class FlushSession extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Sessions flushed successfully');
+            $this->info($this->trans('session.flush.success', [], 'commands'));
             return 0;
         } else {
             $this->error('Failed to flush sessions');
