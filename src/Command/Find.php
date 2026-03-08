@@ -50,7 +50,7 @@ class Find extends ListProcessor
         $data = $this->modx->getVersionData();
         $version = $data['full_version'];
         if (version_compare($version, '2.3.0', '<')) {
-            $this->error('This MODX version does not support that search function');
+            $this->error($this->trans('find.version_unsupported', [], 'commands'));
             return false;
         }
 

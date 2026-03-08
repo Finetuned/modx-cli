@@ -97,18 +97,18 @@ class SelfUpdate extends BaseCmd
         $currentVersion = $this->getCurrentVersion();
 
         if ($currentVersion === null) {
-            return $this->fail('Unable to determine current version.', $json);
+            return $this->fail($this->trans('selfupdate.version_unknown', [], 'commands'), $json);
         }
 
         $channel = $this->resolveChannel();
         if ($channel === null) {
-            return $this->fail('Choose only one of --stable or --nightly.', $json);
+            return $this->fail($this->trans('selfupdate.channel_conflict', [], 'commands'), $json);
         }
 
         $targetVersion = $this->option('target-version');
         $toVersion = $this->option('to');
         if ($targetVersion !== null && $toVersion !== null && $targetVersion !== $toVersion) {
-            return $this->fail('Use only one of --target-version or --to.', $json);
+            return $this->fail($this->trans('selfupdate.version_option_conflict', [], 'commands'), $json);
         }
         if ($targetVersion === null && $toVersion !== null) {
             $targetVersion = $toVersion;
@@ -130,11 +130,7 @@ class SelfUpdate extends BaseCmd
         }
 
         if (!$this->isPharInstall()) {
-            return $this->fail(
-                'Self-update is only supported for Phar installs. ' .
-                'Update with Composer: `composer global update finetuned/modx-cli`.',
-                $json
-            );
+            return $this->fail($this->trans('selfupdate.phar_only', [], 'commands'), $json);
         }
 
         if (!$isUpdateAvailable && $targetVersion === null && !$this->option('nightly')) {
@@ -148,11 +144,10 @@ class SelfUpdate extends BaseCmd
         $downloadUrl = $release['asset']['url'];
 
         if (!$this->option('force')) {
-            $confirmMessage = sprintf(
-                'You have version %s. Would you like to update to %s?',
-                $currentVersion,
-                $release['version']
-            );
+            $confirmMessage = $this->trans('selfupdate.update_confirm', [
+                '%current%' => $currentVersion,
+                '%target%' => $release['version'],
+            ], 'commands');
             if (!$this->confirm($confirmMessage)) {
                 return 0;
             }
@@ -185,12 +180,12 @@ class SelfUpdate extends BaseCmd
             return 0;
         }
 
-        $this->info('Current version: ' . $currentVersion);
-        $this->info('Latest version: ' . $release['version']);
+        $this->info($this->trans('selfupdate.current_version_label', [], 'commands') . $currentVersion);
+        $this->info($this->trans('selfupdate.latest_version_label', [], 'commands') . $release['version']);
         if ($isUpdateAvailable) {
-            $this->comment('A new version is available!');
+            $this->comment($this->trans('selfupdate.available', [], 'commands'));
         } else {
-            $this->comment('You are already on the latest version.');
+            $this->comment($this->trans('selfupdate.already_latest', [], 'commands'));
         }
         $this->renderReleaseNotes($release['notes']);
 
@@ -215,7 +210,7 @@ class SelfUpdate extends BaseCmd
                 'update_available' => false,
             ], JSON_PRETTY_PRINT));
         } else {
-            $this->comment('MODX CLI is already at the latest version.');
+            $this->comment($this->trans('selfupdate.already_latest', [], 'commands'));
         }
 
         return 0;
@@ -243,11 +238,11 @@ class SelfUpdate extends BaseCmd
             return 0;
         }
 
-        $this->info('Current version: ' . $currentVersion);
-        $this->info('Target version: ' . $release['version']);
-        $this->comment('Would download: ' . $release['asset']['url']);
-        $this->comment('File size: ' . $this->formatBytes($release['asset']['size']));
-        $this->comment('(Dry run - no changes made)');
+        $this->info($this->trans('selfupdate.current_version_label', [], 'commands') . $currentVersion);
+        $this->info($this->trans('selfupdate.target_version_label', [], 'commands') . $release['version']);
+        $this->comment($this->trans('selfupdate.would_download_label', [], 'commands') . $release['asset']['url']);
+        $this->comment($this->trans('selfupdate.file_size_label', [], 'commands') . $this->formatBytes($release['asset']['size']));
+        $this->comment($this->trans('selfupdate.dry_run_notice', [], 'commands'));
 
         return 0;
     }
@@ -267,18 +262,18 @@ class SelfUpdate extends BaseCmd
         $pharDir = dirname($pharPath);
 
         if (!is_writable($pharPath) || !is_writable($pharDir)) {
-            return $this->fail("{$pharPath} is not writable by the current user.", $json);
+            return $this->fail($this->trans('selfupdate.not_writable', ['%path%' => $pharPath], 'commands'), $json);
         }
 
         $tempPath = $pharDir . '/.modx-cli-update-' . uniqid('', true) . '.phar';
         $backupPath = $this->buildBackupPath($pharPath, $currentVersion);
 
         if (!$json) {
-            $this->comment('Downloading ' . $release['asset']['name'] . '...');
+            $this->comment($this->trans('selfupdate.downloading', ['%name%' => $release['asset']['name']], 'commands'));
         }
 
         if (!$this->downloadFile($downloadUrl, $tempPath, $release['asset']['size'])) {
-            return $this->fail('Download failed.', $json);
+            return $this->fail($this->trans('selfupdate.download_failed', [], 'commands'), $json);
         }
 
         if (!$this->verifyChecksum($release, $tempPath, $json)) {
@@ -295,7 +290,7 @@ class SelfUpdate extends BaseCmd
         if (!$this->option('no-backup')) {
             if (!copy($pharPath, $backupPath)) {
                 @unlink($tempPath);
-                return $this->fail('Failed to create backup before update.', $json);
+                return $this->fail($this->trans('selfupdate.backup_failed', [], 'commands'), $json);
             }
             $backupCreated = true;
         }
@@ -303,12 +298,12 @@ class SelfUpdate extends BaseCmd
         $mode = fileperms($pharPath) & 511;
         if (!chmod($tempPath, $mode)) {
             $this->restoreBackup($backupCreated, $backupPath, $pharPath);
-            return $this->fail('Unable to set permissions on the downloaded Phar.', $json);
+            return $this->fail($this->trans('selfupdate.permissions_failed', [], 'commands'), $json);
         }
 
         if (!rename($tempPath, $pharPath)) {
             $this->restoreBackup($backupCreated, $backupPath, $pharPath);
-            return $this->fail('Unable to replace the existing Phar.', $json);
+            return $this->fail($this->trans('selfupdate.replace_failed', [], 'commands'), $json);
         }
 
         if ($backupCreated) {
@@ -322,11 +317,10 @@ class SelfUpdate extends BaseCmd
                 'updated_version' => $release['version'],
             ], JSON_PRETTY_PRINT));
         } else {
-            $this->info(sprintf(
-                'Update complete. %s → %s',
-                $currentVersion,
-                $release['version']
-            ));
+            $this->info($this->trans('selfupdate.update_complete', [
+                '%current%' => $currentVersion,
+                '%updated%' => $release['version'],
+            ], 'commands'));
         }
 
         return 0;

@@ -41,11 +41,11 @@ class Crawl extends BaseCmd
             $total = $this->modx->getCount(modResource::class, $c);
             if ($total > 0) {
                 if (!$this->prepareCurl()) {
-                    $this->outputResult(false, 'Failed to initialize cURL');
+                    $this->outputResult(false, $this->trans('crawl.curl_init_failed', [], 'commands'));
                     return 1;
                 }
             } else {
-                $this->outputResult(true, 'No resources to crawl found with criteria', [
+                $this->outputResult(true, $this->trans('crawl.no_resources', [], 'commands'), [
                     'total' => 0,
                 ]);
                 return 0;
@@ -63,7 +63,7 @@ class Crawl extends BaseCmd
                 $resourceId = (int) $resource->get('id');
                 if ($context !== $contextKey) {
                     if (!$this->jsonOutput) {
-                        $this->comment("\nProcessing context {$contextKey}");
+                        $this->comment("\n" . $this->trans('crawl.processing_context', ['%context%' => $contextKey], 'commands'));
                     }
                     $this->modx->switchContext($contextKey);
                     $context = $contextKey;
@@ -90,19 +90,19 @@ class Crawl extends BaseCmd
             }
             $duration = microtime(true) - $this->start;
             if ($this->jsonOutput) {
-                $this->outputResult(true, 'Crawl completed', [
+                $this->outputResult(true, $this->trans('crawl.completed', [], 'commands'), [
                     'total' => $total,
                     'results' => $this->crawlResults,
                     'errors' => $this->crawlErrors,
                     'duration' => $duration,
                 ]);
             } else {
-                $this->line("\n" . sprintf("Executed in <info>%2.4f</info> seconds", $duration));
+                $this->line("\n" . $this->trans('crawl.execution_time', ['%seconds%' => sprintf('%2.4f', $duration)], 'commands'));
             }
 
             return 0;
         } catch (\Exception $e) {
-            $this->outputResult(false, 'Crawl failed: ' . $e->getMessage(), [
+            $this->outputResult(false, $this->trans('crawl.failed', [], 'commands') . $e->getMessage(), [
                 'errors' => $this->crawlErrors,
             ]);
             if ($this->curl) {
@@ -173,7 +173,7 @@ class Crawl extends BaseCmd
         }
 
         if (curl_errno($this->curl)) {
-            $error = 'cURL error: ' . curl_errno($this->curl) . ' - ' . curl_error($this->curl);
+            $error = $this->trans('crawl.curl_error', [], 'commands') . curl_errno($this->curl) . ' - ' . curl_error($this->curl);
             if ($this->jsonOutput) {
                 $entry['error'] = $error;
                 $this->crawlErrors[] = $error;
@@ -197,13 +197,13 @@ class Crawl extends BaseCmd
         $this->start = microtime(true);
 
         if (!function_exists('curl_init')) {
-            $this->outputResult(false, 'cURL extension is not available');
+            $this->outputResult(false, $this->trans('crawl.curl_unavailable', [], 'commands'));
             return false;
         }
 
         $ch = curl_init();
         if ($ch === false) {
-            $this->outputResult(false, 'Failed to initialize cURL');
+            $this->outputResult(false, $this->trans('crawl.curl_init_failed', [], 'commands'));
             return false;
         }
 
@@ -226,7 +226,7 @@ class Crawl extends BaseCmd
         ]);
 
         if (!$result) {
-            $this->outputResult(false, 'Failed to set cURL options');
+            $this->outputResult(false, $this->trans('crawl.curl_options_failed', [], 'commands'));
             curl_close($ch);
             return false;
         }
