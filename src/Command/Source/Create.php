@@ -147,14 +147,14 @@ class Create extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Media source created successfully');
+            $this->info($this->trans('source.create.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['id'])) {
-                $this->info('Source ID: ' . $response['object']['id']);
+                $this->info($this->trans('source.create.id_label', [], 'commands') . $response['object']['id']);
             }
             return 0;
         } else {
-            $this->error('Failed to create media source');
+            $this->error($this->trans('source.create.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

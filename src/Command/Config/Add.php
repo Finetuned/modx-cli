@@ -93,14 +93,14 @@ class Add extends BaseCmd
         // Check if the instance already exists
         $instances = $this->getApplication()->instances;
         if ($instances->get($name)) {
-            if (!$this->confirm("Instance '{$name}' already exists. Do you want to overwrite it?")) {
+            if (!$this->confirm($this->trans('config.add.exists_confirm', ['%name%' => $name], 'commands'))) {
                 if ($this->option('json')) {
                     $this->output->writeln(json_encode([
                         'success' => false,
-                        'message' => 'Operation aborted',
+                        'message' => $this->trans('operation_aborted', [], 'errors'),
                     ], JSON_PRETTY_PRINT));
                 } else {
-                    $this->info('Operation aborted');
+                    $this->info($this->trans('operation_aborted', [], 'errors'));
                 }
                 return 0;
             }
@@ -108,14 +108,14 @@ class Add extends BaseCmd
 
         // Check if the MODX instance exists at the given path
         if (!file_exists($basePath . 'config.core.php')) {
-            if (!$this->confirm("No MODX instance found at '{$basePath}'. Do you want to continue?")) {
+            if (!$this->confirm($this->trans('config.add.no_instance_confirm', ['%basePath%' => $basePath], 'commands'))) {
                 if ($this->option('json')) {
                     $this->output->writeln(json_encode([
                         'success' => false,
-                        'message' => 'Operation aborted',
+                        'message' => $this->trans('operation_aborted', [], 'errors'),
                     ], JSON_PRETTY_PRINT));
                 } else {
-                    $this->info('Operation aborted');
+                    $this->info($this->trans('operation_aborted', [], 'errors'));
                 }
                 return 0;
             }
@@ -133,9 +133,9 @@ class Add extends BaseCmd
                 'class' => $name,
             ]);
             $instances->save();
-            $message = "Instance '{$name}' added and set as default";
+            $message = $this->trans('config.add.added_default', ['%name%' => $name], 'commands');
         } else {
-            $message = "Instance '{$name}' added";
+            $message = $this->trans('config.add.added', ['%name%' => $name], 'commands');
         }
 
         if ($this->option('json')) {

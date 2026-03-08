@@ -37,7 +37,7 @@ class GetExcludeCommand extends BaseCmd
         }
 
         if (empty($excluded)) {
-            $this->info('No commands are excluded');
+            $this->info($this->trans('config.getexcludecommand.empty', [], 'commands'));
             return 0;
         }
 

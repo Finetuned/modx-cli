@@ -87,10 +87,10 @@ class Edit extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => "Instance '{$name}' does not exist",
+                    'message' => $this->trans('config.edit.not_found', ['%name%' => $name], 'commands'),
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->error("Instance '{$name}' does not exist");
+                $this->error($this->trans('config.edit.not_found', ['%name%' => $name], 'commands'));
             }
             return 1;
         }
@@ -104,14 +104,14 @@ class Edit extends BaseCmd
 
             // Check if the MODX instance exists at the given path
             if (!file_exists($basePath . 'config.core.php')) {
-                if (!$this->confirm("No MODX instance found at '{$basePath}'. Do you want to continue?")) {
+                if (!$this->confirm($this->trans('config.edit.no_instance_confirm', ['%basePath%' => $basePath], 'commands'))) {
                     if ($this->option('json')) {
                         $this->output->writeln(json_encode([
                             'success' => false,
-                            'message' => 'Operation aborted',
+                            'message' => $this->trans('operation_aborted', [], 'errors'),
                         ], JSON_PRETTY_PRINT));
                     } else {
-                        $this->info('Operation aborted');
+                        $this->info($this->trans('operation_aborted', [], 'errors'));
                     }
                     return 0;
                 }
@@ -130,9 +130,9 @@ class Edit extends BaseCmd
                 'class' => $name,
             ]);
             $instances->save();
-            $message = "Instance '{$name}' updated and set as default";
+            $message = $this->trans('config.edit.updated_default', ['%name%' => $name], 'commands');
         } else {
-            $message = "Instance '{$name}' updated";
+            $message = $this->trans('config.edit.updated', ['%name%' => $name], 'commands');
         }
 
         if ($this->option('json')) {

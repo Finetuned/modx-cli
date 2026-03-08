@@ -35,9 +35,9 @@ class Version extends BaseCmd
                 'modx_version' => $modxVersion,
             ], JSON_PRETTY_PRINT));
         } else {
-            $this->info('MODX CLI version ' . $cliVersion);
+            $this->info($this->trans('version.cli_version', [], 'commands') . $cliVersion);
             if ($modxVersion) {
-                $this->info('MODX version ' . $modxVersion);
+                $this->info($this->trans('version.modx_version', [], 'commands') . $modxVersion);
             }
         }
 

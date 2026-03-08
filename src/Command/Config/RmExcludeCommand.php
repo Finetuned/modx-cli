@@ -52,7 +52,7 @@ class RmExcludeCommand extends BaseCmd
         // Check if the command is excluded
         $excluded = $excludedCommands->getAll();
         if (!in_array($class, $excluded)) {
-            $message = "Command '{$class}' is not excluded";
+            $message = $this->trans('config.rmexcludecommand.not_excluded', ['%class%' => $class], 'commands');
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => true,
@@ -70,7 +70,7 @@ class RmExcludeCommand extends BaseCmd
         $excludedCommands->remove($class);
         $excludedCommands->save();
 
-        $message = "Command '{$class}' removed from excluded commands";
+        $message = $this->trans('config.rmexcludecommand.removed', ['%class%' => $class], 'commands');
         if ($this->option('json')) {
             $this->output->writeln(json_encode([
                 'success' => true,

@@ -28,7 +28,7 @@ class WipeExcludeCommand extends BaseCmd
         $excluded = $excludedCommands->getAll();
 
         if (empty($excluded)) {
-            $message = 'No commands are excluded';
+            $message = $this->trans('config.wipeexcludecommand.none_excluded', [], 'commands');
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => true,
@@ -42,16 +42,16 @@ class WipeExcludeCommand extends BaseCmd
             return 0;
         }
 
-        if (!$this->confirm('Are you sure you want to wipe all excluded commands?')) {
+        if (!$this->confirm($this->trans('config.wipeexcludecommand.confirm', [], 'commands'))) {
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => 'Operation aborted',
+                    'message' => $this->trans('operation_aborted', [], 'errors'),
                     'wiped' => false,
                     'total' => count($excluded),
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->info('Operation aborted');
+                $this->info($this->trans('operation_aborted', [], 'errors'));
             }
             return 0;
         }
@@ -62,7 +62,7 @@ class WipeExcludeCommand extends BaseCmd
         }
         $excludedCommands->save();
 
-        $message = 'All excluded commands wiped';
+        $message = $this->trans('config.wipeexcludecommand.wiped', [], 'commands');
         if ($this->option('json')) {
             $this->output->writeln(json_encode([
                 'success' => true,

@@ -54,10 +54,10 @@ class Rm extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => "Instance '{$name}' does not exist",
+                    'message' => $this->trans('config.rm.not_found', ['%name%' => $name], 'commands'),
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->error("Instance '{$name}' does not exist");
+                $this->error($this->trans('config.rm.not_found', ['%name%' => $name], 'commands'));
             }
             return 1;
         }
@@ -65,14 +65,14 @@ class Rm extends BaseCmd
         // Check if the instance is the default
         $default = $instances->get('__default__');
         if ($default && isset($default['class']) && $default['class'] === $name) {
-            if (!$this->confirm("Instance '{$name}' is the default instance. Do you want to remove it?")) {
+            if (!$this->confirm($this->trans('config.rm.is_default_confirm', ['%name%' => $name], 'commands'))) {
                 if ($this->option('json')) {
                     $this->output->writeln(json_encode([
                         'success' => false,
-                        'message' => 'Operation aborted',
+                        'message' => $this->trans('operation_aborted', [], 'errors'),
                     ], JSON_PRETTY_PRINT));
                 } else {
-                    $this->info('Operation aborted');
+                    $this->info($this->trans('operation_aborted', [], 'errors'));
                 }
                 return 0;
             }
@@ -85,7 +85,7 @@ class Rm extends BaseCmd
         $instances->remove($name);
         $instances->save();
 
-        $message = "Instance '{$name}' removed";
+        $message = $this->trans('config.rm.removed', ['%name%' => $name], 'commands');
         if ($this->option('json')) {
             $this->output->writeln(json_encode([
                 'success' => true,

@@ -110,14 +110,14 @@ class Update extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Media source updated successfully');
+            $this->info($this->trans('source.update.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['id'])) {
-                $this->info('Source ID: ' . $response['object']['id']);
+                $this->info($this->trans('source.update.id_label', [], 'commands') . $response['object']['id']);
             }
             return 0;
         } else {
-            $this->error('Failed to update media source');
+            $this->error($this->trans('source.update.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

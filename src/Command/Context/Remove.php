@@ -64,12 +64,12 @@ class Remove extends ProcessorCmd
         // Ask for confirmation unless --force is used
         if (!$this->option('force')) {
             $confirmed = $this->confirm(
-                "Are you sure you want to remove the context '{$key}'?",
+                $this->trans('context.remove.confirm', ['%key%' => $key], 'commands'),
                 false
             );
 
             if (!$confirmed) {
-                $this->info('Context removal cancelled');
+                $this->info($this->trans('context.remove.cancelled', [], 'commands'));
                 exit(0);
             }
         }
@@ -88,10 +88,10 @@ class Remove extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Context removed successfully');
+            $this->info($this->trans('context.remove.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to remove context');
+            $this->error($this->trans('context.remove.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

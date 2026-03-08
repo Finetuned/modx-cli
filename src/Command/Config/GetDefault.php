@@ -32,10 +32,10 @@ class GetDefault extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => 'No default instance set',
+                    'message' => $this->trans('config.getdefault.not_set', [], 'commands'),
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->info('No default instance set');
+                $this->info($this->trans('config.getdefault.not_set', [], 'commands'));
             }
             return 0;
         }
@@ -47,10 +47,10 @@ class GetDefault extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => 'Default instance is set but has no name',
+                    'message' => $this->trans('config.getdefault.no_name', [], 'commands'),
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->info('Default instance is set but has no name');
+                $this->info($this->trans('config.getdefault.no_name', [], 'commands'));
             }
             return 0;
         }
@@ -61,10 +61,10 @@ class GetDefault extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => "Default instance '{$defaultName}' does not exist",
+                    'message' => $this->trans('config.getdefault.not_found', ['%name%' => $defaultName], 'commands'),
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->info("Default instance '{$defaultName}' does not exist");
+                $this->info($this->trans('config.getdefault.not_found', ['%name%' => $defaultName], 'commands'));
             }
             return 0;
         }
@@ -79,10 +79,10 @@ class GetDefault extends BaseCmd
                 ],
             ], JSON_PRETTY_PRINT));
         } else {
-            $this->info("Default instance: {$defaultName}");
+            $this->info($this->trans('config.getdefault.info_name', ['%name%' => $defaultName], 'commands'));
 
             if (isset($defaultConfig['base_path'])) {
-                $this->info("Base path: {$defaultConfig['base_path']}");
+                $this->info($this->trans('config.getdefault.info_path', ['%path%' => $defaultConfig['base_path']], 'commands'));
             }
         }
 

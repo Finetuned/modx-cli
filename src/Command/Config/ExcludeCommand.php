@@ -52,7 +52,7 @@ class ExcludeCommand extends BaseCmd
         // Check if the command is already excluded
         $excluded = $excludedCommands->getAll();
         if (in_array($class, $excluded)) {
-            $message = "Command '{$class}' is already excluded";
+            $message = $this->trans('config.excludecommand.already_excluded', ['%class%' => $class], 'commands');
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => true,
@@ -70,7 +70,7 @@ class ExcludeCommand extends BaseCmd
         $excludedCommands->set($class);
         $excludedCommands->save();
 
-        $message = "Command '{$class}' excluded";
+        $message = $this->trans('config.excludecommand.excluded', ['%class%' => $class], 'commands');
         if ($this->option('json')) {
             $this->output->writeln(json_encode([
                 'success' => true,

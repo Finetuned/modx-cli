@@ -33,7 +33,7 @@ class Extras extends BaseCmd
                     'results' => [],
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->info('No namespaces found');
+                $this->info($this->trans('extra.list.no_namespaces', [], 'commands'));
             }
             return 0;
         }
@@ -70,7 +70,7 @@ class Extras extends BaseCmd
                     'results' => [],
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->info('No extras found');
+                $this->info($this->trans('extra.list.no_extras', [], 'commands'));
             }
             return 0;
         }

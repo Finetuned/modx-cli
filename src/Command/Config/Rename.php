@@ -62,24 +62,24 @@ class Rename extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => "Instance '{$oldName}' does not exist",
+                    'message' => $this->trans('config.rename.old_not_found', ['%name%' => $oldName], 'commands'),
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->error("Instance '{$oldName}' does not exist");
+                $this->error($this->trans('config.rename.old_not_found', ['%name%' => $oldName], 'commands'));
             }
             return 1;
         }
 
         // Check if the new instance already exists
         if ($instances->get($newName)) {
-            if (!$this->confirm("Instance '{$newName}' already exists. Do you want to overwrite it?")) {
+            if (!$this->confirm($this->trans('config.rename.exists_confirm', ['%name%' => $newName], 'commands'))) {
                 if ($this->option('json')) {
                     $this->output->writeln(json_encode([
                         'success' => false,
-                        'message' => 'Operation aborted',
+                        'message' => $this->trans('operation_aborted', [], 'errors'),
                     ], JSON_PRETTY_PRINT));
                 } else {
-                    $this->info('Operation aborted');
+                    $this->info($this->trans('operation_aborted', [], 'errors'));
                 }
                 return 0;
             }
@@ -105,9 +105,9 @@ class Rename extends BaseCmd
         $instances->save();
 
         if ($isDefault) {
-            $message = "Instance '{$oldName}' renamed to '{$newName}' and set as default";
+            $message = $this->trans('config.rename.renamed_default', ['%oldName%' => $oldName, '%newName%' => $newName], 'commands');
         } else {
-            $message = "Instance '{$oldName}' renamed to '{$newName}'";
+            $message = $this->trans('config.rename.renamed', ['%oldName%' => $oldName, '%newName%' => $newName], 'commands');
         }
 
         if ($this->option('json')) {

@@ -98,10 +98,10 @@ class Update extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Context setting updated successfully');
+            $this->info($this->trans('context.setting.update.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to update context setting');
+            $this->error($this->trans('context.setting.update.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

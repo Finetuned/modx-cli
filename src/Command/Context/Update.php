@@ -99,14 +99,14 @@ class Update extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Context updated successfully');
+            $this->info($this->trans('context.update.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['key'])) {
-                $this->info('Context key: ' . $response['object']['key']);
+                $this->info($this->trans('context.update.key_label', [], 'commands') . $response['object']['key']);
             }
             return 0;
         } else {
-            $this->error('Failed to update context');
+            $this->error($this->trans('context.update.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

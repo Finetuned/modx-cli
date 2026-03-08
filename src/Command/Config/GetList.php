@@ -64,7 +64,7 @@ class GetList extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([]));
             } else {
-                $this->info('No instances configured');
+                $this->info($this->trans('config.getlist.empty', [], 'commands'));
             }
             return 0;
         }

@@ -58,14 +58,14 @@ class Get extends ProcessorCmd
         if (isset($response['success']) && $response['success']) {
             if (isset($response['object'])) {
                 $context = $response['object'];
-                $this->info('Context: ' . $context['key']);
-                $this->info('Name: ' . ($context['name'] ?? ''));
-                $this->info('Description: ' . ($context['description'] ?? ''));
-                $this->info('Rank: ' . ($context['rank'] ?? 0));
+                $this->info($this->trans('context.get.context_label', [], 'commands') . $context['key']);
+                $this->info($this->trans('context.get.name_label', [], 'commands') . ($context['name'] ?? ''));
+                $this->info($this->trans('context.get.description_label', [], 'commands') . ($context['description'] ?? ''));
+                $this->info($this->trans('context.get.rank_label', [], 'commands') . ($context['rank'] ?? 0));
             }
             return 0;
         } else {
-            $this->error('Failed to get context');
+            $this->error($this->trans('context.get.failed', [], 'commands'));
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }

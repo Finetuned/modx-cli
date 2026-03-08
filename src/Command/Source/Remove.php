@@ -64,12 +64,12 @@ class Remove extends ProcessorCmd
         // Ask for confirmation unless --force is used
         if (!$this->option('force')) {
             $confirmed = $this->confirm(
-                "Are you sure you want to remove the media source with ID '{$id}'?",
+                $this->trans('source.remove.confirm', ['%id%' => $id], 'commands'),
                 false
             );
 
             if (!$confirmed) {
-                $this->info('Media source removal cancelled');
+                $this->info($this->trans('source.remove.cancelled', [], 'commands'));
                 exit(0);
             }
         }
@@ -88,10 +88,10 @@ class Remove extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Media source removed successfully');
+            $this->info($this->trans('source.remove.success', [], 'commands'));
             return 0;
         } else {
-            $this->error('Failed to remove media source');
+            $this->error($this->trans('source.remove.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

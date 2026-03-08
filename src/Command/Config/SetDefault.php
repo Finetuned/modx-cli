@@ -54,10 +54,10 @@ class SetDefault extends BaseCmd
             if ($this->option('json')) {
                 $this->output->writeln(json_encode([
                     'success' => false,
-                    'message' => "Instance '{$name}' does not exist",
+                    'message' => $this->trans('config.setdefault.not_found', ['%name%' => $name], 'commands'),
                 ], JSON_PRETTY_PRINT));
             } else {
-                $this->error("Instance '{$name}' does not exist");
+                $this->error($this->trans('config.setdefault.not_found', ['%name%' => $name], 'commands'));
             }
             return 1;
         }
@@ -68,7 +68,7 @@ class SetDefault extends BaseCmd
         ]);
         $instances->save();
 
-        $message = "Instance '{$name}' set as default";
+        $message = $this->trans('config.setdefault.success', ['%name%' => $name], 'commands');
         if ($this->option('json')) {
             $this->output->writeln(json_encode([
                 'success' => true,

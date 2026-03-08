@@ -99,14 +99,14 @@ class Create extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Context created successfully');
+            $this->info($this->trans('context.create.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['key'])) {
-                $this->info('Context key: ' . $response['object']['key']);
+                $this->info($this->trans('context.create.key_label', [], 'commands') . $response['object']['key']);
             }
             return 0;
         } else {
-            $this->error('Failed to create context');
+            $this->error($this->trans('context.create.failed', [], 'commands'));
 
             if (isset($response['message'])) {
                 $this->error($response['message']);

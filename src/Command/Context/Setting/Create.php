@@ -120,11 +120,11 @@ class Create extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Context setting created successfully');
+            $this->info($this->trans('context.setting.create.success', [], 'commands'));
             return 0;
         }
 
-        $this->error('Failed to create context setting');
+        $this->error($this->trans('context.setting.create.failed', [], 'commands'));
         if (isset($response['message'])) {
             $this->error($response['message']);
         }

@@ -88,11 +88,11 @@ class Create extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Context access permission created successfully');
+            $this->info($this->trans('context.permissions.create.success', [], 'commands'));
             return 0;
         }
 
-        $this->error('Failed to create context access permission');
+        $this->error($this->trans('context.permissions.create.failed', [], 'commands'));
         if (isset($response['message'])) {
             $this->error($response['message']);
         }

@@ -39,7 +39,7 @@ class Get extends ProcessorCmd
         $id = $this->argument('id');
         $source = $this->modx->getObject('MODX\\Revolution\\Sources\\modMediaSource', ['id' => $id]);
         if (!$source) {
-            $this->error("Media source with ID {$id} not found");
+            $this->error($this->trans('source.get.not_found', ['%id%' => $id], 'commands'));
             return 1;
         }
 
@@ -52,10 +52,10 @@ class Get extends ProcessorCmd
             return 0;
         }
 
-        $this->info('ID: ' . ($data['id'] ?? ''));
-        $this->info('Name: ' . ($data['name'] ?? ''));
-        $this->info('Description: ' . ($data['description'] ?? ''));
-        $this->info('Class Key: ' . ($data['class_key'] ?? ''));
+        $this->info($this->trans('source.get.id_label', [], 'commands') . ($data['id'] ?? ''));
+        $this->info($this->trans('source.get.name_label', [], 'commands') . ($data['name'] ?? ''));
+        $this->info($this->trans('source.get.description_label', [], 'commands') . ($data['description'] ?? ''));
+        $this->info($this->trans('source.get.class_key_label', [], 'commands') . ($data['class_key'] ?? ''));
         return 0;
     }
 

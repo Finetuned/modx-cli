@@ -69,19 +69,19 @@ class Remove extends ProcessorCmd
 
         $acl = $this->modx->getObject('MODX\\Revolution\\modAccessContext', $id);
         if (!$acl) {
-            $this->error("Access control entry with ID {$id} not found");
+            $this->error($this->trans('context.permissions.remove.not_found', ['%id%' => $id], 'commands'));
             return false;
         }
 
         $target = $acl->get('target');
         if ($target !== $context) {
-            $this->error("Access control entry {$id} is not for context '{$context}'");
+            $this->error($this->trans('context.permissions.remove.wrong_context', ['%id%' => $id, '%context%' => $context], 'commands'));
             return false;
         }
 
         if (!$this->option('force')) {
-            if (!$this->confirm('Are you sure you want to remove this access permission?')) {
-                $this->info('Operation aborted');
+            if (!$this->confirm($this->trans('context.permissions.remove.confirm', [], 'commands'))) {
+                $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }
         }
@@ -101,11 +101,11 @@ class Remove extends ProcessorCmd
         }
 
         if (isset($response['success']) && $response['success']) {
-            $this->info('Context access permission removed successfully');
+            $this->info($this->trans('context.permissions.remove.success', [], 'commands'));
             return 0;
         }
 
-        $this->error('Failed to remove context access permission');
+        $this->error($this->trans('context.permissions.remove.failed', [], 'commands'));
         if (isset($response['message'])) {
             $this->error($response['message']);
         }

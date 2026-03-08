@@ -64,14 +64,14 @@ class Get extends ProcessorCmd
         if (isset($response['success']) && $response['success']) {
             if (isset($response['object'])) {
                 $setting = $response['object'];
-                $this->info('Context: ' . ($setting['context_key'] ?? ''));
-                $this->info('Key: ' . ($setting['key'] ?? ''));
-                $this->info('Value: ' . ($setting['value'] ?? ''));
-                $this->info('Area: ' . ($setting['area'] ?? ''));
+                $this->info($this->trans('context.setting.get.context_label', [], 'commands') . ($setting['context_key'] ?? ''));
+                $this->info($this->trans('context.setting.get.key_label', [], 'commands') . ($setting['key'] ?? ''));
+                $this->info($this->trans('context.setting.get.value_label', [], 'commands') . ($setting['value'] ?? ''));
+                $this->info($this->trans('context.setting.get.area_label', [], 'commands') . ($setting['area'] ?? ''));
             }
             return 0;
         } else {
-            $this->error('Failed to get context setting');
+            $this->error($this->trans('context.setting.get.failed', [], 'commands'));
             if (isset($response['message'])) {
                 $this->error($response['message']);
             }
