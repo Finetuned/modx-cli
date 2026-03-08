@@ -161,6 +161,6 @@ class RemoveTest extends BaseTest
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Access control entry 10 is not for context 'web'", $output);
+        $this->assertStringContainsString('Access control entry 10 is not for context "web"', $output);
     }
 }

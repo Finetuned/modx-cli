@@ -88,7 +88,7 @@ class AddTest extends BaseTest
         $this->assertEquals($dir . '/', $instance['base_path']);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Instance 'site' added", $output);
+        $this->assertStringContainsString('Instance "site" added', $output);
 
         @unlink($dir . '/config.core.php');
         @rmdir($dir);
@@ -108,7 +108,7 @@ class AddTest extends BaseTest
 
         $decoded = json_decode($this->commandTester->getDisplay(), true);
         $this->assertTrue($decoded['success']);
-        $this->assertEquals("Instance 'site' added", $decoded['message']);
+        $this->assertEquals('Instance "site" added', $decoded['message']);
         $this->assertEquals('site', $decoded['instance']['name']);
         $this->assertEquals($dir . '/', $decoded['instance']['base_path']);
         $this->assertFalse($decoded['instance']['is_default']);
@@ -131,7 +131,7 @@ class AddTest extends BaseTest
 
         $this->assertEquals('site', $this->instances->get('__default__')['class']);
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Instance 'site' added and set as default", $output);
+        $this->assertStringContainsString('Instance "site" added and set as default', $output);
 
         @unlink($dir . '/config.core.php');
         @rmdir($dir);

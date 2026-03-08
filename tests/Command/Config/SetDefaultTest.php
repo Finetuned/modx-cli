@@ -41,7 +41,7 @@ class SetDefaultTest extends BaseTest
         ]);
 
         $output = $tester->getDisplay();
-        $this->assertStringContainsString("Instance 'missing' does not exist", $output);
+        $this->assertStringContainsString('Instance "missing" does not exist', $output);
         $this->assertEquals(1, $tester->getStatusCode());
     }
 
@@ -58,7 +58,7 @@ class SetDefaultTest extends BaseTest
 
         $this->assertEquals('site', $instances->get('__default__')['class']);
         $output = $tester->getDisplay();
-        $this->assertStringContainsString("Instance 'site' set as default", $output);
+        $this->assertStringContainsString('Instance "site" set as default', $output);
     }
 
     public function testExecuteSetsDefaultInstanceWithJsonOutput()
@@ -75,7 +75,7 @@ class SetDefaultTest extends BaseTest
 
         $decoded = json_decode($tester->getDisplay(), true);
         $this->assertTrue($decoded['success']);
-        $this->assertEquals("Instance 'site' set as default", $decoded['message']);
+        $this->assertEquals('Instance "site" set as default', $decoded['message']);
         $this->assertEquals('site', $decoded['default']['name']);
     }
 }

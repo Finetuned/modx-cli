@@ -46,7 +46,7 @@ class RmDefaultTest extends BaseTest
 
         $this->assertNull($instances->get('__default__'));
         $output = $tester->getDisplay();
-        $this->assertStringContainsString("Default instance 'site' removed", $output);
+        $this->assertStringContainsString('Default instance "site" removed', $output);
     }
 
     public function testExecuteRemovesDefaultInstanceWithJsonOutput()
@@ -62,7 +62,7 @@ class RmDefaultTest extends BaseTest
         $this->assertNull($instances->get('__default__'));
         $decoded = json_decode($tester->getDisplay(), true);
         $this->assertTrue($decoded['success']);
-        $this->assertEquals("Default instance 'site' removed", $decoded['message']);
+        $this->assertEquals('Default instance "site" removed', $decoded['message']);
         $this->assertTrue($decoded['removed']);
         $this->assertEquals('site', $decoded['default']['name']);
     }

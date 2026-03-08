@@ -62,7 +62,7 @@ class RmTest extends BaseTest
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Instance 'missing' does not exist", $output);
+        $this->assertStringContainsString('Instance "missing" does not exist', $output);
         $this->assertEquals(1, $this->commandTester->getStatusCode());
     }
 
@@ -77,7 +77,7 @@ class RmTest extends BaseTest
         $this->assertNull($this->instances->get('__default__'));
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Instance 'site' removed", $output);
+        $this->assertStringContainsString('Instance "site" removed', $output);
     }
 
     public function testExecuteRemovesInstanceWithJsonOutput()
@@ -90,7 +90,7 @@ class RmTest extends BaseTest
 
         $decoded = json_decode($this->commandTester->getDisplay(), true);
         $this->assertTrue($decoded['success']);
-        $this->assertEquals("Instance 'site' removed", $decoded['message']);
+        $this->assertEquals('Instance "site" removed', $decoded['message']);
         $this->assertEquals('site', $decoded['instance']['name']);
         $this->assertFalse($decoded['instance']['was_default']);
     }

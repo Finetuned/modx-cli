@@ -39,7 +39,7 @@ class GetDefaultTest extends BaseTest
 
         $commandTester->execute([]);
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString("Default instance 'missing' does not exist", $output);
+        $this->assertStringContainsString('Default instance "missing" does not exist', $output);
     }
 
     public function testExecuteWithDefaultInstance()

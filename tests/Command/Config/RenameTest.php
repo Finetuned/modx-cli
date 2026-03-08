@@ -66,7 +66,7 @@ class RenameTest extends BaseTest
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Instance 'missing' does not exist", $output);
+        $this->assertStringContainsString('Instance "missing" does not exist', $output);
         $this->assertEquals(1, $this->commandTester->getStatusCode());
     }
 
@@ -82,7 +82,7 @@ class RenameTest extends BaseTest
         $this->assertEquals('renamed', $this->instances->get('__default__')['class']);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString("Instance 'old' renamed to 'renamed' and set as default", $output);
+        $this->assertStringContainsString('Instance "old" renamed to "renamed" and set as default', $output);
     }
 
     public function testExecuteRenamesInstanceWithJsonOutput()
@@ -95,7 +95,7 @@ class RenameTest extends BaseTest
 
         $decoded = json_decode($this->commandTester->getDisplay(), true);
         $this->assertTrue($decoded['success']);
-        $this->assertEquals("Instance 'old' renamed to 'renamed' and set as default", $decoded['message']);
+        $this->assertEquals('Instance "old" renamed to "renamed" and set as default', $decoded['message']);
         $this->assertEquals('old', $decoded['instance']['old_name']);
         $this->assertEquals('renamed', $decoded['instance']['new_name']);
         $this->assertTrue($decoded['instance']['is_default']);
