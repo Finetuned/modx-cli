@@ -196,3 +196,158 @@ registry:
     failed: 'Не удалось отправить сообщение реестра'
   read:
     not_found: 'Сообщения реестра не найдены'
+config:
+  add:
+    exists_confirm: 'Экземпляр "%name%" уже существует. Хотите перезаписать его?'
+    no_instance_confirm: 'Экземпляр MODX не найден по пути "%basePath%". Хотите продолжить?'
+    added_default: 'Экземпляр "%name%" добавлен и установлен по умолчанию'
+    added: 'Экземпляр "%name%" добавлен'
+  edit:
+    not_found: 'Экземпляр "%name%" не существует'
+    no_instance_confirm: 'Экземпляр MODX не найден по пути "%basePath%". Хотите продолжить?'
+    updated_default: 'Экземпляр "%name%" обновлён и установлен по умолчанию'
+    updated: 'Экземпляр "%name%" обновлён'
+  setdefault:
+    not_found: 'Экземпляр "%name%" не существует'
+    success: 'Экземпляр "%name%" установлен по умолчанию'
+  rmdefault:
+    not_set: 'Экземпляр по умолчанию не задан'
+    removed_with_name: 'Экземпляр по умолчанию "%name%" удалён'
+    removed: 'Экземпляр по умолчанию удалён'
+  rename:
+    old_not_found: 'Экземпляр "%name%" не существует'
+    exists_confirm: 'Экземпляр "%name%" уже существует. Хотите перезаписать его?'
+    renamed_default: 'Экземпляр "%oldName%" переименован в "%newName%" и установлен по умолчанию'
+    renamed: 'Экземпляр "%oldName%" переименован в "%newName%"'
+  rm:
+    not_found: 'Экземпляр "%name%" не существует'
+    is_default_confirm: 'Экземпляр "%name%" является экземпляром по умолчанию. Хотите его удалить?'
+    removed: 'Экземпляр "%name%" удалён'
+  getlist:
+    empty: 'Нет настроенных экземпляров'
+  getdefault:
+    not_set: 'Экземпляр по умолчанию не задан'
+    no_name: 'Экземпляр по умолчанию задан, но не имеет имени'
+    not_found: 'Экземпляр по умолчанию "%name%" не существует'
+    info_name: 'Экземпляр по умолчанию: %name%'
+    info_path: 'Базовый путь: %path%'
+  excludecommand:
+    already_excluded: 'Команда "%class%" уже исключена'
+    excluded: 'Команда "%class%" исключена'
+  rmexcludecommand:
+    not_excluded: 'Команда "%class%" не исключена'
+    removed: 'Команда "%class%" удалена из исключённых команд'
+  wipeexcludecommand:
+    none_excluded: 'Нет исключённых команд'
+    confirm: 'Вы уверены, что хотите очистить все исключённые команды?'
+    wiped: 'Все исключённые команды очищены'
+  getexcludecommand:
+    empty: 'Нет исключённых команд'
+context:
+  create:
+    success: 'Контекст успешно создан'
+    key_label: 'Ключ контекста: '
+    failed: 'Не удалось создать контекст'
+  get:
+    context_label: 'Контекст: '
+    name_label: 'Имя: '
+    description_label: 'Описание: '
+    rank_label: 'Ранг: '
+    failed: 'Не удалось получить контекст'
+  update:
+    success: 'Контекст успешно обновлён'
+    key_label: 'Ключ контекста: '
+    failed: 'Не удалось обновить контекст'
+  remove:
+    confirm: 'Вы уверены, что хотите удалить контекст "%key%"?'
+    cancelled: 'Удаление контекста отменено'
+    success: 'Контекст успешно удалён'
+    failed: 'Не удалось удалить контекст'
+  setting:
+    create:
+      success: 'Настройка контекста успешно создана'
+      failed: 'Не удалось создать настройку контекста'
+    get:
+      context_label: 'Контекст: '
+      key_label: 'Ключ: '
+      value_label: 'Значение: '
+      area_label: 'Область: '
+      failed: 'Не удалось получить настройку контекста'
+    update:
+      success: 'Настройка контекста успешно обновлена'
+      failed: 'Не удалось обновить настройку контекста'
+    remove:
+      confirm: 'Вы уверены, что хотите удалить настройку "%key%" из контекста "%context%"?'
+      cancelled: 'Удаление настройки контекста отменено'
+      success: 'Настройка контекста успешно удалена'
+      failed: 'Не удалось удалить настройку контекста'
+  permissions:
+    create:
+      success: 'Разрешение доступа к контексту успешно создано'
+      failed: 'Не удалось создать разрешение доступа к контексту'
+    remove:
+      not_found: 'Запись контроля доступа с ID %id% не найдена'
+      wrong_context: 'Запись контроля доступа %id% не принадлежит контексту "%context%"'
+      confirm: 'Вы уверены, что хотите удалить это разрешение доступа?'
+      success: 'Разрешение доступа к контексту успешно удалено'
+      failed: 'Не удалось удалить разрешение доступа к контексту'
+source:
+  create:
+    success: 'Медиаисточник успешно создан'
+    id_label: 'ID источника: '
+    failed: 'Не удалось создать медиаисточник'
+  get:
+    not_found: 'Медиаисточник с ID %id% не найден'
+    id_label: 'ID: '
+    name_label: 'Имя: '
+    description_label: 'Описание: '
+    class_key_label: 'Ключ класса: '
+  update:
+    success: 'Медиаисточник успешно обновлён'
+    id_label: 'ID источника: '
+    failed: 'Не удалось обновить медиаисточник'
+  remove:
+    confirm: 'Вы уверены, что хотите удалить медиаисточник с ID "%id%"?'
+    cancelled: 'Удаление медиаисточника отменено'
+    success: 'Медиаисточник успешно удалён'
+    failed: 'Не удалось удалить медиаисточник'
+extra:
+  list:
+    no_namespaces: 'Пространства имён не найдены'
+    no_extras: 'Дополнения не найдены'
+find:
+  version_unsupported: 'Эта версия MODX не поддерживает данную функцию поиска'
+crawl:
+  curl_unavailable: 'Расширение cURL недоступно'
+  curl_init_failed: 'Не удалось инициализировать cURL'
+  no_resources: 'Ресурсы для сканирования с данными критериями не найдены'
+  processing_context: 'Обработка контекста %context%'
+  curl_error: 'Ошибка cURL: '
+  completed: 'Сканирование завершено'
+  execution_time: 'Выполнено за %seconds% секунд'
+  failed: 'Сбой сканирования: '
+  curl_options_failed: 'Не удалось задать параметры cURL'
+version:
+  cli_version: 'Версия MODX CLI '
+  modx_version: 'Версия MODX '
+selfupdate:
+  version_unknown: 'Не удалось определить текущую версию.'
+  channel_conflict: 'Выберите только один из --stable или --nightly.'
+  version_option_conflict: 'Используйте только один из --target-version или --to.'
+  phar_only: 'Самообновление поддерживается только для Phar-установок. Обновите через Composer: `composer global update finetuned/modx-cli`.'
+  update_confirm: 'У вас версия %current%. Хотите обновиться до %target%?'
+  current_version_label: 'Текущая версия: '
+  latest_version_label: 'Последняя версия: '
+  available: 'Доступна новая версия!'
+  already_latest: 'У вас уже установлена последняя версия.'
+  target_version_label: 'Целевая версия: '
+  would_download_label: 'Будет загружено: '
+  file_size_label: 'Размер файла: '
+  dry_run_notice: '(Пробный запуск - изменения не внесены)'
+  not_writable: '"%path%" недоступен для записи текущим пользователем.'
+  downloading: 'Загрузка %name%'
+  download_failed: 'Сбой загрузки.'
+  backup_failed: 'Не удалось создать резервную копию перед обновлением.'
+  permissions_failed: 'Не удалось установить права доступа для загруженного Phar.'
+  replace_failed: 'Не удалось заменить существующий Phar.'
+  update_complete: 'Обновление завершено. %current% → %updated%'

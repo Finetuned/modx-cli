@@ -196,3 +196,158 @@ registry:
     failed: 'No se pudo enviar el mensaje de registro'
   read:
     not_found: 'No se encontraron mensajes de registro'
+config:
+  add:
+    exists_confirm: 'La instancia "%name%" ya existe. ¿Desea sobrescribirla?'
+    no_instance_confirm: 'No se encontró ninguna instancia MODX en "%basePath%". ¿Desea continuar?'
+    added_default: 'Instancia "%name%" añadida y establecida como predeterminada'
+    added: 'Instancia "%name%" añadida'
+  edit:
+    not_found: 'La instancia "%name%" no existe'
+    no_instance_confirm: 'No se encontró ninguna instancia MODX en "%basePath%". ¿Desea continuar?'
+    updated_default: 'Instancia "%name%" actualizada y establecida como predeterminada'
+    updated: 'Instancia "%name%" actualizada'
+  setdefault:
+    not_found: 'La instancia "%name%" no existe'
+    success: 'Instancia "%name%" establecida como predeterminada'
+  rmdefault:
+    not_set: 'No hay instancia predeterminada configurada'
+    removed_with_name: 'Instancia predeterminada "%name%" eliminada'
+    removed: 'Instancia predeterminada eliminada'
+  rename:
+    old_not_found: 'La instancia "%name%" no existe'
+    exists_confirm: 'La instancia "%name%" ya existe. ¿Desea sobrescribirla?'
+    renamed_default: 'Instancia "%oldName%" renombrada a "%newName%" y establecida como predeterminada'
+    renamed: 'Instancia "%oldName%" renombrada a "%newName%"'
+  rm:
+    not_found: 'La instancia "%name%" no existe'
+    is_default_confirm: 'La instancia "%name%" es la instancia predeterminada. ¿Desea eliminarla?'
+    removed: 'Instancia "%name%" eliminada'
+  getlist:
+    empty: 'No hay instancias configuradas'
+  getdefault:
+    not_set: 'No hay instancia predeterminada configurada'
+    no_name: 'La instancia predeterminada está configurada pero no tiene nombre'
+    not_found: 'La instancia predeterminada "%name%" no existe'
+    info_name: 'Instancia predeterminada: %name%'
+    info_path: 'Ruta base: %path%'
+  excludecommand:
+    already_excluded: 'El comando "%class%" ya está excluido'
+    excluded: 'Comando "%class%" excluido'
+  rmexcludecommand:
+    not_excluded: 'El comando "%class%" no está excluido'
+    removed: 'Comando "%class%" eliminado de los comandos excluidos'
+  wipeexcludecommand:
+    none_excluded: 'No hay comandos excluidos'
+    confirm: '¿Está seguro de que desea eliminar todos los comandos excluidos?'
+    wiped: 'Todos los comandos excluidos han sido eliminados'
+  getexcludecommand:
+    empty: 'No hay comandos excluidos'
+context:
+  create:
+    success: 'Contexto creado correctamente'
+    key_label: 'Clave de contexto: '
+    failed: 'Error al crear el contexto'
+  get:
+    context_label: 'Contexto: '
+    name_label: 'Nombre: '
+    description_label: 'Descripción: '
+    rank_label: 'Rango: '
+    failed: 'Error al obtener el contexto'
+  update:
+    success: 'Contexto actualizado correctamente'
+    key_label: 'Clave de contexto: '
+    failed: 'Error al actualizar el contexto'
+  remove:
+    confirm: '¿Está seguro de que desea eliminar el contexto "%key%"?'
+    cancelled: 'Eliminación del contexto cancelada'
+    success: 'Contexto eliminado correctamente'
+    failed: 'Error al eliminar el contexto'
+  setting:
+    create:
+      success: 'Configuración de contexto creada correctamente'
+      failed: 'Error al crear la configuración de contexto'
+    get:
+      context_label: 'Contexto: '
+      key_label: 'Clave: '
+      value_label: 'Valor: '
+      area_label: 'Área: '
+      failed: 'Error al obtener la configuración de contexto'
+    update:
+      success: 'Configuración de contexto actualizada correctamente'
+      failed: 'Error al actualizar la configuración de contexto'
+    remove:
+      confirm: '¿Está seguro de que desea eliminar la configuración "%key%" del contexto "%context%"?'
+      cancelled: 'Eliminación de la configuración de contexto cancelada'
+      success: 'Configuración de contexto eliminada correctamente'
+      failed: 'Error al eliminar la configuración de contexto'
+  permissions:
+    create:
+      success: 'Permiso de acceso al contexto creado correctamente'
+      failed: 'Error al crear el permiso de acceso al contexto'
+    remove:
+      not_found: 'Entrada de control de acceso con ID %id% no encontrada'
+      wrong_context: 'La entrada de control de acceso %id% no pertenece al contexto "%context%"'
+      confirm: '¿Está seguro de que desea eliminar este permiso de acceso?'
+      success: 'Permiso de acceso al contexto eliminado correctamente'
+      failed: 'Error al eliminar el permiso de acceso al contexto'
+source:
+  create:
+    success: 'Fuente multimedia creada correctamente'
+    id_label: 'ID de fuente: '
+    failed: 'Error al crear la fuente multimedia'
+  get:
+    not_found: 'Fuente multimedia con ID %id% no encontrada'
+    id_label: 'ID: '
+    name_label: 'Nombre: '
+    description_label: 'Descripción: '
+    class_key_label: 'Clave de clase: '
+  update:
+    success: 'Fuente multimedia actualizada correctamente'
+    id_label: 'ID de fuente: '
+    failed: 'Error al actualizar la fuente multimedia'
+  remove:
+    confirm: '¿Está seguro de que desea eliminar la fuente multimedia con ID "%id%"?'
+    cancelled: 'Eliminación de la fuente multimedia cancelada'
+    success: 'Fuente multimedia eliminada correctamente'
+    failed: 'Error al eliminar la fuente multimedia'
+extra:
+  list:
+    no_namespaces: 'No se encontraron espacios de nombres'
+    no_extras: 'No se encontraron extras'
+find:
+  version_unsupported: 'Esta versión de MODX no admite esa función de búsqueda'
+crawl:
+  curl_unavailable: 'La extensión cURL no está disponible'
+  curl_init_failed: 'Error al inicializar cURL'
+  no_resources: 'No se encontraron recursos para rastrear con los criterios especificados'
+  processing_context: 'Procesando contexto %context%'
+  curl_error: 'Error de cURL: '
+  completed: 'Rastreo completado'
+  execution_time: 'Ejecutado en %seconds% segundos'
+  failed: 'Error en el rastreo: '
+  curl_options_failed: 'Error al configurar las opciones de cURL'
+version:
+  cli_version: 'Versión de MODX CLI '
+  modx_version: 'Versión de MODX '
+selfupdate:
+  version_unknown: 'No se puede determinar la versión actual.'
+  channel_conflict: 'Elija solo uno de --stable o --nightly.'
+  version_option_conflict: 'Use solo uno de --target-version o --to.'
+  phar_only: 'La actualización automática solo se admite para instalaciones Phar. Actualice con Composer: `composer global update finetuned/modx-cli`.'
+  update_confirm: 'Tiene la versión %current%. ¿Desea actualizar a %target%?'
+  current_version_label: 'Versión actual: '
+  latest_version_label: 'Última versión: '
+  available: '¡Hay una nueva versión disponible!'
+  already_latest: 'Ya tiene la última versión.'
+  target_version_label: 'Versión objetivo: '
+  would_download_label: 'Se descargaría: '
+  file_size_label: 'Tamaño del archivo: '
+  dry_run_notice: '(Ejecución de prueba - no se realizaron cambios)'
+  not_writable: '"%path%" no tiene permisos de escritura para el usuario actual.'
+  downloading: 'Descargando %name%'
+  download_failed: 'Error en la descarga.'
+  backup_failed: 'Error al crear la copia de seguridad antes de la actualización.'
+  permissions_failed: 'No se pudieron establecer los permisos en el Phar descargado.'
+  replace_failed: 'No se pudo reemplazar el Phar existente.'
+  update_complete: 'Actualización completada. %current% → %updated%'

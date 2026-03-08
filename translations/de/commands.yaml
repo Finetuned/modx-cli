@@ -196,3 +196,158 @@ registry:
     failed: 'Registry-Nachricht konnte nicht gesendet werden'
   read:
     not_found: 'Keine Registry-Nachrichten gefunden'
+config:
+  add:
+    exists_confirm: 'Instanz "%name%" existiert bereits. Möchten Sie sie überschreiben?'
+    no_instance_confirm: 'Keine MODX-Instanz unter "%basePath%" gefunden. Möchten Sie fortfahren?'
+    added_default: 'Instanz "%name%" hinzugefügt und als Standard gesetzt'
+    added: 'Instanz "%name%" hinzugefügt'
+  edit:
+    not_found: 'Instanz "%name%" existiert nicht'
+    no_instance_confirm: 'Keine MODX-Instanz unter "%basePath%" gefunden. Möchten Sie fortfahren?'
+    updated_default: 'Instanz "%name%" aktualisiert und als Standard gesetzt'
+    updated: 'Instanz "%name%" aktualisiert'
+  setdefault:
+    not_found: 'Instanz "%name%" existiert nicht'
+    success: 'Instanz "%name%" als Standard gesetzt'
+  rmdefault:
+    not_set: 'Keine Standard-Instanz gesetzt'
+    removed_with_name: 'Standard-Instanz "%name%" entfernt'
+    removed: 'Standard-Instanz entfernt'
+  rename:
+    old_not_found: 'Instanz "%name%" existiert nicht'
+    exists_confirm: 'Instanz "%name%" existiert bereits. Möchten Sie sie überschreiben?'
+    renamed_default: 'Instanz "%oldName%" in "%newName%" umbenannt und als Standard gesetzt'
+    renamed: 'Instanz "%oldName%" in "%newName%" umbenannt'
+  rm:
+    not_found: 'Instanz "%name%" existiert nicht'
+    is_default_confirm: 'Instanz "%name%" ist die Standard-Instanz. Möchten Sie sie entfernen?'
+    removed: 'Instanz "%name%" entfernt'
+  getlist:
+    empty: 'Keine Instanzen konfiguriert'
+  getdefault:
+    not_set: 'Keine Standard-Instanz gesetzt'
+    no_name: 'Standard-Instanz ist gesetzt, hat aber keinen Namen'
+    not_found: 'Standard-Instanz "%name%" existiert nicht'
+    info_name: 'Standard-Instanz: %name%'
+    info_path: 'Basispfad: %path%'
+  excludecommand:
+    already_excluded: 'Befehl "%class%" ist bereits ausgeschlossen'
+    excluded: 'Befehl "%class%" ausgeschlossen'
+  rmexcludecommand:
+    not_excluded: 'Befehl "%class%" ist nicht ausgeschlossen'
+    removed: 'Befehl "%class%" aus ausgeschlossenen Befehlen entfernt'
+  wipeexcludecommand:
+    none_excluded: 'Keine Befehle ausgeschlossen'
+    confirm: 'Möchten Sie wirklich alle ausgeschlossenen Befehle löschen?'
+    wiped: 'Alle ausgeschlossenen Befehle gelöscht'
+  getexcludecommand:
+    empty: 'Keine Befehle ausgeschlossen'
+context:
+  create:
+    success: 'Kontext erfolgreich erstellt'
+    key_label: 'Kontextschlüssel: '
+    failed: 'Kontext konnte nicht erstellt werden'
+  get:
+    context_label: 'Kontext: '
+    name_label: 'Name: '
+    description_label: 'Beschreibung: '
+    rank_label: 'Rang: '
+    failed: 'Kontext konnte nicht abgerufen werden'
+  update:
+    success: 'Kontext erfolgreich aktualisiert'
+    key_label: 'Kontextschlüssel: '
+    failed: 'Kontext konnte nicht aktualisiert werden'
+  remove:
+    confirm: 'Möchten Sie den Kontext "%key%" wirklich entfernen?'
+    cancelled: 'Kontextentfernung abgebrochen'
+    success: 'Kontext erfolgreich entfernt'
+    failed: 'Kontext konnte nicht entfernt werden'
+  setting:
+    create:
+      success: 'Kontexteinstellung erfolgreich erstellt'
+      failed: 'Kontexteinstellung konnte nicht erstellt werden'
+    get:
+      context_label: 'Kontext: '
+      key_label: 'Schlüssel: '
+      value_label: 'Wert: '
+      area_label: 'Bereich: '
+      failed: 'Kontexteinstellung konnte nicht abgerufen werden'
+    update:
+      success: 'Kontexteinstellung erfolgreich aktualisiert'
+      failed: 'Kontexteinstellung konnte nicht aktualisiert werden'
+    remove:
+      confirm: 'Möchten Sie die Einstellung "%key%" aus Kontext "%context%" wirklich entfernen?'
+      cancelled: 'Entfernung der Kontexteinstellung abgebrochen'
+      success: 'Kontexteinstellung erfolgreich entfernt'
+      failed: 'Kontexteinstellung konnte nicht entfernt werden'
+  permissions:
+    create:
+      success: 'Kontext-Zugriffsberechtigung erfolgreich erstellt'
+      failed: 'Kontext-Zugriffsberechtigung konnte nicht erstellt werden'
+    remove:
+      not_found: 'Zugriffssteuerungseintrag mit ID %id% nicht gefunden'
+      wrong_context: 'Zugriffssteuerungseintrag %id% ist nicht für Kontext "%context%"'
+      confirm: 'Möchten Sie diese Zugriffsberechtigung wirklich entfernen?'
+      success: 'Kontext-Zugriffsberechtigung erfolgreich entfernt'
+      failed: 'Kontext-Zugriffsberechtigung konnte nicht entfernt werden'
+source:
+  create:
+    success: 'Medienquelle erfolgreich erstellt'
+    id_label: 'Quellen-ID: '
+    failed: 'Medienquelle konnte nicht erstellt werden'
+  get:
+    not_found: 'Medienquelle mit ID %id% nicht gefunden'
+    id_label: 'ID: '
+    name_label: 'Name: '
+    description_label: 'Beschreibung: '
+    class_key_label: 'Klassenschlüssel: '
+  update:
+    success: 'Medienquelle erfolgreich aktualisiert'
+    id_label: 'Quellen-ID: '
+    failed: 'Medienquelle konnte nicht aktualisiert werden'
+  remove:
+    confirm: 'Möchten Sie die Medienquelle mit ID "%id%" wirklich entfernen?'
+    cancelled: 'Entfernung der Medienquelle abgebrochen'
+    success: 'Medienquelle erfolgreich entfernt'
+    failed: 'Medienquelle konnte nicht entfernt werden'
+extra:
+  list:
+    no_namespaces: 'Keine Namespaces gefunden'
+    no_extras: 'Keine Extras gefunden'
+find:
+  version_unsupported: 'Diese MODX-Version unterstützt diese Suchfunktion nicht'
+crawl:
+  curl_unavailable: 'cURL-Erweiterung ist nicht verfügbar'
+  curl_init_failed: 'cURL konnte nicht initialisiert werden'
+  no_resources: 'Keine zu crawlenden Ressourcen mit diesen Kriterien gefunden'
+  processing_context: 'Verarbeite Kontext %context%'
+  curl_error: 'cURL-Fehler: '
+  completed: 'Crawl abgeschlossen'
+  execution_time: 'Ausgeführt in %seconds% Sekunden'
+  failed: 'Crawl fehlgeschlagen: '
+  curl_options_failed: 'cURL-Optionen konnten nicht gesetzt werden'
+version:
+  cli_version: 'MODX CLI Version '
+  modx_version: 'MODX Version '
+selfupdate:
+  version_unknown: 'Aktuelle Version konnte nicht ermittelt werden.'
+  channel_conflict: 'Wählen Sie nur eines von --stable oder --nightly.'
+  version_option_conflict: 'Verwenden Sie nur eines von --target-version oder --to.'
+  phar_only: 'Selbstaktualisierung wird nur für Phar-Installationen unterstützt. Mit Composer aktualisieren: `composer global update finetuned/modx-cli`.'
+  update_confirm: 'Sie haben Version %current%. Möchten Sie auf %target% aktualisieren?'
+  current_version_label: 'Aktuelle Version: '
+  latest_version_label: 'Neueste Version: '
+  available: 'Eine neue Version ist verfügbar!'
+  already_latest: 'Sie verwenden bereits die neueste Version.'
+  target_version_label: 'Zielversion: '
+  would_download_label: 'Würde herunterladen: '
+  file_size_label: 'Dateigröße: '
+  dry_run_notice: '(Testlauf - keine Änderungen vorgenommen)'
+  not_writable: '"%path%" ist für den aktuellen Benutzer nicht beschreibbar.'
+  downloading: 'Lade %name% herunter'
+  download_failed: 'Download fehlgeschlagen.'
+  backup_failed: 'Backup vor der Aktualisierung konnte nicht erstellt werden.'
+  permissions_failed: 'Berechtigungen für das heruntergeladene Phar konnten nicht gesetzt werden.'
+  replace_failed: 'Vorhandenes Phar konnte nicht ersetzt werden.'
+  update_complete: 'Aktualisierung abgeschlossen. %current% → %updated%'

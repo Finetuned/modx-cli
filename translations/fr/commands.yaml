@@ -196,3 +196,158 @@ registry:
     failed: 'Échec de l''envoi du message de registre'
   read:
     not_found: 'Aucun message de registre trouvé'
+config:
+  add:
+    exists_confirm: 'L''instance "%name%" existe déjà. Voulez-vous l''écraser ?'
+    no_instance_confirm: 'Aucune instance MODX trouvée dans "%basePath%". Voulez-vous continuer ?'
+    added_default: 'Instance "%name%" ajoutée et définie par défaut'
+    added: 'Instance "%name%" ajoutée'
+  edit:
+    not_found: 'L''instance "%name%" n''existe pas'
+    no_instance_confirm: 'Aucune instance MODX trouvée dans "%basePath%". Voulez-vous continuer ?'
+    updated_default: 'Instance "%name%" mise à jour et définie par défaut'
+    updated: 'Instance "%name%" mise à jour'
+  setdefault:
+    not_found: 'L''instance "%name%" n''existe pas'
+    success: 'Instance "%name%" définie par défaut'
+  rmdefault:
+    not_set: 'Aucune instance par défaut définie'
+    removed_with_name: 'Instance par défaut "%name%" supprimée'
+    removed: 'Instance par défaut supprimée'
+  rename:
+    old_not_found: 'L''instance "%name%" n''existe pas'
+    exists_confirm: 'L''instance "%name%" existe déjà. Voulez-vous l''écraser ?'
+    renamed_default: 'Instance "%oldName%" renommée en "%newName%" et définie par défaut'
+    renamed: 'Instance "%oldName%" renommée en "%newName%"'
+  rm:
+    not_found: 'L''instance "%name%" n''existe pas'
+    is_default_confirm: 'L''instance "%name%" est l''instance par défaut. Voulez-vous la supprimer ?'
+    removed: 'Instance "%name%" supprimée'
+  getlist:
+    empty: 'Aucune instance configurée'
+  getdefault:
+    not_set: 'Aucune instance par défaut définie'
+    no_name: 'L''instance par défaut est définie mais n''a pas de nom'
+    not_found: 'L''instance par défaut "%name%" n''existe pas'
+    info_name: 'Instance par défaut : %name%'
+    info_path: 'Chemin de base : %path%'
+  excludecommand:
+    already_excluded: 'La commande "%class%" est déjà exclue'
+    excluded: 'Commande "%class%" exclue'
+  rmexcludecommand:
+    not_excluded: 'La commande "%class%" n''est pas exclue'
+    removed: 'Commande "%class%" retirée des commandes exclues'
+  wipeexcludecommand:
+    none_excluded: 'Aucune commande n''est exclue'
+    confirm: 'Voulez-vous vraiment effacer toutes les commandes exclues ?'
+    wiped: 'Toutes les commandes exclues ont été effacées'
+  getexcludecommand:
+    empty: 'Aucune commande n''est exclue'
+context:
+  create:
+    success: 'Contexte créé avec succès'
+    key_label: 'Clé de contexte : '
+    failed: 'Échec de la création du contexte'
+  get:
+    context_label: 'Contexte : '
+    name_label: 'Nom : '
+    description_label: 'Description : '
+    rank_label: 'Rang : '
+    failed: 'Échec de la récupération du contexte'
+  update:
+    success: 'Contexte mis à jour avec succès'
+    key_label: 'Clé de contexte : '
+    failed: 'Échec de la mise à jour du contexte'
+  remove:
+    confirm: 'Voulez-vous vraiment supprimer le contexte "%key%" ?'
+    cancelled: 'Suppression du contexte annulée'
+    success: 'Contexte supprimé avec succès'
+    failed: 'Échec de la suppression du contexte'
+  setting:
+    create:
+      success: 'Paramètre de contexte créé avec succès'
+      failed: 'Échec de la création du paramètre de contexte'
+    get:
+      context_label: 'Contexte : '
+      key_label: 'Clé : '
+      value_label: 'Valeur : '
+      area_label: 'Zone : '
+      failed: 'Échec de la récupération du paramètre de contexte'
+    update:
+      success: 'Paramètre de contexte mis à jour avec succès'
+      failed: 'Échec de la mise à jour du paramètre de contexte'
+    remove:
+      confirm: 'Voulez-vous vraiment supprimer le paramètre "%key%" du contexte "%context%" ?'
+      cancelled: 'Suppression du paramètre de contexte annulée'
+      success: 'Paramètre de contexte supprimé avec succès'
+      failed: 'Échec de la suppression du paramètre de contexte'
+  permissions:
+    create:
+      success: 'Permission d''accès au contexte créée avec succès'
+      failed: 'Échec de la création de la permission d''accès au contexte'
+    remove:
+      not_found: 'Entrée de contrôle d''accès avec l''ID %id% introuvable'
+      wrong_context: 'L''entrée de contrôle d''accès %id% n''est pas pour le contexte "%context%"'
+      confirm: 'Voulez-vous vraiment supprimer cette permission d''accès ?'
+      success: 'Permission d''accès au contexte supprimée avec succès'
+      failed: 'Échec de la suppression de la permission d''accès au contexte'
+source:
+  create:
+    success: 'Source média créée avec succès'
+    id_label: 'ID de source : '
+    failed: 'Échec de la création de la source média'
+  get:
+    not_found: 'Source média avec l''ID %id% introuvable'
+    id_label: 'ID : '
+    name_label: 'Nom : '
+    description_label: 'Description : '
+    class_key_label: 'Clé de classe : '
+  update:
+    success: 'Source média mise à jour avec succès'
+    id_label: 'ID de source : '
+    failed: 'Échec de la mise à jour de la source média'
+  remove:
+    confirm: 'Voulez-vous vraiment supprimer la source média avec l''ID "%id%" ?'
+    cancelled: 'Suppression de la source média annulée'
+    success: 'Source média supprimée avec succès'
+    failed: 'Échec de la suppression de la source média'
+extra:
+  list:
+    no_namespaces: 'Aucun espace de noms trouvé'
+    no_extras: 'Aucun extra trouvé'
+find:
+  version_unsupported: 'Cette version de MODX ne supporte pas cette fonction de recherche'
+crawl:
+  curl_unavailable: 'L''extension cURL n''est pas disponible'
+  curl_init_failed: 'Échec de l''initialisation de cURL'
+  no_resources: 'Aucune ressource à crawler trouvée avec ces critères'
+  processing_context: 'Traitement du contexte %context%'
+  curl_error: 'Erreur cURL : '
+  completed: 'Crawl terminé'
+  execution_time: 'Exécuté en %seconds% secondes'
+  failed: 'Échec du crawl : '
+  curl_options_failed: 'Échec de la configuration des options cURL'
+version:
+  cli_version: 'Version MODX CLI '
+  modx_version: 'Version MODX '
+selfupdate:
+  version_unknown: 'Impossible de déterminer la version actuelle.'
+  channel_conflict: 'Choisissez seulement l''un des --stable ou --nightly.'
+  version_option_conflict: 'Utilisez seulement l''un des --target-version ou --to.'
+  phar_only: 'La mise à jour automatique est uniquement supportée pour les installations Phar. Mettez à jour avec Composer : `composer global update finetuned/modx-cli`.'
+  update_confirm: 'Vous avez la version %current%. Voulez-vous passer à %target% ?'
+  current_version_label: 'Version actuelle : '
+  latest_version_label: 'Dernière version : '
+  available: 'Une nouvelle version est disponible !'
+  already_latest: 'Vous êtes déjà sur la dernière version.'
+  target_version_label: 'Version cible : '
+  would_download_label: 'Serait téléchargé : '
+  file_size_label: 'Taille du fichier : '
+  dry_run_notice: '(Test à vide - aucune modification effectuée)'
+  not_writable: '"%path%" n''est pas accessible en écriture par l''utilisateur actuel.'
+  downloading: 'Téléchargement de %name%'
+  download_failed: 'Échec du téléchargement.'
+  backup_failed: 'Échec de la création d''une sauvegarde avant la mise à jour.'
+  permissions_failed: 'Impossible de définir les permissions sur le Phar téléchargé.'
+  replace_failed: 'Impossible de remplacer le Phar existant.'
+  update_complete: 'Mise à jour terminée. %current% → %updated%'

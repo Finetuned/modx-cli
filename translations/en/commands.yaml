@@ -202,3 +202,159 @@ registry:
     failed: 'Failed to send registry message'
   read:
     not_found: 'No registry messages found'
+
+config:
+  add:
+    exists_confirm: 'Instance "%name%" already exists. Do you want to overwrite it?'
+    no_instance_confirm: 'No MODX instance found at "%basePath%". Do you want to continue?'
+    added_default: 'Instance "%name%" added and set as default'
+    added: 'Instance "%name%" added'
+  edit:
+    not_found: 'Instance "%name%" does not exist'
+    no_instance_confirm: 'No MODX instance found at "%basePath%". Do you want to continue?'
+    updated_default: 'Instance "%name%" updated and set as default'
+    updated: 'Instance "%name%" updated'
+  setdefault:
+    not_found: 'Instance "%name%" does not exist'
+    success: 'Instance "%name%" set as default'
+  rmdefault:
+    not_set: 'No default instance set'
+    removed_with_name: 'Default instance "%name%" removed'
+    removed: 'Default instance removed'
+  rename:
+    old_not_found: 'Instance "%name%" does not exist'
+    exists_confirm: 'Instance "%name%" already exists. Do you want to overwrite it?'
+    renamed_default: 'Instance "%oldName%" renamed to "%newName%" and set as default'
+    renamed: 'Instance "%oldName%" renamed to "%newName%"'
+  rm:
+    not_found: 'Instance "%name%" does not exist'
+    is_default_confirm: 'Instance "%name%" is the default instance. Do you want to remove it?'
+    removed: 'Instance "%name%" removed'
+  getlist:
+    empty: 'No instances configured'
+  getdefault:
+    not_set: 'No default instance set'
+    no_name: 'Default instance is set but has no name'
+    not_found: 'Default instance "%name%" does not exist'
+    info_name: 'Default instance: %name%'
+    info_path: 'Base path: %path%'
+  excludecommand:
+    already_excluded: 'Command "%class%" is already excluded'
+    excluded: 'Command "%class%" excluded'
+  rmexcludecommand:
+    not_excluded: 'Command "%class%" is not excluded'
+    removed: 'Command "%class%" removed from excluded commands'
+  wipeexcludecommand:
+    none_excluded: 'No commands are excluded'
+    confirm: 'Are you sure you want to wipe all excluded commands?'
+    wiped: 'All excluded commands wiped'
+  getexcludecommand:
+    empty: 'No commands are excluded'
+context:
+  create:
+    success: 'Context created successfully'
+    key_label: 'Context key: '
+    failed: 'Failed to create context'
+  get:
+    context_label: 'Context: '
+    name_label: 'Name: '
+    description_label: 'Description: '
+    rank_label: 'Rank: '
+    failed: 'Failed to get context'
+  update:
+    success: 'Context updated successfully'
+    key_label: 'Context key: '
+    failed: 'Failed to update context'
+  remove:
+    confirm: 'Are you sure you want to remove the context "%key%"?'
+    cancelled: 'Context removal cancelled'
+    success: 'Context removed successfully'
+    failed: 'Failed to remove context'
+  setting:
+    create:
+      success: 'Context setting created successfully'
+      failed: 'Failed to create context setting'
+    get:
+      context_label: 'Context: '
+      key_label: 'Key: '
+      value_label: 'Value: '
+      area_label: 'Area: '
+      failed: 'Failed to get context setting'
+    update:
+      success: 'Context setting updated successfully'
+      failed: 'Failed to update context setting'
+    remove:
+      confirm: 'Are you sure you want to remove the setting "%key%" from context "%context%"?'
+      cancelled: 'Context setting removal cancelled'
+      success: 'Context setting removed successfully'
+      failed: 'Failed to remove context setting'
+  permissions:
+    create:
+      success: 'Context access permission created successfully'
+      failed: 'Failed to create context access permission'
+    remove:
+      not_found: 'Access control entry with ID %id% not found'
+      wrong_context: 'Access control entry %id% is not for context "%context%"'
+      confirm: 'Are you sure you want to remove this access permission?'
+      success: 'Context access permission removed successfully'
+      failed: 'Failed to remove context access permission'
+source:
+  create:
+    success: 'Media source created successfully'
+    id_label: 'Source ID: '
+    failed: 'Failed to create media source'
+  get:
+    not_found: 'Media source with ID %id% not found'
+    id_label: 'ID: '
+    name_label: 'Name: '
+    description_label: 'Description: '
+    class_key_label: 'Class Key: '
+  update:
+    success: 'Media source updated successfully'
+    id_label: 'Source ID: '
+    failed: 'Failed to update media source'
+  remove:
+    confirm: 'Are you sure you want to remove the media source with ID "%id%"?'
+    cancelled: 'Media source removal cancelled'
+    success: 'Media source removed successfully'
+    failed: 'Failed to remove media source'
+extra:
+  list:
+    no_namespaces: 'No namespaces found'
+    no_extras: 'No extras found'
+find:
+  version_unsupported: 'This MODX version does not support that search function'
+crawl:
+  curl_unavailable: 'cURL extension is not available'
+  curl_init_failed: 'Failed to initialize cURL'
+  no_resources: 'No resources to crawl found with criteria'
+  processing_context: 'Processing context %context%'
+  curl_error: 'cURL error: '
+  completed: 'Crawl completed'
+  execution_time: 'Executed in %seconds% seconds'
+  failed: 'Crawl failed: '
+  curl_options_failed: 'Failed to set cURL options'
+version:
+  cli_version: 'MODX CLI version '
+  modx_version: 'MODX version '
+selfupdate:
+  version_unknown: 'Unable to determine current version.'
+  channel_conflict: 'Choose only one of --stable or --nightly.'
+  version_option_conflict: 'Use only one of --target-version or --to.'
+  phar_only: 'Self-update is only supported for Phar installs. Update with Composer: `composer global update finetuned/modx-cli`.'
+  update_confirm: 'You have version %current%. Would you like to update to %target%?'
+  current_version_label: 'Current version: '
+  latest_version_label: 'Latest version: '
+  available: 'A new version is available!'
+  already_latest: 'You are already on the latest version.'
+  target_version_label: 'Target version: '
+  would_download_label: 'Would download: '
+  file_size_label: 'File size: '
+  dry_run_notice: '(Dry run - no changes made)'
+  not_writable: '"%path%" is not writable by the current user.'
+  downloading: 'Downloading %name%'
+  download_failed: 'Download failed.'
+  backup_failed: 'Failed to create backup before update.'
+  permissions_failed: 'Unable to set permissions on the downloaded Phar.'
+  replace_failed: 'Unable to replace the existing Phar.'
+  update_complete: 'Update complete. %current% → %updated%'
