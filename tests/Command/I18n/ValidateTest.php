@@ -19,7 +19,7 @@ class ValidateTest extends TestCase
     {
         $this->command = new Validate();
         // --locale is a global application option; add it here to enable standalone testing
-        $this->command->addOption('locale', 'l', InputOption::VALUE_REQUIRED, 'Locale filter');
+        $this->command->addOption('locale', null, InputOption::VALUE_REQUIRED, 'Locale filter');
         $this->commandTester = new CommandTester($this->command);
     }
 
