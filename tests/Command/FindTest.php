@@ -38,10 +38,23 @@ class FindTest extends BaseTest
     public function testBeforeRunAllowsSupportedVersion()
     {
         $command = new Find();
-        $modx = $this->createMock('MODX\Revolution\modX');
+        $modx = $this->createMock('MODX\\Revolution\\modX');
         $modx->method('getVersionData')
             ->willReturn(['full_version' => '2.3.0']);
         $command->modx = $modx;
+
+        $output = new BufferedOutput();
+        $this->setCommandOutput($command, $output);
+        
+        // Mock the input object to handle option() calls
+        $input = $this->createMock('Symfony\\Component\\Console\\Input\\InputInterface');
+        $input->method('getOption')->willReturn(null);
+        $input->method('getArgument')->willReturn('test query');
+        
+        $reflection = new \ReflectionClass($command);
+        $prop = $reflection->getProperty('input');
+        $prop->setAccessible(true);
+        $prop->setValue($command, $input);
 
         $method = new \ReflectionMethod($command, 'beforeRun');
         $method->setAccessible(true);
@@ -50,6 +63,7 @@ class FindTest extends BaseTest
         $result = $method->invokeArgs($command, [&$properties, &$options]);
 
         $this->assertNotFalse($result);
+        $this->assertEquals('test query', $properties['query']);
     }
 
     private function setCommandOutput($command, BufferedOutput $output): void
