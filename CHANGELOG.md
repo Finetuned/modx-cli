@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - Updated phpunit to fix security vulnerability CVE-2026-24765 
-### Security
 - Updated symfony/process to fix security vulnerability CVE-2026-24739
+- Updated aws/aws-sdk-php to 3.371.4 and restored it as a direct dependency after the upstream security fix in commit 9fed463.
 
 ## [0.9.0-beta] - 2026-01-20
 
