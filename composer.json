@@ -70,7 +70,7 @@
         "cs:check": "phpcs",
         "cs:fix": "phpcbf",
         "cs": "@cs:check",
-        "analyse": "phpstan analyse",
+        "analyse": "phpstan analyse --memory-limit 2056M",
         "analyse:baseline": "phpstan analyse --generate-baseline"
     }
 }
