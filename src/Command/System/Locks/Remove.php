@@ -100,7 +100,9 @@ class Remove extends BaseCmd
                 $this->info($this->trans('system.locks.remove.key_label', [], 'commands') . $lockInfo['key']);
                 $this->info($this->trans('system.locks.remove.user_label', [], 'commands') . $lockInfo['user']);
                 $this->info($this->trans('system.locks.remove.message_label', [], 'commands') . $lockInfo['message']);
-                $this->info($this->trans('system.locks.remove.timestamp_label', [], 'commands') . $lockInfo['occurred']);
+                $this->info(
+                    $this->trans('system.locks.remove.timestamp_label', [], 'commands') . $lockInfo['occurred']
+                );
             }
 
             if (!$this->confirm($this->trans('system.locks.remove.confirm', [], 'commands'))) {

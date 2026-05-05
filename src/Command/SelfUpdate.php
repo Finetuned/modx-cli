@@ -241,7 +241,9 @@ class SelfUpdate extends BaseCmd
         $this->info($this->trans('selfupdate.current_version_label', [], 'commands') . $currentVersion);
         $this->info($this->trans('selfupdate.target_version_label', [], 'commands') . $release['version']);
         $this->comment($this->trans('selfupdate.would_download_label', [], 'commands') . $release['asset']['url']);
-        $this->comment($this->trans('selfupdate.file_size_label', [], 'commands') . $this->formatBytes($release['asset']['size']));
+        $this->comment(
+            $this->trans('selfupdate.file_size_label', [], 'commands') . $this->formatBytes($release['asset']['size'])
+        );
         $this->comment($this->trans('selfupdate.dry_run_notice', [], 'commands'));
 
         return 0;

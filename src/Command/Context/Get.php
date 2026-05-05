@@ -60,7 +60,9 @@ class Get extends ProcessorCmd
                 $context = $response['object'];
                 $this->info($this->trans('context.get.context_label', [], 'commands') . $context['key']);
                 $this->info($this->trans('context.get.name_label', [], 'commands') . ($context['name'] ?? ''));
-                $this->info($this->trans('context.get.description_label', [], 'commands') . ($context['description'] ?? ''));
+                $this->info(
+                    $this->trans('context.get.description_label', [], 'commands') . ($context['description'] ?? '')
+                );
                 $this->info($this->trans('context.get.rank_label', [], 'commands') . ($context['rank'] ?? 0));
             }
             return 0;

@@ -92,7 +92,11 @@ class ResetPassword extends ProcessorCmd
         } else {
             $password = $this->option('password');
             if (!$password) {
-                $password = $this->secret($this->trans('user.resetpassword.prompt', ['%username%' => $username], 'commands'));
+                $password = $this->secret($this->trans(
+                    'user.resetpassword.prompt',
+                    ['%username%' => $username],
+                    'commands'
+                ));
             }
         }
 

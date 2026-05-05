@@ -47,12 +47,18 @@ class AddPolicy extends BaseCmd
     {
         $group = $this->findGroup($this->argument('group'));
         if (!$group) {
-            return $this->outputResult(false, $this->trans('security.role_group.add_policy.group_not_found', [], 'commands'));
+            return $this->outputResult(
+                false,
+                $this->trans('security.role_group.add_policy.group_not_found', [], 'commands')
+            );
         }
 
         $policy = $this->findPolicyTemplate($this->argument('policy'));
         if (!$policy) {
-            return $this->outputResult(false, $this->trans('security.role_group.add_policy.template_not_found', [], 'commands'));
+            return $this->outputResult(
+                false,
+                $this->trans('security.role_group.add_policy.template_not_found', [], 'commands')
+            );
         }
 
         $policy->set('template_group', $group->get('id'));

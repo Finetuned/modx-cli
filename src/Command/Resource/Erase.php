@@ -73,7 +73,11 @@ class Erase extends ProcessorCmd
 
         // Check if resource is in trash
         if (!$isDeleted) {
-            $this->error($this->trans('resource.erase.not_in_trash', ['%pagetitle%' => $pagetitle, '%id%' => $id], 'commands'));
+            $this->error($this->trans(
+                'resource.erase.not_in_trash',
+                ['%pagetitle%' => $pagetitle, '%id%' => $id],
+                'commands'
+            ));
             $this->info($this->trans('resource.erase.use_delete_hint', [], 'commands'));
             return false;
         }

@@ -105,9 +105,17 @@ class Rename extends BaseCmd
         $instances->save();
 
         if ($isDefault) {
-            $message = $this->trans('config.rename.renamed_default', ['%oldName%' => $oldName, '%newName%' => $newName], 'commands');
+            $message = $this->trans(
+                'config.rename.renamed_default',
+                ['%oldName%' => $oldName, '%newName%' => $newName],
+                'commands'
+            );
         } else {
-            $message = $this->trans('config.rename.renamed', ['%oldName%' => $oldName, '%newName%' => $newName], 'commands');
+            $message = $this->trans(
+                'config.rename.renamed',
+                ['%oldName%' => $oldName, '%newName%' => $newName],
+                'commands'
+            );
         }
 
         if ($this->option('json')) {

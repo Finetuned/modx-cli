@@ -80,12 +80,21 @@ class Get extends ProcessorCmd
                 $this->info($this->trans('user.get.label_fullname', [], 'commands') . ($user['fullname'] ?? ''));
                 $this->info($this->trans('user.get.label_active', [], 'commands') . ($user['active'] ? $yes : $no));
                 $this->info($this->trans('user.get.label_blocked', [], 'commands') . ($user['blocked'] ? $yes : $no));
-                $this->info($this->trans('user.get.label_sudo', [], 'commands') . (isset($user['sudo']) && $user['sudo'] ? $yes : $no));
+                $this->info(
+                    $this->trans('user.get.label_sudo', [], 'commands')
+                    . (isset($user['sudo']) && $user['sudo'] ? $yes : $no)
+                );
                 if (isset($user['createdon']) && is_numeric($user['createdon'])) {
-                    $this->info($this->trans('user.get.label_createdon', [], 'commands') . date('Y-m-d H:i:s', (int)$user['createdon']));
+                    $this->info(
+                        $this->trans('user.get.label_createdon', [], 'commands')
+                        . date('Y-m-d H:i:s', (int)$user['createdon'])
+                    );
                 }
                 if (isset($user['lastlogin']) && is_numeric($user['lastlogin']) && $user['lastlogin'] > 0) {
-                    $this->info($this->trans('user.get.label_lastlogin', [], 'commands') . date('Y-m-d H:i:s', (int)$user['lastlogin']));
+                    $this->info(
+                        $this->trans('user.get.label_lastlogin', [], 'commands')
+                        . date('Y-m-d H:i:s', (int)$user['lastlogin'])
+                    );
                 }
             }
             return 0;

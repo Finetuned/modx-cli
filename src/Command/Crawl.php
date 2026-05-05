@@ -63,7 +63,11 @@ class Crawl extends BaseCmd
                 $resourceId = (int) $resource->get('id');
                 if ($context !== $contextKey) {
                     if (!$this->jsonOutput) {
-                        $this->comment("\n" . $this->trans('crawl.processing_context', ['%context%' => $contextKey], 'commands'));
+                        $this->comment("\n" . $this->trans(
+                            'crawl.processing_context',
+                            ['%context%' => $contextKey],
+                            'commands'
+                        ));
                     }
                     $this->modx->switchContext($contextKey);
                     $context = $contextKey;
@@ -97,7 +101,11 @@ class Crawl extends BaseCmd
                     'duration' => $duration,
                 ]);
             } else {
-                $this->line("\n" . $this->trans('crawl.execution_time', ['%seconds%' => sprintf('%2.4f', $duration)], 'commands'));
+                $this->line("\n" . $this->trans(
+                    'crawl.execution_time',
+                    ['%seconds%' => sprintf('%2.4f', $duration)],
+                    'commands'
+                ));
             }
 
             return 0;
@@ -173,7 +181,10 @@ class Crawl extends BaseCmd
         }
 
         if (curl_errno($this->curl)) {
-            $error = $this->trans('crawl.curl_error', [], 'commands') . curl_errno($this->curl) . ' - ' . curl_error($this->curl);
+            $error = $this->trans('crawl.curl_error', [], 'commands')
+                . curl_errno($this->curl)
+                . ' - '
+                . curl_error($this->curl);
             if ($this->jsonOutput) {
                 $entry['error'] = $error;
                 $this->crawlErrors[] = $error;

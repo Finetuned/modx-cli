@@ -88,7 +88,11 @@ class Install extends ProcessorCmd
                     $this->info($this->trans('package.install.download_success', [], 'commands'));
                 }
             } else {
-                $this->error($this->trans('package.install.download_failed', ['%signature%' => $signature], 'commands'));
+                $this->error($this->trans(
+                    'package.install.download_failed',
+                    ['%signature%' => $signature],
+                    'commands'
+                ));
                 return false;
             }
         }
@@ -96,7 +100,11 @@ class Install extends ProcessorCmd
         if (!$package) {
             $this->error($this->trans('package.install.not_found', ['%signature%' => $signature], 'commands'));
             if ($this->option('no-download')) {
-                $this->error($this->trans('package.install.download_disabled', ['%signature%' => $signature], 'commands'));
+                $this->error($this->trans(
+                    'package.install.download_disabled',
+                    ['%signature%' => $signature],
+                    'commands'
+                ));
             }
             return false;
         }

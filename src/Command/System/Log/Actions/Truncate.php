@@ -86,7 +86,9 @@ class Truncate extends ProcessorCmd
             $this->info($this->trans('system.log.actions.truncate.success', [], 'commands'));
 
             if (isset($response['total'])) {
-                $this->info($this->trans('system.log.actions.truncate.count_label', [], 'commands') . $response['total']);
+                $this->info(
+                    $this->trans('system.log.actions.truncate.count_label', [], 'commands') . $response['total']
+                );
             }
             return 0;
         } else {

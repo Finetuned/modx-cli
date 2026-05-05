@@ -104,7 +104,13 @@ class Edit extends BaseCmd
 
             // Check if the MODX instance exists at the given path
             if (!file_exists($basePath . 'config.core.php')) {
-                if (!$this->confirm($this->trans('config.edit.no_instance_confirm', ['%basePath%' => $basePath], 'commands'))) {
+                if (
+                    !$this->confirm($this->trans(
+                        'config.edit.no_instance_confirm',
+                        ['%basePath%' => $basePath],
+                        'commands'
+                    ))
+                ) {
                     if ($this->option('json')) {
                         $this->output->writeln(json_encode([
                             'success' => false,

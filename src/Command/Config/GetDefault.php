@@ -82,7 +82,11 @@ class GetDefault extends BaseCmd
             $this->info($this->trans('config.getdefault.info_name', ['%name%' => $defaultName], 'commands'));
 
             if (isset($defaultConfig['base_path'])) {
-                $this->info($this->trans('config.getdefault.info_path', ['%path%' => $defaultConfig['base_path']], 'commands'));
+                $this->info($this->trans(
+                    'config.getdefault.info_path',
+                    ['%path%' => $defaultConfig['base_path']],
+                    'commands'
+                ));
             }
         }
 

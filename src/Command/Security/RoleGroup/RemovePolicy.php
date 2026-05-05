@@ -47,16 +47,25 @@ class RemovePolicy extends BaseCmd
     {
         $group = $this->findGroup($this->argument('group'));
         if (!$group) {
-            return $this->outputResult(false, $this->trans('security.role_group.remove_policy.group_not_found', [], 'commands'));
+            return $this->outputResult(
+                false,
+                $this->trans('security.role_group.remove_policy.group_not_found', [], 'commands')
+            );
         }
 
         $policy = $this->findPolicyTemplate($this->argument('policy'));
         if (!$policy) {
-            return $this->outputResult(false, $this->trans('security.role_group.remove_policy.template_not_found', [], 'commands'));
+            return $this->outputResult(
+                false,
+                $this->trans('security.role_group.remove_policy.template_not_found', [], 'commands')
+            );
         }
 
         if ((int) $policy->get('template_group') !== (int) $group->get('id')) {
-            return $this->outputResult(false, $this->trans('security.role_group.remove_policy.not_assigned', [], 'commands'));
+            return $this->outputResult(
+                false,
+                $this->trans('security.role_group.remove_policy.not_assigned', [], 'commands')
+            );
         }
 
         $policy->set('template_group', 0);

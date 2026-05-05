@@ -95,7 +95,9 @@ class Create extends ProcessorCmd
             $this->info($this->trans('system.events.create.success', [], 'commands'));
 
             if (isset($response['object']) && isset($response['object']['name'])) {
-                $this->info($this->trans('system.events.create.name_label', [], 'commands') . $response['object']['name']);
+                $this->info(
+                    $this->trans('system.events.create.name_label', [], 'commands') . $response['object']['name']
+                );
             }
             return 0;
         } else {

@@ -72,7 +72,13 @@ class Delete extends ProcessorCmd
 
         // Confirm deletion unless --force is used
         if (!$this->option('force')) {
-            if (!$this->confirm($this->trans('system.events.delete.confirm', ['%name%' => $name, '%id%' => $id], 'commands'))) {
+            if (
+                !$this->confirm($this->trans(
+                    'system.events.delete.confirm',
+                    ['%name%' => $name, '%id%' => $id],
+                    'commands'
+                ))
+            ) {
                 $this->info($this->trans('operation_aborted', [], 'errors'));
                 return false;
             }

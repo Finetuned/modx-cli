@@ -75,7 +75,11 @@ class Remove extends ProcessorCmd
 
         $target = $acl->get('target');
         if ($target !== $context) {
-            $this->error($this->trans('context.permissions.remove.wrong_context', ['%id%' => $id, '%context%' => $context], 'commands'));
+            $this->error($this->trans(
+                'context.permissions.remove.wrong_context',
+                ['%id%' => $id, '%context%' => $context],
+                'commands'
+            ));
             return false;
         }
 

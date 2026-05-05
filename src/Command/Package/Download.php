@@ -75,7 +75,11 @@ class Download extends ProcessorCmd
         ]);
 
         if (!$packageObject) {
-            $this->error($this->trans('package.download.package_object_failed', ['%signature%' => $currentPackageSignature], 'commands'));
+            $this->error($this->trans(
+                'package.download.package_object_failed',
+                ['%signature%' => $currentPackageSignature],
+                'commands'
+            ));
             return false;
         }
 
@@ -91,7 +95,11 @@ class Download extends ProcessorCmd
         $latest = $provider->latest($packageObject->get('signature'));
 
         if (!is_array($latest) || empty($latest)) {
-            $this->error($this->trans('package.download.provider_data_failed', ['%signature%' => $signature], 'commands'));
+            $this->error($this->trans(
+                'package.download.provider_data_failed',
+                ['%signature%' => $signature],
+                'commands'
+            ));
             return false;
         }
 
