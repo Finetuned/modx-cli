@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.2-beta] - 2026-05-05
+
+### Changed
+- Updated Symfony runtime dependency locks: symfony/filesystem from v8.0.8 to v8.0.9, symfony/finder from v6.4.27 to v6.4.34, and symfony/string plus symfony/yaml from v6.4.30 to v6.4.34.
+- Updated Symfony polyfill dependency locks from v1.33.0 to v1.37.0 and added symfony/polyfill-php82 transitively.
+- Updated dev/test dependency locks, including modx/revolution from v3.1.2-pl to v3.2.0-pl, xpdo/xpdo from v3.1.6 to v3.1.7, phpunit/phpunit from 10.5.62 to 10.5.63, and phpstan/phpstan from 1.12.32 to 1.12.33.
+
+### Security
+- Refreshed roave/security-advisories lock metadata with updated advisory conflict constraints.
+
 ## [0.10.1-beta] - 2026-04-08
 
 ### Security
