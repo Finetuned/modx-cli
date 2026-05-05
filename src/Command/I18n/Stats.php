@@ -17,11 +17,21 @@ class Stats extends BaseCmd
     protected $name = 'i18n:stats';
     protected $description = 'Show translation coverage statistics';
 
+    /**
+     * Get command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
         return [];
     }
 
+    /**
+     * Get command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
         return array_merge(parent::getOptions(), [
@@ -29,6 +39,11 @@ class Stats extends BaseCmd
         ]);
     }
 
+    /**
+     * Build and render translation coverage statistics.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $reader = TranslationReader::create();
@@ -45,6 +60,13 @@ class Stats extends BaseCmd
         return 0;
     }
 
+    /**
+     * Filter translation domains by the command option.
+     *
+     * @param array $domains Domain names.
+     *
+     * @return array
+     */
     private function filterDomains(array $domains): array
     {
         $filter = $this->option('domain');
@@ -54,6 +76,15 @@ class Stats extends BaseCmd
         return in_array($filter, $domains, true) ? [$filter] : [];
     }
 
+    /**
+     * Build coverage rows for all requested locales and domains.
+     *
+     * @param TranslationReader $reader  Translation reader.
+     * @param array             $locales Locale names.
+     * @param array             $domains Domain names.
+     *
+     * @return array
+     */
     private function buildStats(TranslationReader $reader, array $locales, array $domains): array
     {
         $stats = [];
@@ -74,7 +105,7 @@ class Stats extends BaseCmd
                     'total'      => $total,
                     'translated' => $translated,
                     'missing'    => $total - $translated,
-                    'coverage'   => $total > 0 ? round(($translated / $total) * 100) : 100,
+                    'coverage'   => round(($translated / $total) * 100),
                 ];
             }
         }
@@ -82,6 +113,13 @@ class Stats extends BaseCmd
         return $stats;
     }
 
+    /**
+     * Render coverage rows as a console table.
+     *
+     * @param array $stats Coverage rows.
+     *
+     * @return void
+     */
     private function renderStats(array $stats): void
     {
         $this->output->writeln('<info>Translation Coverage Statistics</info>');
