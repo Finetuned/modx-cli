@@ -21,17 +21,28 @@ class Extract extends BaseCmd
     protected $name = 'i18n:extract';
     protected $description = 'Extract translation keys from source code and compare with YAML files';
 
-    /** @var string[] Regex patterns for trans()/transChoice() calls */
-    private const PATTERN_TRANS = '/->trans(?:Choice)?\s*\(\s*[\'"]([^\'"]+)[\'"]\s*(?:,[^,]+,\s*[\'"]([^\'"]+)[\'"])?\s*[,\)]/';
+    /** @var string Regex pattern for trans()/transChoice() calls */
+    private const PATTERN_TRANS = '/->trans(?:Choice)?\s*\(\s*[\'"]([^\'"]+)[\'"]\s*'
+        . '(?:,[^,]+,\s*[\'"]([^\'"]+)[\'"])?\s*[,\)]/';
 
     /** @var string Regex pattern for ErrorMessages::get/format/has() calls */
     private const PATTERN_ERROR_MESSAGES = '/ErrorMessages::(?:get|format|has)\s*\(\s*[\'"]([^\'"]+)[\'"]/';
 
+    /**
+     * Get command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
         return [];
     }
 
+    /**
+     * Get command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
         return array_merge(parent::getOptions(), [
@@ -40,6 +51,11 @@ class Extract extends BaseCmd
         ]);
     }
 
+    /**
+     * Extract translation keys and optionally write missing base keys.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $reader  = TranslationReader::create();
@@ -61,6 +77,13 @@ class Extract extends BaseCmd
         return 0;
     }
 
+    /**
+     * Filter translation domains by the command option.
+     *
+     * @param array $domains Domain names.
+     *
+     * @return array
+     */
     private function filterDomains(array $domains): array
     {
         $filter = $this->option('domain');
@@ -127,6 +150,13 @@ class Extract extends BaseCmd
         return $report;
     }
 
+    /**
+     * Render the extraction report.
+     *
+     * @param array $report Domain diff report.
+     *
+     * @return void
+     */
     private function renderReport(array $report): void
     {
         $hasAny = false;
@@ -138,6 +168,14 @@ class Extract extends BaseCmd
         }
     }
 
+    /**
+     * Render a single domain diff.
+     *
+     * @param string $domain Domain name.
+     * @param array  $diff   Domain diff data.
+     *
+     * @return boolean True when output was rendered.
+     */
     private function renderDomainDiff(string $domain, array $diff): bool
     {
         $hasOutput = false;
@@ -171,6 +209,15 @@ class Extract extends BaseCmd
         }
     }
 
+    /**
+     * Write new keys for a domain into the base YAML file.
+     *
+     * @param TranslationReader $reader  Translation reader.
+     * @param string            $domain  Domain name.
+     * @param array             $newKeys New key names.
+     *
+     * @return void
+     */
     private function writeDomainKeys(TranslationReader $reader, string $domain, array $newKeys): void
     {
         $filePath = $reader->getFilePath(TranslationReader::BASE_LOCALE, $domain);
