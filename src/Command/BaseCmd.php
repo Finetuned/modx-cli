@@ -365,9 +365,9 @@ abstract class BaseCmd extends Command
     /**
      * Translate a message
      *
-     * @param string $key Translation key
-     * @param array $params Parameters for the translation
-     * @param string $domain Translation domain (default: 'messages')
+     * @param string $key    Translation key.
+     * @param array  $params Parameters for the translation.
+     * @param string $domain Translation domain (default: 'messages').
      * @return string Translated message
      */
     protected function trans(string $key, array $params = [], string $domain = 'messages'): string
@@ -379,10 +379,10 @@ abstract class BaseCmd extends Command
     /**
      * Translate a message with pluralization
      *
-     * @param string $key Translation key
-     * @param int $count Count for pluralization
-     * @param array $params Parameters for the translation
-     * @param string $domain Translation domain (default: 'messages')
+     * @param string  $key    Translation key.
+     * @param integer $count  Count for pluralization.
+     * @param array   $params Parameters for the translation.
+     * @param string  $domain Translation domain (default: 'messages').
      * @return string Translated message
      */
     protected function transChoice(string $key, int $count, array $params = [], string $domain = 'messages'): string
