@@ -45,12 +45,12 @@ class FindTest extends BaseTest
 
         $output = new BufferedOutput();
         $this->setCommandOutput($command, $output);
-        
+
         // Mock the input object to handle option() calls
         $input = $this->createMock('Symfony\\Component\\Console\\Input\\InputInterface');
         $input->method('getOption')->willReturn(null);
         $input->method('getArgument')->willReturn('test query');
-        
+
         $reflection = new \ReflectionClass($command);
         $prop = $reflection->getProperty('input');
         $prop->setAccessible(true);
