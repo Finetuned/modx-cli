@@ -422,11 +422,25 @@ composer cs:fix
 
 ### Git Hooks
 
-Set up the local git hooks to keep `VERSION` in sync when pushing tags:
+Set up the local git hooks to validate release metadata when pushing tags:
 
 ```bash
 git config core.hooksPath .githooks
 chmod +x .githooks/pre-push scripts/release.sh
+```
+
+Release flow:
+
+```bash
+# 1. Edit CHANGELOG.md with the new release heading near the top.
+# 2. Prepare the release commit and local tag.
+scripts/release.sh v0.10.2-beta
+
+# 3. Push the release commit.
+git push origin HEAD
+
+# 4. Push the tag after the hook validates VERSION and CHANGELOG.md.
+git push origin v0.10.2-beta
 ```
 
 ### Running Tests
