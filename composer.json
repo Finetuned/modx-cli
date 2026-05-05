@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=8.1",
-        "aws/aws-sdk-php": "3.368.0",
+        "aws/aws-sdk-php": "3.371.4",
         "symfony/console": "^5.4 || ^6.0",
         "symfony/process": "^5.4 || ^6.0",
         "symfony/finder": "^5.4 || ^6.0",
@@ -34,7 +34,14 @@
         "bin/modx"
     ],
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "audit": {
+            "ignore": [
+                "PKSA-4t1p-xpk2-nsss",
+                "PKSA-dxyf-6n16-t87m",
+                "PKSA-n3s6-289w-qtqb"
+            ]
+        }
     },
     "autoload": {
         "psr-4": {

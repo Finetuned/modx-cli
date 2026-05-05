@@ -4,21 +4,56 @@ set -euo pipefail
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 release_script="${root_dir}/scripts/release.sh"
 
-if [[ ! -x "$release_script" ]]; then
-  echo "Release script not executable: ${release_script}" >&2
-  exit 1
-fi
-
-run_release_for_tag() {
+validate_tag_ref() {
   local ref_name="$1"
+  local ref_sha="$2"
   local tag="${ref_name#refs/tags/}"
-  if [[ -n "$tag" ]]; then
-    "${release_script}" "$tag"
+  local version="${tag#v}"
+  local commit_sha=""
+  local version_value=""
+  local changelog_contents=""
+  local heading_regex=""
+
+  if [[ -z "$tag" || -z "$version" ]]; then
+    echo "Invalid tag reference: ${ref_name}" >&2
+    exit 1
+  fi
+
+  if [[ "$ref_sha" =~ ^0+$ ]]; then
+    return 0
+  fi
+
+  if ! commit_sha="$(git -C "$root_dir" rev-parse "${ref_sha}^{commit}" 2>/dev/null)"; then
+    echo "Unable to resolve tagged commit for ${tag}" >&2
+    exit 1
+  fi
+
+  if ! version_value="$(git -C "$root_dir" show "${commit_sha}:VERSION" 2>/dev/null | tr -d '\r')"; then
+    echo "Tag ${tag} is missing VERSION in the tagged commit. Run ${release_script} ${tag} first." >&2
+    exit 1
+  fi
+
+  version_value="${version_value%"${version_value##*[![:space:]]}"}"
+  version_value="${version_value#"${version_value%%[![:space:]]*}"}"
+  if [[ "$version_value" != "$version" ]]; then
+    echo "Tag ${tag} does not match VERSION=${version_value} in the tagged commit. Run ${release_script} ${tag} first." >&2
+    exit 1
+  fi
+
+  if ! changelog_contents="$(git -C "$root_dir" show "${commit_sha}:CHANGELOG.md" 2>/dev/null)"; then
+    echo "Tag ${tag} is missing CHANGELOG.md in the tagged commit. Run ${release_script} ${tag} first." >&2
+    exit 1
+  fi
+
+  heading_regex="^## \\[${version//./\\.}\\] - [0-9]{4}-[0-9]{2}-[0-9]{2}$"
+  if ! printf '%s\n' "$changelog_contents" | grep -Eq "$heading_regex"; then
+    echo "Tag ${tag} is missing a matching CHANGELOG entry in the tagged commit. Run ${release_script} ${tag} first." >&2
+    exit 1
   fi
 }
 
 while read -r local_ref local_sha remote_ref remote_sha; do
   if [[ "$local_ref" == refs/tags/* ]]; then
-    run_release_for_tag "$local_ref"
+    validate_tag_ref "$local_ref" "$local_sha"
   fi
 done
