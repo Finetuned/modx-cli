@@ -71,7 +71,7 @@ class TreeBuilder
         // Then assign children to their respective parents
         $root = null;
         foreach ($indexed as $pk => $row) {
-            $parentKey = $row[$this->parentField];
+            $parentKey = $row[$this->parentField] ?? '';
 
             // Track root items (those with no parent or empty parent)
             if (!$row[$this->parentField] || empty($row[$this->parentField])) {

@@ -28,7 +28,6 @@ class CommandPublisherTest extends TestCase
         // Use reflection to access the private property
         $reflection = new \ReflectionClass($this->publisher);
         $property = $reflection->getProperty('subscribers');
-        $property->setAccessible(true);
 
         // Call the publish method
         $this->publisher->publish($command, $callback);

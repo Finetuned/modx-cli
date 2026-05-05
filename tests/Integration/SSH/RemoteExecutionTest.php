@@ -26,7 +26,6 @@ class RemoteExecutionTest extends TestCase
         // Use reflection to access protected method for testing
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
-        $method->setAccessible(true);
 
         $sshCommand = $method->invoke($proxy);
 
@@ -47,7 +46,6 @@ class RemoteExecutionTest extends TestCase
 
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
-        $method->setAccessible(true);
 
         $sshCommand = $method->invoke($proxy);
 
@@ -66,7 +64,6 @@ class RemoteExecutionTest extends TestCase
 
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
-        $method->setAccessible(true);
 
         $sshCommand = $method->invoke($proxy);
 
@@ -84,7 +81,6 @@ class RemoteExecutionTest extends TestCase
 
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildRemoteCommand');
-        $method->setAccessible(true);
 
         $remoteCommand = $method->invoke($proxy);
 
@@ -103,7 +99,6 @@ class RemoteExecutionTest extends TestCase
 
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildRemoteCommand');
-        $method->setAccessible(true);
 
         $remoteCommand = $method->invoke($proxy);
 
@@ -138,7 +133,6 @@ class RemoteExecutionTest extends TestCase
 
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
-        $method->setAccessible(true);
 
         $sshCommand = $method->invoke($proxy);
 
@@ -157,7 +151,6 @@ class RemoteExecutionTest extends TestCase
 
         $reflection = new \ReflectionClass($proxy);
         $method = $reflection->getMethod('buildSSHCommand');
-        $method->setAccessible(true);
 
         $sshCommand = $method->invoke($proxy);
 

@@ -65,7 +65,6 @@ class DisabledPluginTest extends BaseTest
         // Create a reflection of the command to access protected method
         $reflection = new \ReflectionClass($this->command);
         $beforeRunMethod = $reflection->getMethod('beforeRun');
-        $beforeRunMethod->setAccessible(true);
 
         // Test the beforeRun method
         $properties = [];
@@ -215,7 +214,6 @@ class DisabledPluginTest extends BaseTest
         // Create a reflection to access protected method
         $reflection = new \ReflectionClass($this->command);
         $parseValueMethod = $reflection->getMethod('parseValue');
-        $parseValueMethod->setAccessible(true);
 
         // Mock modCategory object
         $category = new \stdClass();

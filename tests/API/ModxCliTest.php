@@ -16,7 +16,6 @@ class ModxCliTest extends TestCase
         // Reset the MODX_CLI static instance for each test
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $property->setValue(null, null);
     }
 
@@ -24,7 +23,6 @@ class ModxCliTest extends TestCase
     {
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $property->setValue(null, null);
     }
 
@@ -46,12 +44,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('commandRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the add_command method
@@ -74,12 +70,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('commandRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the remove_command method
@@ -103,12 +97,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('commandRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the get_command method
@@ -132,12 +124,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('commandRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the get_commands method
@@ -168,12 +158,10 @@ class ModxCliTest extends TestCase
         // Set the mock runner in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $runnerProperty = $reflection->getProperty('commandRunner');
-        $runnerProperty->setAccessible(true);
         $runnerProperty->setValue($instance, $runner);
 
         // Call the run_command method
@@ -201,12 +189,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('hookRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the register_hook method
@@ -234,12 +220,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('hookRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the add_hook method
@@ -265,12 +249,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('hookRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the do_hook method
@@ -296,12 +278,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('hookRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the before_invoke method
@@ -329,12 +309,10 @@ class ModxCliTest extends TestCase
         // Set the mock registry in MODX_CLI
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $instance = $reflection->newInstanceWithoutConstructor();
         $property->setValue(null, $instance);
 
         $registryProperty = $reflection->getProperty('hookRegistry');
-        $registryProperty->setAccessible(true);
         $registryProperty->setValue($instance, $registry);
 
         // Call the after_invoke method
@@ -360,7 +338,6 @@ class ModxCliTest extends TestCase
         // Create a mock method to avoid ANSI color codes
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $method = $reflection->getMethod('success');
-        $method->setAccessible(true);
 
         // Capture output
         ob_start();
@@ -376,7 +353,6 @@ class ModxCliTest extends TestCase
         // Create a mock method to avoid ANSI color codes
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $method = $reflection->getMethod('warning');
-        $method->setAccessible(true);
 
         // Capture output
         ob_start();
@@ -392,7 +368,6 @@ class ModxCliTest extends TestCase
         // Create a mock method to avoid ANSI color codes
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $method = $reflection->getMethod('error');
-        $method->setAccessible(true);
 
         // Capture output
         ob_start();

@@ -43,7 +43,6 @@ class ListenTest extends BaseTest
             ->willReturn(null);
 
         $method = new \ReflectionMethod($this->command, 'getLastLogId');
-        $method->setAccessible(true);
         $result = $method->invoke($this->command);
         $this->assertEquals(0, $result);
     }
@@ -61,7 +60,6 @@ class ListenTest extends BaseTest
         $output = $this->setCommandIO([]);
 
         $method = new \ReflectionMethod($this->command, 'displayLastLogEntries');
-        $method->setAccessible(true);
         $method->invoke($this->command, 5);
 
         $this->assertStringContainsString('No log entries found', $output->fetch());
@@ -80,7 +78,6 @@ class ListenTest extends BaseTest
         $output = $this->setCommandIO(['--json' => true]);
 
         $method = new \ReflectionMethod($this->command, 'displayLastLogEntries');
-        $method->setAccessible(true);
         $method->invoke($this->command, 5);
 
         $decoded = json_decode($output->fetch(), true);
@@ -94,11 +91,9 @@ class ListenTest extends BaseTest
         $output = new BufferedOutput();
 
         $inputProperty = new \ReflectionProperty($this->command, 'input');
-        $inputProperty->setAccessible(true);
         $inputProperty->setValue($this->command, $input);
 
         $outputProperty = new \ReflectionProperty($this->command, 'output');
-        $outputProperty->setAccessible(true);
         $outputProperty->setValue($this->command, $output);
 
         return $output;

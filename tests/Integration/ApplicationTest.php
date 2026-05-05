@@ -206,7 +206,6 @@ class ApplicationTest extends TestCase
         // Reflection to access protected method
         $reflection = new \ReflectionClass($app);
         $method = $reflection->getMethod('checkInstanceAsArgument');
-        $method->setAccessible(true);
 
         $result = $method->invoke($app, null);
         $this->assertEquals('test', $result);
@@ -232,7 +231,6 @@ class ApplicationTest extends TestCase
         // Reflection to access protected method
         $reflection = new \ReflectionClass($app);
         $method = $reflection->getMethod('checkInstanceAsArgument');
-        $method->setAccessible(true);
 
         $result = $method->invoke($app, 'default');
         $this->assertEquals('default', $result);
@@ -264,7 +262,6 @@ class ApplicationTest extends TestCase
         // Use reflection to access protected method
         $reflection = new \ReflectionClass($app);
         $method = $reflection->getMethod('getCommandClass');
-        $method->setAccessible(true);
 
         $result = $method->invoke($app, $mockFile);
 

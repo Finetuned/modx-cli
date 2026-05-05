@@ -122,7 +122,6 @@ class GetListTest extends BaseTest
         // Use reflection to call protected parseValue method
         $reflection = new \ReflectionClass($this->command);
         $method = $reflection->getMethod('parseValue');
-        $method->setAccessible(true);
 
         // Test timestamp formatting for 'access' column
         $timestamp = '1698768000';
@@ -139,7 +138,6 @@ class GetListTest extends BaseTest
         // Use reflection to call protected parseValue method
         $reflection = new \ReflectionClass($this->command);
         $method = $reflection->getMethod('parseValue');
-        $method->setAccessible(true);
 
         // Test empty timestamp for 'access' column
         $result = $method->invoke($this->command, '', 'access');

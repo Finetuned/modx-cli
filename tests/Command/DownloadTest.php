@@ -19,7 +19,6 @@ class DownloadTest extends BaseTest
         ]);
 
         $method = new \ReflectionMethod($command, 'buildFileName');
-        $method->setAccessible(true);
         $this->assertEquals('latest.zip', $method->invoke($command));
     }
 
@@ -33,7 +32,6 @@ class DownloadTest extends BaseTest
         ]);
 
         $method = new \ReflectionMethod($command, 'buildFileName');
-        $method->setAccessible(true);
         $this->assertEquals('modx-3.0.0-advanced.zip', $method->invoke($command));
     }
 
@@ -47,7 +45,6 @@ class DownloadTest extends BaseTest
         ]);
 
         $method = new \ReflectionMethod($command, 'buildFileName');
-        $method->setAccessible(true);
         $this->assertEquals('modx-3.0.0-sdk.zip', $method->invoke($command));
     }
 
@@ -60,7 +57,6 @@ class DownloadTest extends BaseTest
         ]);
 
         $method = new \ReflectionMethod($command, 'buildURL');
-        $method->setAccessible(true);
         $this->assertEquals('http://modx.com/download/latest', $method->invoke($command));
     }
 
@@ -73,7 +69,6 @@ class DownloadTest extends BaseTest
         ]);
 
         $method = new \ReflectionMethod($command, 'buildURL');
-        $method->setAccessible(true);
         $this->assertEquals('http://modx.com/download/direct/modx-3.0.0.zip', $method->invoke($command));
     }
 
@@ -110,11 +105,9 @@ class DownloadTest extends BaseTest
 
         $reflection = new \ReflectionClass($command);
         $inputProp = $reflection->getProperty('input');
-        $inputProp->setAccessible(true);
         $inputProp->setValue($command, $input);
 
         $outputProp = $reflection->getProperty('output');
-        $outputProp->setAccessible(true);
         $outputProp->setValue($command, $output);
     }
 }

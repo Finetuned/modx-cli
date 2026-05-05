@@ -217,7 +217,6 @@ class CommandRunnerTest extends TestCase
     public function testParseCommand()
     {
         $method = new \ReflectionMethod(CommandRunner::class, 'parseCommand');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->runner, 'test --option=value -f arg1 arg2');
 

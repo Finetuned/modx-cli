@@ -213,7 +213,6 @@ class SelfUpdateTest extends TestCase
     private function callPrivate(object $object, string $method, array $args = [])
     {
         $reflection = new \ReflectionMethod($object, $method);
-        $reflection->setAccessible(true);
 
         return $reflection->invokeArgs($object, $args);
     }

@@ -155,7 +155,6 @@ class CommandProxyTest extends TestCase
     {
         $reflection = new \ReflectionClass($object);
         $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invoke($object);
     }
