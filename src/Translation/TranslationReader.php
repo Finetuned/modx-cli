@@ -14,16 +14,26 @@ use Symfony\Component\Yaml\Yaml;
  */
 class TranslationReader
 {
-    const DOMAINS = ['messages', 'errors', 'commands', 'validation', 'success'];
-    const BASE_LOCALE = 'en';
+    public const DOMAINS = ['messages', 'errors', 'commands', 'validation', 'success'];
+    public const BASE_LOCALE = 'en';
 
     private string $translationsPath;
 
+    /**
+     * Create a reader for a translation directory.
+     *
+     * @param string $translationsPath Absolute path to the translations directory.
+     */
     public function __construct(string $translationsPath)
     {
         $this->translationsPath = rtrim($translationsPath, '/');
     }
 
+    /**
+     * Create a reader for the project translation directory.
+     *
+     * @return self
+     */
     public static function create(): self
     {
         return new self(realpath(__DIR__ . '/../../translations') ?: '');
