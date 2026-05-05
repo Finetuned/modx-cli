@@ -264,7 +264,6 @@ class UpgradeableTest extends BaseTest
 
         // Call the protected method using reflection
         $method = new \ReflectionMethod($this->command, 'getUpgradeSignatureForPackage');
-        $method->setAccessible(true);
         $result = $method->invoke($this->command, $package);
 
         // Should return the newest version (1.2.0-pl)
@@ -313,7 +312,6 @@ class UpgradeableTest extends BaseTest
 
         // Call the protected method using reflection
         $method = new \ReflectionMethod($this->command, 'getUpgradeSignatureForPackage');
-        $method->setAccessible(true);
         $result = $method->invoke($this->command, $package);
 
         // Should return empty string when no newer versions available
@@ -345,7 +343,6 @@ class UpgradeableTest extends BaseTest
 
         // Call the protected method using reflection
         $method = new \ReflectionMethod($this->command, 'getUpgradeSignatureForPackage');
-        $method->setAccessible(true);
         $result = $method->invoke($this->command, $package);
 
         // Should return empty string when provider not found

@@ -83,7 +83,6 @@ class CommandRegistrarTest extends TestCase
         // Use reflection to call listCommands
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
-        $method->setAccessible(true);
 
         $finder = $method->invoke(null);
 
@@ -101,7 +100,6 @@ class CommandRegistrarTest extends TestCase
         // Use reflection to call listCommands
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
-        $method->setAccessible(true);
 
         $finder = $method->invoke(null);
 
@@ -128,7 +126,6 @@ class CommandRegistrarTest extends TestCase
         // Use reflection to call listCommands
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
-        $method->setAccessible(true);
 
         $finder = $method->invoke(null);
 
@@ -150,7 +147,6 @@ class CommandRegistrarTest extends TestCase
 
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
-        $method->setAccessible(true);
 
         $finder = $method->invoke(null);
 
@@ -179,7 +175,6 @@ class CommandRegistrarTest extends TestCase
         // Use reflection to call listCommands
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('listCommands');
-        $method->setAccessible(true);
 
         $finder = $method->invoke(null);
 
@@ -205,7 +200,6 @@ class CommandRegistrarTest extends TestCase
         // Use reflection to call getNS
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('getNS');
-        $method->setAccessible(true);
 
         $result = $method->invoke(null);
 
@@ -224,7 +218,6 @@ class CommandRegistrarTest extends TestCase
         // Use reflection to call getReflection
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('getReflection');
-        $method->setAccessible(true);
 
         $result = $method->invoke(null);
 
@@ -242,7 +235,6 @@ class CommandRegistrarTest extends TestCase
         // Use reflection to call getRootPath
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('getRootPath');
-        $method->setAccessible(true);
 
         $result = $method->invoke(null);
 
@@ -296,7 +288,6 @@ class CommandRegistrarTest extends TestCase
         // Call unRegister
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('unRegister');
-        $method->setAccessible(true);
         $method->invoke(null, $mockConfig);
 
         $this->assertSame($deprecatedClasses, $removedClasses);
@@ -329,7 +320,6 @@ class CommandRegistrarTest extends TestCase
         // Call unRegister
         $reflection = new \ReflectionClass($registrar);
         $method = $reflection->getMethod('unRegister');
-        $method->setAccessible(true);
         $method->invoke(null, $mockConfig);
     }
 

@@ -40,7 +40,6 @@ class CrawlTest extends BaseTest
         $command->modx = $modx;
 
         $method = new \ReflectionMethod($command, 'getCriteria');
-        $method->setAccessible(true);
         $result = $method->invoke($command, 10);
 
         $this->assertSame($query, $result);
@@ -69,7 +68,6 @@ class CrawlTest extends BaseTest
         $command->modx = $modx;
 
         $method = new \ReflectionMethod($command, 'getCriteria');
-        $method->setAccessible(true);
         $result = $method->invoke($command, 'all');
 
         $this->assertSame($query, $result);

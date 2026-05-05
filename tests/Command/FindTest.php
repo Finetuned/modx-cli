@@ -26,7 +26,6 @@ class FindTest extends BaseTest
         $this->setCommandOutput($command, $output);
 
         $method = new \ReflectionMethod($command, 'beforeRun');
-        $method->setAccessible(true);
         $properties = [];
         $options = [];
         $result = $method->invokeArgs($command, [&$properties, &$options]);
@@ -53,11 +52,9 @@ class FindTest extends BaseTest
 
         $reflection = new \ReflectionClass($command);
         $prop = $reflection->getProperty('input');
-        $prop->setAccessible(true);
         $prop->setValue($command, $input);
 
         $method = new \ReflectionMethod($command, 'beforeRun');
-        $method->setAccessible(true);
         $properties = [];
         $options = [];
         $result = $method->invokeArgs($command, [&$properties, &$options]);
@@ -70,7 +67,6 @@ class FindTest extends BaseTest
     {
         $reflection = new \ReflectionClass($command);
         $prop = $reflection->getProperty('output');
-        $prop->setAccessible(true);
         $prop->setValue($command, $output);
     }
 }

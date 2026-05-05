@@ -132,7 +132,7 @@ class Remove extends ProcessorCmd
         $this->response =& $response;
         $decoded = $this->decodeResponse($response);
 
-        $message = $response->getMessage();
+        $message = (string) $response->getMessage();
         if (
             $response->isError()
             && (stripos($message, 'Requested processor not found') !== false

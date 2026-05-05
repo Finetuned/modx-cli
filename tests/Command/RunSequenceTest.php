@@ -65,7 +65,6 @@ class RunSequenceTest extends TestCase
         // Use reflection to replace the static instance
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $this->instanceProperty = $reflection->getProperty('instance');
-        $this->instanceProperty->setAccessible(true);
 
         // Save the original instance
         $this->originalInstance = $this->instanceProperty->getValue(null);
@@ -77,7 +76,6 @@ class RunSequenceTest extends TestCase
 
         // Set the commandRunner property in the MODX_CLI instance
         $commandRunnerProperty = $reflection->getProperty('commandRunner');
-        $commandRunnerProperty->setAccessible(true);
         $commandRunnerProperty->setValue($this->modxCliMock, $commandRunnerMock);
 
         // Set our mock as the instance

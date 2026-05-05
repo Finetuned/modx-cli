@@ -19,7 +19,6 @@ class CustomPackageUpgradeTest extends TestCase
     {
         $reflection = new \ReflectionClass(MODX_CLI::class);
         $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
         $property->setValue(null, null);
 
         // Create a mock MODX object
