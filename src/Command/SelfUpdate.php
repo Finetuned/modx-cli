@@ -747,7 +747,7 @@ class SelfUpdate extends BaseCmd
         $result = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         $error = curl_error($ch);
-        curl_close($ch);
+        $ch = null;
         fclose($handle);
 
         if ($progressBar !== null) {
@@ -795,7 +795,7 @@ class SelfUpdate extends BaseCmd
 
         $body = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        curl_close($ch);
+        $ch = null;
 
         return [
             'status' => (int) $status,

@@ -86,7 +86,7 @@ class Crawl extends BaseCmd
             }
 
             if ($this->curl) {
-                curl_close($this->curl);
+                $this->curl = null;
             }
             $duration = microtime(true) - $this->start;
             if ($this->jsonOutput) {
@@ -106,7 +106,7 @@ class Crawl extends BaseCmd
                 'errors' => $this->crawlErrors,
             ]);
             if ($this->curl) {
-                curl_close($this->curl);
+                $this->curl = null;
             }
             return 1;
         }
@@ -227,7 +227,7 @@ class Crawl extends BaseCmd
 
         if (!$result) {
             $this->outputResult(false, 'Failed to set cURL options');
-            curl_close($ch);
+            $ch = null;
             return false;
         }
 

@@ -96,7 +96,7 @@ abstract class Download extends BaseCmd
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $data = curl_exec($ch);
         //$error = curl_error($ch);
-        curl_close($ch);
+        $ch = null;
 
         $file = fopen($target, 'w+');
         fputs($file, $data);
