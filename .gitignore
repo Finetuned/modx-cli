@@ -9,6 +9,7 @@
 /var/
 /.serena/
 /.clinerules/
+CLAUDE.md
 /tests/integration/.env
 
 # PHP_CodeSniffer cache

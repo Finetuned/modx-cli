@@ -5,12 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.1-beta] - 2026-04-08
+
+### Security
+- Updated aws/aws-sdk-php to 3.371.4 and restored it as a direct dependency after the upstream security fix in commit 9fed463.
+
+### Changed
+- Updated dependency lock metadata for guzzlehttp/psr7 from 2.8.0 to 2.9.0.
+- Updated dependency lock metadata for symfony/filesystem from v8.0.1 to v8.0.8.
+
 ## [0.9.1-beta] - 2026-02-03
 
 ### Security
 - Updated phpunit to fix security vulnerability CVE-2026-24765 
 - Updated symfony/process to fix security vulnerability CVE-2026-24739
-- Updated aws/aws-sdk-php to 3.371.4 and restored it as a direct dependency after the upstream security fix in commit 9fed463.
 
 ## [0.9.0-beta] - 2026-01-20
 
