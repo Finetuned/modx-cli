@@ -17,11 +17,21 @@ class Validate extends BaseCmd
     protected $name = 'i18n:validate';
     protected $description = 'Validate translation files for completeness and consistency';
 
+    /**
+     * Get command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
         return [];
     }
 
+    /**
+     * Validate translations and render the selected output format.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $reader = TranslationReader::create();
@@ -39,6 +49,13 @@ class Validate extends BaseCmd
         return $this->hasIssues($results) ? 1 : 0;
     }
 
+    /**
+     * Resolve locales to validate from the command option.
+     *
+     * @param TranslationReader $reader Translation reader.
+     *
+     * @return array
+     */
     private function resolveLocales(TranslationReader $reader): array
     {
         $filter = $this->option('locale');
@@ -48,6 +65,15 @@ class Validate extends BaseCmd
         return $reader->getLocales();
     }
 
+    /**
+     * Validate all selected locales.
+     *
+     * @param TranslationReader $reader  Translation reader.
+     * @param array             $locales Locale names.
+     * @param array             $domains Domain names.
+     *
+     * @return array
+     */
     private function validate(TranslationReader $reader, array $locales, array $domains): array
     {
         $results = [];
@@ -57,6 +83,15 @@ class Validate extends BaseCmd
         return $results;
     }
 
+    /**
+     * Validate one locale across all selected domains.
+     *
+     * @param TranslationReader $reader  Translation reader.
+     * @param string            $locale  Locale name.
+     * @param array             $domains Domain names.
+     *
+     * @return array
+     */
     private function validateLocale(TranslationReader $reader, string $locale, array $domains): array
     {
         $issues = [];
@@ -69,6 +104,15 @@ class Validate extends BaseCmd
         return $issues;
     }
 
+    /**
+     * Validate one locale/domain pair.
+     *
+     * @param TranslationReader $reader Translation reader.
+     * @param string            $locale Locale name.
+     * @param string            $domain Domain name.
+     *
+     * @return array
+     */
     private function validateDomain(TranslationReader $reader, string $locale, string $domain): array
     {
         $issues = [];
@@ -87,6 +131,15 @@ class Validate extends BaseCmd
         return $issues;
     }
 
+    /**
+     * Find empty values in a locale/domain file.
+     *
+     * @param TranslationReader $reader Translation reader.
+     * @param string            $locale Locale name.
+     * @param string            $domain Domain name.
+     *
+     * @return array
+     */
     private function findEmptyValues(TranslationReader $reader, string $locale, string $domain): array
     {
         $values = $reader->getValues($locale, $domain);
@@ -99,6 +152,13 @@ class Validate extends BaseCmd
         return $empty;
     }
 
+    /**
+     * Check whether validation results contain issues.
+     *
+     * @param array $results Validation results.
+     *
+     * @return boolean
+     */
     private function hasIssues(array $results): bool
     {
         foreach ($results as $localeIssues) {
@@ -109,6 +169,14 @@ class Validate extends BaseCmd
         return false;
     }
 
+    /**
+     * Render validation results.
+     *
+     * @param array             $results Validation results.
+     * @param TranslationReader $reader  Translation reader.
+     *
+     * @return void
+     */
     private function renderResults(array $results, TranslationReader $reader): void
     {
         $this->output->writeln('<info>Validating translations...</info>');
@@ -124,6 +192,15 @@ class Validate extends BaseCmd
         }
     }
 
+    /**
+     * Render validation results for one locale.
+     *
+     * @param string            $locale Locale name.
+     * @param array             $issues Locale issues.
+     * @param TranslationReader $reader Translation reader.
+     *
+     * @return void
+     */
     private function renderLocaleResult(string $locale, array $issues, TranslationReader $reader): void
     {
         $totalBase = $this->countBaseKeys($reader);
@@ -146,6 +223,13 @@ class Validate extends BaseCmd
         $this->output->writeln($label . ' — ' . implode(', ', $detail));
     }
 
+    /**
+     * Count all base locale keys.
+     *
+     * @param TranslationReader $reader Translation reader.
+     *
+     * @return integer
+     */
     private function countBaseKeys(TranslationReader $reader): int
     {
         $total = 0;
@@ -155,6 +239,13 @@ class Validate extends BaseCmd
         return $total;
     }
 
+    /**
+     * Count missing keys in validation issues.
+     *
+     * @param array $issues Validation issues.
+     *
+     * @return integer
+     */
     private function countMissing(array $issues): int
     {
         $count = 0;
@@ -164,6 +255,13 @@ class Validate extends BaseCmd
         return $count;
     }
 
+    /**
+     * Count empty values in validation issues.
+     *
+     * @param array $issues Validation issues.
+     *
+     * @return integer
+     */
     private function countEmpty(array $issues): int
     {
         $count = 0;

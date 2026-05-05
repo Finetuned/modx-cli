@@ -19,6 +19,11 @@ class Missing extends BaseCmd
     protected $name = 'i18n:missing';
     protected $description = 'List missing translation keys for a locale';
 
+    /**
+     * Get command arguments.
+     *
+     * @return array
+     */
     protected function getArguments()
     {
         return [
@@ -26,6 +31,11 @@ class Missing extends BaseCmd
         ];
     }
 
+    /**
+     * Get command options.
+     *
+     * @return array
+     */
     protected function getOptions()
     {
         return array_merge(parent::getOptions(), [
@@ -33,6 +43,11 @@ class Missing extends BaseCmd
         ]);
     }
 
+    /**
+     * Collect and render missing keys for the target locale.
+     *
+     * @return integer
+     */
     protected function process()
     {
         $reader  = TranslationReader::create();
@@ -55,6 +70,13 @@ class Missing extends BaseCmd
         return $total > 0 ? 1 : 0;
     }
 
+    /**
+     * Filter translation domains by the command option.
+     *
+     * @param array $domains Domain names.
+     *
+     * @return array
+     */
     private function filterDomains(array $domains): array
     {
         $filter = $this->option('domain');
@@ -64,6 +86,15 @@ class Missing extends BaseCmd
         return in_array($filter, $domains, true) ? [$filter] : [];
     }
 
+    /**
+     * Collect missing keys for all selected domains.
+     *
+     * @param TranslationReader $reader  Translation reader.
+     * @param string            $locale  Locale name.
+     * @param array             $domains Domain names.
+     *
+     * @return array
+     */
     private function collectMissing(TranslationReader $reader, string $locale, array $domains): array
     {
         $result = [];
@@ -76,6 +107,15 @@ class Missing extends BaseCmd
         return $result;
     }
 
+    /**
+     * Render missing keys for one locale.
+     *
+     * @param string  $locale  Locale name.
+     * @param array   $missing Missing keys by domain.
+     * @param integer $total   Total missing keys.
+     *
+     * @return void
+     */
     private function renderMissing(string $locale, array $missing, int $total): void
     {
         if ($total === 0) {
