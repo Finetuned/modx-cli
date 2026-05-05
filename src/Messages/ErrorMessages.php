@@ -120,8 +120,8 @@ class ErrorMessages
     /**
      * Get a message by key
      *
-     * @param string $key Message key.
-     * @param bool $useTranslation Whether to use translation system (default: true)
+     * @param string  $key            Message key.
+     * @param boolean $useTranslation Whether to use translation system (default: true).
      * @return string The message template
      */
     public static function get(string $key, bool $useTranslation = true): string
@@ -129,13 +129,13 @@ class ErrorMessages
         if ($useTranslation) {
             $translator = TranslationManager::getInstance()->getTranslator();
             $translated = $translator->trans($key, [], 'errors');
-            
+
             // If translation is found (not same as key), return it
             if ($translated !== $key) {
                 return $translated;
             }
         }
-        
+
         // Fallback to hardcoded messages
         return self::$messages[$key] ?? $key;
     }
@@ -143,9 +143,9 @@ class ErrorMessages
     /**
      * Format a message with parameters
      *
-     * @param string $key    Message key.
-     * @param array  $params Parameters to substitute.
-     * @param bool $useTranslation Whether to use translation system (default: true)
+     * @param string  $key            Message key.
+     * @param array   $params         Parameters to substitute.
+     * @param boolean $useTranslation Whether to use translation system (default: true).
      * @return string Formatted message
      */
     public static function format(string $key, array $params = [], bool $useTranslation = true): string
