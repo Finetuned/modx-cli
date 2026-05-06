@@ -2,6 +2,39 @@
 # This file contains command runtime messages (success, info, warnings)
 # Keyed by command namespace and action, using Symfony %param% substitution format
 
+application:
+  list:
+    usage: 'Usage:'
+    options: 'Options:'
+    available_commands: 'Available commands:'
+  options:
+    help: 'Display help for the given command. When no command is given display help for the list command'
+    quiet: 'Do not output any message'
+    version: 'Display this application version'
+    ansi: 'Force or disable ANSI output'
+    no_interaction: 'Do not ask any interactive question'
+    site: 'An instance name to execute the command to'
+    json: 'Output results in JSON format'
+    ssh: 'Run command on a remote server via SSH: [<user>@]<host>[:<port>][<path>]'
+    log_level: 'Set log level (debug, info, notice, warning, error, critical, alert, emergency)'
+    log_file: 'Write logs to specified file'
+    locale: 'Set the locale for translations (e.g., en, es, fr, de)'
+    verbose: 'Increase the verbosity of messages'
+  command_descriptions:
+    completion: 'Dump the shell completion script'
+    crawl: 'Crawl the site to warm the cache'
+    download: 'Download MODX Revolution'
+    find: 'Find MODX elements and resources'
+    help: 'Display help for a command'
+    install: 'Install MODX Revolution'
+    list: 'List commands'
+    run-sequence: 'Run multiple commands in sequence'
+    search: 'Search across all content in the MODX instance (resources, elements, users)'
+    self-update: 'Update MODX CLI'
+    update: 'Update MODX CLI to the latest release'
+    version: 'Show MODX and MODX CLI versions'
+    "config:get-default": 'Show the default MODX instance'
+
 resource:
   create:
     success: 'Resource created successfully'

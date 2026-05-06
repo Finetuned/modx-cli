@@ -1,5 +1,38 @@
 # Mensajes de comandos - Español
 
+application:
+  list:
+    usage: 'Uso:'
+    options: 'Opciones:'
+    available_commands: 'Comandos disponibles:'
+  options:
+    help: 'Mostrar ayuda para el comando indicado. Sin comando, muestra la ayuda de la lista de comandos'
+    quiet: 'No mostrar ningún mensaje'
+    version: 'Mostrar la versión de esta aplicación'
+    ansi: 'Forzar o desactivar la salida ANSI'
+    no_interaction: 'No hacer preguntas interactivas'
+    site: 'Nombre de instancia en la que se ejecutará el comando'
+    json: 'Mostrar resultados en formato JSON'
+    ssh: 'Ejecutar comando en un servidor remoto por SSH: [<user>@]<host>[:<port>][<path>]'
+    log_level: 'Definir nivel de registro (debug, info, notice, warning, error, critical, alert, emergency)'
+    log_file: 'Escribir registros en el archivo especificado'
+    locale: 'Definir el idioma de las traducciones (p. ej., en, es, fr, de)'
+    verbose: 'Aumentar el detalle de los mensajes'
+  command_descriptions:
+    completion: 'Generar el script de autocompletado de shell'
+    crawl: 'Rastrear el sitio para preparar la caché'
+    download: 'Descargar MODX Revolution'
+    find: 'Buscar elementos y recursos de MODX'
+    help: 'Mostrar ayuda de un comando'
+    install: 'Instalar MODX Revolution'
+    list: 'Listar comandos'
+    run-sequence: 'Ejecutar varios comandos en secuencia'
+    search: 'Buscar en todo el contenido de la instancia MODX (recursos, elementos, usuarios)'
+    self-update: 'Actualizar MODX CLI'
+    update: 'Actualizar MODX CLI a la versión más reciente'
+    version: 'Mostrar versiones de MODX y MODX CLI'
+    "config:get-default": 'Mostrar la instancia MODX predeterminada'
+
 resource:
   create:
     success: 'Recurso creado con éxito'

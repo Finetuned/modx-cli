@@ -5,6 +5,7 @@ namespace MODX\CLI;
 use MODX\CLI\Logging\Logger;
 use MODX\CLI\Plugin\HookManager;
 use MODX\CLI\Plugin\PluginManager;
+use MODX\CLI\Translation\TranslationManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application as BaseApp;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -556,13 +557,7 @@ class Application extends BaseApp
             $this->initializeLogger();
         }
 
-        // Configure locale if specified
-        if ($input->hasParameterOption('--locale')) {
-            $locale = $input->getParameterOption('--locale');
-            if ($locale && is_string($locale)) {
-                \MODX\CLI\Translation\TranslationManager::getInstance()->setLocale($locale);
-            }
-        }
+        $this->configureLocale($input);
 
         // Map Symfony Console verbosity to Logger verbosity
         $verbosity = $output->getVerbosity();
@@ -650,6 +645,8 @@ class Application extends BaseApp
      */
     public function doRun(InputInterface $input, OutputInterface $output): int
     {
+        $this->configureLocale($input);
+
         // Configure logger based on input options
         $this->configureLogger($input, $output);
 
@@ -689,6 +686,15 @@ class Application extends BaseApp
             $this->logoPrinted = true;
         }
 
+        if ($this->shouldRenderLocalizedRootList($input)) {
+            $this->renderLocalizedRootList($runOutput);
+            if ($usePager && $runOutput instanceof BufferedOutput) {
+                $this->outputWithPagerIfNeeded($runOutput->fetch(), $output);
+            }
+
+            return 0;
+        }
+
         // Normal execution
         $exitCode = parent::doRun($input, $runOutput);
 
@@ -697,6 +703,190 @@ class Application extends BaseApp
         }
 
         return $exitCode;
+    }
+
+    /**
+     * Configure the application locale from the global option.
+     *
+     * @param InputInterface $input An Input instance.
+     *
+     * @return void
+     */
+    private function configureLocale(InputInterface $input): void
+    {
+        if (!$input->hasParameterOption('--locale')) {
+            return;
+        }
+
+        $locale = $input->getParameterOption('--locale');
+        if (is_string($locale) && $locale !== '') {
+            TranslationManager::getInstance()->setLocale($locale);
+        }
+    }
+
+    /**
+     * Determine whether the root command list should use localized application labels.
+     *
+     * @param InputInterface $input An Input instance.
+     *
+     * @return boolean
+     */
+    private function shouldRenderLocalizedRootList(InputInterface $input): bool
+    {
+        if ($input->getFirstArgument() !== null) {
+            return false;
+        }
+
+        if ($input->hasParameterOption(['-h', '--help', '-V', '--version', '--json'])) {
+            return false;
+        }
+
+        return TranslationManager::getInstance()->getLocale() !== 'en';
+    }
+
+    /**
+     * Render the localized root command listing.
+     *
+     * @param OutputInterface $output An Output instance.
+     *
+     * @return void
+     */
+    private function renderLocalizedRootList(OutputInterface $output): void
+    {
+        $output->writeln($this->getLongVersion());
+        $output->writeln('');
+        $output->writeln('<comment>' . $this->transCommand('application.list.usage') . '</comment>');
+        $output->writeln('  command [options] [arguments]');
+        $output->writeln('');
+        $output->writeln('<comment>' . $this->transCommand('application.list.options') . '</comment>');
+        $this->writeListRows($output, $this->getLocalizedRootOptionRows());
+        $output->writeln('');
+        $output->writeln('<comment>' . $this->transCommand('application.list.available_commands') . '</comment>');
+        $this->writeCommandGroups($output, $this->getLocalizedCommandGroups());
+    }
+
+    /**
+     * Get localized root option rows.
+     *
+     * @return array<int, array{0: string, 1: string}>
+     */
+    private function getLocalizedRootOptionRows(): array
+    {
+        return [
+            ['-h, --help', $this->transCommand('application.options.help')],
+            ['-q, --quiet', $this->transCommand('application.options.quiet')],
+            ['-V, --version', $this->transCommand('application.options.version')],
+            ['--ansi|--no-ansi', $this->transCommand('application.options.ansi')],
+            ['-n, --no-interaction', $this->transCommand('application.options.no_interaction')],
+            ['-s, --site=SITE', $this->transCommand('application.options.site')],
+            ['--json', $this->transCommand('application.options.json')],
+            ['--ssh=SSH', $this->transCommand('application.options.ssh')],
+            ['--log-level=LOG-LEVEL', $this->transCommand('application.options.log_level')],
+            ['--log-file=LOG-FILE', $this->transCommand('application.options.log_file')],
+            ['--locale=LOCALE', $this->transCommand('application.options.locale')],
+            ['-v|vv|vvv, --verbose', $this->transCommand('application.options.verbose')],
+        ];
+    }
+
+    /**
+     * Get localized command rows grouped by namespace.
+     *
+     * @return array<string, array<int, array{0: string, 1: string}>>
+     */
+    private function getLocalizedCommandGroups(): array
+    {
+        $groups = [];
+        foreach ($this->all() as $name => $command) {
+            if ($command->isHidden()) {
+                continue;
+            }
+
+            $groups[$this->getCommandNamespace($name)][] = [
+                $name,
+                $this->getLocalizedCommandDescription($name, $command->getDescription()),
+            ];
+        }
+
+        ksort($groups);
+        return $groups;
+    }
+
+    /**
+     * Get the display namespace for a command name.
+     *
+     * @param string $name The command name.
+     *
+     * @return string
+     */
+    private function getCommandNamespace(string $name): string
+    {
+        if (!str_contains($name, ':')) {
+            return '';
+        }
+
+        return substr($name, 0, (int) strpos($name, ':'));
+    }
+
+    /**
+     * Get a localized command description when a translation exists.
+     *
+     * @param string $name        The command name.
+     * @param string $description The fallback command description.
+     *
+     * @return string
+     */
+    private function getLocalizedCommandDescription(string $name, string $description): string
+    {
+        $key = 'application.command_descriptions.' . $name;
+        $translated = $this->transCommand($key);
+
+        return $translated === $key ? $description : $translated;
+    }
+
+    /**
+     * Write command groups with optional namespace headings.
+     *
+     * @param OutputInterface $output An Output instance.
+     * @param array           $groups Grouped command rows.
+     *
+     * @return void
+     */
+    private function writeCommandGroups(OutputInterface $output, array $groups): void
+    {
+        foreach ($groups as $namespace => $rows) {
+            if ($namespace !== '') {
+                $output->writeln(' <comment>' . $namespace . '</comment>');
+            }
+
+            $this->writeListRows($output, $rows);
+        }
+    }
+
+    /**
+     * Write aligned list rows.
+     *
+     * @param OutputInterface $output An Output instance.
+     * @param array           $rows   List rows.
+     *
+     * @return void
+     */
+    private function writeListRows(OutputInterface $output, array $rows): void
+    {
+        foreach ($rows as $row) {
+            $output->writeln(sprintf('  <info>%-28s</info> %s', $row[0], $row[1]));
+        }
+    }
+
+    /**
+     * Translate a commands-domain application label.
+     *
+     * @param string $key The translation key.
+     *
+     * @return string
+     */
+    private function transCommand(string $key): string
+    {
+        return TranslationManager::getInstance()->getTranslator()->trans($key, [], 'commands');
     }
 
     /**

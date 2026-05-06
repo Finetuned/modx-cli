@@ -1,5 +1,38 @@
 # Befehlsmeldungen - Deutsch
 
+application:
+  list:
+    usage: 'Verwendung:'
+    options: 'Optionen:'
+    available_commands: 'Verfügbare Befehle:'
+  options:
+    help: 'Hilfe für den angegebenen Befehl anzeigen. Ohne Befehl wird die Hilfe für die Befehlsliste angezeigt'
+    quiet: 'Keine Meldungen ausgeben'
+    version: 'Diese Anwendungsversion anzeigen'
+    ansi: 'ANSI-Ausgabe erzwingen oder deaktivieren'
+    no_interaction: 'Keine interaktiven Fragen stellen'
+    site: 'Instanzname, für den der Befehl ausgeführt werden soll'
+    json: 'Ergebnisse im JSON-Format ausgeben'
+    ssh: 'Befehl per SSH auf einem entfernten Server ausführen: [<user>@]<host>[:<port>][<path>]'
+    log_level: 'Protokollstufe setzen (debug, info, notice, warning, error, critical, alert, emergency)'
+    log_file: 'Protokolle in die angegebene Datei schreiben'
+    locale: 'Locale für Übersetzungen setzen (z. B. en, es, fr, de)'
+    verbose: 'Ausführlichkeit der Meldungen erhöhen'
+  command_descriptions:
+    completion: 'Shell-Vervollständigungsskript ausgeben'
+    crawl: 'Website crawlen, um den Cache aufzuwärmen'
+    download: 'MODX Revolution herunterladen'
+    find: 'MODX-Elemente und Ressourcen finden'
+    help: 'Hilfe für einen Befehl anzeigen'
+    install: 'MODX Revolution installieren'
+    list: 'Befehle auflisten'
+    run-sequence: 'Mehrere Befehle nacheinander ausführen'
+    search: 'Alle Inhalte der MODX-Instanz durchsuchen (Ressourcen, Elemente, Benutzer)'
+    self-update: 'MODX CLI aktualisieren'
+    update: 'MODX CLI auf die neueste Version aktualisieren'
+    version: 'MODX- und MODX-CLI-Versionen anzeigen'
+    "config:get-default": 'Standard-MODX-Instanz anzeigen'
+
 resource:
   create:
     success: 'Ressource erfolgreich erstellt'

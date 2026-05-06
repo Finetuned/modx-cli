@@ -1,5 +1,38 @@
 # Messages des commandes - Français
 
+application:
+  list:
+    usage: 'Utilisation :'
+    options: 'Options :'
+    available_commands: 'Commandes disponibles :'
+  options:
+    help: 'Afficher l’aide de la commande indiquée. Sans commande, affiche l’aide de la liste des commandes'
+    quiet: 'Ne produire aucun message'
+    version: 'Afficher la version de cette application'
+    ansi: 'Forcer ou désactiver la sortie ANSI'
+    no_interaction: 'Ne poser aucune question interactive'
+    site: 'Nom de l’instance sur laquelle exécuter la commande'
+    json: 'Afficher les résultats au format JSON'
+    ssh: 'Exécuter la commande sur un serveur distant via SSH : [<user>@]<host>[:<port>][<path>]'
+    log_level: 'Définir le niveau de journalisation (debug, info, notice, warning, error, critical, alert, emergency)'
+    log_file: 'Écrire les journaux dans le fichier indiqué'
+    locale: 'Définir la langue des traductions (ex. en, es, fr, de)'
+    verbose: 'Augmenter le niveau de détail des messages'
+  command_descriptions:
+    completion: 'Afficher le script d’autocomplétion du shell'
+    crawl: 'Parcourir le site pour préchauffer le cache'
+    download: 'Télécharger MODX Revolution'
+    find: 'Rechercher des éléments et ressources MODX'
+    help: 'Afficher l’aide d’une commande'
+    install: 'Installer MODX Revolution'
+    list: 'Lister les commandes'
+    run-sequence: 'Exécuter plusieurs commandes en séquence'
+    search: 'Rechercher dans tout le contenu de l’instance MODX (ressources, éléments, utilisateurs)'
+    self-update: 'Mettre à jour MODX CLI'
+    update: 'Mettre à jour MODX CLI vers la dernière version'
+    version: 'Afficher les versions de MODX et de MODX CLI'
+    "config:get-default": 'Afficher l’instance MODX par défaut'
+
 resource:
   create:
     success: 'Ressource créée avec succès'
