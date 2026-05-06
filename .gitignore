@@ -11,6 +11,7 @@
 /.clinerules/
 CLAUDE.md
 /tests/integration/.env
+graphify-out/
 
 # PHP_CodeSniffer cache
 .phpcs-cache
