@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.3-beta] - 2026-06-17
+
+Refreshed composer.lock to pull in patched dependency releases and updated Composer security advisory constraints.
+
+Updated key locked packages including modx/revolution v3.2.1-pl, guzzlehttp/guzzle 7.12.0, guzzlehttp/psr7 2.12.0, and Symfony components/polyfills.
+
+Composer installs MUST now reject the newly listed vulnerable package ranges captured by the refreshed advisory metadata.
+
 ## [0.10.2-beta] - 2026-05-05
 
 ### Changed
