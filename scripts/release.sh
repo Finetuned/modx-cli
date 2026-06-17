@@ -33,8 +33,8 @@ worktree_status="$(git -C "$root_dir" status --porcelain --untracked-files=all)"
 if [[ -n "$worktree_status" ]]; then
   while IFS= read -r line; do
     path="${line:3}"
-    if [[ "$path" != "CHANGELOG.md" && "$path" != "VERSION" ]]; then
-      echo "Working tree has changes outside CHANGELOG.md and VERSION" >&2
+    if [[ "$path" != "CHANGELOG.md" && "$path" != "VERSION" && "$path" != "composer.lock" ]]; then
+      echo "Working tree has changes outside CHANGELOG.md, VERSION, and composer.lock" >&2
       exit 1
     fi
   done <<< "$worktree_status"
@@ -53,7 +53,7 @@ fi
 
 printf '%s\n' "$version" > "$version_file"
 
-git -C "$root_dir" add CHANGELOG.md VERSION
+git -C "$root_dir" add CHANGELOG.md VERSION composer.lock
 
 if git -C "$root_dir" diff --cached --quiet; then
   echo "No release metadata changes to commit for ${tag}" >&2
