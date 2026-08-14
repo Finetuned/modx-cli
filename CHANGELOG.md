@@ -5,12 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.10.6-beta] - 2026-08-05
+## [0.10.7-beta] - 2026-08-14
 
 Refreshed composer.lock to pull in patched dependency releases and updated Composer security advisory constraints.
 
 ### Security
 - Updated guzzlehttp/guzzle to 7.15.2 to resolve high and medium security advisories for bypassing host-based checks and noncanonical cookie domain keeping subdomain scope.
+
+## [0.10.6-beta] - 2026-08-05
+
+Refreshed composer.lock to pull in patched dependency releases and updated Composer security advisory constraints.
+
+### Security
+- Updatedsquizlabs/php_codesniffer to 4.0.4 to resolve high security advisories for bOS Command injection.
 
 ## [0.10.5-beta] - 2026-07-21
 
